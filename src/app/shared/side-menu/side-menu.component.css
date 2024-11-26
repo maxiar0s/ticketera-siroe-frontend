@@ -1,0 +1,49 @@
+.logo {
+  height: 10rem;
+  margin: 0 auto 4rem auto;
+}
+
+.menu {
+  min-height: 100%;
+  padding-top: 25px;
+  padding-bottom: 25px;
+  border-right: 1px solid #e6eff5;
+}
+
+.route-actived{
+  position: absolute;
+  width: 6px;
+  color: white;
+  height: 50px;
+  background-color: #4f4f4f;
+  border-top-right-radius: 15px;
+  border-bottom-right-radius: 15px;
+}
+
+.left-div-center {
+  display: flex;
+  align-items: center;
+}
+
+.flex-menu {
+  display: flex;
+  flex-direction: column;
+  gap: 3rem;
+  color: #4f4f4f;
+}
+
+.a-routerlink {
+  margin-left: 3rem;
+  display: flex;
+  gap: 2rem;
+  align-items: center;
+}
+
+.menu-svg {
+  max-height: 25px;
+  color: #4F4F4F;
+}
+
+.a-color {
+  color: #4F4F4F;
+}

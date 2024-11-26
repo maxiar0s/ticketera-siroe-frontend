@@ -1,0 +1,10 @@
+.index {
+  display: grid;
+  grid-template-columns: 12% 88%;
+}
+
+.page {
+  display: grid;
+  grid-template-rows: 11% 0% 89%;
+  min-height: 100vh;
+}

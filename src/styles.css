@@ -1,0 +1,64 @@
+/* You can add global styles to this file, and also import other style files */
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap');
+html {
+  font-size: 62.5%;
+  box-sizing: border-box;
+  height: 100%;
+  margin: 0;
+  overflow-y: scroll;
+}
+
+*, *:before, *:after {
+  box-sizing: inherit;
+}
+
+body {
+  overflow-y: scroll;
+  margin: 0;
+  font-family: "Open Sans", sans-serif;
+  font-size: 1.6rem;
+  line-height: 1.8;
+}
+
+h1, h2, h3 {
+  font-family: "Open Sans", sans-serif;
+  margin: 0;
+  line-height: 1.2;
+}
+
+h1 {
+  font-size: 4.8rem;
+}
+
+h2 {
+  font-size: 5.8rem;
+}
+
+h3 {
+  font-size: 5rem;
+}
+
+.open-300 {
+  font-weight: 400;
+}
+.open-400 {
+  font-weight: 400;
+}
+.open-500 {
+  font-weight: 400;
+}
+.open-600 {
+  font-weight: 400;
+}
+.open-700 {
+  font-weight: 700;
+}
+
+a {
+  text-decoration: none;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}

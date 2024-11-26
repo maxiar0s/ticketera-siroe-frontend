@@ -1,0 +1,39 @@
+.flex {
+  height: 100%;
+  min-height: 12rem;
+  max-height: 12rem;
+  background-color: #f7f7f7;
+  padding: 0rem 3.5rem;
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid #e6eff5;;
+}
+
+.flex-search {
+  display: flex;
+  align-items: center;
+  justify-content: end;
+  width: 100%;
+  gap: 3rem;
+}
+
+input {
+  all: unset;
+}
+
+.svg {
+  max-height: 2.5rem;
+}
+
+.title {
+  position: absolute;
+  font-size: 35px;
+  color: #4F4F4F;
+}
+
+.user {
+  background-color: #4F4F4F;
+  height: 50px;
+  width: 50px;
+  border-radius: 100%;
+}

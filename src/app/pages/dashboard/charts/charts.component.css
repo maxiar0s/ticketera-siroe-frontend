@@ -1,0 +1,84 @@
+.dashboard-page {
+  padding: 5rem 3.5rem;
+}
+
+.grid-tables {
+  display: grid;
+  grid-template-columns: 1.3fr 1.3fr repeat(4, 0.9fr);
+  grid-template-rows: repeat(1, 1fr);
+  gap: 4rem;
+}
+.table {
+  background-color:#f7f7f7;
+  padding: 1rem 3rem;
+  color: #4f4f4f;
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 1.5rem;
+}
+.table:nth-child(3) {
+  grid-column-start: 3;
+  grid-column-end: 5;
+}
+.table:last-child {
+  grid-column-start: 5;
+  grid-column-end: 7;
+}
+.table-title {
+  font-size: 15px;
+}
+.chart {
+  margin: 0 auto;
+  width: 150px;
+  height: 150px;
+  background: #4f4f4f;
+  border-radius: 50%;
+  margin-bottom: 1rem;
+}
+.table-flex-3 {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6rem;
+}
+.table-grid-4 {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  justify-content: center;
+  gap: 1rem;
+}
+.chart-3 {
+  width: 220px;
+  height: 220px;
+  background: #4f4f4f;
+  border-radius: 50%;
+  margin-bottom: 1rem;
+}
+.chart-4 {
+  width: 3rem;
+  height: 18rem;
+  background: #4f4f4f;
+  border-radius: 10px;
+  margin-bottom: 1rem;
+}
+/* Leyendas */
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8rem;
+}
+.legend-3 {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1.5rem;
+}
+
+.legend span {
+  color: #4f4f4f;
+}

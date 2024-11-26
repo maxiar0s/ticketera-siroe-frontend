@@ -1,0 +1,51 @@
+<div class="menu" style="background-color: #f7f7f7;">
+  <!-- Logo Siroe -->
+  <div class="logo">
+    <a [routerLink]="['/']" routerLinkActive="router-link-active">
+      <img src="../../../assets/img/siroe-logo.png" alt="siroe_logo" class="logo">
+    </a>
+    <!-- <p style="text-align: center;">Siroe <span class="">Soporte</span></p> -->
+  </div>
+  <div class="flex-menu open-300">
+    <!-- Dashboard sidebar -->
+    <div class="left-div-center">
+      <div *ngIf="isActive('/dashboard')" class="route-actived"></div>
+      <a [routerLink]="['/dashboard']" routerLinkActive="router-link-active" class="a-routerlink">
+        <img src="../../../assets/svg/dashboard.svg" alt="dashboard_SVG" class="menu-svg">
+        <a class="a-color">Dashboard</a>
+      </a>
+    </div>
+    <!-- Registrar equipos sidebar -->
+    <div class="left-div-center">
+      <div *ngIf="isActive('/clientes')" class="route-actived"></div>
+      <a [routerLink]="['/clientes']" routerLinkActive="router-link-active" class="a-routerlink">
+        <img src="../../../assets/svg/dashboard.svg" alt="dashboard_SVG" class="menu-svg">
+        <a class="a-color">Registrar equipos</a>
+      </a>
+    </div>
+    <!-- Equipos sidebar -->
+    <div class="left-div-center">
+      <div *ngIf="isActive('/')" class="route-actived"></div>
+      <a [routerLink]="['/']" routerLinkActive="router-link-active" class="a-routerlink">
+        <img src="../../../assets/svg/dashboard.svg" alt="dashboard_SVG" class="menu-svg">
+        <a class="a-color">Equipos</a>
+      </a>
+    </div>
+    <!-- Dato 1 sidebar -->
+    <div class="left-div-center">
+      <div *ngIf="isActive('/dasd')" class="route-actived"></div>
+      <a [routerLink]="['/']" routerLinkActive="router-link-active" class="a-routerlink">
+        <img src="../../../assets/svg/dashboard.svg" alt="dashboard_SVG" class="menu-svg">
+        <a class="a-color">Dato 1</a>
+      </a>
+    </div>
+    <!-- Dato 2 sidebar -->
+    <div class="left-div-center">
+      <div *ngIf="isActive('/das')" class="route-actived"></div>
+      <a [routerLink]="['/']" routerLinkActive="router-link-active" class="a-routerlink">
+        <img src="../../../assets/svg/dashboard.svg" alt="dashboard_SVG" class="menu-svg">
+        <a class="a-color">Dato 2</a>
+      </a>
+    </div>
+  </div>
+</div>

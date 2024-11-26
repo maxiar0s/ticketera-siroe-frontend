@@ -1,0 +1,22 @@
+<div class="flex">
+  <h1 class="title">Dashboard Example</h1>
+  <div class="flex-search">
+    <div style="display: flex; align-items: center; gap: 1rem; margin-right: 4rem;">
+      <label for="search">
+        <img src="../../../assets/svg/search.svg" alt="search_SVG" class="svg">
+      </label>
+      <input type="text" class="" placeholder="Search for something" name="search" id="search">
+    </div>
+    <a [routerLink]="['/opciones']" routerLinkActive="router-link-active">
+      <img src="../../../assets/svg/settings.svg" alt="" class="svg">
+    </a>
+    <a [routerLink]="['/']" routerLinkActive="router-link-active">
+      <img src="../../../assets/svg/notifications.svg" alt="" class="svg">
+    </a>
+    <div>
+      <a [routerLink]="['/perfil']" routerLinkActive="router-link-active">
+        <div class="user"></div>
+      </a>
+    </div>
+  </div>
+</div>
