@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { ChartsComponent } from './charts/charts.component';
 import { SummaryComponent } from './summary/summary.component';
-import { NavegationComponent } from "./navegation/navegation.component";
+import { NavegationComponent } from "../../shared/navegation/navegation.component";
 
 @Component({
   selector: 'dashboard',

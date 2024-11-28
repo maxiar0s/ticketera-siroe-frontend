@@ -1,0 +1,36 @@
+[
+  {
+    "nombre": "Dashboard",
+    "ruta": "/dashboard",
+    "svg": "dashboard",
+    "subGrupo": []
+  },
+  {
+    "nombre": "Clientes",
+    "ruta": "dashboard/clientes",
+    "svg": "dashboard",
+    "subGrupo": [
+      {
+      "nombre": "Equipos",
+      "ruta": "/"
+      }
+    ]
+  },
+  {
+    "nombre": "Tipo de equipo ",
+    "ruta": "/",
+    "svg": "dashboard",
+    "subGrupo": [
+      {
+      "nombre": "Solicitar añadir equipo",
+      "ruta": "/"
+      }
+    ]
+  },
+  {
+    "nombre": "Inventario",
+    "ruta": "/",
+    "svg": "dashboard",
+    "subGrupo": []
+  }
+]

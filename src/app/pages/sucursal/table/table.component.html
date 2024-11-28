@@ -1,0 +1,34 @@
+<div class="div-table">
+  <div class="label-input">
+    <label class="select-all" for="selectAll"><input type="checkbox" id="selectAll">Seleccionar todas</label>
+  </div>
+  <table class="table">
+    <thead>
+        <tr>
+          <th></th>
+          <th class="text-align-center">Estado</th>
+          <th class="text-align-left">Código ID</th>
+          <th class="text-align-left">Tipo equipo</th>
+          <th class="text-align-left">Fecha de ingreso</th>
+          <th class="text-align-left">Departamento</th>
+          <th class="text-align-left">Usuario</th>
+          <th class="text-align-center">Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let item of [1, 2, 3, 4 ,5]">
+            <td class="information-checkbox information-value"><input type="checkbox"> 1.</td>
+            <td class="information-value"><div class="estado cerrado"></div></td>
+            <td class="information-value">SIROADMINT0001</td>
+            <td class="information-value">Notebook</td>
+            <td class="information-value">22/11/2024</td>
+            <td class="information-value">Administración</td>
+            <td class="information-value">Pablo Lopez</td>
+            <td class="information-value information-actions">
+                <button class="actions">Añadir datos</button>
+                <button class="actions">Ver datos</button>
+            </td>
+        </tr>
+    </tbody>
+  </table>
+</div>

@@ -11,12 +11,16 @@ export const routes: Routes = [
       loadComponent: () => import('./pages/dashboard/dashboard.component').then( m => m.DashboardComponent ),
     },
     {
-      path: 'clientes',
+      path: 'dashboard/clientes',
       loadComponent: () => import('./pages/clientes/clientes.component').then( m => m.ClientesComponent ),
     },
     {
-      path: 'cliente/:id',
+      path: 'cliente',
       loadComponent: () => import('./pages/cliente/cliente.component').then( m => m.ClienteComponent ),
+    },
+    {
+      path: 'sucursal',
+      loadComponent: () => import('./pages/sucursal/sucursal.component').then( m => m.SucursalComponent ),
     },
     {
       path: 'cliente/:id/sucursal/:id',

@@ -1,0 +1,35 @@
+.options-flex {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.title {
+  font-size: 2rem;
+  color: #343c6a;
+}
+
+.options {
+  all: unset;
+  padding-top: 0.4rem;
+  padding-bottom: 0.4rem;
+  border: 1px solid #4f4f4f;
+  text-align: center;
+  border-radius: 25px;
+  color: #4f4f4f;
+}
+.options:hover {
+ cursor: pointer;
+}
+.options-datos {
+  padding-left: 2rem;
+  padding-right: 2rem;
+}
+.margin {
+  margin-left: 5rem;
+  margin-right: 2rem;
+}
+.option-imprimir {
+  padding-left: 5rem;
+  padding-right: 5rem;
+}

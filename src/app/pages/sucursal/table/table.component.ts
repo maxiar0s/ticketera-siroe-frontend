@@ -2,12 +2,12 @@ import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 
 @Component({
-  selector: 'dashboard-summary',
+  selector: 'sucursal-table',
   standalone: true,
   imports: [CommonModule],
-  templateUrl: './summary.component.html',
-  styleUrl: './summary.component.css'
+  templateUrl: './table.component.html',
+  styleUrl: './table.component.css'
 })
-export class SummaryComponent {
+export class TableComponent {
 
 }

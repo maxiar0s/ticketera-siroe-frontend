@@ -1,0 +1,26 @@
+.options {
+  display: flex;
+  /* margin-bottom: 2rem; */
+}
+.options button {
+  all: unset;
+}
+.options button {
+  padding: 1rem 4rem;
+  position: relative;
+}
+.options button:hover {
+  cursor: pointer;
+}
+
+.options-buttons-border::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 0.5rem;
+  background: #4f4f4f;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+}

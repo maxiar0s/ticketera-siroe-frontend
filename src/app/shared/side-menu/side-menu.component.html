@@ -4,48 +4,44 @@
     <a [routerLink]="['/']" routerLinkActive="router-link-active">
       <img src="../../../assets/img/siroe-logo.png" alt="siroe_logo" class="logo">
     </a>
-    <!-- <p style="text-align: center;">Siroe <span class="">Soporte</span></p> -->
   </div>
+
   <div class="flex-menu open-300">
-    <!-- Dashboard sidebar -->
-    <div class="left-div-center">
-      <div *ngIf="isActive('/dashboard')" class="route-actived"></div>
-      <a [routerLink]="['/dashboard']" routerLinkActive="router-link-active" class="a-routerlink">
-        <img src="../../../assets/svg/dashboard.svg" alt="dashboard_SVG" class="menu-svg">
-        <a class="a-color">Dashboard</a>
-      </a>
+
+    <div class="flex-gap">
+      <!-- Item Sidebar -->
+      <div *ngFor="let item of sideMenuJSON;">
+
+        <div class="left-div-center" [ngClass]="{'active': currentGroup == item.ruta}">
+          <div class="route-actived"></div>
+          <a [routerLink]="[item.ruta]" [ngClass]="{'open': activeGroup(item.ruta)}" (click)="routeActive($event, item.ruta)" routerLinkActive="router-link-active" class="a-routerlink">
+            <img [src]="'/assets/svg/'+item.svg+'.svg'" [alt]="item.svg+'_SVG'" class="menu-svg">
+            <p class="a-color">{{ item.nombre }}</p>
+          </a>
+        </div>
+
+        <div class="subItem-nav">
+          @for(subItem of item.subGrupo; track subItem){
+            <a [routerLink]="subItem.ruta" [ngClass]="{'active': currentSubGroup == subItem.ruta}" class="a-routerlink a-color" (click)="activeSubGroup(subItem.ruta)">
+              <div class="bar-progress"></div>
+              <p class="subItem-text color-white">{{subItem.nombre}}</p>
+            </a>
+          }
+        </div>
+      </div>
     </div>
-    <!-- Registrar equipos sidebar -->
-    <div class="left-div-center">
-      <div *ngIf="isActive('/clientes')" class="route-actived"></div>
-      <a [routerLink]="['/clientes']" routerLinkActive="router-link-active" class="a-routerlink">
-        <img src="../../../assets/svg/dashboard.svg" alt="dashboard_SVG" class="menu-svg">
-        <a class="a-color">Registrar equipos</a>
-      </a>
+
+
+    <div class="flex-gap">
+      <div *ngFor="let item of sideLogoutMenuJSON; let i = index" class="left-div-center">
+        <!-- Logout Sidebar -->
+        <div class="route-actived"></div>
+        <a [routerLink]="[item.ruta]" routerLinkActive="router-link-active" class="a-routerlink">
+          <img [src]="'/assets/svg/'+item.svg+'.svg'" [alt]="item.svg+'_SVG'" class="menu-svg">
+          <a class="a-color">{{ item.nombre }}</a>
+        </a>
+      </div>
     </div>
-    <!-- Equipos sidebar -->
-    <div class="left-div-center">
-      <div *ngIf="isActive('/')" class="route-actived"></div>
-      <a [routerLink]="['/']" routerLinkActive="router-link-active" class="a-routerlink">
-        <img src="../../../assets/svg/dashboard.svg" alt="dashboard_SVG" class="menu-svg">
-        <a class="a-color">Equipos</a>
-      </a>
-    </div>
-    <!-- Dato 1 sidebar -->
-    <div class="left-div-center">
-      <div *ngIf="isActive('/dasd')" class="route-actived"></div>
-      <a [routerLink]="['/']" routerLinkActive="router-link-active" class="a-routerlink">
-        <img src="../../../assets/svg/dashboard.svg" alt="dashboard_SVG" class="menu-svg">
-        <a class="a-color">Dato 1</a>
-      </a>
-    </div>
-    <!-- Dato 2 sidebar -->
-    <div class="left-div-center">
-      <div *ngIf="isActive('/das')" class="route-actived"></div>
-      <a [routerLink]="['/']" routerLinkActive="router-link-active" class="a-routerlink">
-        <img src="../../../assets/svg/dashboard.svg" alt="dashboard_SVG" class="menu-svg">
-        <a class="a-color">Dato 2</a>
-      </a>
-    </div>
+
   </div>
 </div>

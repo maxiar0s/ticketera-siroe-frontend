@@ -1,0 +1,41 @@
+.header-flex {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.header-title {
+  color: #474747;
+  font-size: 3.7rem;
+}
+
+.information-grid {
+  display: grid;
+  grid-template-columns: 20% repeat(3, 26% );
+  background-color: #f7f7f7;
+  border-radius: 35px;
+  padding: 2rem 5rem;
+}
+
+.information-flex {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+}
+
+.flex {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+.flex h1 {
+  color: #718ebf;
+}
+.flex p {
+  margin: 0;
+  color: #718ebf;
+}
+
+.information-title {
+  font-size: 1.8rem;
+}

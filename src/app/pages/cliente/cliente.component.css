@@ -1,0 +1,6 @@
+.client {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  padding: 3.5rem;
+}

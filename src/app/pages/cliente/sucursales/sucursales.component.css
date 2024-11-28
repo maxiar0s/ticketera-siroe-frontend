@@ -1,0 +1,77 @@
+.sucursales {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  justify-content: start;
+}
+
+.sucursal {
+  display: flex;
+  gap: 1rem;
+  min-width: 100%;
+  min-height: 10rem;
+  max-height: 10rem;
+  justify-content: space-between;
+  background-color: #f7f7f7;
+  border-radius: 18px;
+  padding: 0 2rem;
+}
+
+.sucursal-campo {
+  display: flex;
+  flex-direction: column;
+  margin-top: 2.5rem;
+  gap: 0.8rem;
+}
+
+.sucursal-campo h1 {
+  font-weight: 500;
+}
+
+.sucursal-campo-estado {
+  align-items: center;
+}
+
+.sucursal-campo-texto {
+  align-items: start;
+}
+
+.sucursal-campo p {
+  margin: 0;
+  color: #718ebf;
+}
+
+.table-title {
+  font-size: 1.8rem;
+}
+
+.estado {
+  margin-top: 0.6rem;
+  width: 1.6rem;
+  height: 1.6rem;
+  border-radius: 50%;
+}
+
+.cerrado {
+  background-color: #ff4b4a;
+}
+.abierto {
+  background-color: #1ec6b8;
+}
+
+.div-button {
+  margin: auto 0 auto 0;
+
+}
+
+.button {
+  padding: 0.5rem 2rem;
+  border: 1px solid #718ebf;
+  text-align: center;
+  margin-top: 0.8rem;
+  border-radius: 25px;
+  color: #718ebf;
+}
+.button:hover {
+ cursor: pointer;
+}

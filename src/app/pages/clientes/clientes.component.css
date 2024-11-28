@@ -1,0 +1,92 @@
+.clients {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  padding: 3rem;
+}
+
+.title {
+  font-size: 35px;
+  color: #474747;
+}
+
+.grid-clients {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: auto;
+  gap: 3rem;
+}
+
+.card-clients {
+  position: relative;
+}
+
+.card-header {
+  position: absolute;
+  width: 100%;
+  background-color: #4f4f4f;
+  text-align: center;
+  padding: 1rem 0;
+  max-height: 4rem;
+  min-height: 4rem;
+  border-radius: 25px;
+}
+
+.card-title {
+  font-size: 15px;
+  color: #ffffff;
+  font-weight: 400;
+}
+
+.card-body {
+  margin-top: 2rem;
+  background-color: #f7f7f7;
+  padding: 3rem 1.5rem 1.5rem 1.5rem;
+}
+
+.card-body-flex {
+  width: 100%;
+  display: flex;
+  gap: 1rem;
+  align-items: start;
+}
+
+.card-body-photo {
+  width: 25%;
+  height: 95px;
+  border-radius: 50%;
+  background-color: #d9d9d9;
+}
+
+.card-body-information {
+  width: 100%;
+  color: #718ebf;
+  display: flex;
+  flex-direction: column;
+
+}
+
+.card-body-information p {
+  margin: 0;
+  font-weight: 700;
+}
+
+.card-body-information p span {
+  font-weight: 400;
+}
+
+.card-body-button {
+  all: unset;
+  display: block;
+  margin-left: auto;
+  padding: 0.5rem 2rem;
+  border: 1px solid #4f4f4f;
+  text-align: center;
+  margin-top: 0.8rem;
+  border-radius: 25px;
+  color: #4f4f4f;
+}
+
+.card-body-button:hover {
+  cursor: pointer;
+}

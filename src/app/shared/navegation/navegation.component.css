@@ -2,19 +2,13 @@
   display: flex;
   gap: 0.5rem;
   padding: 0 4rem;
-  margin-bottom: 10rem;
   justify-content: end;
   align-items: center;
   color: #4f4f4f;
   font-weight: 700;
   font-size: 1.6rem;
 }
-.navegation a:nth-child(2) {
-  padding: 0.5rem 1.5rem;
-  background-color: #4f4f4f;
-  color: #ffffff;
-  border-radius: 5px;
-}
+
 
 a {
   color: #4f4f4f;
@@ -25,6 +19,10 @@ a {
   display: flex;
   align-items: center;
   gap: 0.5rem;
+}
+
+.flex-a p {
+  margin: 0;
 }
 
 .arrow-svg {

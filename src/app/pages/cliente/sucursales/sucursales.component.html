@@ -1,0 +1,32 @@
+<section class="sucursales">
+  <div *ngFor="let item of [1, 2, 3]" class="sucursal">
+    <!-- Estado Sucursal -->
+    <div class="sucursal-campo sucursal-campo-estado">
+      <h1 class="table-title">Estado</h1>
+      <div class="estado cerrado"></div>
+    </div>
+    <!-- Nombre Sucursal -->
+    <div class="sucursal-campo sucursal-campo-texto">
+      <h1 class="table-title">Sucursal</h1>
+      <p>Colegio xxxx</p>
+    </div>
+    <!-- Nombre Sucursal -->
+    <div class="sucursal-campo sucursal-campo-texto">
+      <h1 class="table-title">Dirección</h1>
+      <p>Av. Americo Vespucio 111 Macul</p>
+    </div>
+    <!-- Nombre Sucursal -->
+    <div class="sucursal-campo sucursal-campo-texto">
+      <h1 class="table-title">Fecha ingreso</h1>
+      <p>12/10/2024</p>
+    </div>
+    <!-- Nombre Sucursal -->
+    <div class="sucursal-campo sucursal-campo-texto">
+      <h1 class="table-title">Cantidad equipos registrados</h1>
+      <p>50 equipos registrados</p>
+    </div>
+    <div class="div-button">
+      <a [routerLink]="['/sucursal']" routerLinkActive="router-link-active" class="button">Seleccionar sucursal</a>
+    </div>
+  </div>
+</section>

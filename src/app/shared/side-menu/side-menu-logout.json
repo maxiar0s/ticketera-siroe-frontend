@@ -1,0 +1,14 @@
+[
+  {
+    "nombre": "Configuración",
+    "ruta": "/",
+    "svg": "dashboard",
+    "subGrupo": []
+  },
+  {
+    "nombre": "Cerrar sesión",
+    "ruta": "/",
+    "svg": "dashboard",
+    "subGrupo": []
+  }
+]

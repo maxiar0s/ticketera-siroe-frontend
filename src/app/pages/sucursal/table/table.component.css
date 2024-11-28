@@ -1,0 +1,75 @@
+.div-table {
+  background-color: #f7f7f7;
+  padding: 0.5rem;
+  border-radius: 25px;
+  color: #4f4f4f;
+}
+
+.label-input {
+  display: flex;
+  align-items: center;
+  margin: 0.5rem 0;
+}
+
+.select-all {
+  margin-left: 1.5rem;
+}
+.select-all input {
+  margin-right: 1rem;
+}
+
+.table {
+  width: 100%;
+}
+
+.text-align-left {
+  text-align: left;
+}
+.text-align-center {
+  text-align: center;
+}
+
+.estado {
+  width: 1.6rem;
+  height: 1.6rem;
+  border-radius: 50%;
+}
+.cerrado {
+  margin: 0 auto;
+  background-color: #ff4b4a;
+}
+.abierto {
+  margin: 0 auto;
+  background-color: #1ec6b8;
+}
+
+.information-checkbox {
+  max-width: 3.5rem;
+  min-width: 3.5rem;
+}
+.information-value {
+  padding: 1rem 0;
+}
+
+.information-actions {
+  display: flex;
+  justify-content: center;
+  gap: 3rem;
+  align-items: center;
+}
+
+.actions {
+  all: unset;
+  padding: 0.4rem 1rem;
+  border: 1px solid #4f4f4f;
+  border-radius: 20px;
+  text-align: right;
+}
+.actions:hover {
+  cursor: pointer;
+}
+
+input[type="checkbox"] {
+  min-width: 1.5rem;
+  min-height: 1.5rem;
+}

@@ -21,7 +21,7 @@
       </tr>
     </thead>
     <tbody>
-      <tr class="table-row-style">
+      <tr *ngFor="let item of [1, 2, 3]; let i = index" class="table-row-style">
         <td><div class="id-status"></div></td>
         <td><span class="status red"></span> #12548796</td>
         <td>Slep xxxxxxxxx</td>
@@ -31,37 +31,8 @@
         <td>xxxxx</td>
         <td><button class="table-detalle">Ingresar datos</button></td>
       </tr>
-      <tr class="table-row-style">
-        <td><div class="id-status"></div></td>
-        <td><span class="status red"></span> #12548796</td>
-        <td>Slep xxxxxxxxx</td>
-        <td>Colegio xxxxxxxxxxx</td>
-        <td>21 / Noviembre / 24</td>
-        <td>xxxxx</td>
-        <td>xxxxx</td>
-        <td><button class="table-detalle">Ingresar datos</button></td>
-      </tr>
-      <tr class="table-row-style">
-        <td><div class="id-status"></div></td>
-        <td><span class="status red"></span> #12548796</td>
-        <td>Slep xxxxxxxxx</td>
-        <td>Colegio xxxxxxxxxxx</td>
-        <td>21 / Noviembre / 24</td>
-        <td>xxxxx</td>
-        <td>xxxxx</td>
-        <td><button class="table-detalle">Ingresar datos</button></td>
-      </tr>
-      <tr class="table-row-style">
-        <td><div class="id-status-2"></div></td>
-        <td><span class="status red"></span> #12548796</td>
-        <td>Slep xxxxxxxxx</td>
-        <td>Colegio xxxxxxxxxxx</td>
-        <td>21 / Noviembre / 24</td>
-        <td>xxxxx</td>
-        <td>xxxxx</td>
-        <td><button class="table-detalle">Revisar detalles</button></td>
-      </tr>
-      <tr class="table-row-style">
+
+      <tr *ngFor="let item of [1, 2]; let i = index" class="table-row-style">
         <td><div class="id-status-2"></div></td>
         <td><span class="status red"></span> #12548796</td>
         <td>Slep xxxxxxxxx</td>

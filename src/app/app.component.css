@@ -1,10 +1,33 @@
-.index {
+/* .index {
   display: grid;
   grid-template-columns: 12% 88%;
+} */
+
+.main-container {
+  display: flex;
+  flex-direction: row;
+  min-height: 100vh;
+  overflow: hidden;
 }
 
-.page {
+.menu {
+  position: relative;
+  flex-shrink: 0;
+  width: 250px;
+  min-width: 24rem;
+  max-width: 24rem;
+  background-color: #F7F7F7;
+  border-right: 1px solid #e6eff5;
+}
+
+.content {
+  flex-grow: 1;
+  overflow-x: auto;
+}
+
+
+/* .page {
   display: grid;
   grid-template-rows: 11% 0% 89%;
   min-height: 100vh;
-}
+} */

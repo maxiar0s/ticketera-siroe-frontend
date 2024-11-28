@@ -1,0 +1,57 @@
+.flex {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.title {
+  font-size: 35px;
+  color: #474747;
+}
+
+.flex-filter-options {
+  display: flex;
+  gap: 2.5rem;
+}
+
+.flex-search {
+  display: flex;
+  align-items: center;
+  background-color: #f5f7fa;
+  border-radius: 25px;
+  gap: 1.5rem;
+}
+
+.flex-select-search {
+  display: flex;
+  align-items: center;
+  background-color: #f5f7fa;
+  padding: 0.8rem 2rem;
+  border-radius: 25px;
+  gap: 1rem;
+}
+
+.svg {
+  max-height: 2.5rem;
+}
+
+.svg-arrow-down {
+  max-height: 1.5rem;
+}
+
+.search {
+  all: unset;
+}
+
+.input {
+  padding: 0.8rem 2rem;
+}
+
+.search::placeholder {
+  color: #474747;
+}
+
+.select-input {
+  display: block;
+  margin: auto;
+}
