@@ -1,0 +1,73 @@
+<!-- src/app/modal-form/modal-form.component.html -->
+<div class="modal-overlay" *ngIf="isVisible">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2 class="header-form">Crear Cliente</h2>
+      <!-- <span class="close-button" (click)="cerrar()">&times;</span> -->
+      <img src="/assets/svg/exit-button.svg" (click)="cerrar()" alt="exit_button" class="close-button">
+    </div>
+    <div class="modal-body">
+      <p class="description-form">Crea una nueva casa matriz, en donde podrás ingresar equipos.</p>
+      <form [formGroup]="clientForm" (ngSubmit)="onSubmit()">
+
+        <div class="two-inputs">
+          <!-- Campo RUT -->
+          <div class="form-group full-width">
+            <label for="rut">RUT</label>
+            <input class="full-width" id="rut" formControlName="rut" type="text" placeholder="Ej: 12345678-9"/>
+            <div *ngIf="clientForm.get('rut')?.invalid && clientForm.get('rut')?.touched" class="error">
+              RUT inválido.
+            </div>
+          </div>
+
+          <!-- Campo Razón Social -->
+          <div class="form-group">
+            <label for="razonSocial">Razón Social</label>
+            <input class="full-width" id="razonSocial" formControlName="razonSocial" type="text" placeholder="Ej: Siroe SpA"/>
+            <div *ngIf="clientForm.get('razonSocial')?.invalid && clientForm.get('razonSocial')?.touched" class="error">
+              Razón Social es requerida.
+            </div>
+          </div>
+        </div>
+
+
+        <!-- Campo Encargado General -->
+        <div class="form-group">
+          <label for="encargadoGeneral">Encargado General</label>
+          <input id="encargadoGeneral" formControlName="encargadoGeneral" type="text" placeholder="Ej: Roberto Osses"/>
+          <div *ngIf="clientForm.get('encargadoGeneral')?.invalid && clientForm.get('encargadoGeneral')?.touched" class="error">
+            Encargado General es requerido.
+          </div>
+        </div>
+
+        <!-- Campo Correo -->
+        <div class="form-group">
+          <label for="correo">Correo Electrónico</label>
+          <input id="correo" formControlName="correo" type="email" placeholder="Ej: Siroe@siroe.cl"/>
+          <div *ngIf="clientForm.get('correo')?.invalid && clientForm.get('correo')?.touched" class="error">
+            Correo electrónico inválido.
+          </div>
+        </div>
+
+        <!-- Campo Teléfono Encargado -->
+        <div class="form-group">
+          <label for="telefonoEncargado">Teléfono Encargado</label>
+          <input id="telefonoEncargado" formControlName="telefonoEncargado" type="text" placeholder="1 2345 6789"/>
+          <div *ngIf="clientForm.get('telefonoEncargado')?.invalid && clientForm.get('telefonoEncargado')?.touched" class="error">
+            Teléfono inválido.
+          </div>
+        </div>
+
+        <!-- Mensaje de Error -->
+        <div *ngIf="errorMessage" class="error-message">
+          {{ errorMessage }}
+        </div>
+
+        <!-- Botones -->
+        <div class="form-actions">
+          <button type="submit" [disabled]="clientForm.invalid">Enviar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

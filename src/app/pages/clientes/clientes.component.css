@@ -1,4 +1,5 @@
 .clients {
+  position: relative;
   display: flex;
   flex-direction: column;
   gap: 2rem;
@@ -89,4 +90,33 @@
 
 .card-body-button:hover {
   cursor: pointer;
+}
+
+.div-header {
+  display: flex;
+  justify-content: space-between;
+}
+
+.crear-cliente {
+  all: unset;
+  display: block;
+  margin-left: auto;
+  padding: 0.5rem 2rem;
+  border: 1px solid #4f4f4f;
+  text-align: center;
+  margin-top: 0.8rem;
+  border-radius: 25px;
+  color: #4f4f4f;
+  transition: 300ms;
+}
+
+.crear-cliente:hover {
+  cursor: pointer;
+  background-color: #474747;
+  color: #f7f7f7;
+}
+
+.form-crear-cliente {
+  min-width: 100%;
+  min-height: 100%;
 }

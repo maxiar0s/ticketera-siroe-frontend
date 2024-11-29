@@ -1,8 +1,10 @@
+
 <div class="clients">
-  <h1 class="title">Mostrar listado de clientes</h1>
-
+  <div class="div-header">
+    <h1 class="title">Mostrar listado de clientes</h1>
+      <button (click)="abrirModal()" class="crear-cliente">Crear cliente</button>
+  </div>
   <div class="grid-clients">
-
     <div *ngFor="let item of [1, 2, 3, 4, 5, 6, 7, 8, 9]; let i = index" class="card-clients">
       <div class="card-header">
         <h1 class="card-title">Farmacias Simi</h1>
@@ -25,3 +27,8 @@
 
   </div>
 </div>
+<shared-crear-cliente class="form-crear-cliente"
+*ngIf="isModalVisible"
+(cerrarModal)="cerrarModal()"
+(enviarFormulario)="crearCliente($event)"
+></shared-crear-cliente>
