@@ -1,7 +1,7 @@
 import { CommonModule, Location } from '@angular/common';
 import { Component, Renderer2 } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
-import sideMenuJSON from './side-menu-options.json'
+import sideMenuJSON from './side-menu-options-admin.json'
 import sideLogoutMenuJSON from './side-menu-logout.json'
 
 @Component({

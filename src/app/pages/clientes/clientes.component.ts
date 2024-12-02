@@ -31,9 +31,7 @@ export class ClientesComponent {
   }
 
   crearCliente(datos: any) {
-    const endpoint = 'ingresar-cliente';
-
-    this.apiService.createClient(datos, endpoint).subscribe({
+    this.apiService.createClient(datos).subscribe({
       next: (respuesta) => {
         console.log('Cliente creado exitosamente:', respuesta);
         this.successMessage = 'Cliente creado exitosamente!';

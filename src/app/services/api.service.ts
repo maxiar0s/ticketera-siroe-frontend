@@ -12,7 +12,18 @@ export class ApiService {
     private http: HttpClient
   ) {}
 
-  createClient(data: any, endpoint: string):Observable<any> {
+  login(data: any):Observable<any> {
+    const endpoint = 'login';
+    const url = `${this.url}/${endpoint}`
+    return this.http.post<any>(url, data)
+      .pipe(
+        catchError(this.handleError)
+      );
+  }
+
+
+  createClient(data: any):Observable<any> {
+    const endpoint = 'crear-cliente';
     const url = `${this.url}/${endpoint}`;
     return this.http.post<any>(url, data)
       .pipe(

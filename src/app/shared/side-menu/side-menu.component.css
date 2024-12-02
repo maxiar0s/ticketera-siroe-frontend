@@ -8,9 +8,10 @@
   flex-grow: 1;
   min-height: 100vh;
   padding-top: 25px;
-  /* border-right: 1px solid #e6eff5; */
+  border-right: 1px solid #e6eff5;
   display: flex;
   flex-direction: column;
+  width: 22rem;
 }
 
 .route-actived{
@@ -29,9 +30,16 @@
   align-items: center;
 }
 
-.flex-gap {
+.flex {
   display: flex;
   flex-direction: column;
+}
+
+.flex-top-menu {
+  gap: 0.5rem;
+}
+
+.flex-bottom-menu {
   gap: 3rem;
 }
 

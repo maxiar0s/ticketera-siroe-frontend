@@ -1,0 +1,41 @@
+[
+  {
+    "nombre": "Dashboard",
+    "ruta": "/dashboard",
+    "svg": "dashboard",
+    "subGrupo": []
+  },
+  {
+    "nombre": "Usuarios",
+    "ruta": "/usuarios",
+    "svg": "dashboard",
+    "subGrupo": []
+  },
+  {
+    "nombre": "Clientes",
+    "ruta": "/1234",
+    "svg": "dashboard",
+    "subGrupo": []
+  },
+  {
+    "nombre": "Equipos",
+    "ruta": "/123",
+    "svg": "dashboard",
+    "subGrupo": [
+      {
+      "nombre": "Tipos",
+      "ruta": "/"
+      },
+      {
+      "nombre": "Ver equipos",
+      "ruta": "/"
+      }
+    ]
+  },
+  {
+    "nombre": "Inventario",
+    "ruta": "/",
+    "svg": "dashboard",
+    "subGrupo": []
+  }
+]
