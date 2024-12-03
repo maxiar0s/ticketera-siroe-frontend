@@ -1,12 +1,15 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
+import { Sucursal } from '../../../interfaces/sucursal.interface';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'sucursal-header',
   standalone: true,
-  imports: [],
+  imports: [CommonModule],
   templateUrl: './header.component.html',
   styleUrl: './header.component.css'
 })
 export class HeaderComponent {
+  @Input() sucursal?: Sucursal;
 
 }

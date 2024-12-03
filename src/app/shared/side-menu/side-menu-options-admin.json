@@ -13,7 +13,7 @@
   },
   {
     "nombre": "Clientes",
-    "ruta": "/1234",
+    "ruta": "/clientes",
     "svg": "dashboard",
     "subGrupo": []
   },

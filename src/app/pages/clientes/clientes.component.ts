@@ -1,8 +1,10 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { CrearClienteComponent } from '../../shared/modal/crear-cliente/crear-cliente.component';
 import { ApiService } from '../../services/api.service';
+import { Cliente } from '../../interfaces/cliente.interface';
+import { SignalService } from '../../services/signal.service';
 
 @Component({
   selector: 'clientes',
@@ -12,9 +14,26 @@ import { ApiService } from '../../services/api.service';
   styleUrl: './clientes.component.css'
 })
 export class ClientesComponent {
+  public clients:Cliente[] = [];
+
   constructor(
-    private apiService: ApiService
+    private apiService: ApiService,
+    private signalService: SignalService
   ) {}
+
+  ngOnInit(): void {
+
+    this.signalService.updateData('Clientes');
+
+    this.apiService.clients().subscribe({
+      next: (respuesta) => {
+        this.clients = respuesta;
+      },
+      error: (error) => {
+        console.error('Error al crear cliente:', error);
+      }
+    })
+  }
 
   isModalVisible: boolean = false;
   successMessage: string = '';

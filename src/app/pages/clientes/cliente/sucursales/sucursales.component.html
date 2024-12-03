@@ -1,24 +1,24 @@
 <section class="sucursales">
-  <div *ngFor="let item of [1, 2, 3]" class="sucursal">
+  <div *ngFor="let sucursal of sucursales" class="sucursal">
     <!-- Estado Sucursal -->
     <div class="sucursal-campo sucursal-campo-estado">
       <h1 class="table-title">Estado</h1>
-      <div class="estado cerrado"></div>
+      <div [ngClass]="sucursal.habilitado ? 'estado abierto' : 'estado cerrado'"></div>
     </div>
     <!-- Nombre Sucursal -->
     <div class="sucursal-campo sucursal-campo-texto">
       <h1 class="table-title">Sucursal</h1>
-      <p>Colegio xxxx</p>
+      <p>{{ sucursal.sucursal }}</p>
     </div>
     <!-- Nombre Sucursal -->
     <div class="sucursal-campo sucursal-campo-texto">
       <h1 class="table-title">Dirección</h1>
-      <p>Av. Americo Vespucio 111 Macul</p>
+      <p>{{ sucursal.direccion }}</p>
     </div>
     <!-- Nombre Sucursal -->
     <div class="sucursal-campo sucursal-campo-texto">
       <h1 class="table-title">Fecha ingreso</h1>
-      <p>12/10/2024</p>
+      <p>{{ sucursal.fechaIngreso.toString() | formatoFecha }}</p>
     </div>
     <!-- Nombre Sucursal -->
     <div class="sucursal-campo sucursal-campo-texto">
@@ -26,7 +26,7 @@
       <p>50 equipos registrados</p>
     </div>
     <div class="div-button">
-      <a [routerLink]="['/sucursal']" routerLinkActive="router-link-active" class="button">Seleccionar sucursal</a>
+      <a [routerLink]="['/sucursal', sucursal.id]" routerLinkActive="router-link-active" class="button">Seleccionar sucursal</a>
     </div>
   </div>
 </section>

@@ -2,7 +2,8 @@ import { Component } from '@angular/core';
 import { HeaderComponent } from './header/header.component';
 import { OptionsComponent } from './options/options.component';
 import { SucursalesComponent } from './sucursales/sucursales.component';
-import { NavegationComponent } from '../../shared/navegation/navegation.component';
+import { NavegationComponent } from '../../../shared/navegation/navegation.component';
+import { SignalService } from '../../../services/signal.service';
 
 @Component({
   selector: 'cliente',
@@ -12,5 +13,6 @@ import { NavegationComponent } from '../../shared/navegation/navegation.componen
   styleUrl: './cliente.component.css'
 })
 export class ClienteComponent {
+
 
 }

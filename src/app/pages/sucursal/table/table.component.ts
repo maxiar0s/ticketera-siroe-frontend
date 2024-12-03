@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
+import { Sucursal } from '../../../interfaces/sucursal.interface';
 
 @Component({
   selector: 'sucursal-table',
@@ -10,4 +11,8 @@ import { Component } from '@angular/core';
 })
 export class TableComponent {
 
+
+  ngOnInit() {
+
+  }
 }

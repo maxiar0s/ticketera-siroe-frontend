@@ -17,14 +17,14 @@ export const routes: Routes = [
       loadComponent: () => import('./pages/dashboard/dashboard.component').then( m => m.DashboardComponent ),
     },
     {
-      path: 'dashboard/clientes',
+      path: 'clientes',
       canActivate: [protegerRutaGuard],
       loadComponent: () => import('./pages/clientes/clientes.component').then( m => m.ClientesComponent ),
     },
     {
-      path: 'cliente',
+      path: 'cliente/:id',
       canActivate: [protegerRutaGuard],
-      loadComponent: () => import('./pages/cliente/cliente.component').then( m => m.ClienteComponent ),
+      loadComponent: () => import('./pages/clientes/cliente/cliente.component').then( m => m.ClienteComponent ),
     },
     {
       path: 'sucursal',
@@ -32,7 +32,7 @@ export const routes: Routes = [
       loadComponent: () => import('./pages/sucursal/sucursal.component').then( m => m.SucursalComponent ),
     },
     {
-      path: 'cliente/:id/sucursal/:id',
+      path: 'sucursal/:id',
       canActivate: [protegerRutaGuard],
       loadComponent: () => import('./pages/sucursal/sucursal.component').then( m => m.SucursalComponent ),
     },

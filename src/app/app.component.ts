@@ -2,13 +2,12 @@ import { Component } from '@angular/core';
 import { RouterOutlet, Router, NavigationEnd } from '@angular/router';
 import { SideMenuComponent } from './shared/side-menu/side-menu.component';
 import { TopBarComponent } from './shared/top-bar/top-bar.component';
-import { ApiService } from './services/api.service';
 import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, SideMenuComponent, TopBarComponent, CommonModule ],
+  imports: [RouterOutlet, SideMenuComponent, TopBarComponent, CommonModule],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })
