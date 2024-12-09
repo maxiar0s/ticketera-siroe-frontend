@@ -23,6 +23,7 @@ export class SucursalesComponent {
   ) {  }
 
   ngOnInit() {
+    this.signalService.updateData('');
     this.route.params.subscribe(params => {
       const id = params['id']
       this.apiService.sucursales(id).subscribe({

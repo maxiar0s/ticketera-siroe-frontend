@@ -17,6 +17,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 })
 export class SucursalComponent {
   public sucursal?: Sucursal;
+  public headerText?: boolean;
+  public id: string = '';
 
   constructor(
     private apiService: ApiService,
@@ -30,9 +32,11 @@ export class SucursalComponent {
 
     this.route.params.subscribe(params => {
       const id = params['id']
+      this.id = id;
       this.apiService.sucursal(id).subscribe({
         next: (respuesta) => {
           this.sucursal = respuesta;
+          this.headerText = true;
         },
         error: (error) => {
           console.error('Error al obtener la sucursal', error);

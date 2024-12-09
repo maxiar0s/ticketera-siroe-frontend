@@ -4,7 +4,22 @@
     <h1 class="title">Mostrar listado de clientes</h1>
       <button (click)="abrirModal()" class="crear-cliente">Crear cliente</button>
   </div>
-  <div class="grid-clients">
+
+  <div class="la-ball-beat la-dark la-2x">
+    <div></div>
+    <div></div>
+    <div></div>
+  </div>
+
+  <ngx-spinner class="spinner"
+    bdColor="rgba(0, 0, 0, 0.2)"
+    size="medium"
+    color="#000000"
+    type="ball-scale-multiple"
+    [fullScreen]="false">
+  </ngx-spinner>
+
+  <div *ngIf="obtainedClients" class="grid-clients">
     <div *ngFor="let item of clients; let i = index" class="card-clients">
       <div class="card-header">
         <h1 class="card-title">{{item.razonSocial}}</h1>
@@ -23,9 +38,11 @@
         </div>
       </div>
     </div>
-
   </div>
+
+
 </div>
+
 <shared-crear-cliente class="form-crear-cliente"
 *ngIf="isModalVisible"
 (cerrarModal)="cerrarModal()"

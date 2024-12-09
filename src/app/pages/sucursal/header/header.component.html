@@ -1,5 +1,5 @@
 <div class="header-flex">
-  <h1 class="header-title">Farmacias Similares S.A. | Sucursal Maipú</h1>
+  <h1 *ngIf="headerText" class="header-title">{{ sucursal?.sucursal }} | {{ sucursal?.Cliente?.razonSocial }}</h1>
 
   <div class="information-grid">
     <div class="information-flex">

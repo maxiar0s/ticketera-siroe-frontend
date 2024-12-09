@@ -10,6 +10,7 @@ import { CommonModule } from '@angular/common';
   styleUrl: './header.component.css'
 })
 export class HeaderComponent {
+  @Input() headerText?: boolean = false;
   @Input() sucursal?: Sucursal;
 
 }

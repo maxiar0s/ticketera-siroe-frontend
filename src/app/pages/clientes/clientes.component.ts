@@ -5,16 +5,19 @@ import { CrearClienteComponent } from '../../shared/modal/crear-cliente/crear-cl
 import { ApiService } from '../../services/api.service';
 import { Cliente } from '../../interfaces/cliente.interface';
 import { SignalService } from '../../services/signal.service';
+import { NgxSpinnerModule } from "ngx-spinner";
+
 
 @Component({
   selector: 'clientes',
   standalone: true,
-  imports: [CommonModule, RouterModule, CrearClienteComponent],
+  imports: [CommonModule, RouterModule, CrearClienteComponent,     NgxSpinnerModule ],
   templateUrl: './clientes.component.html',
   styleUrl: './clientes.component.css'
 })
 export class ClientesComponent {
   public clients:Cliente[] = [];
+  public obtainedClients: boolean = false;
 
   constructor(
     private apiService: ApiService,
@@ -25,8 +28,10 @@ export class ClientesComponent {
 
     this.signalService.updateData('Clientes');
 
+
     this.apiService.clients().subscribe({
       next: (respuesta) => {
+        this.obtainedClients = true;
         this.clients = respuesta;
       },
       error: (error) => {

@@ -3,7 +3,6 @@ import { HeaderComponent } from './header/header.component';
 import { OptionsComponent } from './options/options.component';
 import { SucursalesComponent } from './sucursales/sucursales.component';
 import { NavegationComponent } from '../../../shared/navegation/navegation.component';
-import { SignalService } from '../../../services/signal.service';
 
 @Component({
   selector: 'cliente',

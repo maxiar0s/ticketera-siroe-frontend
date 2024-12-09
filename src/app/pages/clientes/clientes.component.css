@@ -120,3 +120,13 @@
   min-width: 100%;
   min-height: 100%;
 }
+
+.spinner {
+  width: 10rem;
+  height: 10rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #474747;
+  background-color: #718ebf;
+}
