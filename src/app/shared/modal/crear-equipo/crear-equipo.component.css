@@ -1,0 +1,123 @@
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background-color: #f7f6f6;
+  border-radius: 2rem;
+  width: 90%;
+  max-width: 50rem;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+  position: relative;
+}
+
+.modal-header {
+  border-top-left-radius: 2rem;
+  border-top-right-radius: 2rem;
+  display: flex;
+  background-color: #4f4e4e;
+  padding: 2rem;
+  justify-content: space-between;
+  color: #fefffe;
+  align-items: center;
+}
+
+.header-form {
+  font-size: 2rem;
+  text-align: left;
+}
+
+.modal-body {
+  padding: 2rem;
+}
+
+.description-form {
+  font-size: 1.3rem;
+  color: #718ebf;
+  margin: 0.8rem;
+}
+
+.close-button {
+  cursor: pointer;
+  max-width: 3rem;
+  min-width: 3rem;
+}
+
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.form-group input,
+.form-group select {
+  width: 100%;
+  padding: 1.3rem;
+  box-sizing: border-box;
+  border-radius: 1.5rem;
+  border: 1px solid #deebf2;
+}
+
+.form-group input::placeholder {
+  color: #718ebf;
+}
+
+.form-group select {
+  color: #718ebf;
+}
+
+.error {
+  color: red;
+  font-size: 1rem;
+  margin-top: 5px;
+}
+
+.error-message {
+  color: red;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+button {
+  padding: 1rem 1.5rem;
+  border-radius: 1rem;
+  cursor: pointer;
+}
+
+button[type="submit"] {
+  background-color: #4f4e4e;
+  color: #fff;
+}
+
+button:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+  border: 0;
+}
+
+.two-inputs {
+  display: flex;
+  gap: 1.5rem;
+}
+
+.full-width {
+  width: 50%;
+}

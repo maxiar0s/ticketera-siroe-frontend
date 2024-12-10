@@ -5,41 +5,32 @@
       <button (click)="abrirModal()" class="crear-cliente">Crear cliente</button>
   </div>
 
-  <div class="la-ball-beat la-dark la-2x">
-    <div></div>
-    <div></div>
-    <div></div>
-  </div>
+  <div class="div-spinner-clients">
+    <!-- Loader mientras se carga informacion -->
+    <shared-loader></shared-loader>
 
-  <ngx-spinner class="spinner"
-    bdColor="rgba(0, 0, 0, 0.2)"
-    size="medium"
-    color="#000000"
-    type="ball-scale-multiple"
-    [fullScreen]="false">
-  </ngx-spinner>
-
-  <div *ngIf="obtainedClients" class="grid-clients">
-    <div *ngFor="let item of clients; let i = index" class="card-clients">
-      <div class="card-header">
-        <h1 class="card-title">{{item.razonSocial}}</h1>
-      </div>
-      <div class="card-body">
-        <div class="card-body-flex">
-          <div class="card-body-photo"></div>
-          <div class="card-body-information">
-            <p>Razón social: <span>{{item.razonSocial}}</span></p>
-            <p>RUT: <span>{{item.rut}}</span></p>
-            <p>Encargado General: <span>{{item.encargadoGeneral}}</span></p>
-            <p>Correo: <span>{{item.correo}}</span></p>
-            <p>Teléfono Encargado: <span>{{item.telefonoEncargado}}</span></p>
-            <a [routerLink]="['/cliente', item.id]" routerLinkActive="router-link-active" class="card-body-button">Seleccionar cliente</a>
+    <!-- Resultados de clientes obtenidos -->
+    <div *ngIf="obtainedClients" class="grid-clients">
+      <div *ngFor="let item of clients; let i = index" class="card-clients">
+        <div class="card-header">
+          <h1 class="card-title">{{item.razonSocial}}</h1>
+        </div>
+        <div class="card-body">
+          <div class="card-body-flex">
+            <div class="card-body-photo"></div>
+            <div class="card-body-information">
+              <p>Razón social: <span>{{item.razonSocial}}</span></p>
+              <p>RUT: <span>{{item.rut}}</span></p>
+              <p>Encargado General: <span>{{item.encargadoGeneral}}</span></p>
+              <p>Correo: <span>{{item.correo}}</span></p>
+              <p>Teléfono Encargado: <span>{{item.telefonoEncargado}}</span></p>
+              <a [routerLink]="['/cliente', item.id]" routerLinkActive="router-link-active" class="card-body-button">Seleccionar cliente</a>
+            </div>
           </div>
         </div>
       </div>
     </div>
   </div>
-
 
 </div>
 

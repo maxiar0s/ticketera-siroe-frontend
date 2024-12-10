@@ -2,13 +2,13 @@ import { Component } from '@angular/core';
 import { LoaderService } from '../../services/loader.service';
 
 @Component({
-  selector: 'shared-loader',
+  selector: 'shared-loader-modal',
   standalone: true,
   imports: [],
-  templateUrl: './loader.component.html',
-  styleUrl: './loader.component.css'
+  templateUrl: './loader-modal.component.html',
+  styleUrl: './loader-modal.component.css'
 })
-export class LoaderComponent {
+export class LoaderModalComponent {
   constructor(
     public loaderService: LoaderService
   ) {}

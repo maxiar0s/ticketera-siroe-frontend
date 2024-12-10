@@ -3,6 +3,12 @@
   <div class="">
     <button class="options option-imprimir">Imprimir etiqueta</button>
     <button class="options options-datos margin">Importar datos</button>
-    <button class="options options-datos">Añadir equipos</button>
+    <button (click)="abrirModal()" class="options options-datos">Añadir equipos</button>
   </div>
 </div>
+
+<shared-crear-equipo class="form-crear-cliente"
+*ngIf="isModalVisible"
+(cerrarModal)="cerrarModal()"
+(enviarFormulario)="crearEquipos($event)"
+></shared-crear-equipo>

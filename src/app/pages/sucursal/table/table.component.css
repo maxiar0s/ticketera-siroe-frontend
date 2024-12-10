@@ -1,3 +1,8 @@
+.div-loader-equipments {
+  position: relative;
+  min-height: 57vh;
+}
+
 .div-table {
   background-color: #f7f7f7;
   padding: 0.5rem;

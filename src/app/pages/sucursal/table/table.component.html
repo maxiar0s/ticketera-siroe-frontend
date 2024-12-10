@@ -1,40 +1,45 @@
-<div class="div-table">
-  <div class="label-input">
-    <label class="select-all" for="selectAll"><input type="checkbox" id="selectAll">Seleccionar todas</label>
-  </div>
-  <table class="table">
-    <thead>
-        <tr>
-          <th></th>
-          <th class="text-align-center">Estado</th>
-          <th class="text-align-left">Código ID</th>
-          <th class="text-align-left">Tipo equipo</th>
-          <th class="text-align-left">Fecha de ingreso</th>
-          <th class="text-align-left">Departamento</th>
-          <th class="text-align-left">Usuario</th>
-          <th class="text-align-center">Acciones</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr *ngFor="let equipo of equipos">
-            <td class="information-checkbox information-value"><input type="checkbox"> 1.</td>
-            <td class="information-value"><div class="estado cerrado"></div></td>
-            <!-- <td class="information-value">SIROADMIN001</td>
-            <td class="information-value">Notebook</td>
-            <td class="information-value">22/11/2024</td>
-            <td class="information-value">Administración</td>
-            <td class="information-value">Pablo Lopez</td> -->
-            <td class="information-value">{{ equipo.codigoId }}</td>
-            <td class="information-value">{{ equipo.tipo }}</td>
-            <td class="information-value">{{ equipo.fechaIngreso }}</td>
-            <td class="information-value">{{ equipo.departamento }}</td>
-            <td class="information-value">{{ equipo.usuario }}</td>
+<div class="div-loader-equipments">
+  <shared-loader></shared-loader>
+  <div *ngIf="obtainedEquipments" class="div-table">
+    <div class="label-input">
+      <label class="select-all" for="selectAll"><input type="checkbox" id="selectAll">Seleccionar todas</label>
+    </div>
+    <table class="table">
+      <thead>
+          <tr>
+            <th></th>
+            <th class="text-align-center">Estado</th>
+            <th class="text-align-left">Código ID</th>
+            <th class="text-align-left">Tipo equipo</th>
+            <th class="text-align-left">Fecha de ingreso</th>
+            <th class="text-align-left">Departamento</th>
+            <th class="text-align-left">Usuario</th>
+            <th class="text-align-center">Acciones</th>
+          </tr>
+      </thead>
+      <tbody>
+          <tr *ngFor="let equipo of equipos">
+              <td class="information-checkbox information-value"><input type="checkbox"> 1.</td>
+              <td class="information-value"><div class="estado cerrado"></div></td>
+              <td class="information-value">{{ equipo.codigoId }}</td>
+              <td class="information-value">{{ equipo.tipo }}</td>
+              <td class="information-value">{{ equipo.fechaIngreso }}</td>
+              <td class="information-value">{{ equipo.departamento }}</td>
+              <td class="information-value">{{ equipo.usuario }}</td>
 
-            <td class="information-value information-actions">
-                <button class="actions">Añadir datos</button>
-                <button class="actions">Ver datos</button>
-            </td>
-        </tr>
-    </tbody>
-  </table>
+              <td class="information-value information-actions">
+                  <button (click)="abrirModal(equipo.id)" class="actions">Añadir datos</button>
+                  <button class="actions">Ver datos</button>
+              </td>
+          </tr>
+      </tbody>
+    </table>
+  </div>
 </div>
+
+<shared-modificar-equipo class="form-crear-cliente"
+*ngIf="isModalVisible"
+[idEquipo]="selectedEquipoId"
+(enviarFormulario)="modificarEquipo($event)"
+(cerrarModal)="cerrarModal()"
+></shared-modificar-equipo>

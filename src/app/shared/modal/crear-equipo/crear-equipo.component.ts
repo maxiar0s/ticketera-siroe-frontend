@@ -1,0 +1,65 @@
+import { CommonModule } from '@angular/common';
+import { Component, EventEmitter, Output } from '@angular/core';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import crearEquipoJSON from './crear-equipo.json';
+import { ActivatedRoute, ParamMap } from '@angular/router';
+
+@Component({
+  selector: 'shared-crear-equipo',
+  standalone: true,
+  imports: [ReactiveFormsModule, CommonModule],
+  templateUrl: './crear-equipo.component.html',
+  styleUrl: './crear-equipo.component.css'
+})
+export class CrearEquipoComponent {
+  @Output() cerrarModal = new EventEmitter<void>();
+  @Output() enviarFormulario = new EventEmitter<any>();
+
+  public equipos = crearEquipoJSON;
+
+  public isVisible: boolean = true;
+  public equipoForm: FormGroup;
+  public errorMessage: string = '';
+  public id: string | null = null;
+
+  constructor(
+    private fb: FormBuilder,
+    private route: ActivatedRoute
+  ) {
+    this.equipoForm = this.fb.group({
+      sucursalId: ['', Validators.required],
+      departamento: ['', Validators.required],
+      cantidad: ['', [Validators.required, Validators.min(1)]],
+      tipo: ['', Validators.required],
+    });
+  }
+
+  ngOnInit() {
+    this.route.paramMap.subscribe((params: ParamMap) => {
+      this.id = params.get('id');
+      this.equipoForm.patchValue({
+        sucursalId: this.id
+      });
+    });
+  }
+
+  abrirModal() {
+    this.isVisible = true;
+  }
+
+  cerrar() {
+    this.isVisible = false;
+    this.equipoForm.reset();
+    this.errorMessage = '';
+    this.cerrarModal.emit();
+  }
+
+  onSubmit() {
+    if (this.equipoForm.valid) {
+      this.enviarFormulario.emit(this.equipoForm.value);
+      this.cerrar();
+    } else {
+      this.errorMessage = 'Por favor, completa todos los campos requeridos correctamente.';
+    }
+  }
+}

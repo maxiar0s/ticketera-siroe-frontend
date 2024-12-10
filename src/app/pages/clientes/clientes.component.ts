@@ -5,13 +5,13 @@ import { CrearClienteComponent } from '../../shared/modal/crear-cliente/crear-cl
 import { ApiService } from '../../services/api.service';
 import { Cliente } from '../../interfaces/cliente.interface';
 import { SignalService } from '../../services/signal.service';
-import { NgxSpinnerModule } from "ngx-spinner";
-
+import { LoaderComponent } from '../../shared/loader/loader.component';
+import { LoaderService } from '../../services/loader.service';
 
 @Component({
   selector: 'clientes',
   standalone: true,
-  imports: [CommonModule, RouterModule, CrearClienteComponent,     NgxSpinnerModule ],
+  imports: [CommonModule, RouterModule, CrearClienteComponent, LoaderComponent],
   templateUrl: './clientes.component.html',
   styleUrl: './clientes.component.css'
 })
@@ -19,30 +19,31 @@ export class ClientesComponent {
   public clients:Cliente[] = [];
   public obtainedClients: boolean = false;
 
+  public isModalVisible: boolean = false;
+  public successMessage: string = '';
+  public errorMessage: string = '';
+
   constructor(
     private apiService: ApiService,
-    private signalService: SignalService
+    private signalService: SignalService,
+    public loaderService: LoaderService
   ) {}
 
   ngOnInit(): void {
-
+    this.loaderService.showSection();
     this.signalService.updateData('Clientes');
-
 
     this.apiService.clients().subscribe({
       next: (respuesta) => {
-        this.obtainedClients = true;
+        this.loaderService.hideSection();
         this.clients = respuesta;
+        this.obtainedClients = true;
       },
       error: (error) => {
         console.error('Error al crear cliente:', error);
       }
     })
   }
-
-  isModalVisible: boolean = false;
-  successMessage: string = '';
-  errorMessage: string = '';
 
   abrirModal() {
     this.isModalVisible = true;

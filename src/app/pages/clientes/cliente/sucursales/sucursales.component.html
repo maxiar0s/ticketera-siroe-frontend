@@ -1,4 +1,4 @@
-<section class="sucursales">
+<section *ngIf="obtainedSucursales" class="sucursales">
   <div *ngFor="let sucursal of sucursales" class="sucursal">
     <!-- Estado Sucursal -->
     <div class="sucursal-campo sucursal-campo-estado">

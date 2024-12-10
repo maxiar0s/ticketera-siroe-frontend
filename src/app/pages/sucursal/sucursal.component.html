@@ -1,6 +1,6 @@
 <div class="sucursal">
   <sucursal-header [sucursal]="sucursal" [headerText]="headerText"></sucursal-header>
   <sucursal-options></sucursal-options>
-  <sucursal-table [id]="id"></sucursal-table>
-  <shared-navegation></shared-navegation>
+  <sucursal-table (hideNavegation)="hideNav($event)" [id]="id"></sucursal-table>
+  <shared-navegation *ngIf="hideNavegation"></shared-navegation>
 </div>

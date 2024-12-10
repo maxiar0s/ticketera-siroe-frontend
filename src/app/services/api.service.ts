@@ -27,6 +27,17 @@ export class ApiService {
     return this.postInformation(data, endpoint);
   }
 
+  createEquiptment(data: any):Observable<any> {
+    const endpoint = 'ingresar-equipo';
+    return this.postInformation(data, endpoint);
+  }
+
+  modifyEquiptment(data:any):Observable<any> {
+    const { id } = data;
+    const endpoint = 'modificar-equipo/' + id;
+    return this.postInformation(data, endpoint);
+  }
+
   // GET
   clients():Observable<any> {
     const endpoint = 'clientes';
@@ -53,6 +64,11 @@ export class ApiService {
     return this.getInformation(endpoint);
   }
 
+  equiptment(id: number):Observable<any> {
+    const endpoint = `equipo/`+ id;
+    return this.getInformation(endpoint);
+  }
+
   // METHOD GET
   getInformation(endpoint: string) {
     const url = `${this.url}/${endpoint}`;
@@ -64,6 +80,7 @@ export class ApiService {
 
   // METHOD POST
   postInformation(data: any, endpoint: string) {
+    console.log(data)
     const url = `${this.url}/${endpoint}`;
     return this.http.post<any>(url, data)
       .pipe(

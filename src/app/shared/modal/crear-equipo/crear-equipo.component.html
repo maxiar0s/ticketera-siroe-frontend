@@ -1,0 +1,68 @@
+<!-- src/app/modal-form/modal-form.component.html -->
+<div class="modal-overlay" *ngIf="isVisible">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2 class="header-form">Añadir Equipo</h2>
+      <!-- <span class="close-button" (click)="cerrar()">&times;</span> -->
+      <img src="/assets/svg/exit-button.svg" (click)="cerrar()" alt="exit_button" class="close-button">
+    </div>
+    <div class="modal-body">
+      <p class="description-form">Asigna un código único para identificar y registrar equipos en el sistema.</p>
+      <form [formGroup]="equipoForm" (ngSubmit)="onSubmit()">
+        <input type="hidden" [value]="id" formControlName="sucursalId">
+        <div class="two-inputs">
+          <!-- Campo Departamento -->
+          <div class="form-group full-width">
+            <label for="departamento">Departamento de equipos</label>
+            <select id="departamentoSelect" class="full-width" id="departamento" formControlName="departamento">
+              <option value="" disabled selected>Seleccionar</option>
+              <option value="Recursos Humanos">Recursos Humanos</option>
+              <option value="Informática">Informática</option>
+              <option value="Marketing y ventas">Marketing y ventas</option>
+              <option value="Finanzas">Finanzas</option>
+              <option value="Producción">Producción</option>
+              <option value="Investigación">Investigación</option>
+              <option value="Servicio al Cliente">Servicio al Cliente</option>
+            </select>
+            <div *ngIf="equipoForm.get('departamento')?.invalid && equipoForm.get('departamento')?.touched" class="error">
+              Seleccione un departamento.
+            </div>
+          </div>
+
+          <!-- Campo cantidad -->
+          <div class="form-group">
+            <label for="cantidad">Añadir cantidad de equipos</label>
+            <input class="full-width" id="razonSocial" formControlName="cantidad" type="number" placeholder="Ingrese la cantidad"/>
+            <div *ngIf="equipoForm.get('cantidad')?.invalid && equipoForm.get('cantidad')?.touched" class="error">
+              Cantidad invalida.
+            </div>
+          </div>
+        </div>
+
+        <!-- Campo tipo -->
+        <div class="form-group">
+          <label for="tipo">Tipo de equipo</label>
+          <select id="tipo" formControlName="tipo">
+            <option value="" disabled selected>Seleccionar</option>
+            @for(equipo of equipos; track equipo) {
+              <option [value]="equipo.tipo">{{ equipo.tipo }}</option>
+            }
+          </select>
+          <div *ngIf="equipoForm.get('tipo')?.invalid && equipoForm.get('tipo')?.touched" class="error">
+            Seleccione tipo de equipo.
+          </div>
+        </div>
+
+        <!-- Mensaje de Error -->
+        <div *ngIf="errorMessage" class="error-message">
+          {{ errorMessage }}
+        </div>
+
+        <!-- Botones -->
+        <div class="form-actions">
+          <button type="submit" [disabled]="equipoForm.invalid">Crear etiquetas</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

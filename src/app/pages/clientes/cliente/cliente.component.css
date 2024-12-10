@@ -3,4 +3,16 @@
   flex-direction: column;
   gap: 2rem;
   padding: 3.5rem;
+  height: auto;
+  width: 100%;
+}
+
+.div-loader {
+  position: relative;
+  min-height: 63vh;
+}
+
+.div-loader-sucursales {
+  height: 100%;
+  width: 100%;
 }

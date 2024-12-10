@@ -1,9 +1,9 @@
 .clients {
-  position: relative;
   display: flex;
   flex-direction: column;
   gap: 2rem;
   padding: 3rem;
+  min-height: 75vh;
 }
 
 .title {
@@ -121,12 +121,7 @@
   min-height: 100%;
 }
 
-.spinner {
-  width: 10rem;
-  height: 10rem;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  color: #474747;
-  background-color: #718ebf;
+.div-spinner-clients {
+  position: relative;
+  height: 75vh;
 }
