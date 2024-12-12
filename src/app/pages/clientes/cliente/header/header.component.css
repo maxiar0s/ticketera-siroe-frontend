@@ -1,3 +1,7 @@
+p {
+  margin: 0;
+}
+
 .flex {
   display: flex;
   align-items: center;
@@ -12,14 +16,6 @@
 .flex-filter-options {
   display: flex;
   gap: 2.5rem;
-}
-
-.flex-search {
-  display: flex;
-  align-items: center;
-  background-color: #f5f7fa;
-  border-radius: 25px;
-  gap: 1.5rem;
 }
 
 .flex-select-search {
@@ -41,10 +37,6 @@
 
 .search {
   all: unset;
-}
-
-.input {
-  padding: 0.8rem 2rem;
 }
 
 .search::placeholder {

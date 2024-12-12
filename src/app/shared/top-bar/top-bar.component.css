@@ -21,19 +21,56 @@ input {
   all: unset;
 }
 
+.svg_option {
+  background-color: #fefffe;
+  padding: 1rem;
+  border-radius: 25px;
+}
+
 .svg {
+  min-height: 2rem;
   max-height: 2.5rem;
 }
 
 .title {
   position: absolute;
   font-size: 35px;
-  color: #4F4F4F;
+  color: #222223;
 }
 
 .user {
   background-color: #4F4F4F;
-  height: 50px;
-  width: 50px;
+  height: 5rem;
+  width: 5rem;
   border-radius: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #b71752;
+}
+
+.user-text {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0;
+  line-height: 0;
+  color: #fefffe;
+}
+
+.search-bar {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background-color: #fefffe;
+  border-radius: 25px;
+}
+.search-bar label {
+  padding: 1rem 0 1rem 2rem;
+}
+.search-bar input {
+  padding: 1rem 7rem 1rem 0;
+}
+.search-bar input::placeholder {
+  color: #d8d9d8;
 }

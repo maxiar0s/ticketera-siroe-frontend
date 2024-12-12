@@ -1,14 +1,14 @@
 [
   {
     "nombre": "Configuración",
-    "ruta": "/",
-    "svg": "dashboard",
+    "ruta": "/opciones",
+    "svg": "configuracion-sidemenu",
     "subGrupo": []
   },
   {
     "nombre": "Cerrar sesión",
-    "ruta": "/",
-    "svg": "dashboard",
+    "ruta": "/logout",
+    "svg": "cerrar-sesion",
     "subGrupo": []
   }
 ]

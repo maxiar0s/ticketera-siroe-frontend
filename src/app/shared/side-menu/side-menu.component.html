@@ -8,14 +8,14 @@
 
   <div class="flex-menu open-300">
 
-    <div class="flex flex-top-menu">
+    <div class="flex">
       <!-- Item Sidebar -->
       <div *ngFor="let item of sideMenuJSON;">
 
-        <div class="left-div-center" [ngClass]="{'active': currentGroup == item.ruta}">
+        <div class="left-div-center" [ngClass]="{'active background-color text-color': currentGroup == item.ruta}">
           <div class="route-actived"></div>
           <a [routerLink]="[item.ruta]" [ngClass]="{'open': activeGroup(item.ruta)}" (click)="routeActive($event, item.ruta)" routerLinkActive="router-link-active" class="a-routerlink">
-            <img [src]="'/assets/svg/'+item.svg+'.svg'" [alt]="item.svg+'_SVG'" class="menu-svg">
+            <img [src]="'/assets/svg/'+item.svg+(currentGroup.includes(item.ruta) ? '-routed' : '')+'.svg'" [alt]="item.svg+'_SVG'" class="menu-svg">
             <p class="a-color">{{ item.nombre }}</p>
           </a>
         </div>
@@ -31,17 +31,19 @@
       </div>
     </div>
 
-
-    <div class="flex flex-bottom-menu">
-      <div *ngFor="let item of sideLogoutMenuJSON; let i = index" class="left-div-center">
-        <!-- Logout Sidebar -->
-        <div class="route-actived"></div>
-        <a [routerLink]="[item.ruta]" routerLinkActive="router-link-active" class="a-routerlink">
-          <img [src]="'/assets/svg/'+item.svg+'.svg'" [alt]="item.svg+'_SVG'" class="menu-svg">
-          <a class="a-color">{{ item.nombre }}</a>
-        </a>
+    <div class="flex">
+      <div *ngFor="let item of sideLogoutMenuJSON; let i = index">
+        <div class="left-div-center" [ngClass]="{'active background-color text-color': currentGroup == item.ruta}">
+          <!-- Logout Sidebar -->
+          <div class="route-actived"></div>
+          <a [routerLink]="[item.ruta]" [ngClass]="{'open': activeGroup(item.ruta)}" (click)="routeActive($event, item.ruta)" routerLinkActive="router-link-active" class="a-routerlink">
+            <img [src]="'/assets/svg/'+item.svg+(currentGroup.includes(item.ruta) ? '-routed' : '')+'.svg'" [alt]="item.svg+'_SVG'" class="menu-svg">
+            <a class="a-color">{{ item.nombre }}</a>
+          </a>
+        </div>
       </div>
     </div>
+
 
   </div>
 </div>

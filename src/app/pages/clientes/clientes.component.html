@@ -1,9 +1,9 @@
 
 <div class="clients">
-  <div class="div-header">
+  <!-- <div class="div-header">
     <h1 class="title">Mostrar listado de clientes</h1>
       <button (click)="abrirModal()" class="crear-cliente">Crear cliente</button>
-  </div>
+  </div> -->
 
   <div class="div-spinner-clients">
     <!-- Loader mientras se carga informacion -->
@@ -12,23 +12,29 @@
     <!-- Resultados de clientes obtenidos -->
     <div *ngIf="obtainedClients" class="grid-clients">
       <div *ngFor="let item of clients; let i = index" class="card-clients">
-        <div class="card-header">
-          <h1 class="card-title">{{item.razonSocial}}</h1>
-        </div>
         <div class="card-body">
-          <div class="card-body-flex">
+          <div class="card-body-grid">
             <div class="card-body-photo"></div>
             <div class="card-body-information">
-              <p>Razón social: <span>{{item.razonSocial}}</span></p>
-              <p>RUT: <span>{{item.rut}}</span></p>
-              <p>Encargado General: <span>{{item.encargadoGeneral}}</span></p>
-              <p>Correo: <span>{{item.correo}}</span></p>
-              <p>Teléfono Encargado: <span>{{item.telefonoEncargado}}</span></p>
-              <a [routerLink]="['/cliente', item.id]" routerLinkActive="router-link-active" class="card-body-button">Seleccionar cliente</a>
+              <div class="information">
+                <p>Razón social: <span>{{item.razonSocial}}</span></p>
+                <p>Encargado General: <span>{{item.encargadoGeneral}}</span></p>
+                <p>Correo: <span>{{item.correo}}</span></p>
+              </div>
+              <div></div>
+              <div class="information">
+                <p>RUT Cliente: <span>{{item.rut}}</span></p>
+                <p>ID Cliente: <span>{{item.rut}}</span></p>
+                <p>Teléfono: <span>{{item.telefonoEncargado}}</span></p>
+              </div>
             </div>
+            <a [routerLink]="['/cliente', item.id]" routerLinkActive="router-link-active" class="button">Seleccionar cliente</a>
           </div>
         </div>
       </div>
+    </div>
+    <div class="navegation-section">
+      <shared-navegation></shared-navegation>
     </div>
   </div>
 

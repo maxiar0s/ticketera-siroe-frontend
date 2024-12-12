@@ -22,11 +22,16 @@ export class ModificarEquipoComponent {
   });
   // Llaves de los tipos de equipo
   tiposEquipo: string[] = Object.keys(EquipoFormConfig);
+  // Espera para cargar el titulo del modal
   public headerCharged: boolean = false;
+  // Obtiene el ID del equipo
   @Input() idEquipo!: number;
+  // Control del modal
   @Output() cerrarModal = new EventEmitter<void>();
   @Output() enviarFormulario = new EventEmitter<any>();
+  // Equipo opcional en caso de si existe ID
   public equipo?: Equipo;
+  // Tipo del equipo
   public tipoEquipoActual: string = '';
   public camposDinamicos: EquipoFormField[] = [];
 
@@ -51,7 +56,7 @@ export class ModificarEquipoComponent {
 
         this.headerCharged = true;
         this.tipoEquipoActual = respuesta.tipo;
-
+        console.log(this.tipoEquipoActual)
         this.actualizarCamposDinamicos(this.tipoEquipoActual);
 
         this.camposDinamicos.forEach(campo => {

@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { CrearClienteComponent } from '../../shared/modal/crear-cliente/crear-cliente.component';
 import { ApiService } from '../../services/api.service';
@@ -7,11 +7,12 @@ import { Cliente } from '../../interfaces/cliente.interface';
 import { SignalService } from '../../services/signal.service';
 import { LoaderComponent } from '../../shared/loader/loader.component';
 import { LoaderService } from '../../services/loader.service';
+import { NavegationComponent } from "../../shared/navegation/navegation.component";
 
 @Component({
   selector: 'clientes',
   standalone: true,
-  imports: [CommonModule, RouterModule, CrearClienteComponent, LoaderComponent],
+  imports: [CommonModule, RouterModule, CrearClienteComponent, LoaderComponent, NavegationComponent, NavegationComponent],
   templateUrl: './clientes.component.html',
   styleUrl: './clientes.component.css'
 })

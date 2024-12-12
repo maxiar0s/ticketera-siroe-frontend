@@ -10,7 +10,7 @@ export const EquipoFormConfig: { [key: string]: EquipoFormField[] } = {
     { name: 'observaciones', label: 'Observaciones', type: 'textarea' }
   ],
   "Celular": [
-    { name: "marca", label: "Marca", type: "text", placeholder: "Ej: Samsung", validators: ["Validators.required"] },
+    { name: "marca", label: "Marca", type: "text", placeholder: "Ej: Samsung", validators: [Validators.required] },
     { name: "modelo", label: "Modelo", type: "text", placeholder: "Ej: Galaxy S24" },
     { name: "procesador", label: "Procesador", type: "text", placeholder: "Ej: Snapdragon 8 Gen 2" },
     { name: "velocidadProcesador", label: "Velocidad del Procesador (GHz)", type: "text", placeholder: "Ej: 3.2" },

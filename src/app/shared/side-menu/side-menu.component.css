@@ -1,3 +1,7 @@
+p {
+  margin: 0;
+}
+
 .logo {
   height: 10rem;
   margin: 0 auto 4rem auto;
@@ -19,28 +23,29 @@
   position: absolute;
   width: 6px;
   color: white;
-  height: 50px;
-  background-color: #4f4f4f;
+  height: 5rem;
+  background-color: #b71752;
   border-top-right-radius: 15px;
   border-bottom-right-radius: 15px;
+}
+
+.background-color {
+  background-color: #f8e2ea;
+}
+
+.text-color a {
+  color: #b71752;
 }
 
 .left-div-center {
   display: flex;
   align-items: center;
+  min-height: 5rem;
 }
 
 .flex {
   display: flex;
   flex-direction: column;
-}
-
-.flex-top-menu {
-  gap: 0.5rem;
-}
-
-.flex-bottom-menu {
-  gap: 3rem;
 }
 
 .left-div-end {
@@ -73,11 +78,11 @@
 
 .menu-svg {
   max-height: 25px;
-  color: #4F4F4F;
+  fill: #b71752;
 }
 
 .a-color {
-  color: #4F4F4F;
+  color: #b6b7b7;
 }
 
 .subItem-nav{

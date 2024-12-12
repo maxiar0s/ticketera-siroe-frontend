@@ -1,21 +1,23 @@
 <div class="flex">
   <h1 class="title">{{ title() }}</h1>
   <div class="flex-search">
-    <div style="display: flex; align-items: center; gap: 1rem; margin-right: 4rem;">
+    <div class="search-bar">
       <label for="search">
-        <img src="../../../assets/svg/search.svg" alt="search_SVG" class="svg">
+        <img src="/assets/svg/search.svg" alt="search_SVG" class="svg">
       </label>
-      <input type="text" class="" placeholder="Search for something" name="search" id="search">
+      <input type="text" class="" placeholder="Escribe para buscar..." name="search" id="search">
     </div>
-    <a [routerLink]="['/opciones']" routerLinkActive="router-link-active">
-      <img src="../../../assets/svg/settings.svg" alt="" class="svg">
+    <a [routerLink]="['/opciones']" routerLinkActive="router-link-active" class="svg_option">
+      <img src="/assets/svg/settings.svg" alt="" class="svg">
     </a>
-    <a [routerLink]="['/']" routerLinkActive="router-link-active">
-      <img src="../../../assets/svg/notifications.svg" alt="" class="svg">
+    <a class="svg-options" [routerLink]="['/']" routerLinkActive="router-link-active" class="svg_option">
+      <img src="/assets/svg/notification.svg" alt="" class="svg">
     </a>
     <div>
       <a [routerLink]="['/perfil']" routerLinkActive="router-link-active">
-        <div class="user"></div>
+        <div class="user">
+          <p class="user-text">JM</p>
+        </div>
       </a>
     </div>
   </div>

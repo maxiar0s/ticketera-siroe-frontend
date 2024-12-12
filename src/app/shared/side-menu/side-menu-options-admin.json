@@ -6,21 +6,15 @@
     "subGrupo": []
   },
   {
-    "nombre": "Usuarios",
-    "ruta": "/usuarios",
-    "svg": "dashboard",
-    "subGrupo": []
-  },
-  {
     "nombre": "Clientes",
     "ruta": "/clientes",
-    "svg": "dashboard",
+    "svg": "clientes",
     "subGrupo": []
   },
   {
     "nombre": "Equipos",
-    "ruta": "/123",
-    "svg": "dashboard",
+    "ruta": "/equipos",
+    "svg": "equipos",
     "subGrupo": [
       {
       "nombre": "Tipos",
@@ -34,8 +28,8 @@
   },
   {
     "nombre": "Inventario",
-    "ruta": "/",
-    "svg": "dashboard",
+    "ruta": "/inventario",
+    "svg": "inventario",
     "subGrupo": []
   }
 ]

@@ -62,6 +62,5 @@ export class SucursalComponent {
 
   hideNav(value: boolean) {
     this.hideNavegation = value;
-    console.log(this.hideNavegation)
   }
 }

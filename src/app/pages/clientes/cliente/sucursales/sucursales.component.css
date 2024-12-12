@@ -25,7 +25,7 @@
 }
 
 .sucursal-campo h1 {
-  font-weight: 500;
+  font-weight: 600;
 }
 
 .sucursal-campo-estado {
@@ -38,7 +38,7 @@
 
 .sucursal-campo p {
   margin: 0;
-  color: #718ebf;
+  color: #be709b;
 }
 
 .table-title {
@@ -65,13 +65,16 @@
 }
 
 .button {
-  padding: 0.5rem 2rem;
-  border: 1px solid #718ebf;
+  padding: 0.75rem 2rem;
+  border: 1px solid #4e4f4e;
   text-align: center;
   margin-top: 0.8rem;
   border-radius: 25px;
-  color: #718ebf;
+  color: #4e4f4e;
+  transition: 350ms;
 }
 .button:hover {
  cursor: pointer;
+ background-color: #b71752;
+ color: #f7f7f7;
 }

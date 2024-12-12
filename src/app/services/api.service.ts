@@ -6,7 +6,8 @@ import { catchError, Observable, throwError } from 'rxjs';
   providedIn: 'root'
 })
 export class ApiService {
-  private url = "https://app-soporte-siroe.vercel.app";
+  // private url = "https://app-soporte-siroe.vercel.app";
+  private url = "http://localhost:3000";
 
   constructor(
     private http: HttpClient,
@@ -41,6 +42,11 @@ export class ApiService {
   // GET
   clients():Observable<any> {
     const endpoint = 'clientes';
+    return this.getInformation(endpoint);
+  }
+
+  client(id: string):Observable<any> {
+    const endpoint = 'cliente/'+id;
     return this.getInformation(endpoint);
   }
 

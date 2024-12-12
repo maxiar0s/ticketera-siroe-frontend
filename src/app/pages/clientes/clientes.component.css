@@ -13,7 +13,7 @@
 
 .grid-clients {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(1, 1fr);
   grid-template-rows: auto;
   gap: 3rem;
 }
@@ -22,70 +22,62 @@
   position: relative;
 }
 
-.card-header {
-  position: absolute;
-  width: 100%;
-  background-color: #4f4f4f;
-  text-align: center;
-  padding: 1rem 0;
-  max-height: 4rem;
-  min-height: 4rem;
-  border-radius: 25px;
-}
-
-.card-title {
-  font-size: 15px;
-  color: #ffffff;
-  font-weight: 400;
-}
-
 .card-body {
-  margin-top: 2rem;
   background-color: #f7f7f7;
-  padding: 3rem 1.5rem 1.5rem 1.5rem;
+  padding: 3rem;
+  border-radius: 15px;
+  border: 1px solid #ebebea;
 }
 
-.card-body-flex {
+.card-body-grid {
   width: 100%;
-  display: flex;
-  gap: 1rem;
-  align-items: start;
+  display: grid;
+  grid-template-columns: 15% 65% 20%;
 }
 
 .card-body-photo {
-  width: 25%;
-  height: 95px;
+  width: 100px;
+  height: 100px;
+  margin: auto;
   border-radius: 50%;
   background-color: #d9d9d9;
 }
 
 .card-body-information {
   width: 100%;
-  color: #718ebf;
-  display: flex;
-  flex-direction: column;
+  color: #474747;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+}
 
+.information {
+  display: flex;
+  gap: 1.5rem;
+  flex-direction: column;
+  margin: auto 0;
 }
 
 .card-body-information p {
   margin: 0;
-  font-weight: 700;
+  font-weight: 600;
 }
 
 .card-body-information p span {
   font-weight: 400;
 }
 
-.card-body-button {
-  all: unset;
-  display: block;
-  margin-left: auto;
-  padding: 0.5rem 2rem;
+.button {
+  padding: 0.5rem 1.5rem;
+  margin: 0 auto auto auto;
   border: 1px solid #4f4f4f;
-  text-align: center;
-  margin-top: 0.8rem;
   border-radius: 25px;
-  color: #4f4f4f;
+  font-weight: 500;
+  color: #474747;
+  transition: 350ms;
+}
+.button:hover {
+  color: #f7f7f7;
+  background-color: #b71752;
 }
 
 .card-body-button:hover {
@@ -124,4 +116,11 @@
 .div-spinner-clients {
   position: relative;
   height: 75vh;
+}
+
+.navegation-section {
+  width: 100%;
+  margin-top: 2rem;
+  display: flex;
+  justify-content: center;
 }
