@@ -22,7 +22,7 @@ export const routes: Routes = [
       loadComponent: () => import('./pages/clientes/clientes.component').then( m => m.ClientesComponent ),
     },
     {
-      path: 'cliente/:id',
+      path: 'clientes/:id',
       canActivate: [protegerRutaGuard],
       loadComponent: () => import('./pages/clientes/cliente/cliente.component').then( m => m.ClienteComponent ),
     },
