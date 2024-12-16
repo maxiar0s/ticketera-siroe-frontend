@@ -25,8 +25,8 @@
   border-top-left-radius: 2rem;
   border-top-right-radius: 2rem;
   display: flex;
-  background-color: #4f4e4e;
-  padding: 2rem;
+  background-color: #b71653;
+  padding: 1rem 2rem;
   width: 100%;
   justify-content: space-between;
   color: #fefffe;
@@ -104,7 +104,7 @@
 }
 
 .form-group input::placeholder {
-  color: #718ebf;
+  color: #d9d9d9;
 }
 
 .error {
@@ -126,19 +126,25 @@
 
 button {
   padding: 1rem 1.5rem;
-  border-radius: 1rem;
+  border-radius: 25px;
   cursor: pointer;
+  border: 0;
+  font-weight: 600;
 }
 
 button[type="submit"] {
-  background-color: #4f4e4e;
+  background-color: #b71653;
   color: #fff;
 }
 
 button:disabled {
-  background-color: #cccccc;
+  background-color: #ebebeb;
   cursor: not-allowed;
-  border: 0;
+  color: #474747;
+}
+
+label {
+  font-weight: 300;
 }
 
 .loader-height {

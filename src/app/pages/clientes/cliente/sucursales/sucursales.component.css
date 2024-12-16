@@ -6,13 +6,15 @@
 }
 
 .sucursal {
-  display: flex;
+  display: grid;
+  grid-template-columns: 7% repeat(2, 22%) repeat(2, 12%) 15%;
   gap: 1rem;
   min-width: 100%;
   min-height: 10rem;
   max-height: 10rem;
   justify-content: space-between;
   background-color: #f7f7f7;
+  border: 1px solid #eaeaea;
   border-radius: 18px;
   padding: 0 2rem;
 }
@@ -60,8 +62,7 @@
 }
 
 .div-button {
-  margin: auto 0 auto 0;
-
+  margin: auto 0 auto auto;
 }
 
 .button {
@@ -77,4 +78,13 @@
  cursor: pointer;
  background-color: #b71752;
  color: #f7f7f7;
+}
+
+.header-no-equipos {
+  width: 100%;
+}
+
+.no-equipos {
+  padding-left: 4rem;
+  color: #4e4f4e;
 }

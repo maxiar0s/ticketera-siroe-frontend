@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
-import { RouterModule } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { CrearClienteComponent } from '../../shared/modal/crear-cliente/crear-cliente.component';
 import { ApiService } from '../../services/api.service';
 import { Cliente } from '../../interfaces/cliente.interface';
@@ -17,6 +17,12 @@ import { NavegationComponent } from "../../shared/navegation/navegation.componen
   styleUrl: './clientes.component.css'
 })
 export class ClientesComponent {
+  // Elementos para el paginador
+  public pagina:        number = 1;
+  public paginaActual: number = 1;
+  public paginas:      number = 1;
+  public total:        number = 10;
+
   public clients:Cliente[] = [];
   public obtainedClients: boolean = false;
 
@@ -27,23 +33,37 @@ export class ClientesComponent {
   constructor(
     private apiService: ApiService,
     private signalService: SignalService,
-    public loaderService: LoaderService
+    public loaderService: LoaderService,
+    private route: ActivatedRoute,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
     this.loaderService.showSection();
     this.signalService.updateData('Clientes');
 
-    this.apiService.clients().subscribe({
-      next: (respuesta) => {
-        this.loaderService.hideSection();
-        this.clients = respuesta;
-        this.obtainedClients = true;
-      },
-      error: (error) => {
-        console.error('Error al crear cliente:', error);
-      }
+    this.route.queryParams.subscribe(params => {
+      this.pagina = params['pagina'] ? +params['pagina'] : 1;
+      this.apiService.clients(this.pagina).subscribe({
+        next: (respuesta) => {
+          // Loader
+          this.loaderService.hideSection();
+
+          // Elementos de la respuesta
+          const { clientes, paginaActual, paginas, total } = respuesta;
+          this.clients      = clientes;
+          this.paginaActual = paginaActual;
+          this.paginas      = paginas;
+          this.total        = total;
+
+          this.obtainedClients = true;
+        },
+        error: (error) => {
+          console.error('Error al crear cliente:', error);
+        }
+      })
     })
+
   }
 
   abrirModal() {
@@ -68,5 +88,36 @@ export class ClientesComponent {
         this.errorMessage = 'Error al crear cliente: ' + error;
       }
     })
+  }
+
+  cargarClientes():void {
+    this.apiService.clients(this.paginaActual)
+      .subscribe(response => {
+        console.log(response.clientes);
+        this.clients = response.clientes;
+        this.total = response.total;
+        this.paginas = response.paginas;
+      });
+  }
+
+  cambiarPagina(pagina: number):void {
+    if (pagina >= 1 && pagina <= this.paginas) {
+      this.paginaActual = pagina;
+      this.cargarClientes();
+    }
+  }
+
+  nextPage():void {
+    if (this.paginaActual < this.paginas) {
+      this.paginaActual++;
+      this.cargarClientes();
+    }
+  }
+
+  prevPage():void {
+    if (this.paginaActual > 1) {
+      this.paginaActual--;
+      this.cargarClientes();
+    }
   }
 }

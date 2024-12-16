@@ -1,4 +1,4 @@
-<section *ngIf="obtainedSucursales" class="sucursales">
+<section *ngIf="obtainedSucursales && sucursales; else noSucursales" class="sucursales">
   <div *ngFor="let sucursal of sucursales" class="sucursal">
     <!-- Estado Sucursal -->
     <div class="sucursal-campo sucursal-campo-estado">
@@ -30,3 +30,13 @@
     </div>
   </div>
 </section>
+
+<shared-navegation [paginaActual]="paginaActual"
+[paginas]="paginas"
+(cambiarPagina)="cambiarPagina($event)"></shared-navegation>
+
+<ng-template #noSucursales>
+  <tr>
+    <td colspan="8" class="no-equipos">No hay sucursales registradas</td>
+  </tr>
+</ng-template>

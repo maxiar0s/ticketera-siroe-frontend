@@ -25,6 +25,8 @@
 
 .table {
   width: 100%;
+  text-align: center;
+  padding: 1.5rem 2rem;
 }
 
 .text-align-left {
@@ -65,13 +67,12 @@
 
 .actions {
   all: unset;
-  padding: 0.4rem 1rem;
-  border: 1px solid #4f4f4f;
-  border-radius: 20px;
-  text-align: right;
 }
 .actions:hover {
   cursor: pointer;
+}
+.svg {
+  max-height: 2.5rem;
 }
 
 input[type="checkbox"] {

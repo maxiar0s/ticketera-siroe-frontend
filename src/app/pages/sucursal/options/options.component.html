@@ -1,9 +1,18 @@
 <div class="options-flex">
   <h1 class="title">Listado de equipos</h1>
-  <div class="">
-    <button class="options option-imprimir">Imprimir etiqueta</button>
-    <button class="options options-datos margin">Importar datos</button>
-    <button (click)="abrirModal()" class="options options-datos">Añadir equipos</button>
+  <div class="flex-buttons">
+    <button class="inner-button">
+      <img src="/assets/svg/impresora.svg" class="svg" alt="impresora_svg">
+      <span>Imprimir etiqueta</span>
+    </button>
+    <button class="inner-button">
+      <img src="/assets/svg/importar.svg" class="svg" alt="importar_svg">
+      <span>Importar datos</span>
+    </button>
+    <button (click)="abrirModal()" class="inner-button agregar-equipo">
+      <img src="/assets/svg/agregar-equipo.svg" class="svg" alt="agregar-equipo_svg">
+      <span>Añadir equipos</span>
+    </button>
   </div>
 </div>
 

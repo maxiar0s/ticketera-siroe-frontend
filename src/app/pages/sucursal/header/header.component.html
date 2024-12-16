@@ -1,64 +1,55 @@
-<div class="header-flex">
-  <h1 *ngIf="headerText" class="header-title">{{ sucursal?.sucursal }} | {{ sucursal?.Cliente?.razonSocial }}</h1>
-  <h1 *ngIf="!headerText" class="header-title">Cargando información...</h1>
-
-  <div class="information-grid">
-    <div class="information-flex">
-      <div class="flex">
-        <h1 class="information-title">Razón Social:</h1>
-        <p>{{ sucursal?.Cliente?.razonSocial }}</p>
-      </div>
-      <div class="flex">
-        <h1 class="information-title">RUT:</h1>
-        <p>{{ sucursal?.Cliente?.rut }}</p>
-      </div>
-      <div class="flex">
-        <h1 class="information-title">ID Cliente:</h1>
-        <p>12345</p>
-      </div>
-    </div>
-
-    <div class="information-flex">
-      <div class="flex">
-        <h1 class="information-title">Encargado general:</h1>
-        <p>{{ sucursal?.Cliente?.encargadoGeneral }}</p>
-      </div>
-      <div class="flex">
-        <h1 class="information-title">Correo:</h1>
-        <p>{{ sucursal?.Cliente?.correo }}</p>
-      </div>
-      <div class="flex">
-        <h1 class="information-title">Teléfono encargado:</h1>
-        <p>{{ sucursal?.Cliente?.telefonoEncargado }}</p>
-      </div>
-    </div>
-
-    <div class="information-flex">
-      <div class="flex">
-        <h1 class="information-title">Encargado sucursal:</h1>
-        <p>{{ sucursal?.encargadoSucursal }}</p>
-      </div>
-      <div class="flex">
-        <h1 class="information-title">Correo:</h1>
-        <p>{{ sucursal?.correoSucursal }}</p>
-      </div>
-      <div class="flex">
-        <h1 class="information-title">Teléfono encargado: </h1>
-        <p>{{ sucursal?.telefonoSucursal }}</p>
-      </div>
-    </div>
-
-    <div class="information-flex">
-      <div class="flex">
-        <h1 class="information-title">Sucursal:</h1>
-        <p>{{ sucursal?.sucursal }}</p>
-      </div>
-      <div class="flex">
-        <h1 class="information-title">Dirección: </h1>
-        <p>{{ sucursal?.direccion }}</p>
-      </div>
-    </div>
-
-
+<div class="information-grid">
+  <div class="title">
+    <h1 *ngIf="headerText" class="header-title">{{ sucursal?.sucursal }}</h1>
+    <h1 *ngIf="!headerText" class="header-title">Cargando información...</h1>
+    <h1 class="header-direccion">{{sucursal?.direccion}}</h1>
   </div>
+  <div>
+    <div class="grid-body">
+      <div></div>
+      <div class="information-flex">
+        <div class="flex">
+          <h1 class="information-title">Encargado Sucursal:</h1>
+          <p>{{ sucursal?.encargadoSucursal }}</p>
+        </div>
+        <div class="flex">
+          <h1 class="information-title">Razón Social:</h1>
+          <p>{{ sucursal?.Cliente?.razonSocial }}</p>
+        </div>
+        <div class="flex">
+          <h1 class="information-title">Encargado General:</h1>
+          <p>{{ sucursal?.Cliente?.encargadoGeneral }}</p>
+        </div>
+      </div>
+
+      <div class="information-flex">
+        <div class="flex">
+          <h1 class="information-title">Teléfono:</h1>
+          <p>{{ sucursal?.telefonoSucursal }}</p>
+        </div>
+        <div class="flex">
+          <h1 class="information-title">RUT Cliente:</h1>
+          <p>{{ sucursal?.Cliente?.rut }}</p>
+        </div>
+        <div class="flex">
+          <h1 class="information-title">Teléfono:</h1>
+          <p>{{ sucursal?.Cliente?.telefonoEncargado }}</p>
+        </div>
+      </div>
+
+      <div class="information-flex">
+        <div class="flex">
+          <h1 class="information-title">Correo:</h1>
+          <p>{{ sucursal?.correoSucursal }}</p>
+        </div>
+        <div class="flex">
+          <h1 class="information-title">ID Cliente:</h1>
+          <p>12345</p>
+        </div>
+        <div class="flex">
+          <h1 class="information-title">Correo: </h1>
+          <p>{{ sucursal?.Cliente?.correo }}</p>
+        </div>
+      </div>
+    </div>
 </div>

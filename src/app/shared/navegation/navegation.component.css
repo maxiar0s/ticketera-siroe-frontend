@@ -1,28 +1,41 @@
 .navegation {
   display: flex;
-  gap: 0.5rem;
-  padding: 0 4rem;
   justify-content: end;
   align-items: center;
-  color: #4f4f4f;
-  font-weight: 700;
-  font-size: 1.6rem;
+  margin: 1.5rem 0;
 }
 
-
-a {
-  color: #4f4f4f;
-  padding: 0 1.2rem;
+button {
+  all: unset;
+  font-weight: 400;
+  font-size: 1.7rem;
+  color: #474747;
+  padding-top: 0.7rem;
+  padding-bottom: 0.7rem;
+  padding-left: 1.6rem;
+  padding-right: 1.6rem;
 }
 
-.flex-a {
+button:hover {
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+button.active {
+  font-weight: bold;
+  background-color: #b71653;
+  border-radius: 10px;
+  color: white;
+}
+
+.flex-prev-next {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-}
-
-.flex-a p {
-  margin: 0;
 }
 
 .arrow-svg {

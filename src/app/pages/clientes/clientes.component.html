@@ -33,11 +33,12 @@
         </div>
       </div>
     </div>
-    <div class="navegation-section">
-      <shared-navegation></shared-navegation>
+    <div *ngIf="obtainedClients" class="navegation-section">
+      <shared-navegation [paginaActual]="paginaActual"
+      [paginas]="paginas"
+      (cambiarPagina)="cambiarPagina($event)"></shared-navegation>
     </div>
   </div>
-
 </div>
 
 <shared-crear-cliente class="form-crear-cliente"

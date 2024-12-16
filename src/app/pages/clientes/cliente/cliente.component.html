@@ -1,10 +1,9 @@
 <div class="client">
   <cliente-casa-matriz></cliente-casa-matriz>
   <cliente-header></cliente-header>
-  <cliente-options></cliente-options>
+  <shared-options (optionSelected)="selectedOption($event)"></shared-options>
   <div class="div-loader">
     <shared-loader class="div-loader-sucursales"></shared-loader>
-    <cliente-sucursales></cliente-sucursales>
+    <cliente-sucursales [selectedOption]="Option"></cliente-sucursales>
   </div>
-  <shared-navegation></shared-navegation>
 </div>

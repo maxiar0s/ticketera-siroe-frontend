@@ -1,5 +1,6 @@
 export interface Equipo {
   id:                     number;
+  numeroSecuencial:       number;
   codigoId:               string;
   tipo:                   string;
   fechaIngreso:           Date;

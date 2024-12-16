@@ -14,8 +14,8 @@
           <!-- Campo Departamento -->
           <div class="form-group full-width">
             <label for="departamento">Departamento de equipos</label>
-            <select id="departamentoSelect" class="full-width" id="departamento" formControlName="departamento">
-              <option value="" disabled selected>Seleccionar</option>
+            <select id="departamentoSelect" class="full-width" id="departamento" (change)="changeSelectColor($event)" formControlName="departamento">
+              <option value="" id="seleccionar" disabled selected>Seleccionar</option>
               <option value="Recursos Humanos">Recursos Humanos</option>
               <option value="Informática">Informática</option>
               <option value="Marketing y ventas">Marketing y ventas</option>
@@ -30,7 +30,7 @@
           </div>
 
           <!-- Campo cantidad -->
-          <div class="form-group">
+          <div class="form-group full-width">
             <label for="cantidad">Añadir cantidad de equipos</label>
             <input class="full-width" id="razonSocial" formControlName="cantidad" type="number" placeholder="Ingrese la cantidad"/>
             <div *ngIf="equipoForm.get('cantidad')?.invalid && equipoForm.get('cantidad')?.touched" class="error">
@@ -42,7 +42,7 @@
         <!-- Campo tipo -->
         <div class="form-group">
           <label for="tipo">Tipo de equipo</label>
-          <select id="tipo" formControlName="tipo">
+          <select (change)="changeSelectColor($event)" id="tipo" formControlName="tipo">
             <option value="" disabled selected>Seleccionar</option>
             @for(equipo of equipos; track equipo) {
               <option [value]="equipo.tipo">{{ equipo.tipo }}</option>

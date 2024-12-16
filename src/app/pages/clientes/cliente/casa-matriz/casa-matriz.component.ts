@@ -2,15 +2,17 @@ import { Component } from '@angular/core';
 import { ApiService } from '../../../../services/api.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Cliente } from '../../../../interfaces/cliente.interface';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'cliente-casa-matriz',
   standalone: true,
-  imports: [],
+  imports: [CommonModule],
   templateUrl: './casa-matriz.component.html',
   styleUrl: './casa-matriz.component.css'
 })
 export class CasaMatrizComponent {
+  public obtainedClient:boolean = false;
   public cliente?:Cliente;
   public ruta:string = '';
 
@@ -26,7 +28,7 @@ export class CasaMatrizComponent {
       this.apiService.client(id).subscribe({
         next: (respuesta) => {
           this.cliente = respuesta;
-          console.log(this.cliente);
+          this.obtainedClient = true;
         },
         error: (error) => {
           console.error('Error al obtener la sucursal', error);

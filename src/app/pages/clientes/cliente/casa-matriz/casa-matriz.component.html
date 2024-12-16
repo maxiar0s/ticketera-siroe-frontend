@@ -4,7 +4,8 @@
     <!-- <img src="" alt=""> -->
   </div>
   <div class="flex-column">
-    <h1 class="casa-matriz">{{ cliente?.razonSocial }}</h1>
+    <h1 *ngIf="!obtainedClient" class="temp-title casa-matriz">Cargando cliente...</h1>
+    <h1 *ngIf="obtainedClient" class="casa-matriz">{{ cliente?.razonSocial }}</h1>
     <div class="grid">
 
       <div class="body-flex">

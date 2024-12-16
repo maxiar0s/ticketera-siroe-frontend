@@ -5,33 +5,37 @@
 }
 
 .title {
-  font-size: 2rem;
-  color: #343c6a;
+  font-size: 2.5rem;
+  color: #474747;
 }
 
-.options {
+.flex-buttons {
+  display: flex;
+  gap: 2rem;
+  align-items: center;
+  justify-content: end;
+}
+
+.inner-button {
   all: unset;
-  padding-top: 0.4rem;
-  padding-bottom: 0.4rem;
-  border: 1px solid #4f4f4f;
-  text-align: center;
+  display: flex;
   border-radius: 25px;
-  color: #4f4f4f;
+  padding: 0.6rem 3rem;
+  background-color: #ebebeb;
+  color: #474747;
 }
-.options:hover {
- cursor: pointer;
+.inner-button:hover {
+  cursor: pointer;
 }
-.options-datos {
-  padding-left: 2rem;
-  padding-right: 2rem;
+.agregar-equipo {
+  background-color: #b71653;
+  color: #ffffff;
+
 }
-.margin {
-  margin-left: 5rem;
-  margin-right: 2rem;
-}
-.option-imprimir {
-  padding-left: 5rem;
-  padding-right: 5rem;
+
+.svg {
+  max-width: 2.5rem;
+  margin-right: 0.5rem;
 }
 
 .form-crear-cliente {

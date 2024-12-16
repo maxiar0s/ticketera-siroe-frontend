@@ -1,0 +1,5 @@
+<div class="options">
+  <button (click)="changeDesign('Todos los ingresos')" class="color-button" [ngClass]="{'options-buttons-border': Option === 'Todos los ingresos' }">Todos los ingresos</button>
+  <button (click)="changeDesign('Pendientes')" class="color-button" [ngClass]="{'options-buttons-border': Option === 'Pendientes' }">Pendientes</button>
+  <button (click)="changeDesign('Terminados')" class="color-button" [ngClass]="{'options-buttons-border': Option === 'Terminados' }">Terminados</button>
+</div>

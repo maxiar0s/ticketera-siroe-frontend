@@ -1,38 +1,50 @@
 <div class="div-loader-equipments">
   <shared-loader></shared-loader>
   <div *ngIf="obtainedEquipments" class="div-table">
-    <div class="label-input">
-      <label class="select-all" for="selectAll"><input type="checkbox" id="selectAll">Seleccionar todas</label>
-    </div>
     <table class="table">
       <thead>
           <tr>
-            <th></th>
+            <th><input type="checkbox"></th>
+            <th class="text-align-center">N°</th>
             <th class="text-align-center">Estado</th>
-            <th class="text-align-left">Código ID</th>
-            <th class="text-align-left">Tipo equipo</th>
-            <th class="text-align-left">Fecha de ingreso</th>
-            <th class="text-align-left">Departamento</th>
-            <th class="text-align-left">Usuario</th>
+            <th class="text-align-center">Código ID</th>
+            <th class="text-align-center">Tipo equipo</th>
+            <th class="text-align-center">Fecha de ingreso</th>
+            <th class="text-align-center">Departamento</th>
+            <th class="text-align-center">Usuario</th>
             <th class="text-align-center">Acciones</th>
           </tr>
       </thead>
-      <tbody>
-          <tr *ngFor="let equipo of equipos">
-              <td class="information-checkbox information-value"><input type="checkbox"> 1.</td>
+      <tbody *ngIf="equipos.length > 0; else noEquipos">
+          <tr *ngFor="let equipo of equipos" class="">
+              <td class="information-checkbox information-value"><input type="checkbox"></td>
+              <td class="information-checkbox information-value">{{ equipo.numeroSecuencial }}</td>
               <td class="information-value"><div class="estado cerrado"></div></td>
               <td class="information-value">{{ equipo.codigoId }}</td>
               <td class="information-value">{{ equipo.tipo }}</td>
-              <td class="information-value">{{ equipo.fechaIngreso }}</td>
+              <td class="information-value">{{ equipo.fechaIngreso.toString() | formatoFecha }}</td>
               <td class="information-value">{{ equipo.departamento }}</td>
-              <td class="information-value">{{ equipo.usuario }}</td>
+              <td class="information-value">{{ equipo.usuario ? equipo.usuario : 'N/A'}}</td>
 
               <td class="information-value information-actions">
-                  <button (click)="abrirModal(equipo.id)" class="actions">Añadir datos</button>
-                  <button class="actions">Ver datos</button>
+                  <button class="actions">
+                    <img src="/assets/svg/impresora.svg" class="svg" alt="impresora_svg">
+                  </button>
+                  <button (click)="abrirModal(equipo.id)" class="actions">
+                    <img src="/assets/svg/agregar-datos.svg" class="svg" alt="impresora_svg">
+                  </button>
+                  <button class="actions">
+                    <img src="/assets/svg/ver-datos.svg" class="svg" alt="impresora_svg">
+                  </button>
               </td>
           </tr>
       </tbody>
+
+      <ng-template #noEquipos>
+        <tr class="header-no-equipos">
+          <td colspan="8" class="no-equipos">No hay equipos registrados</td>
+        </tr>
+      </ng-template>
     </table>
   </div>
 </div>

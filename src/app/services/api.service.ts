@@ -6,8 +6,8 @@ import { catchError, Observable, throwError } from 'rxjs';
   providedIn: 'root'
 })
 export class ApiService {
-  private url = "https://app-soporte-siroe.vercel.app";
-  // private url = "http://localhost:3000";
+  // private url = "https://app-soporte-siroe.vercel.app";
+  private url = "http://localhost:3000";
 
   constructor(
     private http: HttpClient,
@@ -40,8 +40,8 @@ export class ApiService {
   }
 
   // GET
-  clients():Observable<any> {
-    const endpoint = 'clientes';
+  clients(pagina: number):Observable<any> {
+    const endpoint = `clientes?pagina=${pagina}`;
     return this.getInformation(endpoint);
   }
 
@@ -50,8 +50,27 @@ export class ApiService {
     return this.getInformation(endpoint);
   }
 
-  sucursales(id: string):Observable<any> {
-    const endpoint = `cliente/` + id + '/sucursales';
+  sucursales(id: string, pagina: number, option: string):Observable<any> {
+    if (option === 'Terminados') {
+      const endpoint = `cliente/` + id + `/sucursales/terminados?pagina=${pagina}`;
+      return this.getInformation(endpoint);
+    }
+    else if(option === 'Pendientes') {
+      const endpoint = `cliente/` + id + `/sucursales/pendientes?pagina=${pagina}`;
+      return this.getInformation(endpoint);
+    } else {
+      const endpoint = `cliente/` + id + `/sucursales?pagina=${pagina}`;
+      return this.getInformation(endpoint);
+    }
+  }
+
+  sucursalesPendientes(id: string):Observable<any> {
+    const endpoint = `cliente/` + id + '/sucursales/pendientes';
+    return this.getInformation(endpoint);
+  }
+
+  sucursalesTerminadas(id: string):Observable<any> {
+    const endpoint = `cliente/` + id + '/sucursales/terminadas';
     return this.getInformation(endpoint);
   }
 

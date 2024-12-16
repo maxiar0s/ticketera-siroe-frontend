@@ -22,10 +22,13 @@
 
         <div class="subItem-nav">
           @for(subItem of item.subGrupo; track subItem){
-            <a [routerLink]="subItem.ruta" [ngClass]="{'active': currentSubGroup == subItem.ruta}" class="a-routerlink a-color" (click)="activeSubGroup(subItem.ruta)">
-              <div class="bar-progress"></div>
-              <p class="subItem-text color-white">{{subItem.nombre}}</p>
-            </a>
+            <div class="height-subItem">
+              <a [routerLink]="subItem.ruta" [ngClass]="{'active': currentSubGroup == subItem.ruta}" class="a-routerlink a-color" (click)="activeSubGroup(subItem.ruta)">
+                <div class="bar-progress"></div>
+                <img [src]="'/assets/svg/'+subItem.svg+(currentGroup.includes(subItem.ruta) ? '-routed' : '')+'.svg'" [alt]="item.svg+'_SVG'" class="menu-svg">
+                <p class="">{{subItem.nombre}}</p>
+              </a>
+            </div>
           }
         </div>
       </div>

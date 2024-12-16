@@ -9,10 +9,9 @@
 
 .div-loader {
   position: relative;
-  min-height: 63vh;
+  min-height: 100%;
 }
 
 .div-loader-sucursales {
-  height: 100%;
-  width: 100%;
+  min-height: 1rem;
 }

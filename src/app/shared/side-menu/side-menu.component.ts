@@ -1,8 +1,9 @@
 import { CommonModule, Location } from '@angular/common';
 import { Component, Renderer2 } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
-import sideMenuJSON from './side-menu-options-admin.json'
-import sideLogoutMenuJSON from './side-menu-logout.json'
+import sideMenuJSON_Admin from './side-menu-options-admin.json';
+import sideMenuJSON_Tecnico from './side-menu-options.json';
+import sideLogoutMenuJSON from './side-menu-logout.json';
 
 @Component({
   selector: 'shared-side-menu',
@@ -14,7 +15,8 @@ import sideLogoutMenuJSON from './side-menu-logout.json'
 export class SideMenuComponent {
   public currentGroup: string = '';
   public currentSubGroup: string = '';
-  public sideMenuJSON = sideMenuJSON;
+  // public sideMenuJSON = sideMenuJSON_Admin;
+  public sideMenuJSON = sideMenuJSON_Tecnico;
   public sideLogoutMenuJSON = sideLogoutMenuJSON;
 
   constructor(private renderer: Renderer2, private router: Router, private location: Location) {}

@@ -7,30 +7,32 @@
   },
   {
     "nombre": "Clientes",
-    "ruta": "dashboard/clientes",
-    "svg": "dashboard",
+    "ruta": "/clientes",
+    "svg": "clientes",
     "subGrupo": [
       {
       "nombre": "Equipos",
-      "ruta": "/"
+      "ruta": "",
+      "svg": "equipos"
       }
     ]
   },
   {
     "nombre": "Tipo de equipo ",
-    "ruta": "/",
+    "ruta": "/tipo-equipo",
     "svg": "dashboard",
     "subGrupo": [
       {
-      "nombre": "Solicitar añadir equipo",
-      "ruta": "/"
+      "nombre": "Añadir equipo",
+      "ruta": "/añadir-equipo",
+      "svg": "equipos"
       }
     ]
   },
   {
     "nombre": "Inventario",
-    "ruta": "/",
-    "svg": "dashboard",
+    "ruta": "inventario",
+    "svg": "inventario",
     "subGrupo": []
   }
 ]

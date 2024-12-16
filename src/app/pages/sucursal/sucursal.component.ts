@@ -1,6 +1,5 @@
 import { Component, Input } from '@angular/core';
 import { HeaderComponent } from './header/header.component';
-import { OptionsComponent } from './options/options.component';
 import { TableComponent } from './table/table.component';
 import { NavegationComponent } from '../../shared/navegation/navegation.component';
 import { SignalService } from '../../services/signal.service';
@@ -8,15 +7,27 @@ import { ApiService } from '../../services/api.service';
 import { Sucursal } from '../../interfaces/sucursal.interface';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { ButtonsComponent } from './options/options.component';
+import { OptionsComponent } from '../../shared/options/options.component';
 
 @Component({
   selector: 'sucursal',
   standalone: true,
-  imports: [HeaderComponent, OptionsComponent, TableComponent, NavegationComponent, CommonModule],
+  imports: [HeaderComponent, TableComponent, NavegationComponent, CommonModule, ButtonsComponent, OptionsComponent],
   templateUrl: './sucursal.component.html',
   styleUrl: './sucursal.component.css'
 })
 export class SucursalComponent {
+  // Elementos para el paginador
+  public pagina:        number = 1;
+  public limit:        number = 5;
+  public paginaActual: number = 1;
+  public offset:       number = ((this.paginaActual*this.limit) - this.limit);
+  public paginas:      number = 1;
+  public total:        number = 10;
+
+  public Option:string = 'Todos los ingresos';
+
   public sucursal?: Sucursal;
   public headerText?: boolean;
   public id: string = '';
@@ -30,13 +41,17 @@ export class SucursalComponent {
   ) {}
 
   ngOnInit() {
-    this.signalService.updateData('Equipos | Levantamiento');
     this.route.params.subscribe(params => {
       const id = params['id']
       this.id = id;
       this.apiService.sucursal(id).subscribe({
         next: (respuesta) => {
           this.sucursal = respuesta;
+          if(this.sucursal) {
+            this.signalService.updateData(this.sucursal?.Cliente.razonSocial!);
+          } else {
+            this.signalService.updateData('');
+          }
           this.headerText = true;
         },
         error: (error) => {
@@ -58,6 +73,10 @@ export class SucursalComponent {
         }
       })
     })
+  }
+
+  selectedOption(value: string) {
+    this.Option = value;
   }
 
   hideNav(value: boolean) {

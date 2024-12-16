@@ -1,14 +1,15 @@
 <div class="navegation">
-  <a [routerLink]="['/']" routerLinkActive="router-link-active"  class="flex-a">
+  <button class="flex-prev-next" (click)="nextPage()" [disabled]="paginaActual <= 1">
     <img src="/assets/svg/arrow-left.svg" alt="arrow_l_svg" class="arrow-svg">
-    <p>Anterior</p>
-  </a>
-  <a [routerLink]="['/']" routerLinkActive="router-link-active" >1</a>
-  <a [routerLink]="['/']" routerLinkActive="router-link-active" >2</a>
-  <a [routerLink]="['/']" routerLinkActive="router-link-active" >3</a>
-  <a [routerLink]="['/']" routerLinkActive="router-link-active" >4</a>
-  <a [routerLink]="['/']" routerLinkActive="router-link-active"  class="flex-a">
-    <p>Siguiente</p>
+    <span>Anterior</span>
+  </button>
+
+  <button *ngFor="let pagina of getPaginaArray()"
+  (click)="cambiar(pagina)"
+  [class.active]="pagina === paginaActual">{{pagina}}</button>
+
+  <button class="flex-prev-next" (click)="nextPage()" [disabled]="paginaActual >= paginas">
+    <span>Siguiente</span>
     <img src="/assets/svg/arrow-right.svg" alt="arrow_r_svg" class="arrow-svg">
-  </a>
+  </button>
 </div>

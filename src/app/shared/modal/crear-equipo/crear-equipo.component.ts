@@ -62,4 +62,10 @@ export class CrearEquipoComponent {
       this.errorMessage = 'Por favor, completa todos los campos requeridos correctamente.';
     }
   }
+
+  changeSelectColor(event: Event) {
+    const Element = event.currentTarget as HTMLAnchorElement;
+
+    Element.classList.add('colorSelect')
+  }
 }
