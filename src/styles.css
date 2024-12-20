@@ -38,6 +38,10 @@ h3 {
   font-size: 5rem;
 }
 
+p {
+  margin: 0;
+}
+
 .open-300 {
   font-weight: 400;
 }

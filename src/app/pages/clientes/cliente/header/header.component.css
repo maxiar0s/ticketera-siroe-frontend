@@ -9,13 +9,23 @@ p {
 }
 
 .title {
-  font-size: 35px;
+  font-size: 3rem;
   color: #474747;
+}
+@media (max-width: 1400px) {
+  .title {
+    font-size: 2.25rem;
+  }
 }
 
 .flex-filter-options {
   display: flex;
   gap: 2.5rem;
+}
+@media (max-width: 1400px) {
+  .flex-filter-options {
+    gap: 1rem;
+  }
 }
 
 .flex-select-search {
@@ -26,17 +36,29 @@ p {
   border-radius: 25px;
   gap: 1rem;
 }
-
-.svg {
-  max-height: 2.5rem;
+@media (max-width: 1400px) {
+  .flex-select-search {
+    padding: 0.4rem 2rem;
+  }
 }
 
 .svg-arrow-down {
-  max-height: 1.5rem;
+  max-height: 1.3rem;
+}
+@media (max-width: 1400px) {
+  .svg-arrow-down {
+    max-height: 1rem;
+  }
 }
 
 .search {
   all: unset;
+  font-size: 1.5rem;
+}
+@media (max-width: 1400px) {
+  .search {
+    font-size: 1.2rem;
+  }
 }
 
 .search::placeholder {

@@ -6,8 +6,8 @@ import { catchError, Observable, throwError } from 'rxjs';
   providedIn: 'root'
 })
 export class ApiService {
-  // private url = "https://app-soporte-siroe.vercel.app";
-  private url = "http://localhost:3000";
+  private url = "https://app-soporte-siroe.vercel.app";
+  // private url = "http://localhost:3000";
 
   constructor(
     private http: HttpClient,
@@ -79,7 +79,19 @@ export class ApiService {
     return this.getInformation(endpoint);
   }
 
-  equipmentsBySucursal(id: string):Observable<any> {
+  equipmentsBySucursal(id: string, pagina:number, option: string):Observable<any> {
+    if (option === 'Terminados') {
+      const endpoint = `sucursal/` + id + `/equipos/terminados?pagina=${pagina}`;
+      return this.getInformation(endpoint);
+    }
+    else if(option === 'Pendientes') {
+      const endpoint = `sucursal/` + id + `/equipos/pendientes?pagina=${pagina}`;
+      return this.getInformation(endpoint);
+    } else {
+      const endpoint = `sucursal/` + id + `/equipos?pagina=${pagina}`;
+      return this.getInformation(endpoint);
+    }
+
     const endpoint = `sucursal/` + id + `/equipos`;
     return this.getInformation(endpoint);
   }

@@ -15,6 +15,14 @@ import { FormatoFechaPipe } from '../../../pipes/formato-fecha.pipe';
   styleUrl: './table.component.css'
 })
 export class TableComponent {
+  // Elementos para el paginador
+  public pagina:        number = 1;
+  public limit:        number = 5;
+  public paginaActual: number = 1;
+  public offset:       number = ((this.paginaActual*this.limit) - this.limit);
+  public paginas:      number = 1;
+  public total:        number = 10;
+
   public _option!: string;
   // Oculta la informacion hasta que se carga
   public obtainedEquipments: boolean = false;
@@ -41,7 +49,7 @@ export class TableComponent {
 
   ngOnInit() {
     this.loaderService.showSection();
-    this.apiService.equipmentsBySucursal(this.id).subscribe({
+    this.apiService.equipmentsBySucursal(this.id, this.paginaActual, this._option).subscribe({
       next: (respuesta) => {
         this.equipos = respuesta;
         this.equiposTodos = respuesta;
@@ -103,7 +111,7 @@ export class TableComponent {
           this.equipos = this.equiposPendientes;
         }
       } else {
-        this.apiService.equipmentsBySucursal(this.id).subscribe({
+        this.apiService.equipmentsBySucursal(this.id, this.paginaActual, this._option).subscribe({
           next: (respuesta) => {
             this.loaderService.hideSection();
             this.equipos = respuesta;
@@ -124,7 +132,7 @@ export class TableComponent {
           this.equipos = this.equiposTerminados;
         }
       } else {
-        this.apiService.equipmentsBySucursal(this.id).subscribe({
+        this.apiService.equipmentsBySucursal(this.id, this.paginaActual, this._option).subscribe({
           next: (respuesta) => {
             this.loaderService.hideSection();
             this.equipos = respuesta;

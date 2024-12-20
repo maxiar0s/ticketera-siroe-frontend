@@ -5,10 +5,11 @@
   padding: 3rem;
   min-height: 75vh;
 }
-
-.title {
-  font-size: 35px;
-  color: #474747;
+@media (max-width: 1400px) {
+  .clients {
+    padding: 2rem;
+    gap: 1rem;
+  }
 }
 
 .grid-clients {
@@ -16,6 +17,11 @@
   grid-template-columns: repeat(1, 1fr);
   grid-template-rows: auto;
   gap: 3rem;
+}
+@media (max-width: 1400px) {
+  .grid-clients {
+    gap: 1.5rem;
+  }
 }
 
 .card-clients {
@@ -28,11 +34,21 @@
   border-radius: 15px;
   border: 1px solid #ebebea;
 }
+@media (max-width: 1400px) {
+  .card-body {
+    padding: 1.5rem;
+  }
+}
 
 .card-body-grid {
   width: 100%;
   display: grid;
   grid-template-columns: 15% 65% 20%;
+}
+@media (max-width: 1400px) {
+  .card-body-grid {
+    grid-template-columns: 20% 60% 20%;
+  }
 }
 
 .card-body-photo {
@@ -46,8 +62,14 @@
 .card-body-information {
   width: 100%;
   color: #474747;
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  display: flex;
+  justify-content: space-between;
+  padding: 0 4rem;
+}
+@media (max-width: 1400px) {
+  .card-body-information {
+    padding: 0 1.5rem;
+  }
 }
 
 .information {
@@ -55,6 +77,11 @@
   gap: 1.5rem;
   flex-direction: column;
   margin: auto 0;
+}
+@media (max-width: 1400px) {
+  p {
+    font-size: 1.2rem;
+  }
 }
 
 .card-body-information p {
@@ -74,6 +101,12 @@
   font-weight: 500;
   color: #474747;
   transition: 350ms;
+}
+@media (max-width: 1400px) {
+  .button {
+    font-size: 1.1rem;
+
+  }
 }
 .button:hover {
   color: #f7f7f7;

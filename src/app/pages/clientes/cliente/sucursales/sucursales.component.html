@@ -31,9 +31,11 @@
   </div>
 </section>
 
-<shared-navegation [paginaActual]="paginaActual"
-[paginas]="paginas"
-(cambiarPagina)="cambiarPagina($event)"></shared-navegation>
+<div *ngIf="obtainedSucursales" class="navegation">
+  <shared-navegation [paginaActual]="paginaActual"
+  [paginas]="paginas"
+  (cambiarPagina)="cambiarPagina($event)"></shared-navegation>
+</div>
 
 <ng-template #noSucursales>
   <tr>

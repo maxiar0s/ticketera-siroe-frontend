@@ -1,5 +1,11 @@
 .summary {
+  box-sizing: border-box;
   padding: 0 3.5rem;
+}
+@media (max-width: 1400px) {
+  .summary {
+    padding: 0 3rem;
+  }
 }
 
 .title {
@@ -7,10 +13,20 @@
   color: #343c6a;
   margin-bottom: 1.2rem;
 }
+@media (max-width: 1400px) {
+  .title {
+    font-size: 2rem;
+  }
+}
 
 .options {
   display: flex;
   margin-bottom: 2.5rem;
+}
+@media (max-width: 1400px) {
+  .options {
+    font-size: 1.25rem;
+  }
 }
 .options button {
   all: unset;
@@ -36,6 +52,7 @@
 }
 
 .table {
+  table-layout: fixed;
   background-color: #f7f7f7;
   border-radius: 30px;
   width: 100%;
@@ -45,6 +62,16 @@
   padding: 0 2rem;
   margin-bottom: 3rem;
 }
+@media (max-width: 1400px) {
+  .table {
+    font-size: 1rem;
+  }
+}
+.table th, .table td {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
 
 .status {
   width: 3rem;
@@ -53,18 +80,28 @@
 .table-row-style {
   height: 5.5rem;
 }
+@media (max-width: 1400px) {
+  .table-row-style {
+    height: 3.5rem;
+  }
+}
 
 .id-status {
-  background-color: #ff4b4a;
-  height: 15px;
-  width: 15px;
+  height: 1.5rem;
+  width: 1.5rem;
   border-radius: 50%;
 }
-.id-status-2 {
+@media (max-width: 1400px) {
+  .id-status {
+    height: 1rem;
+    width: 1rem;
+  }
+}
+.red {
+  background-color: #ff4b4a;
+}
+.cyan {
   background-color: #1ec6b8;
-  height: 15px;
-  width: 15px;
-  border-radius: 50%;
 }
 
 .table-detalle-th {
@@ -79,6 +116,12 @@
   display: block;
   margin-left: auto;
   text-align: right;
+}
+@media (max-width: 1400px) {
+  .table-detalle {
+    padding: 0.3rem 1rem;
+    font-size: 1rem;
+  }
 }
 .table-detalle:hover {
   cursor: pointer;

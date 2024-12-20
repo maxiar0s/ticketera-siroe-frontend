@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component } from '@angular/core';
 import { HeaderComponent } from './header/header.component';
 import { TableComponent } from './table/table.component';
 import { NavegationComponent } from '../../shared/navegation/navegation.component';
@@ -18,14 +18,6 @@ import { OptionsComponent } from '../../shared/options/options.component';
   styleUrl: './sucursal.component.css'
 })
 export class SucursalComponent {
-  // Elementos para el paginador
-  public pagina:        number = 1;
-  public limit:        number = 5;
-  public paginaActual: number = 1;
-  public offset:       number = ((this.paginaActual*this.limit) - this.limit);
-  public paginas:      number = 1;
-  public total:        number = 10;
-
   public Option:string = 'Todos los ingresos';
 
   public sucursal?: Sucursal;

@@ -1,10 +1,12 @@
-p {
-  margin: 0;
-}
-
 .logo {
   height: 10rem;
   margin: 0 auto 4rem auto;
+}
+@media (max-width: 1400px) {
+  .logo {
+    height: 7.5rem;
+    margin: 0 auto 2rem auto;
+  }
 }
 
 .menu {
@@ -16,6 +18,12 @@ p {
   display: flex;
   flex-direction: column;
   width: 22rem;
+}
+
+@media (max-width: 1400px) {
+  .menu {
+    width: 15.5rem;
+  }
 }
 
 .route-actived{
@@ -71,6 +79,14 @@ p {
   gap: 2rem;
   align-items: center;
 }
+
+@media (max-width: 1400px) {
+  .a-routerlink {
+    gap: 1rem;
+    margin-left: 2rem;
+  }
+}
+
 .a-routerlink.open{
   max-height: fit-content;
 
@@ -81,9 +97,21 @@ p {
   fill: #b71752;
 }
 
+@media (max-width: 1400px) {
+  .menu-svg {
+    max-height: 20px;
+  }
+}
+
 .a-color {
   color: #b6b7b7;
   font-weight: 500;
+}
+
+@media (max-width: 1400px) {
+  .a-color {
+    font-size: 1.2rem;
+  }
 }
 
 .subItem-nav{

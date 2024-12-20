@@ -1,6 +1,11 @@
 .dashboard-page {
   padding: 5rem 3.5rem;
 }
+@media (max-width: 1400px) {
+  .dashboard-page {
+    padding: 3.5rem 2rem;
+  }
+}
 
 .grid-tables {
   display: grid;
@@ -8,7 +13,15 @@
   grid-template-rows: repeat(1, 1fr);
   gap: 4rem;
 }
+@media (max-width: 1400px) {
+  .grid-tables {
+    grid-template-columns: repeat(4, 1fr) repeat(2, 1.5fr);
+    gap: 1.5rem;
+  }
+}
 .table {
+  overflow: hidden;
+  box-sizing: border-box;
   background-color:#f7f7f7;
   padding: 1rem 3rem;
   color: #4f4f4f;
@@ -19,6 +32,12 @@
   justify-content: center;
   gap: 1.5rem;
 }
+@media (max-width: 1400px) {
+  .table {
+    padding: 1.5rem 1rem;
+  }
+}
+
 .table:nth-child(3) {
   grid-column-start: 3;
   grid-column-end: 5;
@@ -30,19 +49,35 @@
 .table-title {
   font-size: 15px;
 }
+@media (max-width: 1400px) {
+  .table-title {
+    font-size: 1.2rem;
+  }
+}
 .chart {
   margin: 0 auto;
-  width: 150px;
-  height: 150px;
+  width: 15rem;
+  height: 15rem;
   background: #4f4f4f;
   border-radius: 50%;
   margin-bottom: 1rem;
+}
+@media (max-width: 1400px) {
+  .chart {
+    max-width: 8rem;
+    max-height: 8rem;
+  }
 }
 .table-flex-3 {
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 6rem;
+}
+@media (max-width: 1400px) {
+  .table-flex-3 {
+    gap: 1.5rem;
+  }
 }
 .table-grid-4 {
   display: grid;
@@ -51,18 +86,31 @@
   gap: 1rem;
 }
 .chart-3 {
-  width: 220px;
-  height: 220px;
+  width: 22rem;
+  height: 22rem;
   background: #4f4f4f;
   border-radius: 50%;
   margin-bottom: 1rem;
 }
+@media (max-width: 1400px) {
+  .chart-3 {
+    width: 10rem;
+    height: 10rem;
+  }
+}
 .chart-4 {
   width: 3rem;
   height: 18rem;
+  margin: auto;
   background: #4f4f4f;
   border-radius: 10px;
   margin-bottom: 1rem;
+}
+@media (max-width: 1400px) {
+  .chart-4 {
+    width: 1.8rem;
+    height: 10rem;
+  }
 }
 /* Leyendas */
 .legend {
@@ -71,6 +119,12 @@
   justify-content: center;
   gap: 8rem;
 }
+@media (max-width: 1400px) {
+  .legend {
+    justify-content: space-between;
+    gap: 0;
+  }
+}
 .legend-3 {
   display: flex;
   flex-direction: column;
@@ -78,7 +132,14 @@
   justify-content: center;
   gap: 1.5rem;
 }
+@media (max-width: 1400px) {
+  p {
+    font-size: 1.2rem;
+  }
+}
 
-.legend span {
+.p-chart-4 {
   color: #4f4f4f;
+  text-align: center;
+  margin: 0 auto;
 }

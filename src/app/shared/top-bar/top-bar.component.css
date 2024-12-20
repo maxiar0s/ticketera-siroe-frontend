@@ -1,12 +1,20 @@
 .flex {
   height: 100%;
-  min-height: 12rem;
-  max-height: 12rem;
+  min-height: 11rem;
+  max-height: 11rem;
   background-color: #f7f7f7;
   padding: 0rem 3.5rem;
   display: flex;
   align-items: center;
   border-bottom: 1px solid #e6eff5;;
+}
+
+@media (max-width: 1400px) {
+  .flex {
+    min-height: 7.5rem;
+    max-height: 7.5rem;
+    padding: 0rem 2rem;
+  }
 }
 
 .flex-search {
@@ -15,6 +23,11 @@
   justify-content: end;
   width: 100%;
   gap: 3rem;
+}
+@media (max-width: 1400px) {
+  .flex-search {
+    gap: 1.5rem;
+  }
 }
 
 input {
@@ -26,16 +39,33 @@ input {
   padding: 1rem;
   border-radius: 25px;
 }
+@media (max-width: 1400px) {
+  .svg_option {
+    min-height: 3rem;
+  }
+}
 
 .svg {
   min-height: 2rem;
   max-height: 2.5rem;
+}
+@media (max-width: 1400px) {
+  .svg {
+    min-height: 2rem;
+    max-height: 2rem;
+  }
 }
 
 .title {
   position: absolute;
   font-size: 35px;
   color: #222223;
+}
+
+@media (max-width: 1400px) {
+  .title {
+    font-size: 2.5rem;
+  }
 }
 
 .user {
@@ -48,6 +78,12 @@ input {
   justify-content: center;
   background-color: #b71752;
 }
+@media (max-width: 1400px) {
+  .user {
+    height: 3.5rem;
+    width: 3.5rem;
+  }
+}
 
 .user-text {
   display: flex;
@@ -56,6 +92,11 @@ input {
   margin: 0;
   line-height: 0;
   color: #fefffe;
+}
+@media (max-width: 1400px) {
+  .user-text {
+    font-size: 1.2rem;
+  }
 }
 
 .search-bar {
@@ -68,8 +109,20 @@ input {
 .search-bar label {
   padding: 1rem 0 1rem 2rem;
 }
+@media (max-width: 1400px) {
+  .search-bar label {
+    padding: 0.5rem 0 0.5rem 1rem;
+  }
+}
 .search-bar input {
   padding: 1rem 7rem 1rem 0;
+}
+@media (max-width: 1400px) {
+  .search-bar input,
+  .search-bar input::placeholder {
+    padding: 0.6rem 3.5rem 0.6rem 0;
+    font-size: 1.2rem;
+  }
 }
 .search-bar input::placeholder {
   color: #d8d9d8;

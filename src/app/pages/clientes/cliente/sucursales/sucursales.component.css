@@ -6,28 +6,44 @@
 }
 
 .sucursal {
+  box-sizing: border-box;
   display: grid;
   grid-template-columns: 7% repeat(2, 22%) repeat(2, 12%) 15%;
   gap: 1rem;
   min-width: 100%;
   min-height: 10rem;
-  max-height: 10rem;
   justify-content: space-between;
   background-color: #f7f7f7;
   border: 1px solid #eaeaea;
   border-radius: 18px;
   padding: 0 2rem;
 }
+@media (max-width: 1400px) {
+  .sucursal {
+    box-sizing: border-box;
+    grid-template-columns: 7% 15% 16% 12% 16% 18%;
+    min-height: 7.5rem;
+  }
+}
 
 .sucursal-campo {
+  max-width: 100%;
   display: flex;
   flex-direction: column;
-  margin-top: 2.5rem;
+  margin: auto 0;
   gap: 0.8rem;
 }
 
 .sucursal-campo h1 {
   font-weight: 600;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+@media (max-width: 1400px) {
+  .sucursal-campo h1 {
+    font-size: 1.2rem;
+  }
 }
 
 .sucursal-campo-estado {
@@ -39,8 +55,17 @@
 }
 
 .sucursal-campo p {
+  width: 100%;
   margin: 0;
   color: #be709b;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+@media (max-width: 1400px) {
+  .sucursal-campo p {
+    font-size: 1.3rem;
+  }
 }
 
 .table-title {
@@ -48,10 +73,15 @@
 }
 
 .estado {
-  margin-top: 0.6rem;
   width: 1.6rem;
   height: 1.6rem;
   border-radius: 50%;
+}
+@media (max-width: 1400px) {
+  .estado {
+    width: 1.2rem;
+    height: 1.2rem;
+  }
 }
 
 .cerrado {
@@ -74,10 +104,22 @@
   color: #4e4f4e;
   transition: 350ms;
 }
+@media (max-width: 1400px) {
+  .button {
+    font-size: 1.1rem;
+    padding: 0.45rem 1rem;
+  }
+}
 .button:hover {
  cursor: pointer;
  background-color: #b71752;
  color: #f7f7f7;
+}
+
+.navegation {
+  width: 100%;
+  display: flex;
+  justify-content: center;
 }
 
 .header-no-equipos {

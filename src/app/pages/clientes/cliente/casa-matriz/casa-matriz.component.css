@@ -20,6 +20,11 @@
   font-size: 3.5rem;
   color: #474747;
 }
+@media (max-width: 1400px) {
+  .casa-matriz {
+    font-size: 2rem;
+  }
+}
 
 .temp-title {
   color: #b6b6b6;
@@ -44,14 +49,26 @@
   gap: 0.5rem;
 }
 .information h1 {
-  font-size: 2rem;
+  font-size: 1.7rem;
   font-weight: 700;
   color: #474747;
 }
+@media (max-width: 1400px) {
+  .information h1 {
+    font-size: 1.2rem;
+  }
+}
 .information p {
   margin: 0;
-  line-height: 1rem;
-  font-size: 2rem;
+  font-size: 1.7rem;
   color: #474747;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+@media (max-width: 1400px) {
+  .information p {
+      font-size: 1.2rem;
+  }
 }
 

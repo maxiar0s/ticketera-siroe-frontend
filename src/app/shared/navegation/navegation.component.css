@@ -15,6 +15,11 @@ button {
   padding-left: 1.6rem;
   padding-right: 1.6rem;
 }
+@media (max-width: 1400px) {
+  button {
+    font-size: 1.15rem;
+  }
+}
 
 button:hover {
   cursor: pointer;
