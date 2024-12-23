@@ -20,6 +20,7 @@ export class protegerRutaGuard {
   private tokenExpirado(token: string):boolean {
     try {
       const decoded:any = jwtDecode(token);
+      console.log(decoded);
       const tiempoActual = Math.floor(Date.now() / 1000);
       return decoded.exp < tiempoActual;
     } catch (error) {

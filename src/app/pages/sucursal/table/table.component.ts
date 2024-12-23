@@ -22,6 +22,8 @@ export class TableComponent {
   public paginas:      number = 1;
 
   public _option!: string;
+  private idSucursal?: string;
+  @Input() estado?: boolean;
   // Oculta la informacion hasta que se carga
   public obtainedEquipments: boolean = false;
 
@@ -42,9 +44,9 @@ export class TableComponent {
     private loaderService: LoaderService
   ) {  }
 
-  ngOnInit() {
-    this.cambiarSucursal();
-  }
+  // ngOnInit() {
+  //   this.cambiarSucursal();
+  // }
 
   abrirModal(id: number) {
     this.selectedEquipoId = id;
@@ -69,6 +71,12 @@ export class TableComponent {
         this.errorMessage = 'Error al modificadar equipo: ' + error;
       }
     })
+  }
+
+  @Input()
+  set idSelected(value: string) {
+    this.idSucursal = value;
+    this.cambiarSucursal();
   }
 
   @Input()

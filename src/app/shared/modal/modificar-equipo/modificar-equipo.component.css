@@ -158,7 +158,8 @@
 }
 
 button {
-  padding: 1rem 1.5rem;
+  padding: 1.2rem 5rem;
+  font-size: 1.7rem;
   border-radius: 25px;
   cursor: pointer;
   border: 0;

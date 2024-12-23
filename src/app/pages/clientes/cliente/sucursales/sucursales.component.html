@@ -3,7 +3,9 @@
     <!-- Estado Sucursal -->
     <div class="sucursal-campo sucursal-campo-estado">
       <h1 class="table-title">Estado</h1>
-      <div [ngClass]="sucursal.habilitado ? 'estado abierto' : 'estado cerrado'"></div>
+      <div class="estado" [ngClass]="sucursal.estado === 1 ? 'abierto' :
+                      sucursal.estado === 2 ? 'pendiente' :
+                      'cerrado'"></div>
     </div>
     <!-- Nombre Sucursal -->
     <div class="sucursal-campo sucursal-campo-texto">
@@ -26,7 +28,7 @@
       <p>{{ sucursal.equiposCount}} equipos registrados</p>
     </div>
     <div class="div-button">
-      <a [routerLink]="['/sucursal', sucursal.id]" routerLinkActive="router-link-active" class="button">Seleccionar sucursal</a>
+      <a [routerLink]="['/clientes', sucursal.clienteId ,'sucursal', sucursal.id]" routerLinkActive="router-link-active" class="button">Seleccionar sucursal</a>
     </div>
   </div>
 </section>

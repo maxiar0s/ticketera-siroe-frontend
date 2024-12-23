@@ -84,11 +84,14 @@
   }
 }
 
-.cerrado {
-  background-color: #ff4b4a;
-}
 .abierto {
   background-color: #1ec6b8;
+}
+.pendiente {
+  background-color: #ffeb4b;
+}
+.cerrado {
+  background-color: #ff4b4a;
 }
 
 .div-button {

@@ -2,6 +2,7 @@ export interface Equipo {
   id:                     number;
   numeroSecuencial:       number;
   codigoId:               string;
+  estado:                 number;
   tipo:                   string;
   fechaIngreso:           Date;
   departamento:           string;

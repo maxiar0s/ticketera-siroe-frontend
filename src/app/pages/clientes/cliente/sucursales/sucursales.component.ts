@@ -73,7 +73,6 @@ export class SucursalesComponent {
         next: (respuesta) => {
           this.loaderService.hideSection();
           const { sucursales, paginas } = respuesta;
-          console.log(sucursales);
           if(this._option == 'Todos los ingresos') {
             this.paginas = paginas;
             this.sucursales = sucursales;

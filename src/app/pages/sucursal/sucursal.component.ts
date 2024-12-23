@@ -20,6 +20,7 @@ export class SucursalComponent {
   public Option:string = 'Todos los ingresos';
 
   public sucursal?: Sucursal;
+  public estado?: boolean;
   public headerText?: boolean;
   public id: string = '';
 
@@ -32,30 +33,29 @@ export class SucursalComponent {
 
   ngOnInit() {
     this.route.params.subscribe(params => {
-      const id = params['id']
+      const id = params['id'];
+      const idCliente = params['idCliente'];
       this.id = id;
       this.apiService.sucursal(id).subscribe({
         next: (respuesta) => {
-          this.sucursal = respuesta;
-          if(this.sucursal) {
-            this.signalService.updateData(this.sucursal?.Cliente.razonSocial!);
-          } else {
-            this.signalService.updateData('');
+          console.log(respuesta);
+          if(!respuesta) {
+            this.router.navigate([`/clientes/${idCliente}`]);
           }
-          this.headerText = true;
-        },
-        error: (error) => {
-          console.error('Error al obtener la sucursal', error);
-          this.router.navigate(['/clientes']);
-        }
-      })
-    })
-
-    this.route.params.subscribe(params => {
-      const id = params['id']
-      this.apiService.sucursal(id).subscribe({
-        next: (respuesta) => {
-          this.sucursal = respuesta;
+          else {
+            this.sucursal = respuesta;
+            if(this.sucursal) {
+              if(this.sucursal.estado !== 3) {
+                this.estado = true;
+              } else {
+                this.estado = false;
+              }
+              this.signalService.updateData(this.sucursal?.Cliente.razonSocial!);
+            } else {
+              this.signalService.updateData('');
+            }
+            this.headerText = true;
+          }
         },
         error: (error) => {
           console.error('Error al obtener la sucursal', error);

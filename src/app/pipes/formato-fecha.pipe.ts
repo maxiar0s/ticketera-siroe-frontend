@@ -14,8 +14,7 @@ export class FormatoFechaPipe implements PipeTransform {
       throw new Error('Formato de fecha inválido.');
     }
 
-    const [anio, dia, mes] = partes;
+    const [anio, mes, dia] = partes;
     return `${dia}/${mes}/${anio}`;
   }
-
 }

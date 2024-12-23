@@ -1,6 +1,6 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { catchError, Observable, throwError } from 'rxjs';
+import { catchError, Observable, of, throwError } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -14,11 +14,14 @@ export class ApiService {
   ) {}
 
   login(data: any):Observable<any> {
-    const endpoint = 'login';
+    const endpoint = 'auth/login';
     const url = `${this.url}/${endpoint}`
     return this.http.post<any>(url, data)
       .pipe(
-        catchError(this.handleError)
+        catchError((error) => {
+          console.error(error);
+          return of(null);
+        })
       );
   }
 
@@ -107,9 +110,11 @@ export class ApiService {
   // Metodos principales
   getInformation(endpoint: string) {
     const url = `${this.url}/${endpoint}`;
-    return this.http.get<any>(url)
-    .pipe(
-      catchError(this.handleError)
+    return this.http.get<any>(url).pipe(
+      catchError((error) => {
+        console.error(error);
+        return of(null);
+      })
     );
   }
 
@@ -117,17 +122,10 @@ export class ApiService {
     const url = `${this.url}/${endpoint}`;
     return this.http.post<any>(url, data)
       .pipe(
-        catchError(this.handleError)
+        catchError((error) => {
+          console.error(error);
+          return of(null);
+        })
       );
-  }
-
-  private handleError(error: HttpErrorResponse) {
-    let errorMessage = 'Ocurrió un error desconocido.';
-    if (error.error instanceof ErrorEvent) {
-      errorMessage = `Error: ${error.error.message}`;
-    } else {
-      errorMessage = `Código de Error: ${error.status}\nMensaje: ${error.message}`;
-    }
-    return throwError(errorMessage);
   }
 }

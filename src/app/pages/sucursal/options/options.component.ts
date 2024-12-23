@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { ApiService } from '../../../services/api.service';
 import { CommonModule } from '@angular/common';
 import { CrearEquipoComponent } from '../../../shared/modal/crear-equipo/crear-equipo.component';
@@ -12,6 +12,7 @@ import { concatMap, from } from 'rxjs';
   styleUrl: './options.component.css'
 })
 export class ButtonsComponent {
+  @Input() estado?: boolean;
   public isModalVisible: boolean = false;
   public successMessage: string = '';
   public errorMessage: string = '';

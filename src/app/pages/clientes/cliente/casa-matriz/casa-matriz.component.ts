@@ -27,8 +27,13 @@ export class CasaMatrizComponent {
       const id = params['id']
       this.apiService.client(id).subscribe({
         next: (respuesta) => {
-          this.cliente = respuesta;
-          this.obtainedClient = true;
+          if(respuesta.length === 0) {
+            this.router.navigate(['/clientes']);
+          }
+          else {
+            this.cliente = respuesta;
+            this.obtainedClient = true;
+          }
         },
         error: (error) => {
           console.error('Error al obtener la sucursal', error);

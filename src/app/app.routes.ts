@@ -7,15 +7,20 @@ export const routes: Routes = [
         redirectTo: 'dashboard',
         pathMatch: 'full'
     },
+    // Auth routes
     {
       path: 'auth',
       loadChildren: () => import('./pages/auth/auth.module').then( m => m.routes),
     },
+
+    // Index
     {
       path: 'dashboard',
       canActivate: [protegerRutaGuard],
       loadComponent: () => import('./pages/dashboard/dashboard.component').then( m => m.DashboardComponent ),
     },
+
+    // Clientes
     {
       path: 'clientes',
       canActivate: [protegerRutaGuard],
@@ -26,16 +31,15 @@ export const routes: Routes = [
       canActivate: [protegerRutaGuard],
       loadComponent: () => import('./pages/clientes/cliente/cliente.component').then( m => m.ClienteComponent ),
     },
+
+    // Sucursal
     {
-      path: 'sucursal',
+      path: 'clientes/:idCliente/sucursal/:id',
       canActivate: [protegerRutaGuard],
       loadComponent: () => import('./pages/sucursal/sucursal.component').then( m => m.SucursalComponent ),
     },
-    {
-      path: 'sucursal/:id',
-      canActivate: [protegerRutaGuard],
-      loadComponent: () => import('./pages/sucursal/sucursal.component').then( m => m.SucursalComponent ),
-    },
+
+    // Conf
     {
       path: 'opciones',
       canActivate: [protegerRutaGuard],

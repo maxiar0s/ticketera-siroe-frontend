@@ -54,6 +54,7 @@
   width: 1.6rem;
   height: 1.6rem;
   border-radius: 50%;
+  margin: 0 auto;
 }
 @media (max-width: 1400px) {
   .estado {
@@ -61,13 +62,14 @@
     height: 1.1rem;
   }
 }
-.cerrado {
-  margin: 0 auto;
-  background-color: #ff4b4a;
-}
 .abierto {
-  margin: 0 auto;
   background-color: #1ec6b8;
+}
+.pendiente {
+  background-color: #ffeb4b;
+}
+.cerrado {
+  background-color: #ff4b4a;
 }
 
 .information-checkbox {
@@ -100,9 +102,6 @@
 .actions {
   all: unset;
 }
-.actions:hover {
-  cursor: pointer;
-}
 .svg {
   max-height: 2.5rem;
 }
@@ -110,6 +109,9 @@
   .svg {
     max-height: 1.8rem;
   }
+}
+.svg-cursor:hover {
+  cursor: pointer;
 }
 
 input[type="checkbox"] {

@@ -5,7 +5,7 @@
     <shared-loader></shared-loader>
 
     <!-- Resultados de clientes obtenidos -->
-    <div *ngIf="obtainedClients" class="grid-clients">
+    <div *ngIf="obtainedClients && clients.length > 0; else noClientes" class="grid-clients">
       <div *ngFor="let item of clients; let i = index" class="card-clients">
         <div class="card-body">
           <div class="card-body-grid">
@@ -28,7 +28,12 @@
         </div>
       </div>
     </div>
-    <div *ngIf="obtainedClients" class="navegation-section">
+
+    <ng-template #noClientes>
+      <p class="no-sucursales">No hay clientes registrados</p>
+    </ng-template>
+
+    <div *ngIf="obtainedClients && clients.length > 0" class="navegation-section">
       <shared-navegation [paginaActual]="paginaActual"
       [paginas]="paginas"
       (cambiarPagina)="cambiarPagina($event)"></shared-navegation>
