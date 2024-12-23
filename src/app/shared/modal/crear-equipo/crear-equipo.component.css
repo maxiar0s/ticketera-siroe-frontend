@@ -36,12 +36,18 @@
   font-size: 2rem;
   text-align: left;
 }
+@media (max-width: 1400px) {
+  .header-form {
+    font-size: 1.6rem;
+  }
+}
 
 .modal-body {
   padding: 2rem;
 }
 
 .description-form {
+  margin-bottom: 2rem;
   font-size: 1.3rem;
   color: #474747;
 }
@@ -60,6 +66,11 @@
   display: block;
   margin-bottom: 0.5rem;
 }
+@media (max-width: 1400px) {
+  .form-group label {
+    font-size: 1.2rem;
+  }
+}
 
 .form-group input,
 .form-group select {
@@ -68,6 +79,14 @@
   box-sizing: border-box;
   border-radius: 1.5rem;
   border: 1px solid #deebf2;
+  background-color: #fffefe;
+}
+@media (max-width: 1400px) {
+  .form-group input,
+  .form-group select {
+    padding: 0.8rem;
+    border-radius: 1rem;
+  }
 }
 
 .form-group input::placeholder {
@@ -105,7 +124,6 @@ button {
   padding: 1rem 1.5rem;
   border-radius: 25px;
   cursor: pointer;
-  font-weight: 600;
   border: 0;
 }
 

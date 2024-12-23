@@ -56,7 +56,6 @@ export class ModificarEquipoComponent {
 
         this.headerCharged = true;
         this.tipoEquipoActual = respuesta.tipo;
-        console.log(this.tipoEquipoActual)
         this.actualizarCamposDinamicos(this.tipoEquipoActual);
 
         this.camposDinamicos.forEach(campo => {

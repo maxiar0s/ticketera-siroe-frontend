@@ -20,6 +20,11 @@
   box-shadow: 0 5px 15px rgba(0,0,0,0.3);
   position: relative;
 }
+@media (max-width: 1400px) {
+  .modal-content {
+    margin: 5rem 0;
+  }
+}
 
 .modal-header {
   border-top-left-radius: 2rem;
@@ -41,10 +46,20 @@
   font-size: 2rem;
   text-align: left;
 }
+@media (max-width: 1400px) {
+  .header-form {
+    font-size: 1.6rem;
+  }
+}
 
 .modal-body {
   height: 100%;
   padding: 2rem;
+}
+@media (max-width: 1400px) {
+  .modal-body {
+    padding: 1rem 2rem;
+  }
 }
 
 .description-form {
@@ -73,6 +88,11 @@
 .form-group {
   margin-bottom: 1.5rem;
 }
+@media (max-width: 1400px) {
+  .form-group {
+    margin-bottom: 1rem;
+  }
+}
 
 .form-group:not(.full-width) {
   grid-column: span 1;
@@ -86,6 +106,11 @@
   display: block;
   margin-bottom: 0.5rem;
 }
+@media (max-width: 1400px) {
+  .form-group label {
+    font-size: 1.2rem;
+  }
+}
 
 .form-group input,
 .form-group textarea {
@@ -94,6 +119,14 @@
   box-sizing: border-box;
   border-radius: 1.5rem;
   border: 1px solid #deebf2;
+}
+@media (max-width: 1400px) {
+  .form-group input,
+  .form-group select,
+  .form-group textarea {
+    padding: 0.8rem;
+    border-radius: 1rem;
+  }
 }
 
 .comments {
@@ -129,7 +162,6 @@ button {
   border-radius: 25px;
   cursor: pointer;
   border: 0;
-  font-weight: 600;
 }
 
 button[type="submit"] {

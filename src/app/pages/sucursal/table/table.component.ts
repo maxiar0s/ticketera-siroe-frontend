@@ -6,33 +6,27 @@ import { ModificarEquipoComponent } from '../../../shared/modal/modificar-equipo
 import { LoaderComponent } from '../../../shared/loader/loader.component';
 import { LoaderService } from '../../../services/loader.service';
 import { FormatoFechaPipe } from '../../../pipes/formato-fecha.pipe';
+import { ActivatedRoute } from '@angular/router';
+import { NavegationComponent } from '../../../shared/navegation/navegation.component';
 
 @Component({
   selector: 'sucursal-table',
   standalone: true,
-  imports: [CommonModule, ModificarEquipoComponent, LoaderComponent, FormatoFechaPipe],
+  imports: [CommonModule, ModificarEquipoComponent, LoaderComponent, FormatoFechaPipe, NavegationComponent],
   templateUrl: './table.component.html',
   styleUrl: './table.component.css'
 })
 export class TableComponent {
   // Elementos para el paginador
-  public pagina:        number = 1;
-  public limit:        number = 5;
   public paginaActual: number = 1;
-  public offset:       number = ((this.paginaActual*this.limit) - this.limit);
   public paginas:      number = 1;
-  public total:        number = 10;
 
   public _option!: string;
   // Oculta la informacion hasta que se carga
   public obtainedEquipments: boolean = false;
-  @Output() hideNavegation = new EventEmitter<boolean>;
 
   // Arreglo de equipos
   public equipos: Equipo[] = [];
-  public equiposTodos!: Equipo[];
-  public equiposPendientes!: Equipo[];
-  public equiposTerminados!: Equipo[];
 
   @Input() id: string = '';
   public selectedEquipoId!: number;
@@ -44,23 +38,12 @@ export class TableComponent {
 
   constructor(
     private apiService: ApiService,
+    private route: ActivatedRoute,
     private loaderService: LoaderService
   ) {  }
 
   ngOnInit() {
-    this.loaderService.showSection();
-    this.apiService.equipmentsBySucursal(this.id, this.paginaActual, this._option).subscribe({
-      next: (respuesta) => {
-        this.equipos = respuesta;
-        this.equiposTodos = respuesta;
-        this.loaderService.hideSection();
-        this.obtainedEquipments = true;
-        this.hideNavegation.emit(true);
-      },
-      error: (error) => {
-        console.error('Error al crear cliente:', error);
-      }
-    })
+    this.cambiarSucursal();
   }
 
   abrirModal(id: number) {
@@ -91,59 +74,59 @@ export class TableComponent {
   @Input()
   set selectedOption(value: string) {
     this._option = value;
-    this.changeSelected();
+    this.paginaActual = 1;
+    this.cambiarSucursal();
   }
 
-  changeSelected() {
-    if(this._option === "Todos los ingresos") {
-      if (!Array.isArray(this.equiposTodos)) {
-        this.equipos = [this.equiposTodos];
-      } else {
-        this.equipos = this.equiposTodos;
-      }
-    }
+  cambiarSucursal() {
+    this.equipos = [];
+    this.loaderService.showSection();
+    this.obtainedEquipments = false;
 
-    else if(this._option === "Pendientes") {
-      if(this.equiposPendientes) {
-        if (!Array.isArray(this.equiposPendientes)) {
-          this.equipos = [this.equiposPendientes];
-        } else {
-          this.equipos = this.equiposPendientes;
-        }
-      } else {
-        this.apiService.equipmentsBySucursal(this.id, this.paginaActual, this._option).subscribe({
-          next: (respuesta) => {
-            this.loaderService.hideSection();
-            this.equipos = respuesta;
-            this.equiposPendientes = respuesta[1];
-            this.obtainedEquipments = true;
-          },
-          error: (error) => {
-            console.error('Error al obtener sucursales', error);
+    this.route.params.subscribe(params => {
+      const id = params['id']
+      this.apiService.equipmentsBySucursal(id, this.paginaActual, this._option).subscribe({
+        next: (respuesta) => {
+          const { equipos, paginas, total } = respuesta;
+          if(this._option == 'Todos los ingresos') {
+            this.equipos = equipos;
+            this.paginas = paginas;
+          } else if (this._option == 'Pendientes') {
+            this.equipos = equipos;
+            this.paginas = paginas;
+          } else {
+            this.equipos = equipos;
+            this.paginas = paginas;
           }
-        })
-      }
+          this.loaderService.hideSection();
+          this.obtainedEquipments = true;
+        },
+        error: (error) => {
+          console.error('Error al obtener sucursales', error);
+        }
+      })
+    })
+  }
 
-    } else {
-      if(this.equiposTerminados) {
-        if (!Array.isArray(this.equiposTerminados)) {
-          this.equipos = [this.equiposTerminados];
-        } else {
-          this.equipos = this.equiposTerminados;
-        }
-      } else {
-        this.apiService.equipmentsBySucursal(this.id, this.paginaActual, this._option).subscribe({
-          next: (respuesta) => {
-            this.loaderService.hideSection();
-            this.equipos = respuesta;
-            this.equiposTerminados = respuesta;
-            this.obtainedEquipments = true;
-          },
-          error: (error) => {
-            console.error('Error al obtener sucursales', error);
-          }
-        })
-      }
+  cambiarPagina(pagina: number):void {
+    if (pagina >= 1 && pagina <= this.paginas) {
+      this.paginaActual = pagina;
+      this.cambiarSucursal();
     }
   }
+
+  nextPage():void {
+    if (this.paginaActual < this.paginas) {
+      this.paginaActual++;
+      this.cambiarSucursal();
+    }
+  }
+
+  prevPage():void {
+    if (this.paginaActual > 1) {
+      this.paginaActual--;
+      this.cambiarSucursal();
+    }
+  }
+
 }

@@ -42,6 +42,7 @@
 }
 
 .text-color a p {
+  font-weight: 600;
   color: #b71752;
 }
 
@@ -105,7 +106,6 @@
 
 .a-color {
   color: #b6b7b7;
-  font-weight: 500;
 }
 
 @media (max-width: 1400px) {

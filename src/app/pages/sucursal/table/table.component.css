@@ -1,6 +1,5 @@
 .div-loader-equipments {
   position: relative;
-  min-height: 57vh;
 }
 
 .div-table {
@@ -8,6 +7,7 @@
   padding: 0.5rem;
   border-radius: 25px;
   color: #4f4f4f;
+  box-shadow: 0 1px 10px rgba(0, 0, 0, 0.07), 0 1px 20px rgba(0, 0, 0, 0.07);
 }
 
 .label-input {
@@ -16,17 +16,31 @@
   margin: 0.5rem 0;
 }
 
-.select-all {
-  margin-left: 1.5rem;
-}
-.select-all input {
-  margin-right: 1rem;
-}
-
 .table {
   width: 100%;
   text-align: center;
   padding: 1.5rem 2rem;
+  border-collapse: collapse;
+}
+
+.thead-properties {
+  text-align: center;
+}
+
+.thead-properties th {
+  padding: 0.7rem 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+@media (max-width: 1400px) {
+  .thead-properties th {
+    font-size: 1rem;
+  }
+}
+
+.row-border {
+  border-top: 1px solid #ebeff3;
 }
 
 .text-align-left {
@@ -41,6 +55,12 @@
   height: 1.6rem;
   border-radius: 50%;
 }
+@media (max-width: 1400px) {
+  .estado {
+    width: 1.1rem;
+    height: 1.1rem;
+  }
+}
 .cerrado {
   margin: 0 auto;
   background-color: #ff4b4a;
@@ -52,10 +72,17 @@
 
 .information-checkbox {
   max-width: 3.5rem;
-  min-width: 3.5rem;
 }
 .information-value {
   padding: 1rem 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+@media (max-width: 1400px) {
+  .information-value {
+    font-size: 1rem;
+  }
 }
 
 .information-actions {
@@ -63,6 +90,11 @@
   justify-content: center;
   gap: 3rem;
   align-items: center;
+}
+@media (max-width: 1400px) {
+  .information-actions {
+    gap: 1rem;
+  }
 }
 
 .actions {
@@ -74,8 +106,35 @@
 .svg {
   max-height: 2.5rem;
 }
+@media (max-width: 1400px) {
+  .svg {
+    max-height: 1.8rem;
+  }
+}
 
 input[type="checkbox"] {
-  min-width: 1.5rem;
-  min-height: 1.5rem;
+  max-width: 1.5rem;
+  max-height: 1.5rem;
+}
+@media (max-width: 1400px) {
+  input[type="checkbox"] {
+    max-width: 1.25rem;
+    max-height: 1.25rem;
+  }
+}
+
+.no-equipos {
+  padding: 2rem 0;
+}
+@media (max-width: 1400px) {
+  .no-equipos {
+    font-size: 1.2rem;
+  }
+}
+
+.navegation-section {
+  width: 100%;
+  margin-top: 2rem;
+  display: flex;
+  justify-content: center;
 }

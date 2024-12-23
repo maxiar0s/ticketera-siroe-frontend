@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 import { HeaderComponent } from './header/header.component';
 import { TableComponent } from './table/table.component';
-import { NavegationComponent } from '../../shared/navegation/navegation.component';
 import { SignalService } from '../../services/signal.service';
 import { ApiService } from '../../services/api.service';
 import { Sucursal } from '../../interfaces/sucursal.interface';
@@ -13,7 +12,7 @@ import { OptionsComponent } from '../../shared/options/options.component';
 @Component({
   selector: 'sucursal',
   standalone: true,
-  imports: [HeaderComponent, TableComponent, NavegationComponent, CommonModule, ButtonsComponent, OptionsComponent],
+  imports: [HeaderComponent, TableComponent, CommonModule, ButtonsComponent, OptionsComponent],
   templateUrl: './sucursal.component.html',
   styleUrl: './sucursal.component.css'
 })
@@ -23,7 +22,6 @@ export class SucursalComponent {
   public sucursal?: Sucursal;
   public headerText?: boolean;
   public id: string = '';
-  public hideNavegation?: boolean;
 
   constructor(
     private apiService: ApiService,
@@ -69,9 +67,5 @@ export class SucursalComponent {
 
   selectedOption(value: string) {
     this.Option = value;
-  }
-
-  hideNav(value: boolean) {
-    this.hideNavegation = value;
   }
 }

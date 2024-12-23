@@ -1,4 +1,4 @@
-<section *ngIf="obtainedSucursales && sucursales; else noSucursales" class="sucursales">
+<section *ngIf="obtainedSucursales && sucursales.length > 0; else noSucursales" class="sucursales">
   <div *ngFor="let sucursal of sucursales" class="sucursal">
     <!-- Estado Sucursal -->
     <div class="sucursal-campo sucursal-campo-estado">
@@ -23,7 +23,7 @@
     <!-- Nombre Sucursal -->
     <div class="sucursal-campo sucursal-campo-texto">
       <h1 class="table-title">Cantidad equipos</h1>
-      <p>50 equipos registrados</p>
+      <p>{{ sucursal.equiposCount}} equipos registrados</p>
     </div>
     <div class="div-button">
       <a [routerLink]="['/sucursal', sucursal.id]" routerLinkActive="router-link-active" class="button">Seleccionar sucursal</a>
@@ -31,14 +31,12 @@
   </div>
 </section>
 
-<div *ngIf="obtainedSucursales" class="navegation">
+<div *ngIf="obtainedSucursales && sucursales.length > 0" class="navegation-section">
   <shared-navegation [paginaActual]="paginaActual"
   [paginas]="paginas"
   (cambiarPagina)="cambiarPagina($event)"></shared-navegation>
 </div>
 
 <ng-template #noSucursales>
-  <tr>
-    <td colspan="8" class="no-equipos">No hay sucursales registradas</td>
-  </tr>
+  <p class="no-sucursales">No hay sucursales registradas</p>
 </ng-template>

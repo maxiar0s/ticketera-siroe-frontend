@@ -79,21 +79,19 @@ export class ApiService {
     return this.getInformation(endpoint);
   }
 
-  equipmentsBySucursal(id: string, pagina:number, option: string):Observable<any> {
-    if (option === 'Terminados') {
+  equipmentsBySucursal(id: string, pagina: number, option: string):Observable<any> {
+    if(option === 'Terminados') {
       const endpoint = `sucursal/` + id + `/equipos/terminados?pagina=${pagina}`;
       return this.getInformation(endpoint);
     }
-    else if(option === 'Pendientes') {
+    if(option === 'Pendientes') {
       const endpoint = `sucursal/` + id + `/equipos/pendientes?pagina=${pagina}`;
       return this.getInformation(endpoint);
-    } else {
+    }
+    else {
       const endpoint = `sucursal/` + id + `/equipos?pagina=${pagina}`;
       return this.getInformation(endpoint);
     }
-
-    const endpoint = `sucursal/` + id + `/equipos`;
-    return this.getInformation(endpoint);
   }
 
   equipmentsByCasaMatriz(id: string):Observable<any> {
@@ -106,7 +104,7 @@ export class ApiService {
     return this.getInformation(endpoint);
   }
 
-  // METHOD GET
+  // Metodos principales
   getInformation(endpoint: string) {
     const url = `${this.url}/${endpoint}`;
     return this.http.get<any>(url)
@@ -115,9 +113,7 @@ export class ApiService {
     );
   }
 
-  // METHOD POST
   postInformation(data: any, endpoint: string) {
-    console.log(data)
     const url = `${this.url}/${endpoint}`;
     return this.http.post<any>(url, data)
       .pipe(

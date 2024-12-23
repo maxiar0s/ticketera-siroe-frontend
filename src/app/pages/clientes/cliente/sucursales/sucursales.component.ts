@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { ApiService } from '../../../../services/api.service';
 import { Sucursal } from '../../../../interfaces/sucursal.interface';
@@ -16,23 +16,15 @@ import { NavegationComponent } from '../../../../shared/navegation/navegation.co
   styleUrl: './sucursales.component.css'
 })
 export class SucursalesComponent {
+  // Elementos para el paginador
   public paginaActual:      number = 1;
   public paginas:           number = 1;
-  // Elementos para el paginador (Seccion todas)
-  public totalTodas:        number = 10;
-  // Elementos para el paginador (Seccion Pendientes)
-  public totalPendientes:   number = 10;
-  // Elementos para el paginador (Seccion Terminados)
-  public totalTerminados:   number = 10;
 
   // Filtro de sucursales
   private _option!:    string;
 
   // Arreglo de sucursales
   public sucursales:            Sucursal[] = [];
-  public sucursalesTodas!:       Sucursal[];
-  public sucursalesPendientes!:  Sucursal[];
-  public sucursalesTerminados!:  Sucursal[];
   public obtainedSucursales:    boolean = false;
 
   constructor(
@@ -43,7 +35,6 @@ export class SucursalesComponent {
   ) {  }
 
   ngOnInit() {
-    this.loaderService.showSection()
     this.signalService.updateData('');
     this.route.queryParams.subscribe(params => {
       this.paginaActual = params['pagina'] ? +params['pagina'] : 1;
@@ -81,22 +72,16 @@ export class SucursalesComponent {
       this.apiService.sucursales(id, this.paginaActual, this._option).subscribe({
         next: (respuesta) => {
           this.loaderService.hideSection();
-          const { sucursales, paginas, total } = respuesta;
-
+          const { sucursales, paginas } = respuesta;
+          console.log(sucursales);
           if(this._option == 'Todos los ingresos') {
             this.paginas = paginas;
-            this.totalTodas = total;
-
             this.sucursales = sucursales;
           } else if (this._option == 'Pendientes') {
             this.paginas = paginas;
-            this.totalPendientes = total;
-
             this.sucursales = sucursales;
           } else {
             this.paginas = paginas;
-            this.totalTerminados = total;
-
             this.sucursales = sucursales;
           }
           this.loaderService.hideSection();

@@ -1,15 +1,19 @@
 <div class="navegation">
-  <button class="flex-prev-next" (click)="nextPage()" [disabled]="paginaActual <= 1">
-    <img src="/assets/svg/arrow-left.svg" alt="arrow_l_svg" class="arrow-svg">
+  <button class="prev-arrow" (click)="prevPage()" [disabled]="paginaActual <= 1">
+    <img src="/assets/svg/left-arrow.svg" alt="arrow_l_svg" class="arrow-svg">
+  </button>
+  <button class="flex-prev-button" (click)="prevPage()" [ngClass]="{'hidden': paginaActual <= 1 }">
     <span>Anterior</span>
   </button>
 
   <button *ngFor="let pagina of getPaginaArray()"
   (click)="cambiar(pagina)"
-  [class.active]="pagina === paginaActual" [disabled]="paginaActual == pagina">{{pagina}}</button>
+  [class.active]="pagina === paginaActual" [disabled]="pagina === paginaActual">{{pagina}}</button>
 
-  <button class="flex-prev-next" (click)="nextPage()" [disabled]="paginaActual >= paginas">
+  <button class="flex-next-button" (click)="nextPage()" [ngClass]="{'hidden': paginaActual >= paginas}">
     <span>Siguiente</span>
-    <img src="/assets/svg/arrow-right.svg" alt="arrow_r_svg" class="arrow-svg">
+  </button>
+  <button class="next-arrow" (click)="nextPage()" [disabled]="paginaActual >= paginas">
+    <img src="/assets/svg/forward-arrow.svg" alt="arrow_r_svg" class="arrow-svg">
   </button>
 </div>

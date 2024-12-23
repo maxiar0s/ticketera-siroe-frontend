@@ -37,12 +37,30 @@ button.active {
   color: white;
 }
 
-.flex-prev-next {
+.flex-prev-button {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  padding-left: 0;
+
+}
+
+.flex-next-button {
+  display: flex;
+  align-items: center;
+  padding-right: 0;
 }
 
 .arrow-svg {
   height: 14px;
+}
+
+.hidden {
+  display: none;
+}
+
+.prev-arrow {
+  padding-right: 0.7rem;
+}
+.next-arrow {
+  padding-left: 0.7rem;
 }

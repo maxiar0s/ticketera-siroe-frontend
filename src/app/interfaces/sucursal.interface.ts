@@ -11,4 +11,5 @@ export interface Sucursal {
   habilitado:        boolean;
   clienteId:         string;
   Cliente:           Cliente;
+  equiposCount?: number;
 }

@@ -8,6 +8,11 @@
   font-size: 2.5rem;
   color: #474747;
 }
+@media (max-width: 1400px) {
+  .title {
+    font-size: 1.7rem;
+  }
+}
 
 .flex-buttons {
   display: flex;
@@ -15,14 +20,26 @@
   align-items: center;
   justify-content: end;
 }
+@media (max-width: 1400px) {
+  .flex-buttons {
+    gap: 0.7rem;
+  }
+}
 
 .inner-button {
   all: unset;
   display: flex;
+  align-items: center;
   border-radius: 25px;
   padding: 0.6rem 3rem;
   background-color: #ebebeb;
   color: #474747;
+}
+@media (max-width: 1400px) {
+  .inner-button {
+    font-size: 1.2rem;
+    padding: 0.3rem 1rem;
+  }
 }
 .inner-button:hover {
   cursor: pointer;

@@ -126,7 +126,19 @@
   width: 100%;
 }
 
-.no-equipos {
-  padding-left: 4rem;
+.no-sucursales {
+  margin-left: 4rem;
   color: #4e4f4e;
+}
+@media (max-width: 1400px) {
+  .no-sucursales {
+    font-size: 1.4rem;
+  }
+}
+
+.navegation-section {
+  width: 100%;
+  margin-top: 2rem;
+  display: flex;
+  justify-content: center;
 }
