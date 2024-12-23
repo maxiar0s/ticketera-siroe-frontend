@@ -11,7 +11,7 @@ import { RouterModule } from '@angular/router';
 })
 export class NavegationComponent {
   @Input() paginaActual: number = 1;
-  @Input() paginas: number = 1;
+  @Input() paginas:      number = 1;
   @Output() cambiarPagina: EventEmitter<number> = new EventEmitter<number>();
 
   getPaginaArray(): number[] {

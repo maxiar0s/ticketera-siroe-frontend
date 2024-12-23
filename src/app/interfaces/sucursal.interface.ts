@@ -9,7 +9,7 @@ export interface Sucursal {
   sucursal:          string;
   fechaIngreso:      Date;
   direccion:         string;
-  clienteId:         string;
-  Cliente:           Cliente;
-  equiposCount?: number;
+  casaMatrizId:      string;
+  casaMatriz:           Cliente;
+  equiposCount?:     number;
 }

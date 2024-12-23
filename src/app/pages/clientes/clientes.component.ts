@@ -18,12 +18,10 @@ import { NavegationComponent } from "../../shared/navegation/navegation.componen
 })
 export class ClientesComponent {
   // Elementos para el paginador
-  public pagina:        number = 1;
-  public paginaActual: number = 1;
-  public paginas:      number = 1;
-  public total:        number = 10;
+  public paginaActual:  number = 1;
+  public paginas:       number = 1;
 
-  public clients:Cliente[] = [];
+  public casasMatricez:Cliente[] = [];
   public obtainedClients: boolean = false;
 
   public isModalVisible: boolean = false;
@@ -35,35 +33,11 @@ export class ClientesComponent {
     private signalService: SignalService,
     public loaderService: LoaderService,
     private route: ActivatedRoute,
-    private router: Router
   ) {}
 
   ngOnInit(): void {
-    this.loaderService.showSection();
     this.signalService.updateData('Clientes');
-
-    this.route.queryParams.subscribe(params => {
-      this.pagina = params['pagina'] ? +params['pagina'] : 1;
-      this.apiService.clients(this.pagina).subscribe({
-        next: (respuesta) => {
-          // Loader
-          this.loaderService.hideSection();
-
-          // Elementos de la respuesta
-          const { clientes, paginaActual, paginas, total } = respuesta;
-          this.clients      = clientes;
-          this.paginaActual = paginaActual;
-          this.paginas      = paginas;
-          this.total        = total;
-
-          this.obtainedClients = true;
-        },
-        error: (error) => {
-          console.error('Error al crear cliente:', error);
-        }
-      })
-    })
-
+    this.cargarClientes();
   }
 
   abrirModal() {
@@ -91,12 +65,16 @@ export class ClientesComponent {
   }
 
   cargarClientes():void {
+    this.obtainedClients = false;
+    this.loaderService.showSection();
     this.apiService.clients(this.paginaActual)
-      .subscribe(response => {
-        console.log(response.clientes);
-        this.clients = response.clientes;
-        this.total = response.total;
-        this.paginas = response.paginas;
+      .subscribe(respuesta => {
+        const { paginas, clientes } = respuesta
+        this.loaderService.hideSection();
+        this.obtainedClients = true;
+
+        this.casasMatricez = clientes;
+        this.paginas = paginas;
       });
   }
 

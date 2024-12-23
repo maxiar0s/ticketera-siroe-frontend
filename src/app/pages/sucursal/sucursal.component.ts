@@ -50,7 +50,7 @@ export class SucursalComponent {
               } else {
                 this.estado = false;
               }
-              this.signalService.updateData(this.sucursal?.Cliente.razonSocial!);
+              this.signalService.updateData(this.sucursal?.casaMatriz.razonSocial!);
             } else {
               this.signalService.updateData('');
             }
