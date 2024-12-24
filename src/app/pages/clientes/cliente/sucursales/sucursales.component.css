@@ -27,7 +27,7 @@
 }
 
 .sucursal-campo {
-  max-width: 100%;
+  min-width: 100%;
   display: flex;
   flex-direction: column;
   margin: auto 0;
@@ -42,7 +42,7 @@
 }
 @media (max-width: 1400px) {
   .sucursal-campo h1 {
-    font-size: 1.2rem;
+    font-size: 1.1rem;
   }
 }
 
@@ -55,7 +55,7 @@
 }
 
 .sucursal-campo p {
-  width: 100%;
+  min-width: 100%;
   margin: 0;
   color: #be709b;
   overflow: hidden;
