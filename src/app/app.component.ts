@@ -1,8 +1,9 @@
 import { Component } from '@angular/core';
-import { RouterOutlet, Router, NavigationEnd } from '@angular/router';
+import { RouterOutlet, Router } from '@angular/router';
 import { SideMenuComponent } from './shared/side-menu/side-menu.component';
 import { TopBarComponent } from './shared/top-bar/top-bar.component';
 import { CommonModule } from '@angular/common';
+import { AuthService } from './services/auth.service';
 
 @Component({
   selector: 'app-root',
@@ -12,14 +13,10 @@ import { CommonModule } from '@angular/common';
   styleUrl: './app.component.css'
 })
 export class AppComponent {
-  showLayout = true;
   title = 'front-siroe-soporte';
 
-  constructor(private router: Router) {
-    this.router.events.subscribe((event) => {
-      if (event instanceof NavigationEnd) {
-        this.showLayout = !event.url.startsWith('/auth/login');
-      }
-    });
+  constructor(
+    public authService: AuthService,
+    private router: Router) {
   }
 }

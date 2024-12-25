@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { ApiService } from '../../../services/api.service';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
+import { AuthService } from '../../../services/auth.service';
 
 @Component({
   selector: 'app-login',
@@ -20,6 +21,7 @@ export class LoginComponent {
   })
 
   constructor(
+    private authService: AuthService,
     private apiService: ApiService,
     private fb: FormBuilder,
     private router: Router
@@ -30,9 +32,11 @@ export class LoginComponent {
 
     this.apiService.login(this.loginForm.value).subscribe({
       next: (respuesta) => {
-        console.log(respuesta);
-        localStorage.setItem('token', respuesta.token);
-        this.router.navigate(['/dashboard']);
+        if(respuesta.token) {
+          localStorage.setItem('token', respuesta.token);
+          this.authService.userSigned.set(true);
+          this.router.navigate(['/dashboard']);
+        } else return;
       },
       error: (error) => {
         this.errorMessage = true;

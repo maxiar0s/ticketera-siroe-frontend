@@ -39,7 +39,7 @@
         <div class="left-div-center" [ngClass]="{'active background-color text-color': currentGroup == item.ruta}">
           <!-- Logout Sidebar -->
           <div class="route-actived"></div>
-          <a [routerLink]="[item.ruta]" [ngClass]="{'open': activeGroup(item.ruta)}" (click)="routeActive($event, item.ruta)" routerLinkActive="router-link-active" class="a-routerlink">
+          <a (click)="item.nombre === 'Cerrar sesión' ? cerrarSesion() : ''" [routerLink]="[item.ruta]" [ngClass]="{'open': activeGroup(item.ruta)}" (click)="routeActive($event, item.ruta)" routerLinkActive="router-link-active" class="a-routerlink">
             <img [src]="'/assets/svg/'+item.svg+(currentGroup.includes(item.ruta) ? '-routed' : '')+'.svg'" [alt]="item.svg+'_SVG'" class="menu-svg">
             <a class="a-color">{{ item.nombre }}</a>
           </a>

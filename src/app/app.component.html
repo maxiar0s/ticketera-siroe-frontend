@@ -1,11 +1,16 @@
-<div *ngIf="showLayout" class="main-container index">
-  <shared-side-menu class="menu"></shared-side-menu>
-  <div class="content">
-      <shared-top-bar></shared-top-bar>
-      <router-outlet></router-outlet>
+@if (authService.userSigned()) {
+  <div class="main-container index">
+    <shared-side-menu class="menu"></shared-side-menu>
+    <div class="content">
+        <shared-top-bar></shared-top-bar>
+        <router-outlet></router-outlet>
+    </div>
   </div>
-</div>
+}
+@else {
+  <div class="login-container">
+    <router-outlet></router-outlet>
+  </div>
+}
 
-<div *ngIf="!showLayout" class="login-container">
-  <router-outlet></router-outlet>
-</div>
+

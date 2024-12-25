@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, signal } from '@angular/core';
 import { jwtDecode } from 'jwt-decode';
 import { BehaviorSubject } from 'rxjs';
 
@@ -13,6 +13,7 @@ interface Token {
 })
 export class AuthService {
   private key = 'token';
+  userSigned = signal(false);
 
   constructor() { }
 
@@ -58,5 +59,7 @@ export class AuthService {
   // Método para cerrar sesión
   eliminarToken(): void {
     localStorage.removeItem(this.key);
+    this.userSigned.set(false);
   }
+
 }

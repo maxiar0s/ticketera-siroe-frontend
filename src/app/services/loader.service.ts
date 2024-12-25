@@ -7,8 +7,8 @@ export class LoaderService {
 
   constructor() { }
 
+  // Para la carga de secciones asincronas
   loadingSection = signal(false);
-  loadingModal = signal(false);
 
   showSection(){
     this.loadingSection.set(true);
@@ -17,6 +17,9 @@ export class LoaderService {
   hideSection(){
     this.loadingSection.set(false);
   }
+
+  // Para formularios modales
+  loadingModal = signal(false);
 
   showModal(){
     this.loadingModal.set(true);

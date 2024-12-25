@@ -7,7 +7,7 @@
   },
   {
     "nombre": "Cerrar sesión",
-    "ruta": "/logout",
+    "ruta": "/auth/login",
     "svg": "cerrar-sesion",
     "subGrupo": []
   }

@@ -4,6 +4,7 @@ import { Router, RouterModule } from '@angular/router';
 import sideMenuJSON_Admin from './side-menu-options-admin.json';
 import sideMenuJSON_Tecnico from './side-menu-options.json';
 import sideLogoutMenuJSON from './side-menu-logout.json';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'shared-side-menu',
@@ -19,12 +20,21 @@ export class SideMenuComponent {
   public sideMenuJSON = sideMenuJSON_Tecnico;
   public sideLogoutMenuJSON = sideLogoutMenuJSON;
 
-  constructor(private renderer: Renderer2, private router: Router, private location: Location) {}
+  constructor(
+    private authService: AuthService,
+    private renderer: Renderer2,
+    private router: Router,
+    private location: Location
+  ) {}
 
-  ngOnInit(): void {
+  ngOnInit():void {
     const path = this.location.path();
     this.currentGroup = path;
     this.currentSubGroup = path;
+  }
+
+  cerrarSesion():void {
+    this.authService.eliminarToken();
   }
 
   routeActive(event: MouseEvent, route: string):void {
@@ -40,11 +50,11 @@ export class SideMenuComponent {
     this.currentGroup = route;
   }
 
-  activeGroup(route: any): boolean {
+  activeGroup(route: any):boolean {
     return this.currentGroup == route;
   }
 
-  activeSubGroup(route:string): void {
+  activeSubGroup(route:string):void {
     this.currentSubGroup =  route;
   }
 }
