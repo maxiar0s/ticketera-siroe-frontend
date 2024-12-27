@@ -32,7 +32,6 @@ export class ClientesComponent {
     private apiService: ApiService,
     private signalService: SignalService,
     public loaderService: LoaderService,
-    private route: ActivatedRoute,
   ) {}
 
   ngOnInit(): void {

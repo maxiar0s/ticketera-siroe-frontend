@@ -4,6 +4,7 @@
 }
 .options button {
   font-weight: 500;
+  font-size: 1.4rem;
   padding: 1rem 4rem;
   position: relative;
 }

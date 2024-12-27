@@ -3,7 +3,7 @@
     <img src="/assets/img/siroe-logo.png" alt="siroe_logo" class="img-logo">
     <div></div>
     <div *ngIf="errorMessage" class="error-header error">
-      Correo electronico o contraseña incorrecta, intente nuevamente.
+      Correo electrónico o contraseña incorrecta, intente nuevamente.
     </div>
     <form [formGroup]="loginForm" (submit)="postLogin()" class="form-gap">
       <div class="flex-input margin-bottom">
@@ -20,7 +20,8 @@
           Contraseña invalida.
         </div>
       </div>
-      <button type="submit" class="btn-login">Iniciar sesión</button>
+      <button *ngIf="!logging" [disabled]="loginForm.invalid" type="submit" [ngClass]="{'invalid-form': loginForm.invalid, 'valid-form': loginForm.valid}" class="btn-login">Iniciar sesión</button>
+      <button *ngIf="logging" class="btn-login"><div class="spinner"></div></button>
     </form>
   </div>
 </div>

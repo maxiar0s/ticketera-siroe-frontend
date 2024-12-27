@@ -1,38 +1,42 @@
 [
   {
+    "id": 1,
     "nombre": "Dashboard",
-    "ruta": "/dashboard",
+    "route": "/dashboard",
     "svg": "dashboard",
-    "subGrupo": []
+    "subItem": []
   },
   {
+    "id": 2,
     "nombre": "Clientes",
-    "ruta": "/clientes",
+    "route": "/clientes",
     "svg": "clientes",
-    "subGrupo": [
+    "subItem": [
       {
-      "nombre": "Equipos",
-      "ruta": "",
-      "svg": "equipos"
+        "nombre": "Equipos",
+        "route": "",
+        "svg": "equipos"
       }
     ]
   },
   {
+    "id": 3,
     "nombre": "Tipo de equipo ",
-    "ruta": "/tipo-equipo",
+    "route": "/tipo-equipo",
     "svg": "dashboard",
-    "subGrupo": [
+    "subItem": [
       {
-      "nombre": "Añadir equipo",
-      "ruta": "/añadir-equipo",
-      "svg": "equipos"
+        "nombre": "Añadir equipo",
+        "route": "/añadir-equipo",
+        "svg": "equipos"
       }
     ]
   },
   {
+    "id": 4,
     "nombre": "Inventario",
-    "ruta": "inventario",
+    "route": "inventario",
     "svg": "inventario",
-    "subGrupo": []
+    "subItem": []
   }
 ]

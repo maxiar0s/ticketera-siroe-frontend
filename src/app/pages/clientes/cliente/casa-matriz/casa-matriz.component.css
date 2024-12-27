@@ -19,7 +19,7 @@
 
 .casa-matriz {
   box-sizing: border-box;
-  font-size: 3.5rem;
+  font-size: 3rem;
   color: #474747;
 }
 @media (max-width: 1400px) {
@@ -43,7 +43,7 @@
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
-  gap: 1rem;
+  gap: 1.5rem;
 }
 
 .information {
@@ -55,7 +55,7 @@
 
 .information h1 {
   display: flex; /* Añadido para convertir h1 en flex container */
-  font-size: 1.7rem;
+  font-size: 1.4rem;
   width: 100%;
   font-weight: 700;
   color: #474747;
@@ -74,7 +74,6 @@
   flex: 1; /* Ocupa el espacio restante */
   margin-left: 0.5rem; /* Espacio entre el texto y el span */
   font-weight: 500;
-  font-size: 1.7rem;
   color: #474747;
   overflow: hidden;
   white-space: nowrap;

@@ -5,7 +5,7 @@
 }
 
 .title {
-  font-size: 2.5rem;
+  font-size: 2.25rem;
   color: #474747;
 }
 @media (max-width: 1400px) {
@@ -31,6 +31,7 @@
 .inner-button {
   all: unset;
   display: flex;
+  font-size: 1.4rem;
   align-items: center;
   border-radius: 25px;
   padding: 0.6rem 3rem;

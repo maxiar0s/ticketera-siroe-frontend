@@ -4,6 +4,7 @@ import { ApiService } from '../../../services/api.service';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { AuthService } from '../../../services/auth.service';
+import { LoaderService } from '../../../services/loader.service';
 
 @Component({
   selector: 'app-login',
@@ -14,6 +15,7 @@ import { AuthService } from '../../../services/auth.service';
 })
 export class LoginComponent {
   public errorMessage: boolean = false;
+  public logging!: boolean;
 
   public loginForm: FormGroup = this.fb.group({
     email: ['', [Validators.required],],
@@ -29,17 +31,16 @@ export class LoginComponent {
 
   postLogin() {
     if(this.loginForm.invalid) return;
-
+    this.logging = true;
     this.apiService.login(this.loginForm.value).subscribe({
       next: (respuesta) => {
         if(respuesta.token) {
-          localStorage.setItem('token', respuesta.token);
-          this.authService.userSigned.set(true);
+          this.authService.guardarToken(respuesta.token);
           this.router.navigate(['/dashboard']);
-        } else return;
-      },
-      error: (error) => {
-        this.errorMessage = true;
+        } else {
+          this.errorMessage = true;
+        }
+        this.logging = false;
       }
     })
   }

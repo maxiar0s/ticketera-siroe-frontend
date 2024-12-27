@@ -1,10 +1,12 @@
 import { CommonModule, Location } from '@angular/common';
 import { Component, Renderer2 } from '@angular/core';
-import { Router, RouterModule } from '@angular/router';
+import { RouterModule } from '@angular/router';
+import { AuthService } from '../../services/auth.service';
+
+// Menus
 import sideMenuJSON_Admin from './side-menu-options-admin.json';
 import sideMenuJSON_Tecnico from './side-menu-options.json';
 import sideLogoutMenuJSON from './side-menu-logout.json';
-import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'shared-side-menu',
@@ -14,8 +16,8 @@ import { AuthService } from '../../services/auth.service';
   styleUrl: './side-menu.component.css'
 })
 export class SideMenuComponent {
-  public currentGroup: string = '';
-  public currentSubGroup: string = '';
+  currentItem: string = "";
+  currentSubItem: string = "";
   // public sideMenuJSON = sideMenuJSON_Admin;
   public sideMenuJSON = sideMenuJSON_Tecnico;
   public sideLogoutMenuJSON = sideLogoutMenuJSON;
@@ -23,38 +25,43 @@ export class SideMenuComponent {
   constructor(
     private authService: AuthService,
     private renderer: Renderer2,
-    private router: Router,
     private location: Location
   ) {}
 
   ngOnInit():void {
-    const path = this.location.path();
-    this.currentGroup = path;
-    this.currentSubGroup = path;
+    const path = this.location.path() == '' ? '/dashboard' : this.location.path();
+    this.currentItem = path;
+    this.currentSubItem = path;
   }
+
+  activeItem(event: MouseEvent, subGrupo: any, route: string):void {
+    const Element = event.currentTarget as HTMLAnchorElement;
+
+    subGrupo.some((subItem: any) => {
+      if(this.currentItem == subItem.route){
+        console.log('asd');
+        if(Element.classList.contains('open')){
+          this.renderer.removeClass(Element, "open");
+        }else{
+          this.renderer.addClass(Element, "open");
+        }
+      }
+    })
+
+    this.currentSubItem = subGrupo[0].route;
+    this.currentItem = route;
+  }
+
+  activeRoute(subItem: any): boolean {
+    return subItem.some((subItem: any) => subItem.route == this.currentItem);
+  }
+
+  activeSubItem(route:string):void {
+    this.currentSubItem =  route;
+  }
+
 
   cerrarSesion():void {
     this.authService.eliminarToken();
-  }
-
-  routeActive(event: MouseEvent, route: string):void {
-    const Element = event.currentTarget as HTMLAnchorElement;
-
-    if(this.currentGroup == route) {
-      if(Element.classList.contains('open')) {
-        this.renderer.removeClass(Element, "open");
-      } else {
-        this.renderer.addClass(Element, 'open');
-      }
-    }
-    this.currentGroup = route;
-  }
-
-  activeGroup(route: any):boolean {
-    return this.currentGroup == route;
-  }
-
-  activeSubGroup(route:string):void {
-    this.currentSubGroup =  route;
   }
 }

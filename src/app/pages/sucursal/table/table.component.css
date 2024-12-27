@@ -77,6 +77,7 @@
 }
 .information-value {
   padding: 1rem 0;
+  font-size: 1.4rem;
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;

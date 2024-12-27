@@ -13,12 +13,14 @@ interface Token {
 })
 export class AuthService {
   private key = 'token';
-  userSigned = signal(false);
+  userSigned: boolean = false;
 
   constructor() { }
 
-   guardarToken(token: string): void {
+  guardarToken(token: string): void {
+    console.log('guardando token: ', token);
     localStorage.setItem(this.key, token);
+    this.userSigned = true;
   }
 
   // Obtener el token
@@ -53,13 +55,14 @@ export class AuthService {
 
   // Método para verificar la validez del token
   esTokenValido(): boolean {
+    if(localStorage.getItem('token')) this.userSigned = true;
     return !this.estaTokenExpirado();
   }
 
   // Método para cerrar sesión
   eliminarToken(): void {
+    console.log('eliminando token');
     localStorage.removeItem(this.key);
-    this.userSigned.set(false);
+    this.userSigned = false;
   }
-
 }

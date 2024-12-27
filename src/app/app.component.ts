@@ -16,7 +16,6 @@ export class AppComponent {
   title = 'front-siroe-soporte';
 
   constructor(
-    public authService: AuthService,
-    private router: Router) {
+    public authService: AuthService) {
   }
 }

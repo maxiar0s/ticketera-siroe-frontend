@@ -72,7 +72,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 6rem;
+  gap: 2rem;
 }
 @media (max-width: 1400px) {
   .table-flex-3 {
@@ -86,11 +86,10 @@
   gap: 1rem;
 }
 .chart-3 {
-  width: 22rem;
-  height: 22rem;
+  width: 18rem;
+  height: 18rem;
   background: #4f4f4f;
   border-radius: 50%;
-  margin-bottom: 1rem;
 }
 @media (max-width: 1400px) {
   .chart-3 {
@@ -117,7 +116,7 @@
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 8rem;
+  gap: 2rem;
 }
 @media (max-width: 1400px) {
   .legend {

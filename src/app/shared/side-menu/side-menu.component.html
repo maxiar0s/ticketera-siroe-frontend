@@ -2,51 +2,61 @@
   <!-- Logo Siroe -->
   <div>
     <a [routerLink]="['/']" routerLinkActive="router-link-active">
-      <img src="../../../assets/img/siroe-logo.png" alt="siroe_logo" class="logo">
+      <img src="/assets/img/siroe-logo.png" alt="siroe_logo" class="logo">
     </a>
   </div>
 
-  <div class="flex-menu open-300">
+  <!-- Item Sidebar -->
+  <div>
+    @for (item of sideMenuJSON; track item.id) {
 
-    <div class="flex">
-      <!-- Item Sidebar -->
-      <div *ngFor="let item of sideMenuJSON;">
+      <a [routerLink]="[item.route]" [ngClass]="{'active open': activeRoute(item.subItem)}" class="item-nav" (click)="activeItem($event, item.subItem, item.route)">
+        <div class="selected-div"></div>
+        <img [src]="'/assets/svg/'+item.svg+(currentItem.includes(item.route) ? '-routed' : '')+'.svg'" [alt]="item.svg+'_SVG'" class="menu-svg">
+        <p class="a-color">{{ item.nombre }}</p>
+        <img *ngIf="item.subItem.length > 0" [src]="'/assets/svg/side-menu-arrow'+(currentItem.includes(item.route) ? '-up' : '-down')+'.svg'" class="menu-svg" alt="">
+      </a>
 
-        <div class="left-div-center" [ngClass]="{'active background-color text-color': currentGroup == item.ruta}">
-          <div class="route-actived"></div>
-          <a [routerLink]="[item.ruta]" [ngClass]="{'open': activeGroup(item.ruta)}" (click)="routeActive($event, item.ruta)" routerLinkActive="router-link-active" class="a-routerlink">
-            <img [src]="'/assets/svg/'+item.svg+(currentGroup.includes(item.ruta) ? '-routed' : '')+'.svg'" [alt]="item.svg+'_SVG'" class="menu-svg">
-            <p class="a-color">{{ item.nombre }}</p>
+      <div class="subItem-nav">
+
+        @for(subItem of item.subItem; track subItem) {
+          <a [routerLink]="[subItem.route]" (click)="activeSubItem(subItem.route)" class="subItem-nav" [ngClass]="{'active': currentSubItem == subItem.route}">
+            <div class="selected-div"></div>
+            <img [src]="'/assets/svg/'+subItem.svg+(currentItem.includes(subItem.route) ? '-routed' : '')+'.svg'" [alt]="item.svg+'_SVG'" class="menu-svg">
+            <p class="a-color">{{ subItem.nombre }}</p>
           </a>
-        </div>
+        }
 
-        <div class="subItem-nav">
-          @for(subItem of item.subGrupo; track subItem){
-            <div class="height-subItem">
-              <a [routerLink]="subItem.ruta" [ngClass]="{'active': currentSubGroup == subItem.ruta}" class="a-routerlink a-color" (click)="activeSubGroup(subItem.ruta)">
-                <div class="bar-progress"></div>
-                <img [src]="'/assets/svg/'+subItem.svg+(currentGroup.includes(subItem.ruta) ? '-routed' : '')+'.svg'" [alt]="item.svg+'_SVG'" class="menu-svg">
-                <p class="">{{subItem.nombre}}</p>
-              </a>
-            </div>
-          }
-        </div>
       </div>
-    </div>
-
-    <div class="flex">
-      <div *ngFor="let item of sideLogoutMenuJSON; let i = index">
-        <div class="left-div-center" [ngClass]="{'active background-color text-color': currentGroup == item.ruta}">
-          <!-- Logout Sidebar -->
-          <div class="route-actived"></div>
-          <a (click)="item.nombre === 'Cerrar sesión' ? cerrarSesion() : ''" [routerLink]="[item.ruta]" [ngClass]="{'open': activeGroup(item.ruta)}" (click)="routeActive($event, item.ruta)" routerLinkActive="router-link-active" class="a-routerlink">
-            <img [src]="'/assets/svg/'+item.svg+(currentGroup.includes(item.ruta) ? '-routed' : '')+'.svg'" [alt]="item.svg+'_SVG'" class="menu-svg">
-            <a class="a-color">{{ item.nombre }}</a>
-          </a>
-        </div>
-      </div>
-    </div>
-
-
+    }
   </div>
+
 </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- <div class="flex">
+  <div *ngFor="let item of sideLogoutMenuJSON; let i = index">
+    <div class="left-div-center" [ngClass]="{'active background-color text-color': currentItem == item.ruta}">
+      <div class="route-actived"></div>
+      <a (click)="item.nombre === 'Cerrar sesión' ? cerrarSesion() : ''" [routerLink]="[item.ruta]" [ngClass]="{'open': activeRoute(item.ruta)}" (click)="activeItem($event, item.subGrupo, item.ruta)" routerLinkActive="router-link-active">
+        <img [src]="'/assets/svg/'+item.svg+(currentItem.includes(item.ruta) ? '-routed' : '')+'.svg'" [alt]="item.svg+'_SVG'" class="menu-svg">
+        <a class="a-color">{{ item.nombre }}</a>
+      </a>
+    </div>
+  </div>
+</div> -->

@@ -8,14 +8,14 @@ export const routes: Routes = [
         pathMatch: 'full'
     },
     // Auth routes
-    {
-      path: 'auth/login',
-      loadComponent: () => import('./pages/auth/login/login.component').then( m => m.LoginComponent),
-    },
     // {
-    //   path: 'auth',
-    //   loadChildren: () => import('./pages/auth/auth.module').then( m => m.routes),
+    //   path: 'auth/login',
+    //   loadComponent: () => import('./pages/auth/login/login.component').then( m => m.LoginComponent),
     // },
+    {
+      path: 'auth',
+      loadChildren: () => import('./pages/auth/auth.module').then( m => m.routes),
+    },
 
     // Index
     {
