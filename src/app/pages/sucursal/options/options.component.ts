@@ -3,6 +3,7 @@ import { ApiService } from '../../../services/api.service';
 import { CommonModule } from '@angular/common';
 import { CrearEquipoComponent } from '../../../shared/modal/crear-equipo/crear-equipo.component';
 import { concatMap, from } from 'rxjs';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'sucursal-options',
@@ -13,12 +14,20 @@ import { concatMap, from } from 'rxjs';
 })
 export class ButtonsComponent {
   @Input() estado?: boolean;
+
+  // Id Sucursal
+  @Input() id?: string;
+
+  // Id Cliente
+  @Input() idCliente?: string;
+
   public isModalVisible: boolean = false;
   public successMessage: string = '';
   public errorMessage: string = '';
 
   constructor(
-    private apiService: ApiService
+    private apiService: ApiService,
+    private router: Router
   ) {}
 
   abrirModal() {
@@ -51,7 +60,9 @@ export class ButtonsComponent {
       },
       complete: () => {
         this.cerrarModal();
+        this.router.navigate(['/clientes', this.idCliente, 'sucursal', this.id])
       }
-    });
+    })
+
   }
 }

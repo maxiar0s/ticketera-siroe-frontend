@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
-import { ActivatedRoute, Router, RouterModule } from '@angular/router';
+import { RouterModule } from '@angular/router';
 import { CrearClienteComponent } from '../../shared/modal/crear-cliente/crear-cliente.component';
 import { ApiService } from '../../services/api.service';
 import { Cliente } from '../../interfaces/cliente.interface';

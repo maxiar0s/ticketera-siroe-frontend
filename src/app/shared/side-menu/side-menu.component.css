@@ -1,4 +1,4 @@
-/* Header side menu */
+/* Header del Menú */
 .menu {
   position: fixed;
   flex-grow: 1;
@@ -9,6 +9,13 @@
   flex-direction: column;
   width: 22rem;
 }
+@media (max-width: 1400px) {
+  .menu {
+    width: 15.5rem;
+  }
+}
+
+/* Logo Siroe */
 .logo {
   height: 10rem;
   margin: 0 auto 4rem auto;
@@ -19,75 +26,68 @@
     margin: 0 auto 2rem auto;
   }
 }
-@media (max-width: 1400px) {
-  .menu {
-    width: 15.5rem;
-  }
-}
-/* Fin del header */
 
-
-.item-nav {
-    display: grid;
-    grid-template-columns: 20% 60% 20%;
-    padding:  10px 10px;
-    align-items: center;
-    border-radius: 10px;
-    margin-bottom: 10px;
-}
-
-.subItem-nav {
-  max-height: 0px;
-  overflow: hidden;
-  transition: max-height 0.5s ease-out, opacity 0.4s linear, margin 0.6s ease-out;
-  opacity: 0;
-  margin-left: 30px;
-}
-
-.item-nav.active.open img,
-.item-nav.active.open + .subItem-nav{
-    display: block;
-}
-
-.item-nav.active.open + .subItem-nav {
-  max-height: 500px;
-  margin: 20px 0px 20px 30px;
-  opacity: 1;
-}
-
-.subItem-route{
+.item {
   display: grid;
-  grid-template-columns: 20% 20% 60%;
+  grid-template-columns: 5% 20% 55% 20%;
+  align-items: center;
+  min-height: 5rem;
+}
+
+/* Ruta activada (Div Izquierdo) */
+
+
+.left-div-end {
+  height: 5vh;
+  display: flex;
+  justify-content: end;
+}
+
+.flex-menu {
+  display: flex;
+  flex-grow: 1;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: auto;
+  margin-bottom: 2rem;
+}
+
+.subItem {
+  min-height: 5rem;
+  margin-left: 3rem;
+  display: grid;
+  grid-template-columns: 20% 80%;
   align-items: center;
 }
 
-.menu-svg {
-  max-height: 25px;
-  fill: #b71752;
+@media (max-width: 1400px) {
+  .subItem {
+    gap: 1rem;
+    margin-left: 2rem;
+  }
 }
 
+.subItem.open{
+  max-height: fit-content;
+
+}
+
+.svg-size {
+  margin: auto;
+  max-height: 25px;
+}
 @media (max-width: 1400px) {
-  .menu-svg {
+  .svg-size {
     max-height: 20px;
   }
 }
 
-.a-color {
+.color-option {
   color: #b6b7b7;
-  font-size: 1.4rem;
 }
-
 @media (max-width: 1400px) {
-  .a-color {
+  .color-option {
     font-size: 1.2rem;
-  }
-}
-
-@keyframes open-subItem{
-  from {
-      height: 100%;
-  } to {
-      height: 0px;
   }
 }
 
@@ -97,33 +97,8 @@
   opacity: 0;
   transition: max-height 0.5s ease-out, opacity 0.4s linear;
 }
-
-.item-nav.active .selected-div {
-  display: block;
-}
-
-.item-nav.active + .subItem-nav{
-  max-height: 300px;
-  opacity: 1;
-}
-
-.height-subItem {
-  min-height: 5rem;
-}
-
-.height-subItem a {
-  min-height: 5rem;
-}
-
-/* URL No seleccionada */
-.background-color {
-  background-color: #f8e2ea;
-}
-
-/* URL Seleccionada */
-.selected-div {
-  display: none;
-  position: absolute;
+.active .activated-item {
+  visibility: visible ;
   width: 6px;
   color: white;
   height: 5rem;
@@ -131,7 +106,37 @@
   border-top-right-radius: 15px;
   border-bottom-right-radius: 15px;
 }
-.text-color a p {
+.active {
+  background-color: #f8e2ea;
   font-weight: 600;
   color: #b71752;
+}
+.active p {
+  font-weight: 600;
+  color: #b71752;
+}
+
+img[class="routed-image svg-size"],
+.active img[class="normal-image svg-size"] {
+  display: none;
+}
+.active img[class="routed-image svg-size"] {
+  display: block;
+}
+
+img[src="/assets/svg/side-menu-arrow-up.svg"],
+.active img[src="/assets/svg/side-menu-arrow-down.svg"] {
+  display: none;
+}
+.active img[src="/assets/svg/side-menu-arrow-up.svg"] {
+  display: block;
+}
+
+.item.active .activated-item {
+  display: block;
+}
+
+.item.active + .subItem-nav{
+  max-height: 300px;
+  opacity: 1;
 }

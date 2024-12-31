@@ -22,7 +22,11 @@ export class SucursalComponent {
   public sucursal?: Sucursal;
   public estado?: boolean;
   public headerText?: boolean;
+
+  // Id sucursal
   public id: string = '';
+  // Id cliente
+  public idCliente: string = '';
 
   constructor(
     private apiService: ApiService,
@@ -36,6 +40,7 @@ export class SucursalComponent {
       const id = params['id'];
       const idCliente = params['idCliente'];
       this.id = id;
+      this.idCliente = idCliente;
       this.apiService.sucursal(id).subscribe({
         next: (respuesta) => {
           console.log(respuesta);

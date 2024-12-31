@@ -1,0 +1,14 @@
+[
+  {
+    "name": "Configuración",
+    "route": "/opciones",
+    "svg": "configuracion-sidemenu",
+    "subItem": []
+  },
+  {
+    "name": "Cerrar sesión",
+    "route": "/auth/login",
+    "svg": "cerrar-sesion",
+    "subItem": []
+  }
+]

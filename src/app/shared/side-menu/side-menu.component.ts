@@ -1,12 +1,12 @@
 import { CommonModule, Location } from '@angular/common';
-import { Component, Renderer2 } from '@angular/core';
+import { Component, Renderer2, ɵSSR_CONTENT_INTEGRITY_MARKER } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 
 // Menus
-import sideMenuJSON_Admin from './side-menu-options-admin.json';
-import sideMenuJSON_Tecnico from './side-menu-options.json';
-import sideLogoutMenuJSON from './side-menu-logout.json';
+import menu_administrador from './menu-administrador.json';
+import menu_tecnico from './menu-tecnico.json';
+import menu_ending from './menu-ending.json';
 
 @Component({
   selector: 'shared-side-menu',
@@ -16,11 +16,11 @@ import sideLogoutMenuJSON from './side-menu-logout.json';
   styleUrl: './side-menu.component.css'
 })
 export class SideMenuComponent {
-  currentItem: string = "";
-  currentSubItem: string = "";
-  // public sideMenuJSON = sideMenuJSON_Admin;
-  public sideMenuJSON = sideMenuJSON_Tecnico;
-  public sideLogoutMenuJSON = sideLogoutMenuJSON;
+  public currentGroup: string = '';
+  public currentSubGroup: string = '';
+  // public sideMenuJSON = menu_administrador;
+  public menu = menu_tecnico;
+  public menuEnding = menu_ending;
 
   constructor(
     private authService: AuthService,
@@ -29,39 +29,33 @@ export class SideMenuComponent {
   ) {}
 
   ngOnInit():void {
-    const path = this.location.path() == '' ? '/dashboard' : this.location.path();
-    this.currentItem = path;
-    this.currentSubItem = path;
+    const path = this.location.path();
+    this.currentGroup = path;
+    this.currentSubGroup = path;
   }
-
-  activeItem(event: MouseEvent, subGrupo: any, route: string):void {
-    const Element = event.currentTarget as HTMLAnchorElement;
-
-    subGrupo.some((subItem: any) => {
-      if(this.currentItem == subItem.route){
-        console.log('asd');
-        if(Element.classList.contains('open')){
-          this.renderer.removeClass(Element, "open");
-        }else{
-          this.renderer.addClass(Element, "open");
-        }
-      }
-    })
-
-    this.currentSubItem = subGrupo[0].route;
-    this.currentItem = route;
-  }
-
-  activeRoute(subItem: any): boolean {
-    return subItem.some((subItem: any) => subItem.route == this.currentItem);
-  }
-
-  activeSubItem(route:string):void {
-    this.currentSubItem =  route;
-  }
-
 
   cerrarSesion():void {
     this.authService.eliminarToken();
+  }
+
+  routeActive(event: MouseEvent, route: string):void {
+    const Element = event.currentTarget as HTMLAnchorElement;
+
+    if(this.currentGroup == route) {
+      if(Element.classList.contains('active')) {
+        this.renderer.removeClass(Element, "active");
+      } else {
+        this.renderer.addClass(Element, 'active');
+      }
+    }
+    this.currentGroup = route;
+  }
+
+  activeGroup(route: any):boolean {
+    return this.currentGroup == route;
+  }
+
+  activeSubGroup(route:string):void {
+    this.currentSubGroup = route;
   }
 }

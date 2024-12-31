@@ -1,62 +1,59 @@
 <div class="menu" style="background-color: #f7f7f7;">
   <!-- Logo Siroe -->
   <div>
-    <a [routerLink]="['/']" routerLinkActive="router-link-active">
-      <img src="/assets/img/siroe-logo.png" alt="siroe_logo" class="logo">
+    <a [routerLink]="['/dashboard']">
+      <img src="../../../assets/img/siroe-logo.png" alt="siroe_logo" class="logo">
     </a>
   </div>
 
-  <!-- Item Sidebar -->
-  <div>
-    @for (item of sideMenuJSON; track item.id) {
+  <div class="flex-menu open-300">
 
-      <a [routerLink]="[item.route]" [ngClass]="{'active open': activeRoute(item.subItem)}" class="item-nav" (click)="activeItem($event, item.subItem, item.route)">
-        <div class="selected-div"></div>
-        <img [src]="'/assets/svg/'+item.svg+(currentItem.includes(item.route) ? '-routed' : '')+'.svg'" [alt]="item.svg+'_SVG'" class="menu-svg">
-        <p class="a-color">{{ item.nombre }}</p>
-        <img *ngIf="item.subItem.length > 0" [src]="'/assets/svg/side-menu-arrow'+(currentItem.includes(item.route) ? '-up' : '-down')+'.svg'" class="menu-svg" alt="">
-      </a>
+    <!-- Upper menu -->
+    <div>
+      @for(item of menu; track item.id) {
+        <a [routerLink]="[item.route]" class="item" (click)="routeActive($event, item.route)" [ngClass]="{'active': currentGroup == item.route}">
+          <div class="activated-item"></div>
+          <div>
+            <img class="normal-image svg-size" [src]="'/assets/svg/'+item.svg+'.svg'" [alt]="item.svg+'.svg'">
+            <img class="routed-image svg-size" [src]="'/assets/svg/'+item.svg+'-routed.svg'" [alt]="item.svg+'routed.svg'">
 
-      <div class="subItem-nav">
+          </div>
+          <p class="color-option">{{ item.nombre }}</p>
+          <div>
+            <img *ngIf="item.subItem.length > 0" src="/assets/svg/side-menu-arrow-down.svg" alt="arrow_down.svg" class="svg-size">
+            <img *ngIf="item.subItem.length > 0" src="/assets/svg/side-menu-arrow-up.svg" alt="arrow_up.svg" class="svg-size">
+          </div>
+        </a>
 
-        @for(subItem of item.subItem; track subItem) {
-          <a [routerLink]="[subItem.route]" (click)="activeSubItem(subItem.route)" class="subItem-nav" [ngClass]="{'active': currentSubItem == subItem.route}">
-            <div class="selected-div"></div>
-            <img [src]="'/assets/svg/'+subItem.svg+(currentItem.includes(subItem.route) ? '-routed' : '')+'.svg'" [alt]="item.svg+'_SVG'" class="menu-svg">
-            <p class="a-color">{{ subItem.nombre }}</p>
-          </a>
+        @for(subItem of item.subItem; track subItem){
+          <div class="subItem-nav">
+            <a [routerLink]="subItem.route" class="subItem" (click)="activeSubGroup(subItem.route)">
+              <img [src]="'/assets/svg/'+subItem.svg+'.svg'" [alt]="item.svg+'.svg'" class="svg-size">
+              <p class="color-option">{{subItem.nombre}}</p>
+            </a>
+          </div>
         }
-
-      </div>
-    }
-  </div>
-
-</div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<!-- <div class="flex">
-  <div *ngFor="let item of sideLogoutMenuJSON; let i = index">
-    <div class="left-div-center" [ngClass]="{'active background-color text-color': currentItem == item.ruta}">
-      <div class="route-actived"></div>
-      <a (click)="item.nombre === 'Cerrar sesión' ? cerrarSesion() : ''" [routerLink]="[item.ruta]" [ngClass]="{'open': activeRoute(item.ruta)}" (click)="activeItem($event, item.subGrupo, item.ruta)" routerLinkActive="router-link-active">
-        <img [src]="'/assets/svg/'+item.svg+(currentItem.includes(item.ruta) ? '-routed' : '')+'.svg'" [alt]="item.svg+'_SVG'" class="menu-svg">
-        <a class="a-color">{{ item.nombre }}</a>
-      </a>
+      }
     </div>
+
+    <!-- Ending menu -->
+    <div>
+      @for(item of menuEnding; track item.name){
+        <a (click)="item.name === 'Cerrar sesión' ? cerrarSesion() : ''" [routerLink]="[item.route]" class="item" (click)="routeActive($event, item.route)" [ngClass]="{'active': currentGroup == item.route}">
+          <div class="activated-item"></div>
+          <div>
+            <img class="normal-image svg-size" [src]="'/assets/svg/'+item.svg+'.svg'" [alt]="item.svg+'.svg'">
+            <img class="routed-image svg-size" [src]="'/assets/svg/'+item.svg+'-routed.svg'" [alt]="item.svg+'routed.svg'">
+
+          </div>
+          <p class="color-option">{{ item.name }}</p>
+          <div>
+            <img *ngIf="item.subItem.length > 0" src="/assets/svg/side-menu-arrow-down.svg" alt="arrow_down.svg" class="svg-size">
+            <img *ngIf="item.subItem.length > 0" src="/assets/svg/side-menu-arrow-up.svg" alt="arrow_up.svg" class="svg-size">
+          </div>
+        </a>
+      }
+    </div>
+
   </div>
-</div> -->
+</div>

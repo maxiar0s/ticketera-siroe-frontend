@@ -24,6 +24,7 @@ export class TableComponent {
   public _option!: string;
   private idSucursal?: string;
   @Input() estado?: boolean;
+
   // Oculta la informacion hasta que se carga
   public obtainedEquipments: boolean = false;
 
@@ -45,7 +46,7 @@ export class TableComponent {
   ) {  }
 
   // ngOnInit() {
-  //   this.cambiarSucursal();
+  //   this.cambiarSeleccion();
   // }
 
   abrirModal(id: number) {
@@ -76,17 +77,17 @@ export class TableComponent {
   @Input()
   set idSelected(value: string) {
     this.idSucursal = value;
-    this.cambiarSucursal();
+    this.cambiarSeleccion();
   }
 
   @Input()
   set selectedOption(value: string) {
     this._option = value;
     this.paginaActual = 1;
-    this.cambiarSucursal();
+    this.cambiarSeleccion();
   }
 
-  cambiarSucursal() {
+  cambiarSeleccion() {
     this.equipos = [];
     this.loaderService.showSection();
     this.obtainedEquipments = false;
@@ -119,21 +120,21 @@ export class TableComponent {
   cambiarPagina(pagina: number):void {
     if (pagina >= 1 && pagina <= this.paginas) {
       this.paginaActual = pagina;
-      this.cambiarSucursal();
+      this.cambiarSeleccion();
     }
   }
 
   nextPage():void {
     if (this.paginaActual < this.paginas) {
       this.paginaActual++;
-      this.cambiarSucursal();
+      this.cambiarSeleccion();
     }
   }
 
   prevPage():void {
     if (this.paginaActual > 1) {
       this.paginaActual--;
-      this.cambiarSucursal();
+      this.cambiarSeleccion();
     }
   }
 

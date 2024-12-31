@@ -14,7 +14,7 @@
     "subItem": [
       {
         "nombre": "Equipos",
-        "route": "",
+        "route": "equipos",
         "svg": "equipos"
       }
     ]
