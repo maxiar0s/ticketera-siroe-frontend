@@ -3,23 +3,31 @@ export interface Equipo {
   numeroSecuencial:       number;
   codigoId:               string;
   estado:                 number;
-  tipo:                   string;
   fechaIngreso:           Date;
   departamento:           string;
-  usuario:                string;
-  marca:                  string;
-  modelo:                 string;
-  numeroSerie:            string;
-  procesador:             string;
-  velocidadProcesador:    string;
-  ram:                    number;
-  tipoAlmacenamiento:     string;
-  cantidadAlmacenamiento: number;
-  sistemaOperativo:       string;
-  ofimatica:              string;
-  antivirus:              string;
-  observaciones:          string;
-  clienteId:              null;
+  usuario:                null;
+  imagen:                 null;
+  marca:                  null;
+  modelo:                 null;
+  numeroSerie:            null;
+  procesador:             null;
+  velocidadProcesador:    null;
+  ram:                    null;
+  tipoAlmacenamiento:     null;
+  cantidadAlmacenamiento: null;
+  sistemaOperativo:       null;
+  ofimatica:              null;
+  antivirus:              null;
+  observaciones:          null;
+  casaMatrizId:           null;
   sucursalId:             string;
-  Cliente:                null;
+  tipoEquipoId:           number;
+  tipoEquipo:             TipoEquipo;
 }
+
+export interface TipoEquipo {
+  id:   number;
+  name: string;
+  dict: string;
+}
+

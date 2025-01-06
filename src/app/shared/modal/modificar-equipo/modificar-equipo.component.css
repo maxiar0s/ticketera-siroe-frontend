@@ -99,7 +99,7 @@
 }
 
 .form-group.full-width {
-  grid-column: 1 / -1;
+  grid-column: span 2;
 }
 
 .form-group label {
@@ -120,6 +120,11 @@
   border-radius: 1.5rem;
   border: 1px solid #deebf2;
 }
+.form-group textarea {
+  padding: auto 0.3rem;
+  max-height: 4.3rem;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}
 @media (max-width: 1400px) {
   .form-group input,
   .form-group select,
@@ -128,12 +133,64 @@
     border-radius: 1rem;
   }
 }
+@media (max-width: 1400px) {
+  .form-group textarea {
+    padding: auto 0.3rem;
+    max-height: 3.3rem;
+  }
+}
+
+
+.custom-file-input {
+  display: inline-block;
+  position: relative;
+  cursor: pointer;
+  border: 1px solid #deebf2;
+  border-radius: 1.5rem;
+  background-color: #fff;
+  width: 100%;
+  padding: 0.6rem;
+}
+@media (max-width: 1400px) {
+  .custom-file-input {
+    padding: 0.175rem;
+    border-radius: 1rem;
+  }
+}
+
+.custom-file-input input[type="file"] {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.custom-file-input p {
+  pointer-events: none;
+  margin-left: 0.45rem;
+  font-size: 1.3rem;
+  color: #d9d9d9;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  width: 100%;
+}
+
+.svg {
+  height: 2.5rem;
+  margin-right: 0.3rem;
+}
 
 .comments {
   resize: none;
-  grid-column: 1 / 4;
+  grid-column: 1 / 2;
   box-sizing: border-box;
-  height: 7.5rem;
+}
+.comments::placeholder {
+  color: #d9d9d9;
 }
 
 .form-group input::placeholder {
@@ -164,6 +221,11 @@ button {
   cursor: pointer;
   border: 0;
 }
+@media (max-width: 1400px) {
+  button {
+    font-size: 1.2rem;
+  }
+}
 
 button[type="submit"] {
   background-color: #b71653;
@@ -182,4 +244,8 @@ label {
 
 .loader-height {
   min-height: 20rem;
+}
+
+.inputs {
+  min-width: 100%;
 }

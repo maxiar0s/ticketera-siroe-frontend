@@ -3,6 +3,8 @@ import { Component, EventEmitter, Output } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import crearEquipoJSON from './crear-equipo.json';
 import { ActivatedRoute, ParamMap } from '@angular/router';
+import { ApiService } from '../../../services/api.service';
+import { TipoEquipo } from '../../../interfaces/TipoEquipo.interface';
 
 @Component({
   selector: 'shared-crear-equipo',
@@ -15,7 +17,7 @@ export class CrearEquipoComponent {
   @Output() cerrarModal = new EventEmitter<void>();
   @Output() enviarFormulario = new EventEmitter<any>();
 
-  public equipos = crearEquipoJSON;
+  public TipoEquipos: TipoEquipo[] = [];
 
   public isVisible: boolean = true;
   public equipoForm: FormGroup;
@@ -23,14 +25,16 @@ export class CrearEquipoComponent {
   public id: string | null = null;
 
   constructor(
+    private apiService: ApiService,
     private fb: FormBuilder,
     private route: ActivatedRoute
   ) {
+
     this.equipoForm = this.fb.group({
       sucursalId: ['', Validators.required],
       departamento: ['', Validators.required],
       cantidad: ['', [Validators.required, Validators.min(1)]],
-      tipo: ['', Validators.required],
+      tipoEquipoId: ['', Validators.required],
     });
   }
 
@@ -41,6 +45,13 @@ export class CrearEquipoComponent {
         sucursalId: this.id
       });
     });
+
+    this.apiService.typeEquipments().subscribe({
+      next: (respuesta) => {
+        this.TipoEquipos = respuesta;
+      }
+    });
+
   }
 
   abrirModal() {

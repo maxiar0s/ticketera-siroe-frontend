@@ -2,32 +2,49 @@
   <div class="modal-overlay" *ngIf="isVisible">
     <div class="modal-content">
       <div class="modal-header">
-        <h2 class="header-form">Añadir datos: <span class="header-span" *ngIf="headerCharged">{{ this.equipo?.codigoId }} / {{ this.equipo?.tipo }} / {{ this.equipo?.departamento }}</span></h2>
+        <h2 class="header-form">Añadir datos: <span class="header-span" *ngIf="headerCharged">{{ this.equipo?.codigoId }} / {{ this.equipo?.tipoEquipo?.name }} / {{ this.equipo?.departamento }}</span></h2>
         <img src="/assets/svg/exit-button.svg" (click)="cerrar()" alt="exit_button" class="close-button">
       </div>
       <div class="modal-body" style="position: relative;">
-        @if (loaderService.loadingModal()) {
-          <div class="loader-height">
-            <shared-loader-modal></shared-loader-modal>
-          </div>
-        }
-        <form [formGroup]="equipoForm" (ngSubmit)="onSubmit()">
+
+
+        <div *ngIf="!formCharged" class="loader-height">
+          <shared-loader-modal></shared-loader-modal>
+        </div>
+
+        <form *ngIf="formCharged" [formGroup]="equipoForm" (ngSubmit)="onSubmit()">
           <input type="hidden" [value]="this.idEquipo" formControlName="id">
           <div class="grid-form">
             <!-- Campo Departamento -->
-            <div *ngFor="let campo of camposDinamicos" class="form-group" [ngClass]="{'full-width': campo.type === 'textarea'}">
+            <div *ngFor="let campo of camposDinamicos; let i = index" class="form-group" style="min-width: 100%;">
               <label [for]="campo.name">{{ campo.label }}</label>
               <!-- Input tipo texto -->
-              <input *ngIf="campo.type === 'text'" [placeholder]="campo.placeholder" [id]="campo.name" type="text" [formControlName]="campo.name">
+              <input class="inputs" *ngIf="campo.type === 'text'" [placeholder]="campo.placeholder" [id]="campo.name" type="text" [formControlName]="campo.name">
 
+              @if(campo.type === 'file') {
+                <div class="custom-file-input" style="width: 100%;">
+                  <div style="display: flex; justify-content: space-between; width: 100%;">
+
+                    <p *ngIf="!equipoForm.value.imagen" id="file-placeholder">Toma o sube una foto del equipo</p>
+                    <p *ngIf="equipoForm.value.imagen" id="file-placeholder">{{ equipoForm.value.imagen }}</p>
+                    <img src="/assets/svg/camera.svg" alt="camera_svg" class="svg">
+                  </div>
+                  <input class="inputs" (change)="onFileSelected($event)" type="file" [id]="campo.name" accept="image/*" capture="environment" type="file" [formControlName]="campo.name"/>
+                </div>
+              }
               <!-- Input tipo número -->
-              <input *ngIf="campo.type === 'number'" [id]="campo.name" type="number" [formControlName]="campo.name">
+              <input class="inputs" *ngIf="campo.type === 'number'" [placeholder]="campo.placeholder" [id]="campo.name" type="number" [formControlName]="campo.name">
 
               <!-- Input tipo fecha -->
-              <input *ngIf="campo.type === 'date'" [id]="campo.name" type="date" [formControlName]="campo.name">
+              <input class="inputs" *ngIf="campo.type === 'date'" [id]="campo.name" type="date" [formControlName]="campo.name">
 
               <!-- Input tipo textarea -->
-              <textarea class="comments" *ngIf="campo.type === 'textarea'" [id]="campo.name" [formControlName]="campo.name"></textarea>
+              <textarea class="comments" *ngIf="campo.type === 'textarea'" [placeholder]="campo.placeholder" [id]="campo.name" [formControlName]="campo.name"></textarea>
+            </div>
+
+            <div class="form-group full-width">
+              <label for="text">Observaciones</label>
+              <textarea class="comments" placeholder="Añade cualquier detalle adicional relevante" id="text" formControlName="text"></textarea>
             </div>
           </div>
 
@@ -41,6 +58,7 @@
             <button type="submit" [disabled]="equipoForm.invalid">Guardar datos</button>
           </div>
         </form>
+
       </div>
     </div>
   </div>

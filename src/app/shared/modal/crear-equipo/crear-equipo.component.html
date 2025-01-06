@@ -41,10 +41,10 @@
         <!-- Campo tipo -->
         <div class="form-group">
           <label for="tipo">Tipo de equipo</label>
-          <select (change)="changeSelectColor($event)" id="tipo" formControlName="tipo">
+          <select (change)="changeSelectColor($event)" id="tipo" formControlName="tipoEquipoId">
             <option value="" disabled selected>Seleccionar</option>
-            @for(equipo of equipos; track equipo) {
-              <option [value]="equipo.tipo">{{ equipo.tipo }}</option>
+            @for(equipo of TipoEquipos; track equipo) {
+              <option [value]="equipo.id">{{ equipo.name }}</option>
             }
           </select>
           <div *ngIf="equipoForm.get('tipo')?.invalid && equipoForm.get('tipo')?.touched" class="error">

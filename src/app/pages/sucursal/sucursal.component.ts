@@ -43,7 +43,6 @@ export class SucursalComponent {
       this.idCliente = idCliente;
       this.apiService.sucursal(id).subscribe({
         next: (respuesta) => {
-          console.log(respuesta);
           if(!respuesta) {
             this.router.navigate([`/clientes/${idCliente}`]);
           }

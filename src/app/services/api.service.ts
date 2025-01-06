@@ -37,8 +37,19 @@ export class ApiService {
   }
 
   modifyEquiptment(data:any):Observable<any> {
-    const { id } = data;
+    let formValues: { [key: string]: any } = {};
+
+    data.forEach((value: any, key: any) => {
+      formValues[key] = value;
+    });
+    const { id } = formValues;
     const endpoint = 'modificar-equipo/' + id;
+    return this.postInformation(data, endpoint);
+  }
+
+  createComment(data:any):Observable<any> {
+    const { equipoId: id } = data;
+    const endpoint = 'ingresar-observacion/' + id;
     return this.postInformation(data, endpoint);
   }
 
@@ -79,6 +90,16 @@ export class ApiService {
 
   sucursal(id: string):Observable<any> {
     const endpoint = `sucursal/` + id;
+    return this.getInformation(endpoint);
+  }
+
+  typeEquipments():Observable<any> {
+    const endpoint = 'tipos-equipos';
+    return this.getInformation(endpoint);
+  }
+
+  formEquipment(tipoEquipoId: string):Observable<any> {
+    const endpoint = `obtener-formulario/` + tipoEquipoId;
     return this.getInformation(endpoint);
   }
 

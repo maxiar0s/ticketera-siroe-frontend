@@ -23,7 +23,7 @@
                 equipo.estado === 2 ? 'pendiente' :
                 'cerrado'" class="estado"></div></td>
               <td class="information-value">{{ equipo.codigoId }}</td>
-              <td class="information-value">{{ equipo.tipo }}</td>
+              <td class="information-value">{{ equipo.tipoEquipo.name }}</td>
               <td class="information-value">{{ equipo.fechaIngreso.toString() | formatoFecha }}</td>
               <td class="information-value">{{ equipo.departamento }}</td>
               <td class="information-value">{{ equipo.usuario ? equipo.usuario : 'N/A'}}</td>
