@@ -3,17 +3,18 @@ import { ApiService } from '../../../../services/api.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Cliente } from '../../../../interfaces/cliente.interface';
 import { CommonModule } from '@angular/common';
+import { SignedUrlPipe } from '../../../../pipes/generar-url.pipe';
 
 @Component({
   selector: 'cliente-casa-matriz',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, SignedUrlPipe],
   templateUrl: './casa-matriz.component.html',
   styleUrl: './casa-matriz.component.css'
 })
 export class CasaMatrizComponent {
-  public obtainedClient:boolean = false;
-  public cliente?:Cliente;
+  public obtainedClient: boolean = false;
+  public cliente!:Cliente;
   public ruta:string = '';
 
   constructor(
@@ -27,9 +28,7 @@ export class CasaMatrizComponent {
       const id = params['id']
       this.apiService.client(id).subscribe({
         next: (respuesta) => {
-          if(respuesta.length === 0) {
-            this.router.navigate(['/clientes']);
-          }
+          if(!respuesta) this.router.navigate(['/clientes']);
           else {
             this.cliente = respuesta;
             this.obtainedClient = true;

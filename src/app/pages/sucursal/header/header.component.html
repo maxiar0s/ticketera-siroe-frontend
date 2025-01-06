@@ -2,44 +2,44 @@
   <div class="title">
     <h1 *ngIf="headerText" class="header-title">Sucursal Cencosud Florida</h1>
     <h1 *ngIf="!headerText" class="header-title">Cargando información...</h1>
-    <h1 class="header-direccion">{{sucursal?.direccion}}</h1>
+    <h1 class="header-direccion">{{sucursal.direccion}}</h1>
   </div>
   <div>
     <div class="grid-body">
-      <div></div>
+      <img class="logo" [src]="sucursal.casaMatriz.imagen | signedUrl | async" [alt]="sucursal.casaMatriz.imagen">
       <div class="information-flex">
         <div class="flex">
-          <h1 class="information-title">Encargado Sucursal: <span>{{ sucursal?.encargadoSucursal }}</span></h1>
+          <h1 class="information-title">Encargado Sucursal: <span>{{ sucursal.encargadoSucursal }}</span></h1>
         </div>
         <div class="flex">
-          <h1 class="information-title">Razón Social: <span>{{ sucursal?.casaMatriz?.razonSocial }}</span></h1>
+          <h1 class="information-title">Razón Social: <span>{{ sucursal.casaMatriz.razonSocial }}</span></h1>
         </div>
         <div class="flex">
-          <h1 class="information-title">Encargado General: <span>{{ sucursal?.casaMatriz?.encargadoGeneral }}</span></h1>
+          <h1 class="information-title">Encargado General: <span>{{ sucursal.casaMatriz.encargadoGeneral }}</span></h1>
         </div>
       </div>
 
       <div class="information-flex">
         <div class="flex">
-          <h1 class="information-title">Teléfono: <span>{{ sucursal?.telefonoSucursal }}</span></h1>
+          <h1 class="information-title">Teléfono: <span>{{ sucursal.telefonoSucursal }}</span></h1>
         </div>
         <div class="flex">
-          <h1 class="information-title">RUT cliente: <span>{{ sucursal?.casaMatriz?.rut }}</span></h1>
+          <h1 class="information-title">RUT cliente: <span>{{ sucursal.casaMatriz.rut }}</span></h1>
         </div>
         <div class="flex">
-          <h1 class="information-title">Teléfono: <span>{{ sucursal?.casaMatriz?.telefonoEncargado }}</span></h1>
+          <h1 class="information-title">Teléfono: <span>{{ sucursal.casaMatriz.telefonoEncargado }}</span></h1>
         </div>
       </div>
 
       <div class="information-flex">
         <div class="flex">
-          <h1 class="information-title">Correo: <span>{{ sucursal?.correoSucursal }}</span></h1>
+          <h1 class="information-title">Correo: <span>{{ sucursal.correoSucursal }}</span></h1>
         </div>
         <div class="flex">
-          <h1 class="information-title">ID cliente: <span>{{ sucursal?.id }}</span></h1>
+          <h1 class="information-title">ID cliente: <span>{{ sucursal.id }}</span></h1>
         </div>
         <div class="flex">
-          <h1 class="information-title">Correo: <span>{{ sucursal?.casaMatriz?.correo }}</span></h1>
+          <h1 class="information-title">Correo: <span>{{ sucursal.casaMatriz.correo }}</span></h1>
         </div>
       </div>
     </div>

@@ -2,7 +2,6 @@
   <div class="modal-content">
     <div class="modal-header">
       <h2 class="header-form">Crear Cliente</h2>
-      <!-- <span class="close-button" (click)="cerrar()">&times;</span> -->
       <img src="/assets/svg/exit-button.svg" (click)="cerrar()" alt="exit_button" class="close-button">
     </div>
     <div class="modal-body">
@@ -13,7 +12,7 @@
           <!-- Campo RUT -->
           <div class="form-group full-width">
             <label for="rut">RUT</label>
-            <input class="full-width" id="rut" formControlName="rut" type="text" placeholder="Ej: 12345678-9"/>
+            <input class="full-width" id="rut" formControlName="rut" type="text" placeholder="Ingrese el rut"/>
             <div *ngIf="clientForm.get('rut')?.invalid && clientForm.get('rut')?.touched" class="error">
               RUT inválido.
             </div>
@@ -22,18 +21,30 @@
           <!-- Campo Razón Social -->
           <div class="form-group">
             <label for="razonSocial">Razón Social</label>
-            <input class="full-width" id="razonSocial" formControlName="razonSocial" type="text" placeholder="Ej: Siroe SpA"/>
+            <input class="full-width" id="razonSocial" formControlName="razonSocial" type="text" placeholder="Ingresa la razón social"/>
             <div *ngIf="clientForm.get('razonSocial')?.invalid && clientForm.get('razonSocial')?.touched" class="error">
               Razón Social es requerida.
             </div>
           </div>
         </div>
 
+        <!-- Campo Logo -->
+        <div class="form-group">
+          <label for="imagen">Logo o Imagen</label>
+          <div class="custom-file-input" style="width: 100%;">
+            <div style="display: flex; justify-content: space-between; width: 100%;">
+              <p *ngIf="!clientForm.value.imagen" class="imagen-placeholder">Sube el logo o la imagen del cliente</p>
+              <p *ngIf="clientForm.value.imagen" class="imagen-text">{{ clientForm.value.imagen }}</p>
+              <img src="/assets/svg/camera.svg" alt="camera_svg" class="svg">
+            </div>
+            <input class="inputs" (change)="onFileSelected($event)" type="file" accept="image/*" capture="environment" type="file" formControlName="imagen"/>
+          </div>
+        </div>
 
         <!-- Campo Encargado General -->
         <div class="form-group">
           <label for="encargadoGeneral">Encargado General</label>
-          <input id="encargadoGeneral" formControlName="encargadoGeneral" type="text" placeholder="Ej: Roberto Osses"/>
+          <input id="encargadoGeneral" formControlName="encargadoGeneral" type="text" placeholder="Ingresa el encargado general"/>
           <div *ngIf="clientForm.get('encargadoGeneral')?.invalid && clientForm.get('encargadoGeneral')?.touched" class="error">
             Encargado General es requerido.
           </div>
@@ -42,7 +53,7 @@
         <!-- Campo Correo -->
         <div class="form-group">
           <label for="correo">Correo Electrónico</label>
-          <input id="correo" formControlName="correo" type="email" placeholder="Ej: Siroe@siroe.cl"/>
+          <input id="correo" formControlName="correo" type="email" placeholder="Ingresa el correo electrónico"/>
           <div *ngIf="clientForm.get('correo')?.invalid && clientForm.get('correo')?.touched" class="error">
             Correo electrónico inválido.
           </div>
@@ -51,7 +62,7 @@
         <!-- Campo Teléfono Encargado -->
         <div class="form-group">
           <label for="telefonoEncargado">Teléfono Encargado</label>
-          <input id="telefonoEncargado" formControlName="telefonoEncargado" type="text" placeholder="1 2345 6789"/>
+          <input id="telefonoEncargado" formControlName="telefonoEncargado" type="text" placeholder="Ingresa el teléfono"/>
           <div *ngIf="clientForm.get('telefonoEncargado')?.invalid && clientForm.get('telefonoEncargado')?.touched" class="error">
             Teléfono inválido.
           </div>

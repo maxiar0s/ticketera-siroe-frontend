@@ -1,6 +1,6 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { catchError, Observable, of, throwError } from 'rxjs';
+import { catchError, map, Observable, of, throwError } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -38,7 +38,6 @@ export class ApiService {
 
   modifyEquiptment(data:any):Observable<any> {
     let formValues: { [key: string]: any } = {};
-
     data.forEach((value: any, key: any) => {
       formValues[key] = value;
     });
@@ -148,5 +147,13 @@ export class ApiService {
           return of(null);
         })
       );
+  }
+
+  // Consumo de imagenes GCS (Google Cloud Storage)
+  signedUrl(fileName: string):Observable<any> {
+    const apiUrl = `${this.url}/api/generar-url/${fileName}`;
+    return this.http.get<{ signedUrl: string }>(apiUrl).pipe(
+      map((response) => response.signedUrl)
+    );
   }
 }

@@ -57,6 +57,7 @@
 .sucursal-campo p {
   min-width: 100%;
   margin: 0;
+  line-height: 1.1;
   font-size: 1.4rem;
   color: #be709b;
   overflow: hidden;

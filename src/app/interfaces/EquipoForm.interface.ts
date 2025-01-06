@@ -3,6 +3,4 @@ export interface EquipoFormField {
   label: string;
   type: string;
   placeholder?: string;
-  options?: string[];
-  validators?: any[];
 }

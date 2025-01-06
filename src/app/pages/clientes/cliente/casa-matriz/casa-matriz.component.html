@@ -1,37 +1,34 @@
 <section class="main-grid">
-  <div>
-    <div></div>
-    <!-- <img src="" alt=""> -->
-  </div>
+  <img class="logo" [src]="cliente.imagen | signedUrl | async" [alt]="cliente.imagen">
   <div class="flex-column">
+    <h1 *ngIf="obtainedClient" class="casa-matriz">{{ cliente.razonSocial ? cliente.razonSocial : 'Cargando cliente' }}</h1>
     <h1 *ngIf="!obtainedClient" class="temp-title casa-matriz">Cargando cliente...</h1>
-    <h1 *ngIf="obtainedClient" class="casa-matriz">{{ cliente?.razonSocial }}</h1>
     <div class="grid">
 
       <div class="body-flex">
         <div class="information">
-          <h1>Razón Social: <span>{{ cliente?.razonSocial }}</span></h1>
+          <h1>Razón Social: <span>{{ cliente.razonSocial }}</span></h1>
         </div>
         <div class="information">
-          <h1>Encargado General: <span>{{ cliente?.encargadoGeneral }}</span></h1>
-        </div>
-      </div>
-
-      <div class="body-flex">
-        <div class="information">
-          <h1>RUT Cliente: <span>{{ cliente?.rut }}</span></h1>
-        </div>
-        <div class="information">
-          <h1>Teléfono: <span>{{ cliente?.telefonoEncargado }}</span></h1>
+          <h1>Encargado General: <span>{{ cliente.encargadoGeneral }}</span></h1>
         </div>
       </div>
 
       <div class="body-flex">
         <div class="information">
-          <h1>ID Cliente: <span>{{ cliente?.id}}</span></h1>
+          <h1>RUT Cliente: <span>{{ cliente.rut }}</span></h1>
         </div>
         <div class="information">
-          <h1>Correo: <span>{{ cliente?.correo }}</span></h1>
+          <h1>Teléfono: <span>{{ cliente.telefonoEncargado }}</span></h1>
+        </div>
+      </div>
+
+      <div class="body-flex">
+        <div class="information">
+          <h1>ID Cliente: <span>{{ cliente.id}}</span></h1>
+        </div>
+        <div class="information">
+          <h1>Correo: <span>{{ cliente.correo }}</span></h1>
         </div>
       </div>
 

@@ -8,11 +8,12 @@ import { SignalService } from '../../services/signal.service';
 import { LoaderComponent } from '../../shared/loader/loader.component';
 import { LoaderService } from '../../services/loader.service';
 import { NavegationComponent } from "../../shared/navegation/navegation.component";
+import { SignedUrlPipe } from '../../pipes/generar-url.pipe';
 
 @Component({
   selector: 'clientes',
   standalone: true,
-  imports: [CommonModule, RouterModule, CrearClienteComponent, LoaderComponent, NavegationComponent, NavegationComponent],
+  imports: [CommonModule, RouterModule, CrearClienteComponent, LoaderComponent, NavegationComponent, NavegationComponent, SignedUrlPipe],
   templateUrl: './clientes.component.html',
   styleUrl: './clientes.component.css'
 })

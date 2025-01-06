@@ -4,29 +4,34 @@
     <!-- Loader mientras se carga informacion -->
     <shared-loader></shared-loader>
 
+    <!-- <button (click)="abrirModal()">Crear cliente</button> -->
+
     <!-- Resultados de clientes obtenidos -->
     <div *ngIf="obtainedClients && casasMatricez.length > 0; else noClientes" class="grid-clients">
-      <div *ngFor="let item of casasMatricez; let i = index" class="card-clients">
+      @for (casaMatriz of casasMatricez; track casasMatricez) {
         <div class="card-body">
-          <div class="card-body-grid">
-            <div class="card-body-photo"></div>
-            <div class="card-body-information">
+          <img class="logo" [src]="casaMatriz.imagen | signedUrl | async" [alt]="casaMatriz.imagen">
+          <div class="card-information">
+            <div>
               <div class="information">
-                <p>Razón social: <span>{{item.razonSocial}}</span></p>
-                <p>Encargado General: <span>{{item.encargadoGeneral}}</span></p>
-                <p>Correo: <span>{{item.correo}}</span></p>
-              </div>
-              <!-- <div></div> -->
-              <div class="information">
-                <p>RUT Cliente: <span>{{item.rut}}</span></p>
-                <p>ID Cliente: <span>{{item.rut}}</span></p>
-                <p>Teléfono: <span>{{item.telefonoEncargado}}</span></p>
+                <p>Razón social: <span>{{casaMatriz.razonSocial}}</span></p>
+                <p>Encargado General: <span>{{casaMatriz.encargadoGeneral}}</span></p>
+                <p>Correo: <span>{{casaMatriz.correo}}</span></p>
               </div>
             </div>
-            <a [routerLink]="['/clientes', item.id]" routerLinkActive="router-link-active" class="button">Seleccionar cliente</a>
+            <div>
+              <div class="information">
+                <p>RUT Cliente: <span>{{casaMatriz.rut}}</span></p>
+                <p>ID Cliente: <span>{{casaMatriz.id}}</span></p>
+                <p>Teléfono: <span>{{casaMatriz.telefonoEncargado}}</span></p>
+              </div>
+            </div>
+            <div>
+              <a [routerLink]="['/clientes', casaMatriz.id]" routerLinkActive="router-link-active" class="button">Seleccionar cliente</a>
+            </div>
           </div>
         </div>
-      </div>
+      }
     </div>
 
     <ng-template #noClientes>

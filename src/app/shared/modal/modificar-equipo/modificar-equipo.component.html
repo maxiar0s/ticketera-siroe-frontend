@@ -2,7 +2,7 @@
   <div class="modal-overlay" *ngIf="isVisible">
     <div class="modal-content">
       <div class="modal-header">
-        <h2 class="header-form">Añadir datos: <span class="header-span" *ngIf="headerCharged">{{ this.equipo?.codigoId }} / {{ this.equipo?.tipoEquipo?.name }} / {{ this.equipo?.departamento }}</span></h2>
+        <h2 class="header-form">Añadir datos: <span class="header-span" *ngIf="headerCharged">{{ this.equipo.codigoId }} / {{ this.equipo.tipoEquipo.name }} / {{ this.equipo.departamento }}</span></h2>
         <img src="/assets/svg/exit-button.svg" (click)="cerrar()" alt="exit_button" class="close-button">
       </div>
       <div class="modal-body" style="position: relative;">
@@ -17,6 +17,7 @@
           <div class="grid-form">
             <!-- Campo Departamento -->
             <div *ngFor="let campo of camposDinamicos; let i = index" class="form-group" style="min-width: 100%;">
+
               <label [for]="campo.name">{{ campo.label }}</label>
               <!-- Input tipo texto -->
               <input class="inputs" *ngIf="campo.type === 'text'" [placeholder]="campo.placeholder" [id]="campo.name" type="text" [formControlName]="campo.name">
@@ -24,7 +25,6 @@
               @if(campo.type === 'file') {
                 <div class="custom-file-input" style="width: 100%;">
                   <div style="display: flex; justify-content: space-between; width: 100%;">
-
                     <p *ngIf="!equipoForm.value.imagen" id="file-placeholder">Toma o sube una foto del equipo</p>
                     <p *ngIf="equipoForm.value.imagen" id="file-placeholder">{{ equipoForm.value.imagen }}</p>
                     <img src="/assets/svg/camera.svg" alt="camera_svg" class="svg">

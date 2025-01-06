@@ -1,7 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Output } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import crearEquipoJSON from './crear-equipo.json';
 import { ActivatedRoute, ParamMap } from '@angular/router';
 import { ApiService } from '../../../services/api.service';
 import { TipoEquipo } from '../../../interfaces/TipoEquipo.interface';

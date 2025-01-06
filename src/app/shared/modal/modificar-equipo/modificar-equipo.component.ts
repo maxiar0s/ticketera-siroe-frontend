@@ -33,7 +33,7 @@ export class ModificarEquipoComponent {
   @Output() cerrarModal = new EventEmitter<void>();
   @Output() enviarFormulario = new EventEmitter<any>();
   // Equipo opcional en caso de si existe ID
-  public equipo?: Equipo;
+  public equipo!: Equipo;
   // Tipo del equipo
   public tipoEquipoActual: string = '';
   public camposDinamicos: EquipoFormField[] = [];
@@ -97,14 +97,16 @@ export class ModificarEquipoComponent {
 
     campos.forEach(campo => {
       if (!this.equipoForm.contains(campo.name)) {
-        const control = new FormControl('', campo.validators || []);
+        const control = new FormControl('');
         this.equipoForm.addControl(campo.name, control);
       }
 
       if (respuesta[campo.name] !== null && respuesta[campo.name] !== undefined) {
-        this.equipoForm.patchValue({
-          [campo.name]: respuesta[campo.name]
-        });
+        if(campo.name !== 'imagen') {
+          this.equipoForm.patchValue({
+            [campo.name]: respuesta[campo.name]
+          });
+        }
       }
     });
   }
