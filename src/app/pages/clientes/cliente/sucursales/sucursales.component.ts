@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input } from '@angular/core';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { ApiService } from '../../../../services/api.service';
 import { Sucursal } from '../../../../interfaces/sucursal.interface';
 import { FormatoFechaPipe } from '../../../../pipes/formato-fecha.pipe';
@@ -31,7 +31,8 @@ export class SucursalesComponent {
     private apiService: ApiService,
     private route: ActivatedRoute,
     private signalService:SignalService,
-    private loaderService: LoaderService
+    private loaderService: LoaderService,
+    private router: Router
   ) {  }
 
   ngOnInit() {
@@ -43,11 +44,16 @@ export class SucursalesComponent {
         // Titulo de la pagina
         this.apiService.client(id).subscribe({
           next: (respuesta) => {
-            const { razonSocial } = respuesta;
-            this.signalService.updateData(razonSocial);
+            if(!respuesta) {
+              this.router.navigate(['/clientes']);
+            } else {
+              const { razonSocial } = respuesta;
+              this.signalService.updateData(razonSocial);
+            }
           },
           error: (error) => {
             console.error('Error al obtener sucursales', error);
+            this.router.navigate(['/clientes']);
           }
         })
         this.cambiarSucursal();

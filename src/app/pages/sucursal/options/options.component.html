@@ -1,16 +1,18 @@
 <div class="options-flex">
   <h1 class="title">Listado de equipos</h1>
-  <div class="flex-buttons" *ngIf="estado || !estado">
-    <button class="inner-button imprimir">
+  <div class="flex-buttons">
+    <button class="option-button imprimir">
       <img src="/assets/svg/impresora.svg" class="svg" alt="impresora_svg">
       <span>Imprimir etiqueta</span>
     </button>
-    <button class="inner-button importar">
+    <button class="option-button importar">
       <img src="/assets/svg/importar.svg" class="svg" alt="importar_svg">
       <span>Importar datos</span>
     </button>
-    <button [disabled]="!estado" [ngClass]="{'agregar-equipo': estado, 'agregar-equipo-disabled': !estado}" (click)="abrirModal()" class="inner-button">
-      <img [src]="estado ? '/assets/svg/agregar-equipo.svg' : '/assets/svg/agregar-equipo-disabled.svg' " class="svg" alt="agregar-equipo_svg">
+    <button [disabled]="!estado" (click)="abrirModal()" class="option-button" [ngClass]="{ 'agregar' : estado }">
+
+      <img *ngIf="estado" src="/assets/svg/agregar-equipo2.svg" class="svg" alt="">
+      <img *ngIf="!estado" src="/assets/svg/agregar-equipo-disabled.svg" class="svg" alt="">
       <span>Añadir equipos</span>
     </button>
   </div>

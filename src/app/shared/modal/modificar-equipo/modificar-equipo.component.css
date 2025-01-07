@@ -43,7 +43,7 @@
 }
 
 .header-form {
-  font-size: 2rem;
+  font-size: 1.8rem;
   text-align: left;
 }
 @media (max-width: 1400px) {
@@ -63,15 +63,15 @@
 }
 
 .description-form {
+  margin-bottom: 1.5rem;
   font-size: 1.3rem;
-  color: #718ebf;
-  margin: 0.8rem;
+  color: #474747;
 }
 
 .grid-form {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  column-gap: 1.5rem;
+  column-gap: 2.5rem;
 }
 
 .full-width {
@@ -104,6 +104,7 @@
 
 .form-group label {
   display: block;
+  font-size: 1.3rem;
   margin-bottom: 0.5rem;
 }
 @media (max-width: 1400px) {
@@ -121,6 +122,7 @@
   border: 1px solid #deebf2;
 }
 .form-group textarea {
+  overflow-y: hidden;
   padding: auto 0.3rem;
   max-height: 4.3rem;
   font-family: Roboto, "Helvetica Neue", sans-serif;
@@ -155,6 +157,17 @@
     padding: 0.175rem;
     border-radius: 1rem;
   }
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
 }
 
 .custom-file-input input[type="file"] {
@@ -215,7 +228,7 @@
 
 button {
   padding: 1.2rem 5rem;
-  font-size: 1.7rem;
+  font-size: 1.3rem;
   border-radius: 25px;
   cursor: pointer;
   border: 0;

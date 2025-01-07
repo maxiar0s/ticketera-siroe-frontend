@@ -4,14 +4,13 @@
 }
 .options button {
   font-weight: 500;
-  font-size: 1.4rem;
+  font-size: 1.3rem;
   padding: 1rem 4rem;
   position: relative;
 }
 @media (max-width: 1400px) {
   .options button {
     padding: 1rem 3.5rem;
-    font-size: 1.3rem;
   }
 }
 .options button:hover {

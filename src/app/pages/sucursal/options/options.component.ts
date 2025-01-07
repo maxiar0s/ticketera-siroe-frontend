@@ -13,7 +13,7 @@ import { Router } from '@angular/router';
   styleUrl: './options.component.css'
 })
 export class ButtonsComponent {
-  @Input() estado?: boolean;
+  @Input() estado: boolean = false;
 
   // Id Sucursal
   @Input() id?: string;

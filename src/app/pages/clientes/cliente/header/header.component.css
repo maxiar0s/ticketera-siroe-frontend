@@ -9,7 +9,7 @@ p {
 }
 
 .title {
-  font-size: 2.75rem;
+  font-size: 1.9rem;
   color: #474747;
 }
 @media (max-width: 1400px) {
@@ -55,7 +55,7 @@ p {
 .search {
   all: unset;
   padding: 0.8rem 2.5rem 0.8rem 2rem;
-  font-size: 1.5rem;
+  font-size: 1.3rem;
   border-radius: 2.5rem;
 }
 @media (max-width: 1400px) {

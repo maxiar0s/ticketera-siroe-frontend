@@ -1,7 +1,5 @@
-import { HttpClient } from '@angular/common/http';
 import { Pipe, PipeTransform } from '@angular/core';
 import { ApiService } from '../services/api.service';
-import { Observable } from 'rxjs';
 
 @Pipe({
   name: 'signedUrl',
@@ -10,10 +8,10 @@ import { Observable } from 'rxjs';
 export class SignedUrlPipe implements PipeTransform {
   constructor(
     private apiService: ApiService,
-    private http: HttpClient
   ) {}
 
-  transform(fileName: string): Observable<string> {
+  transform(fileName?: string) {
+    if(!fileName) return;
     return this.apiService.signedUrl(fileName);
   }
 }

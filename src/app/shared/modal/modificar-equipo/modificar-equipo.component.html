@@ -6,12 +6,10 @@
         <img src="/assets/svg/exit-button.svg" (click)="cerrar()" alt="exit_button" class="close-button">
       </div>
       <div class="modal-body" style="position: relative;">
-
-
         <div *ngIf="!formCharged" class="loader-height">
           <shared-loader-modal></shared-loader-modal>
         </div>
-
+        <p class="description-form">Completa los campos para registrar la información del equipo en el sistema.</p>
         <form *ngIf="formCharged" [formGroup]="equipoForm" (ngSubmit)="onSubmit()">
           <input type="hidden" [value]="this.idEquipo" formControlName="id">
           <div class="grid-form">

@@ -28,8 +28,8 @@
 }
 
 .card-body {
-  min-height: 20rem;
-  max-height: 20rem;
+  min-height: 18rem;
+  max-height: 18rem;
   background-color: #f7f7f7;
   border-radius: 15px;
   border: 1px solid #ebebea;
@@ -44,7 +44,7 @@
 }
 
 .logo {
-  max-height: 19rem;
+  max-height: 9rem;
   padding: 0 2.5rem;
   max-width: 100%;
   object-fit: contain;
@@ -66,7 +66,7 @@
 }
 .information p {
   margin: 0;
-  font-size: 1.5rem;
+  font-size: 1.3rem;
   font-weight: 500;
 }
 @media (max-width: 1400px) {
@@ -83,6 +83,7 @@
   margin: 0 auto auto auto;
   border: 1px solid #4f4f4f;
   border-radius: 25px;
+  font-size: 1.3rem;
   font-weight: 500;
   color: #474747;
   transition: 350ms;
@@ -90,7 +91,6 @@
 @media (max-width: 1400px) {
   .button {
     font-size: 1.1rem;
-
   }
 }
 .button:hover {

@@ -8,8 +8,8 @@
 .menu {
   position: relative;
   flex-shrink: 0;
-  min-width: 22rem;
-  max-width: 22rem;
+  min-width: 20rem;
+  max-width: 20rem;
   background-color: #F7F7F7;
 }
 

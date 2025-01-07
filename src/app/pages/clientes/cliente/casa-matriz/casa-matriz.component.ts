@@ -14,7 +14,7 @@ import { SignedUrlPipe } from '../../../../pipes/generar-url.pipe';
 })
 export class CasaMatrizComponent {
   public obtainedClient: boolean = false;
-  public cliente!:Cliente;
+  public cliente?:Cliente;
   public ruta:string = '';
 
   constructor(

@@ -19,8 +19,8 @@ import { OptionsComponent } from '../../shared/options/options.component';
 export class SucursalComponent {
   public Option:string = 'Todos los ingresos';
 
-  public sucursal?: Sucursal;
-  public estado?: boolean;
+  public sucursal!: Sucursal;
+  public estado: boolean = false;
   public headerText?: boolean;
 
   // Id sucursal
@@ -36,6 +36,7 @@ export class SucursalComponent {
   ) {}
 
   ngOnInit() {
+    this.estado = false;
     this.route.params.subscribe(params => {
       const id = params['id'];
       const idCliente = params['idCliente'];
