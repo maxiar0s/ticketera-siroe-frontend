@@ -1,34 +1,38 @@
 <section class="main-grid">
-  <img class="logo" [src]="cliente?.imagen | signedUrl | async" [alt]="cliente!.imagen">
+  @if(cliente){
+    <img class="logo" [src]="cliente.imagen | signedUrl | async" [alt]="cliente.imagen">
+  } @else {
+    <div class="spinner"></div>
+  }
   <div class="flex-column">
-    <h1 *ngIf="obtainedClient" class="casa-matriz">{{ cliente?.razonSocial ? cliente?.razonSocial : 'Cargando cliente' }}</h1>
-    <h1 *ngIf="!obtainedClient" class="temp-title casa-matriz">Cargando cliente...</h1>
+    <h2 *ngIf="obtainedClient" class="casa-matriz">{{ cliente?.razonSocial ? cliente?.razonSocial : 'Cargando cliente' }}</h2>
+    <h2 *ngIf="!obtainedClient" class="temp-title casa-matriz">Cargando cliente...</h2>
     <div class="grid">
 
       <div class="body-flex">
         <div class="information">
-          <h1>Razón Social: <span>{{ cliente?.razonSocial }}</span></h1>
+          <p>Razón Social: <span>{{ cliente?.razonSocial }}</span></p>
         </div>
         <div class="information">
-          <h1>Encargado General: <span>{{ cliente?.encargadoGeneral }}</span></h1>
-        </div>
-      </div>
-
-      <div class="body-flex">
-        <div class="information">
-          <h1>RUT Cliente: <span>{{ cliente?.rut }}</span></h1>
-        </div>
-        <div class="information">
-          <h1>Teléfono: <span>{{ cliente?.telefonoEncargado }}</span></h1>
+          <p>Encargado General: <span>{{ cliente?.encargadoGeneral }}</span></p>
         </div>
       </div>
 
       <div class="body-flex">
         <div class="information">
-          <h1>ID Cliente: <span>{{ cliente?.id}}</span></h1>
+          <p>RUT Cliente: <span>{{ cliente?.rut }}</span></p>
         </div>
         <div class="information">
-          <h1>Correo: <span>{{ cliente?.correo }}</span></h1>
+          <p>Teléfono: <span>{{ cliente?.telefonoEncargado }}</span></p>
+        </div>
+      </div>
+
+      <div class="body-flex">
+        <div class="information">
+          <p>ID Cliente: <span>{{ cliente?.id}}</span></p>
+        </div>
+        <div class="information">
+          <p>Correo: <span>{{ cliente?.correo }}</span></p>
         </div>
       </div>
 

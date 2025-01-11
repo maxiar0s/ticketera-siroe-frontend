@@ -32,13 +32,11 @@
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
-  font-size: 1.2rem;
 }
-@media (max-width: 1400px) {
+/* @media (max-width: 1400px) {
   .thead-properties th {
-    font-size: 1rem;
   }
-}
+} */
 
 .row-border {
   border-top: 1px solid #ebeff3;
@@ -52,17 +50,15 @@
 }
 
 .estado {
-  width: 1.6rem;
-  height: 1.6rem;
+  width: 1rem;
+  height: 1rem;
   border-radius: 50%;
   margin: 0 auto;
 }
-@media (max-width: 1400px) {
+/* @media (max-width: 1400px) {
   .estado {
-    width: 1.1rem;
-    height: 1.1rem;
   }
-}
+} */
 .abierto {
   background-color: #1ec6b8;
 }
@@ -78,16 +74,14 @@
 }
 .information-value {
   padding: 1rem 0;
-  font-size: 1.2rem;
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
 }
-@media (max-width: 1400px) {
+/* @media (max-width: 1400px) {
   .information-value {
-    font-size: 1rem;
   }
-}
+} */
 
 .information-actions {
   display: flex;
@@ -130,15 +124,18 @@ input[type="checkbox"] {
 .no-equipos {
   padding: 2rem 0;
 }
-@media (max-width: 1400px) {
+/* @media (max-width: 1400px) {
   .no-equipos {
-    font-size: 1.2rem;
   }
-}
+} */
 
 .navegation-section {
   width: 100%;
   margin-top: 2rem;
   display: flex;
   justify-content: center;
+}
+
+.loader {
+  min-height: 450px;
 }

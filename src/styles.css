@@ -1,11 +1,10 @@
-/* You can add global styles to this file, and also import other style files */
-@import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap');
+/* @import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap'); */
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
 html {
   font-size: 62.5%;
   box-sizing: border-box;
   height: 100%;
   margin: 0;
-  /* overflow-y: scroll; */
 }
 
 *, *:before, *:after {
@@ -15,31 +14,57 @@ html {
 body {
   overflow-y: scroll;
   margin: 0;
-  font-family: "Open Sans", sans-serif;
-  font-size: 1.6rem;
+  font-family: "Inter", serif;
+  /* font-family: "Open Sans", sans-serif; */
   line-height: 1.8;
 }
 
 h1, h2, h3 {
-  font-family: "Open Sans", sans-serif;
+  font-family: "Inter", serif;
+  /* font-family: "Open Sans", sans-serif; */
   margin: 0;
   line-height: 1.2;
 }
 
 h1 {
-  font-size: 4.8rem;
+  font-size: 2.5rem;
 }
 
 h2 {
-  font-size: 5.8rem;
+  font-size: 1.8rem;
 }
 
 h3 {
-  font-size: 5rem;
+  font-size: 1.6rem;
 }
 
 p {
+  font-size: 1.2rem;
   margin: 0;
+}
+
+a {
+  font-size: 1.2rem;
+}
+
+label {
+  font-size: 1.2rem;
+}
+
+input,
+select,
+textarea {
+  font-size: 1.2rem;
+}
+
+button {
+  all: unset;
+  font-size: 1.2rem;
+}
+
+th,
+td {
+  font-size: 1.2rem;
 }
 
 .open-300 {
@@ -68,4 +93,181 @@ img {
 }
 
 html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+/* Propiedades compartidas */
+
+.text-center {
+  text-align: center;
+}
+
+/* Modales */
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-header {
+  border-top-left-radius: 2rem;
+  border-top-right-radius: 2rem;
+  display: flex;
+  background-color: #b71653;
+  padding: 1rem 2rem;
+  width: 100%;
+  justify-content: space-between;
+  color: #fefffe;
+  align-items: center;
+}
+
+.header-form {
+  font-weight: 600;
+  text-align: left;
+}
+/* @media (max-width: 1400px) {
+  .header-form {
+  }
+} */
+
+.modal-body {
+  height: 100%;
+  padding: 2.4rem;
+}
+@media (max-width: 1400px) {
+  .modal-body {
+    padding: 1rem 2rem;
+  }
+}
+
+.description-form {
+  font-size: 1.2rem;
+  margin-bottom: 2rem;
+  color: #474747;
+}
+
+.close-button {
+  cursor: pointer;
+  max-width: 3rem;
+  min-width: 3rem;
+}
+
+.form-group label {
+  display: block;
+  font-weight: 400;
+  margin-bottom: 0.5rem;
+}
+/* @media (max-width: 1400px) {
+  .form-group label {
+  }
+} */
+
+.form-group input,
+.form-group textarea,
+.form-group select {
+  min-width: 100%;
+  padding: 1.3rem;
+  box-sizing: border-box;
+  border-radius: 1.5rem;
+  border: 1px solid #deebf2;
+  background-color: #fffefe;
+}
+
+@media (max-width: 1400px) {
+  .form-group input,
+  .form-group select,
+  .form-group textarea {
+    padding: 0.8rem;
+    border-radius: 1rem;
+  }
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+
+.custom-file-input {
+  display: inline-block;
+  position: relative;
+  cursor: pointer;
+  border: 1px solid #deebf2;
+  border-radius: 1.5rem;
+  background-color: #fff;
+  width: 100%;
+  padding: 0.6rem;
+}
+@media (max-width: 1400px) {
+  .custom-file-input {
+    padding: 0.175rem;
+    border-radius: 1rem;
+  }
+}
+
+.custom-file-input input[type="file"] {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.custom-file-input p {
+  pointer-events: none;
+  margin-left: 0.45rem;
+  color: #d9d9d9;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  width: 100%;
+}
+
+.error {
+  color: red;
+  font-size: 1.1rem;
+  margin-top: 5px;
+}
+
+.error-message {
+  color: red;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.equiptment-button {
+  padding: 8px 50px;
+  border-radius: 50px;
+  cursor: pointer;
+  border: 0;
+}
+
+.equiptment-button[type="submit"] {
+  background-color: #b71653;
+  color: #fff;
+}
+
+.equiptment-button:disabled {
+  background-color: #ebebeb;
+  cursor: not-allowed;
+  color: #474747;
+}

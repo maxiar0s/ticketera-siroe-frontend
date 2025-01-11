@@ -1,17 +1,3 @@
-
-.modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-}
-
 .modal-content {
   background-color: #f7f6f6;
   border-radius: 2rem;
@@ -19,74 +5,6 @@
   max-width: 55rem;
   box-shadow: 0 5px 15px rgba(0,0,0,0.3);
   position: relative;
-}
-
-.modal-header {
-  border-top-left-radius: 2rem;
-  border-top-right-radius: 2rem;
-  display: flex;
-  background-color: #b71653;
-  padding: 1rem 2rem;
-  justify-content: space-between;
-  color: #fefffe;
-  align-items: center;
-}
-
-.header-form {
-  font-size: 2rem;
-  text-align: left;
-}
-@media (max-width: 1400px) {
-  .header-form {
-    font-size: 1.6rem;
-  }
-}
-
-.modal-body {
-  padding: 2rem;
-}
-
-.description-form {
-  margin-bottom: 2rem;
-  font-size: 1.3rem;
-  color: #474747;
-}
-
-.close-button {
-  cursor: pointer;
-  max-width: 3rem;
-  min-width: 3rem;
-}
-
-.form-group {
-  margin-bottom: 1.5rem;
-}
-
-.form-group label {
-  display: block;
-  margin-bottom: 0.5rem;
-}
-@media (max-width: 1400px) {
-  .form-group label {
-    font-size: 1.2rem;
-  }
-}
-
-.form-group input,
-.form-group select {
-  width: 100%;
-  padding: 1.3rem;
-  box-sizing: border-box;
-  border-radius: 1.5rem;
-  border: 1px solid #deebf2;
-  background-color: #fffefe;
-}
-@media (max-width: 1400px) {
-  .form-group input,
-  .form-group select {
-    padding: 0.8rem;
-    border-radius: 1rem;
-  }
 }
 
 .form-group input::placeholder {
@@ -103,50 +21,12 @@
   color: #474747;
 }
 
-.error {
-  color: red;
-  font-size: 1rem;
-  margin-top: 5px;
-}
-
-.error-message {
-  color: red;
-  margin-bottom: 10px;
-  text-align: center;
-}
-
-.form-actions {
-  display: flex;
-  justify-content: flex-end;
-}
-
-button {
-  padding: 1.2rem 5rem;
-  font-size: 1.7rem;
-  border-radius: 25px;
-  cursor: pointer;
-  border: 0;
-}
-
-button[type="submit"] {
-  background-color: #b71653;
-  color: #fff;
-}
-
-button:disabled {
-  background-color: #ebebeb;
-  cursor: not-allowed;
-  color: #474747;
-}
-label {
-  font-weight: 300;
-}
-
 .two-inputs {
+  margin-bottom: 2rem;
   display: flex;
   gap: 1.5rem;
 }
 
-.full-width {
+.width-50 {
   width: 50%;
 }

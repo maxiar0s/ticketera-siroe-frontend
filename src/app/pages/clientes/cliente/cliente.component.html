@@ -3,7 +3,11 @@
   <cliente-header></cliente-header>
   <shared-options (optionSelected)="selectedOption($event)"></shared-options>
   <div class="div-loader">
-    <shared-loader class="div-loader-sucursales"></shared-loader>
+    @if(loaderService.loadingSection()){
+      <div class="loader">
+        <shared-loader></shared-loader>
+      </div>
+    }
     <cliente-sucursales [selectedOption]="Option"></cliente-sucursales>
   </div>
 </div>

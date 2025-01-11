@@ -5,14 +5,12 @@
 }
 
 .title {
-  font-size: 1.8rem;
   color: #474747;
 }
-@media (max-width: 1400px) {
+/* @media (max-width: 1400px) {
   .title {
-    font-size: 1.7rem;
   }
-}
+} */
 
 .flex-buttons {
   min-height: 4rem;
@@ -29,21 +27,18 @@
 }
 
 .option-button {
-  all: unset;
   display: flex;
-  font-size: 1.4rem;
   align-items: center;
   border-radius: 25px;
   padding: 0.6rem 3rem;
   background-color: #ebebeb;
   color: #474747;
 }
-@media (max-width: 1400px) {
+/* @media (max-width: 1400px) {
   .option-button {
-    font-size: 1.2rem;
     padding: 0.3rem 1rem;
   }
-}
+} */
 
 .imprimir,
 .importar,
@@ -58,7 +53,8 @@
 .agregar-equipo:hover {
   cursor: pointer;
 }
-.agregar-equipo-disabled {
+
+.disabled-button {
   color: #bababa;
   cursor: default;
 }
@@ -68,7 +64,7 @@
   margin-right: 0.5rem;
 }
 
-.form-crear-cliente {
+.size-modal {
   min-width: 100%;
   min-height: 100%;
 }

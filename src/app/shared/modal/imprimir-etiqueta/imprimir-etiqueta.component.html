@@ -1,0 +1,37 @@
+<!-- src/app/modal-form/modal-form.component.html -->
+<div class="modal-overlay" *ngIf="isVisible">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2 class="header-form">Listado de etiquetas</h2>
+      <img src="/assets/svg/exit-button.svg" (click)="cerrar()" alt="exit_button" class="close-button">
+    </div>
+    <div class="modal-body">
+      <div class="table-properties">
+        <table class="table">
+          <thead>
+            <tr>
+              <th class="text-center" style="width: 40px;"></th>
+              <th>Código ID</th>
+              <th>Fecha de ingreso</th>
+              <th>Departamento</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="row-border" *ngFor="let item of devices; let i = index">
+              <td class="text-center">{{i}}.</td>
+              <td>{{ item.codigoId }}</td>
+              <td class="text-center">{{ item.fechaIngreso }}</td>
+              <td class="text-center">{{ item.departamento }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="form-actions">
+        <button class="button-properties">
+          <img src="/assets/svg/imprimir-etiquetas.svg" class="svg" alt="imprimir-etiquetas.svg">
+          <p>Imprimir etiquetas</p>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

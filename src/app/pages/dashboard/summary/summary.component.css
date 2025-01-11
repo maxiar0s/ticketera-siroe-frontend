@@ -9,29 +9,27 @@
 }
 
 .title {
-  font-size: 3rem;
   color: #343c6a;
   margin-bottom: 1.2rem;
 }
-@media (max-width: 1400px) {
+/* @media (max-width: 1400px) {
   .title {
-    font-size: 2rem;
   }
-}
+} */
 
 .options {
   display: flex;
   margin-bottom: 2.5rem;
 }
-@media (max-width: 1400px) {
+/* @media (max-width: 1400px) {
   .options {
-    font-size: 1.25rem;
   }
-}
+} */
 .options button {
   all: unset;
 }
 .options button {
+  font-size: 1.2rem;
   padding: 1rem 4rem;
   position: relative;
 }
@@ -68,6 +66,7 @@
   }
 }
 .table th, .table td {
+  font-size: 1.2rem;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -120,7 +119,6 @@
 @media (max-width: 1400px) {
   .table-detalle {
     padding: 0.3rem 1rem;
-    font-size: 1rem;
   }
 }
 .table-detalle:hover {

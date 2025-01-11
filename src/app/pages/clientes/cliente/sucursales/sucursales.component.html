@@ -2,29 +2,29 @@
   <div *ngFor="let sucursal of sucursales" class="sucursal">
     <!-- Estado Sucursal -->
     <div class="sucursal-campo sucursal-campo-estado">
-      <h1 class="table-title">Estado</h1>
+      <h3 class="table-title">Estado</h3>
       <div class="estado" [ngClass]="sucursal.estado === 1 ? 'abierto' :
                       sucursal.estado === 2 ? 'pendiente' :
                       'cerrado'"></div>
     </div>
     <!-- Nombre Sucursal -->
     <div class="sucursal-campo sucursal-campo-texto">
-      <h1 class="table-title">Sucursal</h1>
+      <h3 class="table-title">Sucursal</h3>
       <p>{{ sucursal.sucursal }}</p>
     </div>
     <!-- Nombre Sucursal -->
     <div class="sucursal-campo sucursal-campo-texto">
-      <h1 class="table-title">Dirección</h1>
+      <h3 class="table-title">Dirección</h3>
       <p>{{ sucursal.direccion }}</p>
     </div>
     <!-- Nombre Sucursal -->
     <div class="sucursal-campo sucursal-campo-texto">
-      <h1 class="table-title">Fecha ingreso</h1>
+      <h3 class="table-title">Fecha ingreso</h3>
       <p>{{ sucursal.fechaIngreso.toString() | formatoFecha }}</p>
     </div>
     <!-- Nombre Sucursal -->
     <div class="sucursal-campo sucursal-campo-texto">
-      <h1 class="table-title">Cantidad equipos</h1>
+      <h3 class="table-title">Cantidad equipos</h3>
       <p>{{ sucursal.equiposCount}} equipos registrados</p>
     </div>
     <div class="div-button">

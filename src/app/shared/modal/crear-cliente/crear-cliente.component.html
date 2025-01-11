@@ -10,9 +10,9 @@
 
         <div class="two-inputs">
           <!-- Campo RUT -->
-          <div class="form-group full-width">
+          <div class="form-group width-50">
             <label for="rut">RUT</label>
-            <input class="full-width" id="rut" formControlName="rut" type="text" placeholder="Ingrese el rut"/>
+            <input class="width-50" id="rut" formControlName="rut" type="text" placeholder="Ingrese el rut"/>
             <div *ngIf="clientForm.get('rut')?.invalid && clientForm.get('rut')?.touched" class="error">
               RUT inválido.
             </div>
@@ -21,7 +21,7 @@
           <!-- Campo Razón Social -->
           <div class="form-group">
             <label for="razonSocial">Razón Social</label>
-            <input class="full-width" id="razonSocial" formControlName="razonSocial" type="text" placeholder="Ingresa la razón social"/>
+            <input class="width-50" id="razonSocial" formControlName="razonSocial" type="text" placeholder="Ingresa la razón social"/>
             <div *ngIf="clientForm.get('razonSocial')?.invalid && clientForm.get('razonSocial')?.touched" class="error">
               Razón Social es requerida.
             </div>
@@ -75,7 +75,7 @@
 
         <!-- Botones -->
         <div class="form-actions">
-          <button type="submit" [disabled]="clientForm.invalid">Enviar</button>
+          <button class="equiptment-button" type="submit" [disabled]="clientForm.invalid">Enviar</button>
         </div>
       </form>
     </div>

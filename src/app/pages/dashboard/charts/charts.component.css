@@ -46,14 +46,11 @@
   grid-column-start: 5;
   grid-column-end: 7;
 }
-.table-title {
-  font-size: 15px;
-}
-@media (max-width: 1400px) {
+
+/* @media (max-width: 1400px) {
   .table-title {
-    font-size: 1.2rem;
   }
-}
+} */
 .chart {
   margin: 0 auto;
   width: 15rem;
@@ -130,11 +127,6 @@
   flex-wrap: wrap;
   justify-content: center;
   gap: 1.5rem;
-}
-@media (max-width: 1400px) {
-  p {
-    font-size: 1.2rem;
-  }
 }
 
 .p-chart-4 {

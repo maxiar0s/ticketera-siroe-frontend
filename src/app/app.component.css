@@ -12,12 +12,10 @@
   max-width: 20rem;
   background-color: #F7F7F7;
 }
-
-@media (max-width: 1400) {
+/* @media (max-width: 1400) {
   p {
-    font-size: 2.5rem;
   }
-}
+} */
 
 @media (max-width: 1400px) {
   .menu {

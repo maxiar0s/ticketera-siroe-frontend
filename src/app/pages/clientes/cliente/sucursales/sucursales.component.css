@@ -34,17 +34,14 @@
   gap: 0.8rem;
 }
 
-.sucursal-campo h1 {
-  font-weight: 600;
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
+.sucursal-campo h3 {
+  font-weight: 500;
+  font-size: 1.3rem;
 }
-@media (max-width: 1400px) {
-  .sucursal-campo h1 {
-    font-size: 1.1rem;
+/* @media (max-width: 1400px) {
+  .sucursal-campo h3 {
   }
-}
+} */
 
 .sucursal-campo-estado {
   align-items: center;
@@ -57,48 +54,35 @@
 .sucursal-campo p {
   min-width: 100%;
   margin: 0;
-  line-height: 1.1;
-  font-size: 1.2rem;
-  color: #be709b;
+  color: #BF719B;
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
 }
-@media (max-width: 1400px) {
+/* @media (max-width: 1400px) {
   .sucursal-campo p {
-    font-size: 1.3rem;
   }
-}
-
-.table-title {
-  font-size: 1.3rem;
-}
-@media (max-width: 1400px) {
-  .table-title {
-    font-size: 1.6rem;
-  }
-}
+} */
 
 .estado {
-  width: 1.6rem;
-  height: 1.6rem;
+  margin-top: 0.5rem;
+  width: 1rem;
+  height: 1rem;
   border-radius: 50%;
 }
-@media (max-width: 1400px) {
+/* @media (max-width: 1400px) {
   .estado {
-    width: 1.2rem;
-    height: 1.2rem;
   }
-}
+} */
 
 .abierto {
-  background-color: #1ec6b8;
+  background-color: #1EC6B8;
 }
 .pendiente {
-  background-color: #ffeb4b;
+  background-color: #FFEA4A;
 }
 .cerrado {
-  background-color: #ff4b4a;
+  background-color: #FF4B4A;
 }
 
 .div-button {
@@ -107,7 +91,6 @@
 
 .button {
   white-space: nowrap;
-  font-size: 1.2rem;
   padding: 0.75rem 2rem;
   border: 1px solid #4e4f4e;
   text-align: center;
@@ -118,7 +101,6 @@
 }
 @media (max-width: 1400px) {
   .button {
-    font-size: 1.1rem;
     padding: 0.45rem 1rem;
   }
 }

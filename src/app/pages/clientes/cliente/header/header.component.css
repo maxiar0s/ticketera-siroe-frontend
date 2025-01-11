@@ -1,7 +1,3 @@
-p {
-  margin: 0;
-}
-
 .flex {
   display: flex;
   align-items: center;
@@ -9,14 +5,12 @@ p {
 }
 
 .title {
-  font-size: 1.9rem;
   color: #474747;
 }
-@media (max-width: 1400px) {
+/* @media (max-width: 1400px) {
   .title {
-    font-size: 2.25rem;
   }
-}
+} */
 
 .filter-form {
   display: flex;
@@ -55,12 +49,10 @@ p {
 .search {
   all: unset;
   padding: 0.8rem 2.5rem 0.8rem 2rem;
-  font-size: 1.3rem;
   border-radius: 2.5rem;
 }
 @media (max-width: 1400px) {
   .search {
-    font-size: 1.2rem;
     padding: 0.4rem 0 0.4 2rem;
   }
 }

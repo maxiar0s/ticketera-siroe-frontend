@@ -8,6 +8,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { ButtonsComponent } from './options/options.component';
 import { OptionsComponent } from '../../shared/options/options.component';
+import { ImprimirEquipo } from '../../interfaces/imprimir-equipo.interface';
 
 @Component({
   selector: 'sucursal',
@@ -19,7 +20,7 @@ import { OptionsComponent } from '../../shared/options/options.component';
 export class SucursalComponent {
   public Option:string = 'Todos los ingresos';
 
-  public sucursal!: Sucursal;
+  public sucursal?: Sucursal;
   public estado: boolean = false;
   public headerText?: boolean;
 
@@ -27,6 +28,8 @@ export class SucursalComponent {
   public id: string = '';
   // Id cliente
   public idCliente: string = '';
+
+  public Devices: ImprimirEquipo[] = [];
 
   constructor(
     private apiService: ApiService,
@@ -72,5 +75,9 @@ export class SucursalComponent {
 
   selectedOption(value: string) {
     this.Option = value;
+  }
+
+  selectedDevices(Devices: any) {
+    this.Devices = Devices;
   }
 }

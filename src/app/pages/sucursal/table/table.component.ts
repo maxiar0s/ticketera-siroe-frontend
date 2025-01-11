@@ -8,6 +8,7 @@ import { LoaderService } from '../../../services/loader.service';
 import { FormatoFechaPipe } from '../../../pipes/formato-fecha.pipe';
 import { ActivatedRoute } from '@angular/router';
 import { NavegationComponent } from '../../../shared/navegation/navegation.component';
+import { ImprimirEquipo } from '../../../interfaces/imprimir-equipo.interface';
 
 @Component({
   selector: 'sucursal-table',
@@ -31,8 +32,14 @@ export class TableComponent {
   // Arreglo de equipos
   public equipos: Equipo[] = [];
 
+  // Modal de información del equipo
   @Input() id: string = '';
   public selectedEquipoId!: number;
+
+  // Para modal de imprimir etiquetas
+  public checkboxesState: boolean[] = [];
+  public selectedDevices: ImprimirEquipo[] = [];
+  @Output() Devices = new EventEmitter<any>();
 
   // Modal
   public isModalVisible: boolean = false;
@@ -42,12 +49,8 @@ export class TableComponent {
   constructor(
     private apiService: ApiService,
     private route: ActivatedRoute,
-    private loaderService: LoaderService
+    public loaderService: LoaderService
   ) {  }
-
-  // ngOnInit() {
-  //   this.cambiarSeleccion();
-  // }
 
   abrirModal(id: number) {
     this.selectedEquipoId = id;
@@ -84,6 +87,8 @@ export class TableComponent {
   set selectedOption(value: string) {
     this._option = value;
     this.paginaActual = 1;
+    this.selectedDevices = [];
+    this.sentDevices();
     this.cambiarSeleccion();
   }
 
@@ -96,7 +101,7 @@ export class TableComponent {
       const id = params['id']
       this.apiService.equipmentsBySucursal(id, this.paginaActual, this._option).subscribe({
         next: (respuesta) => {
-          const { equipos, paginas, total } = respuesta;
+          const { equipos, paginas } = respuesta;
           if(this._option == 'Todos los ingresos') {
             this.equipos = equipos;
             this.paginas = paginas;
@@ -107,6 +112,7 @@ export class TableComponent {
             this.equipos = equipos;
             this.paginas = paginas;
           }
+          this.checkboxesState = new Array(this.equipos.length).fill(false);
           this.loaderService.hideSection();
           this.obtainedEquipments = true;
         },
@@ -138,4 +144,58 @@ export class TableComponent {
     }
   }
 
+  onCheckboxChange(equipo: Equipo, codigoId: string, i: number): void {
+    this.checkboxesState[i] = !this.checkboxesState[i];
+    const index = this.selectedDevices.findIndex(device => device.codigoId === codigoId);
+
+    if (index !== -1) {
+      this.selectedDevices.splice(index, 1);
+    } else {
+      this.selectedDevices.push({
+        codigoId: equipo.codigoId,
+        fechaIngreso: equipo.fechaIngreso,
+        departamento: equipo.departamento
+      });
+    }
+    this.sentDevices();
+  }
+
+  isAllSelected(): boolean {
+    return this.checkboxesState.every(state => state);
+  }
+
+  selectAllDevices(event: MouseEvent): void {
+    const checkbox = event.currentTarget as HTMLInputElement;
+
+    const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+    if(checkboxes) {
+      const allCheckboxes = Array.from(checkboxes).slice(1);
+
+      if(checkbox.checked) {
+        allCheckboxes.forEach(checkbox => {
+          const check = checkbox as HTMLInputElement;
+          check.checked = true;
+        });
+        this.selectedDevices = this.equipos.map(equipo => ({
+          codigoId: equipo.codigoId,
+          fechaIngreso: equipo.fechaIngreso,
+          departamento: equipo.departamento
+        }));
+        this.checkboxesState.fill(checkbox.checked);
+        this.sentDevices();
+      } else {
+        allCheckboxes.forEach(checkbox => {
+          const check = checkbox as HTMLInputElement;
+          check.checked = false;
+        });
+        this.selectedDevices = [];
+        this.checkboxesState.fill(checkbox.checked);
+        this.sentDevices();
+      }
+    }
+  }
+
+  sentDevices():void {
+    this.Devices.emit([...this.selectedDevices]);
+  }
 }

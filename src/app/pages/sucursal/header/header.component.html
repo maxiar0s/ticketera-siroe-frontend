@@ -1,45 +1,49 @@
 <div class="information-grid">
   <div class="title">
-    <h1 *ngIf="headerText" class="header-title">Sucursal Cencosud Florida</h1>
-    <h1 *ngIf="!headerText" class="header-title">Cargando información...</h1>
-    <h1 class="header-direccion">{{sucursal.direccion}}</h1>
+    <h2 *ngIf="headerText" class="header-title">Sucursal Cencosud Florida</h2>
+    <h2 *ngIf="!headerText" class="temp-title header-title">Cargando información...</h2>
+    <h2 class="header-direccion">{{sucursal?.direccion}}</h2>
   </div>
   <div>
     <div class="grid-body">
-      <img class="logo" [src]="sucursal.casaMatriz.imagen | signedUrl | async" [alt]="sucursal.casaMatriz.imagen">
+      @if(sucursal) {
+        <img class="logo" [src]="sucursal.casaMatriz.imagen | signedUrl | async" [alt]="sucursal.casaMatriz.imagen">
+      } @else {
+        <div class="spinner"></div>
+      }
       <div class="information-flex">
         <div class="flex">
-          <h1 class="information-title">Encargado Sucursal: <span>{{ sucursal.encargadoSucursal }}</span></h1>
+          <p class="information-title">Encargado Sucursal: <span>{{ sucursal?.encargadoSucursal }}</span></p>
         </div>
         <div class="flex">
-          <h1 class="information-title">Razón Social: <span>{{ sucursal.casaMatriz.razonSocial }}</span></h1>
+          <p class="information-title">Razón Social: <span>{{ sucursal?.casaMatriz?.razonSocial }}</span></p>
         </div>
         <div class="flex">
-          <h1 class="information-title">Encargado General: <span>{{ sucursal.casaMatriz.encargadoGeneral }}</span></h1>
+          <p class="information-title">Encargado General: <span>{{ sucursal?.casaMatriz?.encargadoGeneral }}</span></p>
         </div>
       </div>
 
       <div class="information-flex">
         <div class="flex">
-          <h1 class="information-title">Teléfono: <span>{{ sucursal.telefonoSucursal }}</span></h1>
+          <p class="information-title">Teléfono: <span>{{ sucursal?.telefonoSucursal }}</span></p>
         </div>
         <div class="flex">
-          <h1 class="information-title">RUT cliente: <span>{{ sucursal.casaMatriz.rut }}</span></h1>
+          <p class="information-title">RUT cliente: <span>{{ sucursal?.casaMatriz?.rut }}</span></p>
         </div>
         <div class="flex">
-          <h1 class="information-title">Teléfono: <span>{{ sucursal.casaMatriz.telefonoEncargado }}</span></h1>
+          <p class="information-title">Teléfono: <span>{{ sucursal?.casaMatriz?.telefonoEncargado }}</span></p>
         </div>
       </div>
 
       <div class="information-flex">
         <div class="flex">
-          <h1 class="information-title">Correo: <span>{{ sucursal.correoSucursal }}</span></h1>
+          <p class="information-title">Correo: <span>{{ sucursal?.correoSucursal }}</span></p>
         </div>
         <div class="flex">
-          <h1 class="information-title">ID cliente: <span>{{ sucursal.id }}</span></h1>
+          <p class="information-title">ID cliente: <span>{{ sucursal?.id }}</span></p>
         </div>
         <div class="flex">
-          <h1 class="information-title">Correo: <span>{{ sucursal.casaMatriz.correo }}</span></h1>
+          <p class="information-title">Correo: <span>{{ sucursal?.casaMatriz?.correo }}</span></p>
         </div>
       </div>
     </div>

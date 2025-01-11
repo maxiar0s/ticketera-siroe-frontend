@@ -11,9 +11,9 @@
         <input type="hidden" [value]="id" formControlName="sucursalId">
         <div class="two-inputs">
           <!-- Campo Departamento -->
-          <div class="form-group full-width">
+          <div class="form-group width-50">
             <label for="departamento">Departamento de equipos</label>
-            <select id="departamentoSelect" class="full-width" id="departamento" (change)="changeSelectColor($event)" formControlName="departamento">
+            <select id="departamentoSelect" class="width-50" id="departamento" (change)="changeSelectColor($event)" formControlName="departamento">
               <option value="" id="seleccionar" disabled selected>Seleccionar</option>
               <option value="Recursos Humanos">Recursos Humanos</option>
               <option value="Informática">Informática</option>
@@ -29,9 +29,9 @@
           </div>
 
           <!-- Campo cantidad -->
-          <div class="form-group full-width">
+          <div class="form-group width-50">
             <label for="cantidad">Añadir cantidad de equipos</label>
-            <input class="full-width" id="razonSocial" formControlName="cantidad" type="number" placeholder="Ingrese la cantidad"/>
+            <input class="width-50" id="razonSocial" formControlName="cantidad" type="number" placeholder="Ingrese la cantidad"/>
             <div *ngIf="equipoForm.get('cantidad')?.invalid && equipoForm.get('cantidad')?.touched" class="error">
               Cantidad invalida.
             </div>
@@ -39,7 +39,7 @@
         </div>
 
         <!-- Campo tipo -->
-        <div class="form-group">
+        <div class="form-group" style="margin-bottom: 2rem;">
           <label for="tipo">Tipo de equipo</label>
           <select (change)="changeSelectColor($event)" id="tipo" formControlName="tipoEquipoId">
             <option value="" disabled selected>Seleccionar</option>
@@ -59,7 +59,7 @@
 
         <!-- Botones -->
         <div class="form-actions">
-          <button type="submit" [disabled]="equipoForm.invalid">Crear etiquetas</button>
+          <button class="equiptment-button" type="submit" [disabled]="equipoForm.invalid">Crear equipos</button>
         </div>
       </form>
     </div>

@@ -36,7 +36,6 @@
 
 .flex-input label {
   color: #232323;
-  font-size: 1.5rem;
 }
 
 .flex-input input {
@@ -49,7 +48,6 @@
 
 .flex-input input::placeholder {
   color: #d9d9d9;
-  font-size: 1.5rem;
 }
 
 .btn-login {
@@ -79,16 +77,9 @@
 
 .error-header {
   width: 27rem;
-  font-size: 1.3rem;
   margin: 0 auto;
   text-align: left;
   margin-bottom: 1rem;
-}
-
-.error {
-  color: red;
-  font-size: 1.2rem;
-  margin-top: 5px;
 }
 
 .spinner {

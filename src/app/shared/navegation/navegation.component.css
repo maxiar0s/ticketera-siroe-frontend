@@ -6,20 +6,17 @@
 }
 
 button {
-  all: unset;
   font-weight: 400;
-  font-size: 1.2rem;
   color: #474747;
   padding-top: 0.7rem;
   padding-bottom: 0.7rem;
   padding-left: 1.6rem;
   padding-right: 1.6rem;
 }
-@media (max-width: 1400px) {
+/* @media (max-width: 1400px) {
   button {
-    font-size: 1rem;
   }
-}
+} */
 
 button:hover {
   cursor: pointer;

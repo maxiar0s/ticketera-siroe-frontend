@@ -1,6 +1,6 @@
 <div class="sucursal">
   <sucursal-header  [sucursal]="sucursal" [headerText]="headerText"></sucursal-header>
-  <sucursal-options [id]="id" [idCliente]="idCliente" [estado]="estado"></sucursal-options>
+  <sucursal-options [id]="id" [idCliente]="idCliente" [estado]="estado" [selectedDevices]="Devices"></sucursal-options>
   <shared-options (optionSelected)="selectedOption($event)"></shared-options>
-  <sucursal-table [idSelected]="id" [estado]="!estado" [selectedOption]="Option" [id]="id"></sucursal-table>
+  <sucursal-table [idSelected]="id" [estado]="!estado" [selectedOption]="Option" [id]="id" (Devices)="selectedDevices($event)"></sucursal-table>
 </div>

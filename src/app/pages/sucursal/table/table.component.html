@@ -1,10 +1,14 @@
 <div class="div-loader-equipments">
-  <shared-loader></shared-loader>
+  @if(loaderService.loadingSection()){
+    <div class="loader">
+      <shared-loader></shared-loader>
+    </div>
+  }
   <div *ngIf="obtainedEquipments" class="div-table">
     <table class="table">
       <thead>
           <tr class="thead-properties">
-            <th><input type="checkbox"></th>
+            <th><input *ngIf="equipos.length > 0" id="allDevices" [checked]="isAllSelected()" type="checkbox" (click)="selectAllDevices($event)"></th>
             <th>N°</th>
             <th>Estado</th>
             <th>Código ID</th>
@@ -16,8 +20,13 @@
           </tr>
       </thead>
       <tbody *ngIf="equipos.length > 0; else noEquipos">
-          <tr *ngFor="let equipo of equipos" class="row-border">
-              <td class="information-checkbox information-value"><input type="checkbox"></td>
+          <tr *ngFor="let equipo of equipos; let i = index" class="row-border">
+              <td class="information-checkbox information-value">
+                <input
+                  type="checkbox"
+                  (change)="onCheckboxChange(equipo, equipo.codigoId, i)"
+                >
+              </td>
               <td class="information-checkbox information-value">{{ equipo.numeroSecuencial }}</td>
               <td class="information-value"><div [ngClass]="equipo.estado === 1 ? 'abierto' :
                 equipo.estado === 2 ? 'pendiente' :
@@ -33,7 +42,7 @@
                     <img src="/assets/svg/impresora.svg" class="svg-cursor svg" alt="impresora_svg">
                   </button>
                   <button [disabled]="equipo.estado === 3" (click)="abrirModal(equipo.id)" class="actions">
-                    <img [src]="equipo.estado === 3 ? '/assets/svg/agregar-datos-disabled.svg' : '/assets/svg/agregar-datos.svg' " [ngClass]="{'svg-cursor' : !estado && equipo.estado !== 3}" class="svg" alt="impresora_svg">
+                    <img [src]="equipo.estado === 3 ? '/assets/svg/agregar-datos-disabled.svg' : '/assets/svg/agregar-datos.svg' " [ngClass]="{'svg-cursor' : equipo.estado !== 3}" class="svg" alt="impresora_svg">
                   </button>
                   <button class="actions">
                     <img src="/assets/svg/ver-datos.svg" class="svg-cursor svg" alt="impresora_svg">
