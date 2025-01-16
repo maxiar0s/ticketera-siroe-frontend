@@ -8,7 +8,7 @@
     <table class="table">
       <thead>
           <tr class="thead-properties">
-            <th><input *ngIf="equipos.length > 0" id="allDevices" [checked]="isAllSelected()" type="checkbox" (click)="selectAllDevices($event)"></th>
+            <th><input *ngIf="equipos && equipos.length > 0" id="allDevices" [checked]="checkboxSeleccionado()" type="checkbox" (click)="seleccionarTodo($event)"></th>
             <th>N°</th>
             <th>Estado</th>
             <th>Código ID</th>
@@ -19,12 +19,12 @@
             <th>Acciones</th>
           </tr>
       </thead>
-      <tbody *ngIf="equipos.length > 0; else noEquipos">
+      <tbody *ngIf="equipos && equipos.length > 0; else noEquipos">
           <tr *ngFor="let equipo of equipos; let i = index" class="row-border">
               <td class="information-checkbox information-value">
                 <input
                   type="checkbox"
-                  (change)="onCheckboxChange(equipo, equipo.codigoId, i)"
+                  (change)="seleccionarEquipo(equipo, equipo.codigoId, i)"
                 >
               </td>
               <td class="information-checkbox information-value">{{ equipo.numeroSecuencial }}</td>
@@ -58,12 +58,6 @@
       </ng-template>
     </table>
   </div>
-</div>
-
-<div *ngIf="obtainedEquipments && equipos.length > 0" class="navegation-section">
-  <shared-navegation [paginaActual]="paginaActual"
-  [paginas]="paginas"
-  (cambiarPagina)="cambiarPagina($event)"></shared-navegation>
 </div>
 
 <shared-modificar-equipo class="form-crear-cliente"

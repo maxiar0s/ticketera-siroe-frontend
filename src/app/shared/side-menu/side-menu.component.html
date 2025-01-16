@@ -11,7 +11,7 @@
     <!-- Upper menu -->
     <div>
       @for(item of menu; track item.id) {
-        <a [routerLink]="[item.route]" class="item" (click)="routeActive($event, item.route)" [ngClass]="{'active': currentGroup == item.route}">
+        <a [routerLink]="[item.route]" class="item" (click)="toggleSubItems(item)" [ngClass]="{'active': currentGroup == item.route}">
           <div class="activated-item"></div>
           <div>
             <img class="normal-image svg-size" [src]="'/assets/svg/'+item.svg+'.svg'" [alt]="item.svg+'.svg'">
@@ -26,7 +26,7 @@
         </a>
 
         @for(subItem of item.subItem; track subItem){
-          <div class="subItem-nav">
+          <div class="subItem-nav" [ngClass]="{'open': item.isOpen}">
             <a [routerLink]="subItem.route" class="subItem" (click)="activeSubGroup(subItem.route)">
               <img [src]="'/assets/svg/'+subItem.svg+'.svg'" [alt]="item.svg+'.svg'" class="svg-size">
               <p class="color-option">{{subItem.nombre}}</p>
@@ -38,7 +38,7 @@
 
     <!-- Ending menu -->
     <div>
-      @for(item of menuEnding; track item.name){
+      @for(item of menuConfig; track item.name){
         <a (click)="item.name === 'Cerrar sesión' ? cerrarSesion() : ''" [routerLink]="[item.route]" class="item" (click)="routeActive($event, item.route)" [ngClass]="{'active': currentGroup == item.route}">
           <div class="activated-item"></div>
           <div>

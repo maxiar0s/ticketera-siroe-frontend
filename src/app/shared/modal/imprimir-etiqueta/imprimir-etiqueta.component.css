@@ -27,7 +27,7 @@
   max-height: 285px;
   flex-direction: column;
   align-items: center;
-  overflow-y: scroll;
+  overflow-y: auto;
   margin: 1rem 0 2rem 0;
 }
 

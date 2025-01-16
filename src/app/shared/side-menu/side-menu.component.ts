@@ -1,12 +1,12 @@
 import { CommonModule, Location } from '@angular/common';
-import { Component, Renderer2, ɵSSR_CONTENT_INTEGRITY_MARKER } from '@angular/core';
+import { Component, Renderer2 } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 
 // Menus
 import menu_administrador from './menu-administrador.json';
 import menu_tecnico from './menu-tecnico.json';
-import menu_ending from './menu-ending.json';
+import menu_config from './menu-config.json';
 
 @Component({
   selector: 'shared-side-menu',
@@ -18,9 +18,10 @@ import menu_ending from './menu-ending.json';
 export class SideMenuComponent {
   public currentGroup: string = '';
   public currentSubGroup: string = '';
-  // public sideMenuJSON = menu_administrador;
-  public menu = menu_tecnico;
-  public menuEnding = menu_ending;
+
+  // Menus
+  public menu: any;
+  public menuConfig = menu_config;
 
   constructor(
     private authService: AuthService,
@@ -29,6 +30,10 @@ export class SideMenuComponent {
   ) {}
 
   ngOnInit():void {
+    if(this.authService.esAdministrador()) {
+      this.menu = menu_administrador
+    } else this.menu = menu_tecnico;
+
     const path = this.location.path();
     this.currentGroup = path;
     this.currentSubGroup = path;
@@ -57,5 +62,20 @@ export class SideMenuComponent {
 
   activeSubGroup(route:string):void {
     this.currentSubGroup = route;
+  }
+
+
+
+  toggleSubItems(item: any): void {
+    if (this.currentGroup === item.route) {
+      // Si el grupo ya está activo, ciérralo
+      item.isOpen = false;
+      this.currentGroup = '';
+    } else {
+      // Abre el nuevo grupo y cierra los demás
+      this.menu.forEach((i: { isOpen: boolean; }) => (i.isOpen = false));
+      item.isOpen = true;
+      this.currentGroup = item.route;
+    }
   }
 }

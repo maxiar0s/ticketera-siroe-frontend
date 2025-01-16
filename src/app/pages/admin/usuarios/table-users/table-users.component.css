@@ -1,0 +1,32 @@
+.users-table {
+  border-radius: 20px;
+  border: 1px solid #eaeaea;
+  background-color: #f7f7f7;
+  padding: 5px 15px;
+}
+
+.svg {
+  height: 15px;
+}
+
+.col-1 {
+  width: 20px;
+}
+.col-2 {
+  width: 100px;
+}
+.col-3 {
+  width: 150px;
+}
+.col-4 {
+  width: 150px;
+}
+.col-5 {
+  width: 150px;
+}
+.col-6 {
+  width: 100px;
+}
+.col-7 {
+  width: 75px;
+}

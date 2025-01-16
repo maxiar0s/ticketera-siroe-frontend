@@ -1,4 +1,5 @@
 import { Cliente } from "./cliente.interface";
+import { Equipo } from "./equipo.interface";
 
 export interface Sucursal {
   id:                string;
@@ -10,6 +11,10 @@ export interface Sucursal {
   fechaIngreso:      Date;
   direccion:         string;
   casaMatrizId:      string;
-  casaMatriz:           Cliente;
+  casaMatriz:        Cliente;
   equiposCount?:     number;
+  equipos:           Equipo[];
 }
+
+
+

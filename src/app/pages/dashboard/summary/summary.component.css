@@ -1,13 +1,3 @@
-.summary {
-  box-sizing: border-box;
-  padding: 0 3.5rem;
-}
-@media (max-width: 1400px) {
-  .summary {
-    padding: 0 3rem;
-  }
-}
-
 .title {
   color: #343c6a;
   margin-bottom: 1.2rem;

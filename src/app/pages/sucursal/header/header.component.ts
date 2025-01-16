@@ -11,6 +11,5 @@ import { SignedUrlPipe } from '../../../pipes/generar-url.pipe';
   styleUrl: './header.component.css'
 })
 export class HeaderComponent {
-  @Input() headerText?: boolean = false;
   @Input() sucursal?: Sucursal;
 }

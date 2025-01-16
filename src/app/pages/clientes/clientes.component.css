@@ -1,8 +1,8 @@
 .clients {
   display: flex;
   flex-direction: column;
-  gap: 2rem;
-  padding: 3rem;
+  gap: 20px;
+  padding: 25px;
   min-height: 75vh;
 }
 @media (max-width: 1400px) {

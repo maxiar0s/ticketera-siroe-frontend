@@ -1,0 +1,54 @@
+<div>
+  <div class="div-loader-equipments">
+    @if(loaderService.loadingSection()){
+      <div class="loader">
+        <shared-loader></shared-loader>
+      </div>
+  }
+  </div>
+  <div class="users-table">
+    <table class="table">
+      <thead>
+          <tr class="thead-properties">
+            <th class="col-1"><input id="allDevices" type="checkbox"></th>
+            <th class="col-2">ID Usuario</th>
+            <th class="col-3">Nombre</th>
+            <th class="col-4">Correo</th>
+            <th class="col-5">Rol Usuario</th>
+            <th class="col-6">Estado Usuario</th>
+            <th class="col-7">Acciones</th>
+          </tr>
+      </thead>
+      <tbody>
+          <tr class="row-border">
+              <td class="information-checkbox information-value">
+                <input
+                  type="checkbox"
+                >
+              </td>
+              <td class="information-checkbox information-value"></td>
+              <td class="information-value"></td>
+              <td class="information-value"></td>
+              <td class="information-value"><td>
+              <td class="information-value information-actions">
+                  <button class="actions">
+                    <img src="/assets/svg/ver-datos.svg" class="svg" alt="ver-datos.svg">
+                  </button>
+                  <button class="actions">
+                    <img src="/assets/svg/edit-user.svg" class="svg" alt="edit-user.svg">
+                  </button>
+                  <button class="actions">
+                    <img src="/assets/svg/delete.svg" class="svg" alt="delete.svg">
+                  </button>
+              </td>
+          </tr>
+      </tbody>
+
+      <ng-template #noEquipos>
+        <tr>
+          <td colspan="9">No hay usuarios registrados</td>
+        </tr>
+      </ng-template>
+    </table>
+  </div>
+</div>

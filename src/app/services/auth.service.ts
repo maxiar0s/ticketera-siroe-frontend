@@ -3,9 +3,10 @@ import { jwtDecode } from 'jwt-decode';
 import { BehaviorSubject } from 'rxjs';
 
 interface Token {
-  id: number;
-  iat: number;
-  exp: number;
+  id:         number;
+  iat:        number;
+  exp:        number;
+  tipoCuenta: number;
 }
 
 @Injectable({
@@ -18,7 +19,6 @@ export class AuthService {
   constructor() { }
 
   guardarToken(token: string): void {
-    console.log('guardando token: ', token);
     localStorage.setItem(this.key, token);
     this.userSigned = true;
   }
@@ -33,6 +33,7 @@ export class AuthService {
     const token = this.obtenerToken();
     if (token) {
       try {
+        console.log(jwtDecode<Token>(token));
         return jwtDecode<Token>(token);
       } catch (error) {
         console.error('Error al decodificar el token:', error);
@@ -51,6 +52,17 @@ export class AuthService {
     }
     // Si no hay token, es expirado
     return true;
+  }
+
+  // Metodo para verificar tipo de usuario
+  esAdministrador(): boolean {
+    const decodificado = this.decodificarToken();
+    if(decodificado) {
+      const { tipoCuenta } = decodificado;
+      if(tipoCuenta == 1) return true;
+      else return false;
+    }
+    else return false;
   }
 
   // Método para verificar la validez del token

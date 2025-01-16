@@ -94,10 +94,30 @@ img {
 
 html, body { height: 100%; }
 
+.mb-5 {
+  margin-bottom: 5px;
+}
+.mb-20 {
+  margin-bottom: 20px;
+}
+
 /* Propiedades compartidas */
+
+.section {
+  display: flex;
+  flex-direction: column;
+  padding: 25px;
+  gap: 20px;
+}
 
 .text-center {
   text-align: center;
+}
+
+.navegation-section {
+  width: 100%;
+  display: flex;
+  justify-content: center;
 }
 
 /* Modales */
@@ -270,4 +290,72 @@ input[type=number] {
   background-color: #ebebeb;
   cursor: not-allowed;
   color: #474747;
+}
+
+/* Table */
+.div-loader-equipments {
+  position: relative;
+}
+
+.div-table {
+  background-color: #f7f7f7;
+  padding: 0.5rem;
+  border-radius: 25px;
+  color: #4f4f4f;
+  box-shadow: 0 1px 10px rgba(0, 0, 0, 0.07), 0 1px 20px rgba(0, 0, 0, 0.07);
+}
+
+.table {
+  width: 100%;
+  text-align: center;
+  padding: 1.5rem 2rem;
+  border-collapse: collapse;
+}
+
+.thead-properties {
+  text-align: center;
+}
+
+.thead-properties th {
+  padding: 0.7rem 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.row-border {
+  border-top: 1px solid #ebeff3;
+}
+
+.text-align-left {
+  text-align: left;
+}
+.text-align-center {
+  text-align: center;
+}
+
+.information-checkbox {
+  max-width: 3.5rem;
+}
+.information-value {
+  padding: 1rem 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+/* @media (max-width: 1400px) {
+  .information-value {
+  }
+} */
+
+.information-actions {
+  display: flex;
+  justify-content: center;
+  gap: 3rem;
+  align-items: center;
+}
+@media (max-width: 1400px) {
+  .information-actions {
+    gap: 1rem;
+  }
 }

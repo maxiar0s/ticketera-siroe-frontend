@@ -1,5 +1,5 @@
-<div class="client">
-  <cliente-casa-matriz></cliente-casa-matriz>
+<div class="section client">
+  <cliente-casa-matriz [cliente]="cliente"></cliente-casa-matriz>
   <cliente-header></cliente-header>
   <shared-options (optionSelected)="selectedOption($event)"></shared-options>
   <div class="div-loader">
@@ -8,6 +8,11 @@
         <shared-loader></shared-loader>
       </div>
     }
-    <cliente-sucursales [selectedOption]="Option"></cliente-sucursales>
+    <cliente-sucursales [setSucursales]="sucursales"></cliente-sucursales>
+    <div *ngIf="obtainedSucursales && sucursales.length > 0" class="navegation-section" style="margin-top: 10px;">
+      <shared-navegation [paginaActual]="paginaActual"
+      [paginas]="paginas"
+      (cambiarPagina)="cambiarPagina($event)"></shared-navegation>
+    </div>
   </div>
 </div>

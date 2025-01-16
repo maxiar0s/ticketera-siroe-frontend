@@ -6,7 +6,6 @@ import { AuthService } from '../services/auth.service';
   providedIn: 'root',
 })
 export class protegerRutaGuard {
-
   constructor(
     private authenticationService: AuthService,
     private router: Router
@@ -20,6 +19,4 @@ export class protegerRutaGuard {
       return false;
     }
   }
-
-
 }

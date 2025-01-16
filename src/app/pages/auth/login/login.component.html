@@ -7,14 +7,14 @@
     </div>
     <form [formGroup]="loginForm" (submit)="postLogin()" class="form-gap">
       <div class="flex-input margin-bottom">
-        <label for="">Correo electronico:</label>
+        <label for="" class="mb-5">Correo electronico:</label>
         <input formControlName="email" type="email" name="email" placeholder="correo@siroe.cl">
         <div *ngIf="loginForm.get('email')?.invalid && loginForm.get('email')?.touched" class="error">
           Correo electronico invalido.
         </div>
       </div>
       <div class="flex-input">
-        <label for="">Contraseña:</label>
+        <label for="" class="mb-5">Contraseña:</label>
         <input formControlName="password" type="password" autocomplete="password" name="password" placeholder="contraseña">
         <div *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched" class="error">
           Contraseña invalida.

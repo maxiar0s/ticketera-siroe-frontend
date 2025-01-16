@@ -1,35 +1,54 @@
 [
   {
+    "id": 1,
     "nombre": "Dashboard",
-    "ruta": "/dashboard",
+    "route": "/dashboard",
     "svg": "dashboard",
-    "subGrupo": []
+    "subItem": [],
+    "isOpen": false
   },
   {
+    "id": 2,
     "nombre": "Clientes",
-    "ruta": "/clientes",
+    "route": "/clientes",
     "svg": "clientes",
-    "subGrupo": []
-  },
-  {
-    "nombre": "Equipos",
-    "ruta": "/equipos",
-    "svg": "equipos",
-    "subGrupo": [
+    "subItem": [
       {
-      "nombre": "Tipos",
-      "ruta": "/"
-      },
-      {
-      "nombre": "Ver equipos",
-      "ruta": "/"
+        "nombre": "Equipos",
+        "route": "equipos",
+        "svg": "equipos"
       }
-    ]
+    ],
+    "isOpen": false
   },
   {
+    "id": 3,
+    "nombre": "Tipo de equipo ",
+    "route": "/tipo-equipo",
+    "svg": "tipo-de-equipo",
+    "subItem": [
+      {
+        "nombre": "Añadir equipo",
+        "route": "/añadir-equipo",
+        "svg": "equipos"
+      }
+    ],
+    "isOpen": false
+  },
+  {
+    "id": 4,
     "nombre": "Inventario",
-    "ruta": "/inventario",
+    "route": "inventario",
     "svg": "inventario",
-    "subGrupo": []
+    "subItem": [],
+    "isOpen": false
+  },
+  {
+    "id": 5,
+    "nombre": "Usuarios",
+    "route": "admin/usuarios",
+    "svg": "usuarios",
+    "subItem": [],
+    "isOpen": false
   }
 ]

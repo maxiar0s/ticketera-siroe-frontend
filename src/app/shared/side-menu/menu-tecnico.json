@@ -4,7 +4,8 @@
     "nombre": "Dashboard",
     "route": "/dashboard",
     "svg": "dashboard",
-    "subItem": []
+    "subItem": [],
+    "isOpen": false
   },
   {
     "id": 2,
@@ -17,26 +18,29 @@
         "route": "equipos",
         "svg": "equipos"
       }
-    ]
+    ],
+    "isOpen": false
   },
   {
     "id": 3,
     "nombre": "Tipo de equipo ",
     "route": "/tipo-equipo",
-    "svg": "dashboard",
+    "svg": "tipo-de-equipo",
     "subItem": [
       {
         "nombre": "Añadir equipo",
         "route": "/añadir-equipo",
         "svg": "equipos"
       }
-    ]
+    ],
+    "isOpen": false
   },
   {
     "id": 4,
     "nombre": "Inventario",
     "route": "inventario",
     "svg": "inventario",
-    "subItem": []
+    "subItem": [],
+    "isOpen": false
   }
 ]

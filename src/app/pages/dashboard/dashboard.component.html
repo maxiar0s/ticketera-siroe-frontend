@@ -1,3 +1,7 @@
-<dashboard-charts></dashboard-charts>
-<dashboard-summary></dashboard-summary>
-<shared-navegation></shared-navegation>
+<div class="section">
+  <dashboard-charts class="mb-20"></dashboard-charts>
+  <h2 class="title" style="margin-bottom: 10px;">Resumen</h2>
+  <shared-options (optionSelected)="selectedOption($event)" class="mb-20"></shared-options>
+  <dashboard-summary class="mb-20"></dashboard-summary>
+  <shared-navegation></shared-navegation>
+</div>

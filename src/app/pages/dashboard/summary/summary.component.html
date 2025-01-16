@@ -1,47 +1,37 @@
-<div class="summary">
-  <h2 class="title">Resumen</h2>
+<table class="table">
+  <thead>
+    <tr class="table-row-style">
+      <th class="status"><span></span></th>
+      <th>ID</th>
+      <th>Cliente</th>
+      <th>Casa Matriz</th>
+      <th>Fecha ingreso</th>
+      <th>Variante 1</th>
+      <th>Variante 2</th>
+      <th class="table-detalle-th">Ir a detalle</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let item of [1, 2, 3]; let i = index" class="table-row-style">
+      <td><div class="id-status red"></div></td>
+      <td>#12548796</td>
+      <td>Slep xxxxxxxxx</td>
+      <td>Colegio xxxxxxxxxxx</td>
+      <td>21 / Noviembre / 24</td>
+      <td>xxxxx</td>
+      <td>xxxxx</td>
+      <td><button class="table-detalle">Ingresar datos</button></td>
+    </tr>
 
-  <div class="options">
-    <button class="options-buttons-border">Todos los ingresos</button>
-    <button class="">Pendientes</button>
-    <button class="">Terminados</button>
-  </div>
-
-  <table class="table">
-    <thead>
-      <tr class="table-row-style">
-        <th class="status"><span></span></th>
-        <th>ID</th>
-        <th>Cliente</th>
-        <th>Casa Matriz</th>
-        <th>Fecha ingreso</th>
-        <th>Variante 1</th>
-        <th>Variante 2</th>
-        <th class="table-detalle-th">Ir a detalle</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let item of [1, 2, 3]; let i = index" class="table-row-style">
-        <td><div class="id-status red"></div></td>
-        <td>#12548796</td>
-        <td>Slep xxxxxxxxx</td>
-        <td>Colegio xxxxxxxxxxx</td>
-        <td>21 / Noviembre / 24</td>
-        <td>xxxxx</td>
-        <td>xxxxx</td>
-        <td><button class="table-detalle">Ingresar datos</button></td>
-      </tr>
-
-      <tr *ngFor="let item of [1, 2]; let i = index" class="table-row-style">
-        <td><div class="id-status cyan"></div></td>
-        <td>#12548796</td>
-        <td>Slep xxxxxxxxx</td>
-        <td>Colegio xxxxxxxxxxx</td>
-        <td>21 / Noviembre / 24</td>
-        <td>xxxxx</td>
-        <td>xxxxx</td>
-        <td><button class="table-detalle">Revisar detalles</button></td>
-      </tr>
-    </tbody>
-  </table>
-</div>
+    <tr *ngFor="let item of [1, 2]; let i = index" class="table-row-style">
+      <td><div class="id-status cyan"></div></td>
+      <td>#12548796</td>
+      <td>Slep xxxxxxxxx</td>
+      <td>Colegio xxxxxxxxxxx</td>
+      <td>21 / Noviembre / 24</td>
+      <td>xxxxx</td>
+      <td>xxxxx</td>
+      <td><button class="table-detalle">Revisar detalles</button></td>
+    </tr>
+  </tbody>
+</table>

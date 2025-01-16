@@ -1,3 +1,4 @@
+import { Sucursal } from "./sucursal.interface";
 export interface Cliente {
   id:                string;
   imagen:            string;
@@ -6,5 +7,8 @@ export interface Cliente {
   encargadoGeneral:  string;
   correo:            string;
   telefonoEncargado: number;
-  Equipos:           any[];
+  fechaIngreso:      Date;
+  Equipos?:           any[];
+  sucursales?:        Sucursal[];
 }
+

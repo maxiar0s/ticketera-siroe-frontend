@@ -1,3 +1,5 @@
+import { TipoEquipo } from "./TipoEquipo.interface";
+
 export interface Equipo {
   id:                     number;
   numeroSecuencial:       number;
@@ -5,7 +7,7 @@ export interface Equipo {
   estado:                 number;
   fechaIngreso:           Date;
   departamento:           string;
-  usuario:                null;
+  usuario:                string;
   imagen:                 null;
   marca:                  null;
   modelo:                 null;
@@ -18,16 +20,9 @@ export interface Equipo {
   sistemaOperativo:       null;
   ofimatica:              null;
   antivirus:              null;
-  observaciones:          null;
   casaMatrizId:           null;
   sucursalId:             string;
   tipoEquipoId:           number;
   tipoEquipo:             TipoEquipo;
-}
-
-export interface TipoEquipo {
-  id:   number;
-  name: string;
-  dict: string;
 }
 

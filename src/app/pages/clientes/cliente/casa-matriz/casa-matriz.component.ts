@@ -1,6 +1,4 @@
-import { Component } from '@angular/core';
-import { ApiService } from '../../../../services/api.service';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Component, Input } from '@angular/core';
 import { Cliente } from '../../../../interfaces/cliente.interface';
 import { CommonModule } from '@angular/common';
 import { SignedUrlPipe } from '../../../../pipes/generar-url.pipe';
@@ -14,31 +12,8 @@ import { SignedUrlPipe } from '../../../../pipes/generar-url.pipe';
 })
 export class CasaMatrizComponent {
   public obtainedClient: boolean = false;
-  public cliente?:Cliente;
-  public ruta:string = '';
+  @Input() cliente?: Cliente;
 
   constructor(
-    private apiService: ApiService,
-    private route: ActivatedRoute,
-    private router: Router
   ) {}
-
-  ngOnInit() {
-    this.route.params.subscribe(params => {
-      const id = params['id']
-      this.apiService.client(id).subscribe({
-        next: (respuesta) => {
-          if(!respuesta) this.router.navigate(['/clientes']);
-          else {
-            this.cliente = respuesta;
-            this.obtainedClient = true;
-          }
-        },
-        error: (error) => {
-          console.error('Error al obtener la sucursal', error);
-          this.router.navigate(['/clientes']);
-        }
-      })
-    })
-  }
 }

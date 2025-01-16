@@ -1,0 +1,21 @@
+.flex {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.svg {
+  height: 25px;
+}
+
+.option-button {
+  display: flex;
+  align-items: center;
+  border-radius: 25px;
+  padding: 0.6rem 3rem;
+  background-color: #b71752;
+  color: #fefeff;
+}
+.option-button:hover {
+  cursor: pointer;
+}

@@ -31,11 +31,11 @@ export class ApiService {
     return this.postInformation(data, endpoint);
   }
 
+    // Equiptment
   createEquiptment(data: any):Observable<any> {
     const endpoint = 'ingresar-equipo';
     return this.postInformation(data, endpoint);
   }
-
   modifyEquiptment(data:any):Observable<any> {
     let formValues: { [key: string]: any } = {};
     data.forEach((value: any, key: any) => {
@@ -45,7 +45,6 @@ export class ApiService {
     const endpoint = 'modificar-equipo/' + id;
     return this.postInformation(data, endpoint);
   }
-
   createComment(data:any):Observable<any> {
     const { equipoId: id } = data;
     const endpoint = 'ingresar-observacion/' + id;
@@ -58,37 +57,19 @@ export class ApiService {
     return this.getInformation(endpoint);
   }
 
-  client(id: string):Observable<any> {
-    const endpoint = 'cliente/'+id;
-    return this.getInformation(endpoint);
-  }
-
-  sucursales(id: string, pagina: number, option: string):Observable<any> {
-    if (option === 'Terminados') {
-      const endpoint = `cliente/` + id + `/sucursales/terminados?pagina=${pagina}`;
-      return this.getInformation(endpoint);
+  client(id: string, pagina: number, option: string):Observable<any> {
+    let endpoint = 'cliente/'+id+`?pagina=${pagina}`;
+    if(option) {
+      endpoint = 'cliente/'+id+`?pagina=${pagina}&option=${option}`;
     }
-    else if(option === 'Pendientes') {
-      const endpoint = `cliente/` + id + `/sucursales/pendientes?pagina=${pagina}`;
-      return this.getInformation(endpoint);
-    } else {
-      const endpoint = `cliente/` + id + `/sucursales?pagina=${pagina}`;
-      return this.getInformation(endpoint);
+    return this.getInformation(endpoint);
+  }
+
+  sucursal(id: string, pagina: number, option: string):Observable<any> {
+    let endpoint = `sucursal/`+id+`?pagina=${pagina}`;
+    if(option) {
+      endpoint = `sucursal/`+id+`?pagina=${pagina}&option=${option}`;
     }
-  }
-
-  sucursalesPendientes(id: string):Observable<any> {
-    const endpoint = `cliente/` + id + '/sucursales/pendientes';
-    return this.getInformation(endpoint);
-  }
-
-  sucursalesTerminadas(id: string):Observable<any> {
-    const endpoint = `cliente/` + id + '/sucursales/terminadas';
-    return this.getInformation(endpoint);
-  }
-
-  sucursal(id: string):Observable<any> {
-    const endpoint = `sucursal/` + id;
     return this.getInformation(endpoint);
   }
 
@@ -100,21 +81,6 @@ export class ApiService {
   formEquipment(tipoEquipoId: string):Observable<any> {
     const endpoint = `obtener-formulario/` + tipoEquipoId;
     return this.getInformation(endpoint);
-  }
-
-  equipmentsBySucursal(id: string, pagina: number, option: string):Observable<any> {
-    if(option === 'Terminados') {
-      const endpoint = `sucursal/` + id + `/equipos/terminados?pagina=${pagina}`;
-      return this.getInformation(endpoint);
-    }
-    if(option === 'Pendientes') {
-      const endpoint = `sucursal/` + id + `/equipos/pendientes?pagina=${pagina}`;
-      return this.getInformation(endpoint);
-    }
-    else {
-      const endpoint = `sucursal/` + id + `/equipos?pagina=${pagina}`;
-      return this.getInformation(endpoint);
-    }
   }
 
   equipmentsByCasaMatriz(id: string):Observable<any> {

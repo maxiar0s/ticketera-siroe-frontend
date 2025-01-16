@@ -33,12 +33,6 @@
   </div>
 </section>
 
-<div *ngIf="obtainedSucursales && sucursales.length > 0" class="navegation-section">
-  <shared-navegation [paginaActual]="paginaActual"
-  [paginas]="paginas"
-  (cambiarPagina)="cambiarPagina($event)"></shared-navegation>
-</div>
-
 <ng-template #noSucursales>
   <p class="no-sucursales">No hay sucursales registradas</p>
 </ng-template>

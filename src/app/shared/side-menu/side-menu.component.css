@@ -128,7 +128,7 @@ img[src="/assets/svg/side-menu-arrow-up.svg"],
   display: block;
 }
 
-.item.active + .subItem-nav{
-  max-height: 300px;
+.subItem-nav.open {
+  max-height: 500px;
   opacity: 1;
 }

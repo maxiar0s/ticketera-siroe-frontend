@@ -9,72 +9,103 @@ import { CommonModule } from '@angular/common';
 import { ButtonsComponent } from './options/options.component';
 import { OptionsComponent } from '../../shared/options/options.component';
 import { ImprimirEquipo } from '../../interfaces/imprimir-equipo.interface';
+import { Equipo } from '../../interfaces/equipo.interface';
+import { LoaderService } from '../../services/loader.service';
+import { NavegationComponent } from '../../shared/navegation/navegation.component';
 
 @Component({
   selector: 'sucursal',
   standalone: true,
-  imports: [HeaderComponent, TableComponent, CommonModule, ButtonsComponent, OptionsComponent],
+  imports: [HeaderComponent, TableComponent, CommonModule, ButtonsComponent, OptionsComponent, NavegationComponent],
   templateUrl: './sucursal.component.html',
   styleUrl: './sucursal.component.css'
 })
 export class SucursalComponent {
-  public Option:string = 'Todos los ingresos';
+  // Elementos para el paginador
+  public paginaActual:        number = 1;
+  public paginas:             number = 1;
+  // Filtro de equipos
+  public option!:             string;
+  // Arreglo de los equipos
+  public sucursal?:           Sucursal;
+  public equipos:             Equipo[] = [];
+  public obtainedEquipments:  boolean = false;
+  public estado:              boolean = false;
+  public Title:                 boolean = false;
 
-  public sucursal?: Sucursal;
-  public estado: boolean = false;
-  public headerText?: boolean;
-
-  // Id sucursal
-  public id: string = '';
-  // Id cliente
-  public idCliente: string = '';
-
-  public Devices: ImprimirEquipo[] = [];
+  public Devices:       ImprimirEquipo[] = [];
 
   constructor(
-    private apiService: ApiService,
-    private signalService: SignalService,
-    private route: ActivatedRoute,
-    private router: Router
+    private apiService:     ApiService,
+    private signalService:  SignalService,
+    public loaderService :  LoaderService,
+    private route:          ActivatedRoute,
   ) {}
 
   ngOnInit() {
-    this.estado = false;
+    this.cambiarSeleccion();
+  }
+
+  selectedOption(value: string) {
+    this.option = value;
+    this.cambiarSeleccion();
+  }
+
+  cambiarSeleccion() {
+    this.equipos = [];
+    this.loaderService.showSection();
+    this.obtainedEquipments = false;
+
+    if(!this.Title) this.signalService.updateData('');;
+
     this.route.params.subscribe(params => {
-      const id = params['id'];
-      const idCliente = params['idCliente'];
-      this.id = id;
-      this.idCliente = idCliente;
-      this.apiService.sucursal(id).subscribe({
+      const id = params['id']
+      this.apiService.sucursal(id, this.paginaActual, this.option).subscribe({
         next: (respuesta) => {
-          if(!respuesta) {
-            this.router.navigate([`/clientes/${idCliente}`]);
-          }
-          else {
-            this.sucursal = respuesta;
-            if(this.sucursal) {
-              if(this.sucursal.estado !== 3) {
-                this.estado = true;
-              } else {
-                this.estado = false;
-              }
-              this.signalService.updateData(this.sucursal?.casaMatriz.razonSocial!);
-            } else {
-              this.signalService.updateData('');
-            }
-            this.headerText = true;
-          }
+          const { sucursal, paginas } = respuesta;
+
+          if(!this.Title) this.headerTitle(sucursal.casaMatriz.razonSocial);
+          console.log(paginas)
+          this.sucursal = sucursal;
+          this.equipos = sucursal.equipos;
+          this.paginas = paginas;
+
+          this.obtainedEquipments = true;
+          if(sucursal.estado != 3) this.estado = true;
+
+          this.loaderService.hideSection();
         },
         error: (error) => {
-          console.error('Error al obtener la sucursal', error);
-          this.router.navigate(['/clientes']);
+          console.error('Error al obtener sucursales', error);
         }
       })
     })
   }
 
-  selectedOption(value: string) {
-    this.Option = value;
+  headerTitle(value: string) {
+    this.signalService.updateData(value);
+    this.Title = true;
+  }
+
+  cambiarPagina(pagina: number):void {
+    if (pagina >= 1 && pagina <= this.paginas) {
+      this.paginaActual = pagina;
+      this.cambiarSeleccion();
+    }
+  }
+
+  nextPage():void {
+    if (this.paginaActual < this.paginas) {
+      this.paginaActual++;
+      this.cambiarSeleccion();
+    }
+  }
+
+  prevPage():void {
+    if (this.paginaActual > 1) {
+      this.paginaActual--;
+      this.cambiarSeleccion();
+    }
   }
 
   selectedDevices(Devices: any) {

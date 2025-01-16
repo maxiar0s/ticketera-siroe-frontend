@@ -3,7 +3,6 @@ import { ApiService } from '../../../services/api.service';
 import { CommonModule } from '@angular/common';
 import { CrearEquipoComponent } from '../../../shared/modal/crear-equipo/crear-equipo.component';
 import { concatMap, from } from 'rxjs';
-import { Router } from '@angular/router';
 import { ImprimirEtiquetaComponent } from '../../../shared/modal/imprimir-etiqueta/imprimir-etiqueta.component';
 import { ImprimirEquipo } from '../../../interfaces/imprimir-equipo.interface';
 
@@ -17,12 +16,6 @@ import { ImprimirEquipo } from '../../../interfaces/imprimir-equipo.interface';
 export class ButtonsComponent {
   public status: boolean = false;
 
-  // Id Sucursal
-  @Input() id?: string;
-
-  // Id Cliente
-  @Input() idCliente?: string;
-
   // Equipos para imprimir
   @Input() devices: ImprimirEquipo[] = [];
 
@@ -32,8 +25,7 @@ export class ButtonsComponent {
   public errorMessage: string = '';
 
   constructor(
-    private apiService: ApiService,
-    private router: Router
+    private apiService: ApiService
   ) {}
 
   abrirModalCrearEquipo() {
@@ -92,7 +84,6 @@ export class ButtonsComponent {
       },
       complete: () => {
         this.cerrarModalCrearEquipo();
-        this.router.navigate(['/clientes', this.idCliente, 'sucursal', this.id])
       }
     })
   }
