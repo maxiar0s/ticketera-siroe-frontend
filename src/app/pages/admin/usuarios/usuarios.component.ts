@@ -92,6 +92,7 @@ export class UsuariosComponent {
             }
             else {
               console.log('Usuario eliminado exitosamente');
+              this.cargarCuentas();
             }
           }
         })

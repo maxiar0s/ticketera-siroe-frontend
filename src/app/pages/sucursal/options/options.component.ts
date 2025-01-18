@@ -60,7 +60,6 @@ export class ButtonsComponent {
       const button = document.querySelector('#agregar-button');
 
       button?.removeAttribute('disabled');
-      button?.classList.remove('disabled-button');
       button?.classList.add('agregar', 'agregar-equipo');
       img?.setAttribute('src', '/assets/svg/agregar-equipo.svg');
     }
@@ -78,7 +77,7 @@ export class ButtonsComponent {
     if(devices.length > 0) {
       button?.removeAttribute('disabled');
       button?.classList.remove('disabled-button');
-      button?.classList.add('agregar', 'agregar-equipo');
+      button?.classList.add('imprimir', 'imprimir-equipo');
       img?.setAttribute('src', '/assets/svg/imprimir-etiquetas.svg');
     } else {
       button?.setAttribute('disabled', 'true');

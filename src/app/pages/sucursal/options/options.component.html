@@ -2,17 +2,15 @@
   <h2 class="title">Listado de equipos</h2>
   <div class="flex-buttons">
     <button id="inprimir-equipos-button" class="option-button disabled-button" disabled (click)="abrirModalImprimirEtiqueta()">
-      <img id="imprimir-equipos-image" src="/assets/svg/imprimir-etiquetas-disabled.svg" class="svg" alt="impresora_svg">
+      <img id="imprimir-equipos-image" src="/assets/svg/imprimir-etiquetas-disabled.svg" class="svg" alt="imprimir-etiquetas.svg">
       <span>Imprimir etiqueta</span>
     </button>
     <button class="option-button importar">
       <img src="/assets/svg/importar.svg" class="svg" alt="importar_svg">
       <span>Importar datos</span>
     </button>
-    <button id="agregar-button" disabled (click)="abrirModalCrearEquipo()" class="option-button disabled-button">
-
-      <img id="agregar-image" src="/assets/svg/agregar-equipo-disabled.svg" class="svg" alt="">
-
+    <button id="agregar-button" disabled (click)="abrirModalCrearEquipo()" class="option-button">
+      <img id="agregar-image" src="/assets/svg/agregar-equipo-disabled.svg" class="svg hover" alt="agregar-equipo.svg">
       <span>Añadir equipos</span>
     </button>
   </div>

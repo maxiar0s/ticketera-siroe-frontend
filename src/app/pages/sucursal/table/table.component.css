@@ -35,6 +35,17 @@
 }
 .svg-cursor:hover {
   cursor: pointer;
+  transition: opacity 0.3s ease;
+}
+
+.imprimir-etiqueta:hover {
+  content: url('/assets/svg/imprimir-etiqueta-hover.svg');
+}
+.agregar-datos:hover {
+  content: url('/assets/svg/agregar-datos-hover.svg');
+}
+.ver-datos:hover {
+  content: url('/assets/svg/ver-datos-hover.svg');
 }
 
 input[type="checkbox"] {
