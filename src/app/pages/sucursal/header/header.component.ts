@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { Sucursal } from '../../../interfaces/sucursal.interface';
+import { Sucursal } from '../../../interfaces/Sucursal.interface';
 import { CommonModule } from '@angular/common';
 import { SignedUrlPipe } from '../../../pipes/generar-url.pipe';
 

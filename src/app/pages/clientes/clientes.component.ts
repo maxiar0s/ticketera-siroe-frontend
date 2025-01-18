@@ -1,9 +1,9 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { CrearClienteComponent } from '../../shared/modal/crear-cliente/crear-cliente.component';
+import { CrearClienteComponent } from '../../shared/modal/cliente/crear-cliente/crear-cliente.component';
 import { ApiService } from '../../services/api.service';
-import { Cliente } from '../../interfaces/cliente.interface';
+import { Cliente } from '../../interfaces/Cliente.interface';
 import { SignalService } from '../../services/signal.service';
 import { LoaderComponent } from '../../shared/loader/loader.component';
 import { LoaderService } from '../../services/loader.service';
@@ -19,15 +19,15 @@ import { SignedUrlPipe } from '../../pipes/generar-url.pipe';
 })
 export class ClientesComponent {
   // Elementos para el paginador
-  public paginaActual:  number = 1;
-  public paginas:       number = 1;
+  public paginaActual:    number = 1;
+  public paginas:         number = 1;
 
-  public casasMatricez:Cliente[] = [];
+  public casasMatricez:   Cliente[] | undefined = undefined;
   public obtainedClients: boolean = false;
 
-  public isModalVisible: boolean = false;
-  public successMessage: string = '';
-  public errorMessage: string = '';
+  public isModalVisible:  boolean = false;
+  public successMessage:  string = '';
+  public errorMessage:    string = '';
 
   constructor(
     private apiService: ApiService,

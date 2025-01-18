@@ -1,25 +1,24 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { ApiService } from '../../../services/api.service';
-import { Equipo } from '../../../interfaces/equipo.interface';
-import { ModificarEquipoComponent } from '../../../shared/modal/modificar-equipo/modificar-equipo.component';
-import { LoaderComponent } from '../../../shared/loader/loader.component';
+import { Equipo } from '../../../interfaces/Equipo.interface';
+import { ModificarEquipoComponent } from '../../../shared/modal/equipo/modificar-equipo/modificar-equipo.component';
 import { LoaderService } from '../../../services/loader.service';
 import { FormatoFechaPipe } from '../../../pipes/formato-fecha.pipe';
-import { ActivatedRoute } from '@angular/router';
-import { ImprimirEquipo } from '../../../interfaces/imprimir-equipo.interface';
+import { ImprimirEquipo } from '../../../interfaces/ImprimirEquipo.interface';
 
 @Component({
   selector: 'sucursal-table',
   standalone: true,
-  imports: [CommonModule, ModificarEquipoComponent, LoaderComponent, FormatoFechaPipe],
+  imports: [CommonModule, ModificarEquipoComponent, FormatoFechaPipe],
   templateUrl: './table.component.html',
   styleUrl: './table.component.css'
 })
 export class TableComponent {
   // Arreglo de equipos
   public obtainedEquipments:  boolean = false;
-  public equipos?:            Equipo[] = [];
+  public equipos?:            Equipo[] | undefined | null;
+  @Input() paginaActual!: number;
 
   // Modal de edicion de equipo
   public selectedEquipoId!:   number;
@@ -36,14 +35,19 @@ export class TableComponent {
 
   constructor(
     private apiService: ApiService,
-    private route: ActivatedRoute,
     public loaderService: LoaderService
   ) {  }
 
   @Input()
-  set equiposRecibidos(value: Equipo[]) {
+  set equiposRecibidos(value: Equipo[] | undefined | null) {
     this.equipos = value;
-    this.checkboxesState = new Array(this.equipos.length).fill(false);
+
+    if(this.equipos === undefined ||this.equipos === null) {
+      this.checkboxesState = new Array().fill(false);
+    } else {
+      this.checkboxesState = new Array(this.equipos.length).fill(false);
+    }
+
     this.obtainedEquipments = true;
   }
 
@@ -89,6 +93,7 @@ export class TableComponent {
   }
 
   checkboxSeleccionado(): boolean {
+    if(this.checkboxesState.length === 0) return false;
     return this.checkboxesState.every(state => state);
   }
 

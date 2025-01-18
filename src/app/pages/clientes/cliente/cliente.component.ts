@@ -5,11 +5,11 @@ import { LoaderService } from '../../../services/loader.service';
 import { LoaderComponent } from "../../../shared/loader/loader.component";
 import { CasaMatrizComponent } from "./casa-matriz/casa-matriz.component";
 import { OptionsComponent } from '../../../shared/options/options.component';
-import { Sucursal } from '../../../interfaces/sucursal.interface';
+import { Sucursal } from '../../../interfaces/Sucursal.interface';
 import { ApiService } from '../../../services/api.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SignalService } from '../../../services/signal.service';
-import { Cliente } from '../../../interfaces/cliente.interface';
+import { Cliente } from '../../../interfaces/Cliente.interface';
 import { NavegationComponent } from "../../../shared/navegation/navegation.component";
 import { CommonModule } from '@angular/common';
 
@@ -28,7 +28,7 @@ export class ClienteComponent {
   private option!:              string;
   // Arreglo de sucursales
   public cliente?:              Cliente;
-  public sucursales:            Sucursal[] = [];
+  public sucursales:            Sucursal[] | undefined = undefined;
   public obtainedSucursales:    boolean = false;
   public Title:                 boolean = false;
 
@@ -36,7 +36,8 @@ export class ClienteComponent {
     private apiService:         ApiService,
     private route:              ActivatedRoute,
     private signalService:      SignalService,
-    public loaderService:       LoaderService
+    private router:             Router,
+    public loaderService:       LoaderService,
   ) {  }
 
   ngOnInit() {
@@ -46,11 +47,11 @@ export class ClienteComponent {
   selectedOption(value: string) {
     this.option = value;
     this.paginaActual = 1;
+    this.sucursales = undefined;
     this.cambiarSucursal();
   }
 
   cambiarSucursal() {
-    this.sucursales = [];
     this.loaderService.showSection();
     this.obtainedSucursales = false;
 
@@ -62,6 +63,11 @@ export class ClienteComponent {
         next: (respuesta) => {
           this.loaderService.hideSection();
           const { cliente, paginas } = respuesta;
+
+          if(!cliente) {
+            this.router.navigate(['/clientes']);
+            return;
+          }
 
           if(!this.Title) this.headerTitle(cliente.razonSocial);
 

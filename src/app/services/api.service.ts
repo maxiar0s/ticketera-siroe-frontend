@@ -31,6 +31,11 @@ export class ApiService {
     return this.postInformation(data, endpoint);
   }
 
+  createModifyUser(data: any):Observable<any> {
+    const endpoint = 'crear-modificar-cuenta';
+    return this.postInformation(data, endpoint);
+  }
+
     // Equiptment
   createEquiptment(data: any):Observable<any> {
     const endpoint = 'ingresar-equipo';
@@ -52,6 +57,12 @@ export class ApiService {
   }
 
   // GET
+  deleteUser(id: number):Observable<any> {
+    const endpoint = `eliminar-cuenta/${id}`;
+    return this.getInformation(endpoint);
+  }
+
+    // Casas Matricez
   clients(pagina: number):Observable<any> {
     const endpoint = `clientes?pagina=${pagina}`;
     return this.getInformation(endpoint);
@@ -65,10 +76,20 @@ export class ApiService {
     return this.getInformation(endpoint);
   }
 
+    // Sucursal
   sucursal(id: string, pagina: number, option: string):Observable<any> {
     let endpoint = `sucursal/`+id+`?pagina=${pagina}`;
     if(option) {
       endpoint = `sucursal/`+id+`?pagina=${pagina}&option=${option}`;
+    }
+    return this.getInformation(endpoint);
+  }
+
+    // Crear o modificar usuario
+  users(pagina: number, option: string):Observable<any> {
+    let endpoint = `usuarios`+`?pagina=${pagina}`;
+    if(option) {
+      endpoint = endpoint+`&option=${option}`;
     }
     return this.getInformation(endpoint);
   }
@@ -88,6 +109,7 @@ export class ApiService {
     return this.getInformation(endpoint);
   }
 
+    // Obtener equipo por ID
   equiptment(id: number):Observable<any> {
     const endpoint = `equipo/`+ id;
     return this.getInformation(endpoint);
@@ -120,6 +142,15 @@ export class ApiService {
     const apiUrl = `${this.url}/api/generar-url/${fileName}`;
     return this.http.get<{ signedUrl: string }>(apiUrl).pipe(
       map((response) => response.signedUrl)
+    );
+  }
+
+  // Verificar si correo electronico existe en la cuenta
+  verificarCorreoExistente(correo: string): Observable<boolean> {
+    return this.http.get<{ isTaken: boolean }>(`${this.url}/verificar-correo?correo=${correo}`).pipe(
+      map(response => {
+        return response.isTaken;
+      }),
     );
   }
 }

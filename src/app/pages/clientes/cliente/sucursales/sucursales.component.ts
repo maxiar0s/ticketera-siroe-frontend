@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { Sucursal } from '../../../../interfaces/sucursal.interface';
+import { Sucursal } from '../../../../interfaces/Sucursal.interface';
 import { FormatoFechaPipe } from '../../../../pipes/formato-fecha.pipe';
 
 @Component({

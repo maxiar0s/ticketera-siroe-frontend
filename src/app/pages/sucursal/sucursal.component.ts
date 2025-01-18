@@ -3,15 +3,16 @@ import { HeaderComponent } from './header/header.component';
 import { TableComponent } from './table/table.component';
 import { SignalService } from '../../services/signal.service';
 import { ApiService } from '../../services/api.service';
-import { Sucursal } from '../../interfaces/sucursal.interface';
+import { Sucursal } from '../../interfaces/Sucursal.interface';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { ButtonsComponent } from './options/options.component';
 import { OptionsComponent } from '../../shared/options/options.component';
-import { ImprimirEquipo } from '../../interfaces/imprimir-equipo.interface';
-import { Equipo } from '../../interfaces/equipo.interface';
+import { ImprimirEquipo } from '../../interfaces/ImprimirEquipo.interface';
+import { Equipo } from '../../interfaces/Equipo.interface';
 import { LoaderService } from '../../services/loader.service';
 import { NavegationComponent } from '../../shared/navegation/navegation.component';
+import { concatMap, from } from 'rxjs';
 
 @Component({
   selector: 'sucursal',
@@ -28,7 +29,7 @@ export class SucursalComponent {
   public option!:             string;
   // Arreglo de los equipos
   public sucursal?:           Sucursal;
-  public equipos:             Equipo[] = [];
+  public equipos:             Equipo[] | undefined = undefined;
   public obtainedEquipments:  boolean = false;
   public estado:              boolean = false;
   public Title:                 boolean = false;
@@ -40,19 +41,44 @@ export class SucursalComponent {
     private signalService:  SignalService,
     public loaderService :  LoaderService,
     private route:          ActivatedRoute,
+    private router:         Router
   ) {}
 
   ngOnInit() {
     this.cambiarSeleccion();
   }
 
+  crearEquipos(datos: any) {
+    const { cantidad } = datos;
+    from(Array(cantidad).keys()).pipe(
+      concatMap(() => this.apiService.createEquiptment(datos))
+    ).subscribe({
+      next: (respuesta) => {
+        if (respuesta.error) {
+          console.error('Error al crear equipo:', respuesta.error);
+        } else {
+          console.log('Equipo creado exitosamente:', respuesta);
+        }
+      },
+      error: (error) => {
+        console.error('Error al crear equipos:', error);
+      },
+      complete: () => {
+        this.cambiarSeleccion();
+      }
+    })
+  }
+
   selectedOption(value: string) {
     this.option = value;
+    this.equipos = undefined;
+    this.paginaActual = 1;
+    this.paginas = 1;
     this.cambiarSeleccion();
   }
 
   cambiarSeleccion() {
-    this.equipos = [];
+    this.equipos = undefined;
     this.loaderService.showSection();
     this.obtainedEquipments = false;
 
@@ -60,12 +86,18 @@ export class SucursalComponent {
 
     this.route.params.subscribe(params => {
       const id = params['id']
+      const idCliente = params['idCliente']
       this.apiService.sucursal(id, this.paginaActual, this.option).subscribe({
         next: (respuesta) => {
           const { sucursal, paginas } = respuesta;
 
+          if (!sucursal) {
+            this.router.navigate([`/clientes/${idCliente}`]);
+            return;
+          }
+
           if(!this.Title) this.headerTitle(sucursal.casaMatriz.razonSocial);
-          console.log(paginas)
+
           this.sucursal = sucursal;
           this.equipos = sucursal.equipos;
           this.paginas = paginas;

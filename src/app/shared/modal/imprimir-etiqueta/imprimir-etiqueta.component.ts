@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { ImprimirEquipo } from '../../../interfaces/imprimir-equipo.interface';
+import { ImprimirEquipo } from '../../../interfaces/ImprimirEquipo.interface';
 
 @Component({
   selector: 'shared-imprimir-etiqueta',

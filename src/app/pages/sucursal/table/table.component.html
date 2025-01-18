@@ -1,25 +1,27 @@
 <div class="div-loader-equipments">
-  @if(loaderService.loadingSection()){
-    <div class="loader">
-      <shared-loader></shared-loader>
-    </div>
-  }
   <div *ngIf="obtainedEquipments" class="div-table">
     <table class="table">
       <thead>
           <tr class="thead-properties">
-            <th><input *ngIf="equipos && equipos.length > 0" id="allDevices" [checked]="checkboxSeleccionado()" type="checkbox" (click)="seleccionarTodo($event)"></th>
-            <th>N°</th>
-            <th>Estado</th>
-            <th>Código ID</th>
-            <th>Tipo equipo</th>
-            <th>Fecha de ingreso</th>
-            <th>Departamento</th>
-            <th>Usuario</th>
-            <th>Acciones</th>
+            <th class="col-1"><input  id="allDevices" [checked]="checkboxSeleccionado()" type="checkbox" (click)="seleccionarTodo($event)"></th>
+            <th class="col-2">N°</th>
+            <th class="col-3">Estado</th>
+            <th class="col-4">Código ID</th>
+            <th class="col-5">Tipo equipo</th>
+            <th class="col-6">Fecha de ingreso</th>
+            <th class="col-7">Departamento</th>
+            <th class="col-8">Usuario</th>
+            <th class="col-9">Acciones</th>
           </tr>
       </thead>
-      <tbody *ngIf="equipos && equipos.length > 0; else noEquipos">
+
+        <tbody *ngIf="equipos === undefined || equipos === null">
+          <tr>
+            <td colspan="9" class="height-spinner"><div class="spinner-section spinner-size-section"></div></td>
+          </tr>
+        </tbody>
+
+        <tbody *ngIf="equipos && equipos.length > 0">
           <tr *ngFor="let equipo of equipos; let i = index" class="row-border">
               <td class="information-checkbox information-value">
                 <input
@@ -27,7 +29,7 @@
                   (change)="seleccionarEquipo(equipo, equipo.codigoId, i)"
                 >
               </td>
-              <td class="information-checkbox information-value">{{ equipo.numeroSecuencial }}</td>
+              <td class="information-checkbox information-value">{{ i + 1 + ((paginaActual-1) * 8) }}</td>
               <td class="information-value"><div [ngClass]="equipo.estado === 1 ? 'abierto' :
                 equipo.estado === 2 ? 'pendiente' :
                 'cerrado'" class="estado"></div></td>
@@ -51,11 +53,12 @@
           </tr>
       </tbody>
 
-      <ng-template #noEquipos>
-        <tr class="no-equipos">
+      <tbody *ngIf="equipos && equipos.length === 0">
+        <tr>
           <td colspan="9" class="no-equipos">No hay equipos registrados</td>
         </tr>
-      </ng-template>
+      </tbody>
+
     </table>
   </div>
 </div>

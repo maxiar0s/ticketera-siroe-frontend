@@ -1,16 +1,9 @@
 <div>
-  <div class="div-loader-equipments">
-    @if(loaderService.loadingSection()){
-      <div class="loader">
-        <shared-loader></shared-loader>
-      </div>
-  }
-  </div>
   <div class="users-table">
     <table class="table">
       <thead>
           <tr class="thead-properties">
-            <th class="col-1"><input id="allDevices" type="checkbox"></th>
+            <th class="col-1"><input type="checkbox"></th>
             <th class="col-2">ID Usuario</th>
             <th class="col-3">Nombre</th>
             <th class="col-4">Correo</th>
@@ -19,36 +12,54 @@
             <th class="col-7">Acciones</th>
           </tr>
       </thead>
-      <tbody>
-          <tr class="row-border">
-              <td class="information-checkbox information-value">
-                <input
-                  type="checkbox"
-                >
-              </td>
-              <td class="information-checkbox information-value"></td>
-              <td class="information-value"></td>
-              <td class="information-value"></td>
-              <td class="information-value"><td>
-              <td class="information-value information-actions">
-                  <button class="actions">
-                    <img src="/assets/svg/ver-datos.svg" class="svg" alt="ver-datos.svg">
+      <tbody *ngIf="cuentas === undefined || cuentas === null">
+        <tr class="row-border">
+          <td colspan="9" class="height-spinner"><div class="spinner-section spinner-size-section"></div></td>
+        </tr>
+      </tbody>
+      <tbody *ngIf="cuentas && cuentas.length > 0">
+          <tr *ngFor="let cuenta of cuentas; let i = index" class="row-border">
+              <td class="information-checkbox row-table"><input type="checkbox"></td>
+              <td class="row-table">{{ cuenta.id }}</td>
+              <td class="row-table">{{ cuenta.name }}</td>
+              <td class="row-table">{{ cuenta.email }}</td>
+              <td class="row-table">{{ cuenta.tipoCuenta.name }}</td>
+              <td class="row-table"><div class="estadoCuenta" [ngClass]="{ 'activo': cuenta.estadoCuentaId === 1, 'inactivo': cuenta.estadoCuentaId === 2, 'suspendido': cuenta.estadoCuentaId === 3 }">{{ cuenta.estadoCuenta.name }}</div></td>
+              <td class="information-actions row-table">
+                  <button class="actions pointer">
+                    <img src="/assets/svg/ver-datos.svg" class="svg ver-datos" alt="ver-datos.svg">
                   </button>
-                  <button class="actions">
-                    <img src="/assets/svg/edit-user.svg" class="svg" alt="edit-user.svg">
+                  <button *ngIf="idAdministrador != cuenta.id" class="actions pointer">
+                    <img src="/assets/svg/edit-user.svg" (click)="abrirModalModificarUsuario(i)" class="svg edit-user" alt="edit-user.svg">
                   </button>
-                  <button class="actions">
-                    <img src="/assets/svg/delete.svg" class="svg" alt="delete.svg">
+                  <button *ngIf="idAdministrador != cuenta.id" class="actions pointer">
+                    <img src="/assets/svg/delete.svg" (click)="abrirModalEliminarUsuario(i)" class="svg delete" alt="delete.svg">
                   </button>
               </td>
           </tr>
       </tbody>
 
-      <ng-template #noEquipos>
-        <tr>
-          <td colspan="9">No hay usuarios registrados</td>
+      <tbody *ngIf="cuentas && cuentas.length === 0">
+        <tr class="row-border">
+          <td class="height-spinner" colspan="9">No hay usuarios registrados</td>
         </tr>
-      </ng-template>
+      </tbody>
     </table>
   </div>
 </div>
+
+<shared-modificar-usuario class="size-modal"
+*ngIf="isModalVisibleModificarUsuario"
+[usuario]="selectedUser"
+(cerrarModal)="cerrarModalModificarUsuario()"
+(enviarFormulario)="modificarUsuario($event)"
+></shared-modificar-usuario>
+
+<shared-eliminar-usuario class="size-modal"
+*ngIf="isModalVisibleEliminarUsuario"
+[idUsuario]="indiceSelectedUser"
+[usuario]="selectedUser"
+(cerrarModal)="cerrarModalEliminarUsuario()"
+(enviarFormulario)="eliminarUsuario($event)"
+(abrirModificar)="abrirModModal($event)"
+></shared-eliminar-usuario>

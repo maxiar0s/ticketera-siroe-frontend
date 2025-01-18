@@ -2,8 +2,8 @@ import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Output } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, ParamMap } from '@angular/router';
-import { ApiService } from '../../../services/api.service';
-import { TipoEquipo } from '../../../interfaces/TipoEquipo.interface';
+import { ApiService } from '../../../../services/api.service';
+import { TipoEquipo } from '../../../../interfaces/TipoEquipo.interface';
 
 @Component({
   selector: 'shared-crear-equipo',
@@ -77,5 +77,10 @@ export class CrearEquipoComponent {
     const Element = event.currentTarget as HTMLAnchorElement;
 
     Element.classList.add('colorSelect')
+  }
+
+  soloNumeros(event: any): void {
+    const input = event.target;
+    input.value = input.value.replace(/[^0-9]/g, '');
   }
 }

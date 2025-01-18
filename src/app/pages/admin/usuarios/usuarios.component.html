@@ -1,5 +1,10 @@
 <div class="section">
-  <admin-usuarios-header></admin-usuarios-header>
+  <admin-usuarios-header (crearUsuarioForm)="Cuenta($event)"></admin-usuarios-header>
   <admin-usuario-options (optionSelected)="selectedOption($event)"></admin-usuario-options>
-  <admin-usuarios-table></admin-usuarios-table>
+  <admin-usuarios-table [cargarCuentas]="cuentas" [idAdministrador]="idAdministrador" (eliminarUsuarioForm)="eliminarCuenta($event)" (modificarTabla)="modificarIndice($event)" (modificarUsuarioForm)="Cuenta($event)"></admin-usuarios-table>
+  <div *ngIf="cuentas" class="navegation-section">
+    <shared-navegation [paginaActual]="paginaActual"
+    [paginas]="paginas"
+    (cambiarPagina)="cambiarPagina($event)"></shared-navegation>
+  </div>
 </div>

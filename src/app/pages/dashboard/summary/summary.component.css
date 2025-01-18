@@ -1,54 +1,17 @@
-.title {
-  color: #343c6a;
-  margin-bottom: 1.2rem;
-}
-/* @media (max-width: 1400px) {
-  .title {
-  }
-} */
-
-.options {
-  display: flex;
-  margin-bottom: 2.5rem;
-}
-/* @media (max-width: 1400px) {
-  .options {
-  }
-} */
-.options button {
-  all: unset;
-}
-.options button {
-  font-size: 1.2rem;
-  padding: 1rem 4rem;
-  position: relative;
-}
-.options button:hover {
-  cursor: pointer;
-}
-
-.options-buttons-border::after {
-  content: "";
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  height: 0.5rem;
-  background: #4f4f4f;
-  border-top-left-radius: 10px;
-  border-top-right-radius: 10px;
+.dashboard-section {
+  background-color: #f7f7f7;
+  border-radius: 30px;
+  padding: 5px 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .table {
+  border-collapse: collapse;
   table-layout: fixed;
-  background-color: #f7f7f7;
-  border-radius: 30px;
   width: 100%;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   color: #4f4f4f;
   text-align: left;
   padding: 0 2rem;
-  margin-bottom: 3rem;
 }
 @media (max-width: 1400px) {
   .table {
@@ -56,6 +19,7 @@
   }
 }
 .table th, .table td {
+  border-bottom: 1px solid #e7eff4;
   font-size: 1.2rem;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -67,12 +31,7 @@
 }
 
 .table-row-style {
-  height: 5.5rem;
-}
-@media (max-width: 1400px) {
-  .table-row-style {
-    height: 3.5rem;
-  }
+  height: 50px;
 }
 
 .id-status {

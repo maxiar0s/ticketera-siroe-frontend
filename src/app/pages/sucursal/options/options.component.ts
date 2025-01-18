@@ -1,10 +1,10 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { ApiService } from '../../../services/api.service';
 import { CommonModule } from '@angular/common';
-import { CrearEquipoComponent } from '../../../shared/modal/crear-equipo/crear-equipo.component';
+import { CrearEquipoComponent } from '../../../shared/modal/equipo/crear-equipo/crear-equipo.component';
 import { concatMap, from } from 'rxjs';
 import { ImprimirEtiquetaComponent } from '../../../shared/modal/imprimir-etiqueta/imprimir-etiqueta.component';
-import { ImprimirEquipo } from '../../../interfaces/imprimir-equipo.interface';
+import { ImprimirEquipo } from '../../../interfaces/ImprimirEquipo.interface';
 
 @Component({
   selector: 'sucursal-options',
@@ -15,6 +15,8 @@ import { ImprimirEquipo } from '../../../interfaces/imprimir-equipo.interface';
 })
 export class ButtonsComponent {
   public status: boolean = false;
+
+  @Output() crearEquiposForm = new EventEmitter<any>();
 
   // Equipos para imprimir
   @Input() devices: ImprimirEquipo[] = [];
@@ -64,28 +66,8 @@ export class ButtonsComponent {
     }
   }
 
-  crearEquipos(datos: any) {
-    const { cantidad } = datos;
-    from(Array(cantidad).keys()).pipe(
-      concatMap(() => this.apiService.createEquiptment(datos))
-    ).subscribe({
-      next: (respuesta) => {
-        if (respuesta.error) {
-          console.error('Error al crear equipo:', respuesta.error);
-          this.errorMessage += 'Error al crear equipo: ' + respuesta.error + '\n';
-        } else {
-          console.log('Equipo creado exitosamente:', respuesta);
-          this.successMessage += 'Equipo creado exitosamente!\n';
-        }
-      },
-      error: (error) => {
-        console.error('Error al crear equipos:', error);
-        this.errorMessage += 'Error al crear equipos: ' + error + '\n';
-      },
-      complete: () => {
-        this.cerrarModalCrearEquipo();
-      }
-    })
+  crearEquipos(event: any) {
+    this.crearEquiposForm.emit(event);
   }
 
   @Input()

@@ -103,6 +103,56 @@ html, body { height: 100%; }
 
 /* Propiedades compartidas */
 
+.spinner-images {
+  margin: auto;
+  border: 8px solid #EAEAEA;
+  border-top: 8px solid #b71653;
+  border-right: 8px solid #b71653;
+  border-left: 8px solid #b71653;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+.spinner-size-images {
+  height: 35px;
+  width: 35px;
+}
+
+.spinner-section {
+  margin: auto;
+  border: 8px solid #f5f5f5;
+  border-top: 8px solid #555555;
+  border-left: 8px solid #555555;
+  border-right: 8px solid #555555;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+.spinner-size-section {
+  height: 60px;
+  width: 60px;
+}
+
+.spinner-buttons {
+  margin: auto;
+  border: 8px solid #f5f5f5;
+  border-top: 8px solid #555555;
+  border-left: 8px solid #555555;
+  border-right: 8px solid #555555;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+.spinner-size-buttons {
+  height: 15px;
+  width: 15px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
 .section {
   display: flex;
   flex-direction: column;
@@ -139,6 +189,7 @@ html, body { height: 100%; }
   border-top-left-radius: 2rem;
   border-top-right-radius: 2rem;
   display: flex;
+  margin: auto 0;
   background-color: #b71653;
   padding: 1rem 2rem;
   width: 100%;
@@ -148,6 +199,7 @@ html, body { height: 100%; }
 }
 
 .header-form {
+  line-height: 0;
   font-weight: 600;
   text-align: left;
 }
@@ -158,12 +210,7 @@ html, body { height: 100%; }
 
 .modal-body {
   height: 100%;
-  padding: 2.4rem;
-}
-@media (max-width: 1400px) {
-  .modal-body {
-    padding: 1rem 2rem;
-  }
+  padding: 24px;
 }
 
 .description-form {
@@ -179,6 +226,8 @@ html, body { height: 100%; }
 }
 
 .form-group label {
+  color: #474747;
+  font-size: 12px;
   display: block;
   font-weight: 400;
   margin-bottom: 0.5rem;
@@ -191,21 +240,13 @@ html, body { height: 100%; }
 .form-group input,
 .form-group textarea,
 .form-group select {
+  color: #474747;
   min-width: 100%;
   padding: 1.3rem;
   box-sizing: border-box;
   border-radius: 1.5rem;
-  border: 1px solid #deebf2;
+  border: 1px solid #EBEEF2;
   background-color: #fffefe;
-}
-
-@media (max-width: 1400px) {
-  .form-group input,
-  .form-group select,
-  .form-group textarea {
-    padding: 0.8rem;
-    border-radius: 1rem;
-  }
 }
 
 input::-webkit-outer-spin-button,
@@ -224,7 +265,7 @@ input[type=number] {
   display: inline-block;
   position: relative;
   cursor: pointer;
-  border: 1px solid #deebf2;
+  border: 1px solid #EBEEF2;
   border-radius: 1.5rem;
   background-color: #fff;
   width: 100%;
@@ -353,6 +394,7 @@ input[type=number] {
   justify-content: center;
   gap: 3rem;
   align-items: center;
+  margin: auto 0;
 }
 @media (max-width: 1400px) {
   .information-actions {

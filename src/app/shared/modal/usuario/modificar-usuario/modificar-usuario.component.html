@@ -1,0 +1,89 @@
+<!-- src/app/modal-form/modal-form.component.html -->
+<div class="modal-overlay" *ngIf="isVisible">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2 class="header-form">Modificar Usuario</h2>
+      <img src="/assets/svg/exit-button.svg" (click)="cerrar()" alt="exit_button" class="close-button">
+    </div>
+    <div class="modal-body">
+      <p class="description-form">Cambia la información del colaborador con los campos correspondientes.</p>
+      <form [formGroup]="usuarioForm" (ngSubmit)="onSubmit()">
+        <input type="hidden" formControlName="id" value="cuenta.id">
+
+        <div class="two-inputs">
+          <!-- Campo rol -->
+          <div class="form-group width-50">
+            <label for="tipoCuentaId">Rol de la cuenta</label>
+            <select class="width-50" id="tipoCuentaId" formControlName="tipoCuentaId">
+              <option value="1">Administrador</option>
+              <option value="2">Técnico</option>
+              <option value="3">Mesa de ayuda</option>
+            </select>
+          </div>
+
+          <!-- Campo nombre -->
+          <div class="form-group width-50">
+            <label for="name">Nombre completo</label>
+            <input class="width-50" id="name" formControlName="name" type="text" autocomplete="name" placeholder="Ingrese el nombre completo"/>
+            <div *ngIf="usuarioForm.get('name')?.invalid && usuarioForm.get('name')?.touched" class="error">
+              Ingrese un nombre valido
+            </div>
+          </div>
+        </div>
+
+        <div class="two-inputs">
+            <!-- Campo email -->
+            <div class="form-group width-50">
+              <label for="telefono">Teléfono</label>
+              <div style="display: flex; justify-content: center; align-items: center;">
+                <input class="prefijo-telefono" type="text" disabled value="+56">
+                <input class="input-telefono" type="text" id="telefono" formControlName="telefono" autocomplete="tel" placeholder="Ingrese el teléfono" (input)="soloNumeros($event)">
+              </div>
+              <div *ngIf="usuarioForm.get('telefono')?.hasError('required') && usuarioForm.get('telefono')?.touched" class="error">
+                Ingrese un teléfono valido
+              </div>
+              <div *ngIf="usuarioForm.get('telefono')?.hasError('pattern') && usuarioForm.get('telefono')?.touched && usuarioForm.get('telefono')?.invalid" class="error">
+                El teléfono debe contener 9 números
+              </div>
+            </div>
+
+            <!-- Campo email -->
+            <div class="form-group width-50">
+              <label for="email">Correo electrónico</label>
+              <input class="disabled" type="email" id="email" placeholder="Ingrese el correo electrónico" disabled [value]="usuario?.email">
+            </div>
+
+        </div>
+
+        <div class="two-inputs">
+          <!-- Campo Estado -->
+          <div class="form-group width-50">
+            <label for="estadoCuentaId">Estado de la cuenta</label>
+            <select class="width-50" id="estadoCuentaId" formControlName="estadoCuentaId">
+              <option value="1">Activo</option>
+              <option value="2">Inactiva</option>
+              <option value="3">Suspendida</option>
+            </select>
+          </div>
+
+          <!-- Campo email -->
+          <div class="form-group width-50" style="margin-bottom: 2rem;">
+            <label for="password">Cambiar contraseña</label>
+            <input type="password" id="password" formControlName="password" placeholder="Ingrese la contraseña" autocomplete="current-password">
+          </div>
+
+        </div>
+
+        <!-- Mensaje de Error -->
+        <div *ngIf="errorMessage" class="error-message">
+          {{ errorMessage }}
+        </div>
+
+        <div class="form-actions">
+          <button class="equiptment-button" type="submit" [disabled]="usuarioForm.invalid">Modificar usuario</button>
+        </div>
+
+      </form>
+    </div>
+  </div>
+</div>

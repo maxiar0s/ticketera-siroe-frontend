@@ -21,7 +21,7 @@
         </div>
       </div>
       <button *ngIf="!logging" [disabled]="loginForm.invalid" type="submit" [ngClass]="{'invalid-form': loginForm.invalid, 'valid-form': loginForm.valid}" class="btn-login">Iniciar sesión</button>
-      <button *ngIf="logging" class="btn-login"><div class="spinner"></div></button>
+      <button *ngIf="logging" class="btn-login"><div class="spinner spinner-size"></div></button>
     </form>
   </div>
 </div>

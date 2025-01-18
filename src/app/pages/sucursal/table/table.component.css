@@ -18,7 +18,9 @@
   background-color: #ff4b4a;
 }
 
-
+.height-spinner {
+  height: 90px;
+}
 
 .actions {
   all: unset;
@@ -47,7 +49,7 @@ input[type="checkbox"] {
 }
 
 .no-equipos {
-  padding: 2rem 0;
+  height: 90px;
 }
 /* @media (max-width: 1400px) {
   .no-equipos {
@@ -61,6 +63,30 @@ input[type="checkbox"] {
   justify-content: center;
 }
 
-.loader {
-  min-height: 450px;
+.col-1 {
+  width: 50px;
+}
+.col-2 {
+  width: 40px;
+}
+.col-3 {
+  width: 100px;
+}
+.col-4 {
+  width: 200px;
+}
+.col-5 {
+  width: 330px;
+}
+.col-6 {
+  width: 250px;
+}
+.col-7 {
+  width: 270px;
+}
+.col-8 {
+  width: 110px;
+}
+.col-9 {
+  width: 295px;
 }

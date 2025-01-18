@@ -2,15 +2,66 @@
   border-radius: 20px;
   border: 1px solid #eaeaea;
   background-color: #f7f7f7;
-  padding: 5px 15px;
+  padding: 5px 35px;
+  box-shadow: 4px 4px 18px -2px #E7E4E8CC;
+}
+
+.pointer {
+  cursor: pointer;
+}
+
+.height-spinner {
+  height: 90px;
+}
+
+.estadoCuenta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  margin: auto;
+  width: 100px;
+  height: 23px;
+  padding: 4px 10px 4px 10px;
+  border-radius: 10px;
+}
+
+.activo {
+  background-color: #1EC6B8;
+  color: #FFFFFF;
+}
+
+.inactivo {
+  background-color: #FFEA4A;
+  color: #7B7122;
+}
+
+.suspendido {
+  background-color: #B1B1B1;
+  color: #FFFFFF;
+}
+
+.row-table {
+  height: 40px;
 }
 
 .svg {
   height: 15px;
+  transition: opacity 0.3s ease;
+}
+
+.ver-datos:hover {
+  content: url('/assets/svg/ver-datos-hover.svg');
+}
+.edit-user:hover {
+  content: url('/assets/svg/edit-user-hover.svg');
+}
+.delete:hover {
+  content: url('/assets/svg/delete-hover.svg');
 }
 
 .col-1 {
-  width: 20px;
+  width: 25px;
 }
 .col-2 {
   width: 100px;
@@ -25,8 +76,8 @@
   width: 150px;
 }
 .col-6 {
-  width: 100px;
+  width: 105px;
 }
 .col-7 {
-  width: 75px;
+  width: 80px;
 }

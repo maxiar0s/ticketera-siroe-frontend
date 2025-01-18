@@ -1,4 +1,4 @@
-import { Sucursal } from "./sucursal.interface";
+import { Sucursal } from "./Sucursal.interface";
 export interface Cliente {
   id:                string;
   imagen:            string;

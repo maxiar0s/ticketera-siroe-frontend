@@ -1,11 +1,11 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, Output, ɵSSR_CONTENT_INTEGRITY_MARKER } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { LoaderService } from '../../../services/loader.service';
-import { ApiService } from '../../../services/api.service';
-import { Equipo } from '../../../interfaces/equipo.interface';
-import { EquipoFormField } from '../../../interfaces/EquipoForm.interface';
-import { LoaderModalComponent } from '../../loader-modal/loader-modal.component';
+import { LoaderService } from '../../../../services/loader.service';
+import { ApiService } from '../../../../services/api.service';
+import { Equipo } from '../../../../interfaces/Equipo.interface';
+import { EquipoFormField } from '../../../../interfaces/EquipoForm.interface';
+import { LoaderModalComponent } from '../../../loader-modal/loader-modal.component';
 
 @Component({
   selector: 'shared-modificar-equipo',

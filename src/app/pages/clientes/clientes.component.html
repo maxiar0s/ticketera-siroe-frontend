@@ -1,16 +1,18 @@
 
 <div class="clients">
-  <div class="div-spinner-clients">
-    <!-- Loader mientras se carga informacion -->
-    <shared-loader></shared-loader>
-
-    <!-- <button (click)="abrirModal()">Crear cliente</button> -->
-
-    <!-- Resultados de clientes obtenidos -->
-    <div *ngIf="obtainedClients && casasMatricez.length > 0; else noClientes" class="grid-clients">
+  @if(!casasMatricez) {
+    <div class="container-spinner">
+      <div class="spinner-section spinner-size-section"></div>
+    </div>
+  }
+  @else {
+    <div *ngIf="obtainedClients && casasMatricez && casasMatricez.length > 0; else noClientes" class="grid-clients">
       @for (casaMatriz of casasMatricez; track casasMatricez) {
         <div class="card-body">
-          <img class="logo" [src]="casaMatriz.imagen | signedUrl | async" [alt]="casaMatriz.imagen">
+          <img *ngIf="casaMatriz.imagen | signedUrl | async as signedUrl; else loading" class="logo" [src]="signedUrl" [alt]="casaMatriz.imagen">
+          <ng-template #loading>
+            <div #loading class="spinner-images spinner-size-images"></div>
+          </ng-template>
           <div class="card-information">
             <div>
               <div class="information">
@@ -43,7 +45,10 @@
       [paginas]="paginas"
       (cambiarPagina)="cambiarPagina($event)"></shared-navegation>
     </div>
-  </div>
+  }
+  <!-- <button (click)="abrirModal()">Crear cliente</button> -->
+
+
 </div>
 
 <shared-crear-cliente class="form-crear-cliente"

@@ -11,7 +11,7 @@
     <!-- Upper menu -->
     <div>
       @for(item of menu; track item.id) {
-        <a [routerLink]="[item.route]" class="item" (click)="toggleSubItems(item)" [ngClass]="{'active': currentGroup == item.route}">
+        <a [routerLink]="[item.route]" class="item" (click)="toggleSubItems(item)" [ngClass]="{'active': currentGroup.includes(item.route)}">
           <div class="activated-item"></div>
           <div>
             <img class="normal-image svg-size" [src]="'/assets/svg/'+item.svg+'.svg'" [alt]="item.svg+'.svg'">

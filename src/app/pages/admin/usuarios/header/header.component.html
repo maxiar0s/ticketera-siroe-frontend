@@ -1,9 +1,16 @@
 <div class="flex">
   <h2 class="title">Listado de usuarios</h2>
-  <button class="option-button">
+  <button class="option-button" (click)="abrirModal()">
 
     <img src="/assets/svg/agregar-equipo.svg" class="svg" alt="agregar.svg">
 
     <span>Añadir usuarios</span>
   </button>
 </div>
+
+
+<shared-crear-usuario class="size-modal"
+*ngIf="isModalVisible"
+(cerrarModal)="cerrarModal()"
+(enviarFormulario)="crearUsuario($event)"
+></shared-crear-usuario>

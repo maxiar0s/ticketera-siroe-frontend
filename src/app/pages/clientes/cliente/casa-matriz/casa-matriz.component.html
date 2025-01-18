@@ -1,8 +1,11 @@
 <section class="main-grid">
   @if(cliente){
-    <img class="logo" [src]="cliente.imagen | signedUrl | async" [alt]="cliente.imagen">
+    <img *ngIf="cliente.imagen | signedUrl | async as signedUrl; else loading" class="logo" [src]="signedUrl" [alt]="cliente.imagen">
+    <ng-template #loading>
+      <div #loading class="spinner-images spinner-size-images"></div>
+    </ng-template>
   } @else {
-    <div class="spinner"></div>
+    <div #loading class="spinner-images spinner-size-images"></div>
   }
   <div class="flex-column">
     <h2 *ngIf="cliente" class="casa-matriz">{{ cliente.razonSocial }}</h2>

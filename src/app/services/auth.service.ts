@@ -33,7 +33,6 @@ export class AuthService {
     const token = this.obtenerToken();
     if (token) {
       try {
-        console.log(jwtDecode<Token>(token));
         return jwtDecode<Token>(token);
       } catch (error) {
         console.error('Error al decodificar el token:', error);

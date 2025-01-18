@@ -3,16 +3,18 @@
   <cliente-header></cliente-header>
   <shared-options (optionSelected)="selectedOption($event)"></shared-options>
   <div class="div-loader">
-    @if(loaderService.loadingSection()){
+    @if(!sucursales){
       <div class="loader">
-        <shared-loader></shared-loader>
+        <div class="spinner-section spinner-size-section"></div>
       </div>
     }
-    <cliente-sucursales [setSucursales]="sucursales"></cliente-sucursales>
-    <div *ngIf="obtainedSucursales && sucursales.length > 0" class="navegation-section" style="margin-top: 10px;">
-      <shared-navegation [paginaActual]="paginaActual"
-      [paginas]="paginas"
-      (cambiarPagina)="cambiarPagina($event)"></shared-navegation>
-    </div>
+    @else {
+      <cliente-sucursales [setSucursales]="sucursales"></cliente-sucursales>
+      <div *ngIf="obtainedSucursales && sucursales.length > 0" class="navegation-section" style="margin-top: 10px;">
+        <shared-navegation [paginaActual]="paginaActual"
+        [paginas]="paginas"
+        (cambiarPagina)="cambiarPagina($event)"></shared-navegation>
+      </div>
+    }
   </div>
 </div>

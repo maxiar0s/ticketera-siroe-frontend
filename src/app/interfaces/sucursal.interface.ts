@@ -1,5 +1,5 @@
-import { Cliente } from "./cliente.interface";
-import { Equipo } from "./equipo.interface";
+import { Cliente } from "./Cliente.interface";
+import { Equipo } from "./Equipo.interface";
 
 export interface Sucursal {
   id:                string;

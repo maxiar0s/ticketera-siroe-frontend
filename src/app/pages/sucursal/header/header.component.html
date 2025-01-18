@@ -7,9 +7,12 @@
   <div>
     <div class="grid-body">
       @if(sucursal) {
-        <img class="logo" [src]="sucursal.casaMatriz.imagen | signedUrl | async" [alt]="sucursal.casaMatriz.imagen">
+        <img *ngIf="sucursal.casaMatriz.imagen | signedUrl | async as signedUrl; else Loading" class="logo" [src]="signedUrl" [alt]="sucursal.casaMatriz.imagen">
+        <ng-template #Loading>
+          <div class="spinner-images spinner-size-images"></div>
+        </ng-template>
       } @else {
-        <div class="spinner"></div>
+        <div class="spinner-images spinner-size-images"></div>
       }
       <div class="information-flex">
         <div class="flex">

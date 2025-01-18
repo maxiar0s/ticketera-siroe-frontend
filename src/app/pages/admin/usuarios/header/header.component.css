@@ -10,11 +10,17 @@
 
 .option-button {
   display: flex;
+  justify-content: center;
   align-items: center;
-  border-radius: 25px;
-  padding: 0.6rem 3rem;
-  background-color: #b71752;
-  color: #fefeff;
+  height: 30px;
+  padding: 5px 25px;
+  gap: 10px;
+  background-color: #B71653;
+  color: #FFFFFF;
+  border-radius: 40px ;
+}
+.option-button span {
+  font-weight: 600;
 }
 .option-button:hover {
   cursor: pointer;

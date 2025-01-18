@@ -1,0 +1,24 @@
+<!-- src/app/modal-form/modal-form.component.html -->
+<div class="modal-overlay" *ngIf="isVisible">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2 class="header-form">Gestionar usuarios</h2>
+      <img src="/assets/svg/exit-button.svg" (click)="cerrar()" alt="exit_button" class="close-button">
+    </div>
+    <div class="modal-body">
+      <h2 class="colaborador">Colaborador: {{ usuario?.name }}</h2>
+      <p class="description-form" style="text-align: center;">Elige si deseas modificar o eliminar al colaborador.</p>
+
+      <div class="buttons">
+        <button (click)="onSubmit()" class="modify-or-delete-button" type="submit">
+          <img src="" alt="">
+          <span>Eliminar usuario</span>
+        </button>
+        <button (click)="abrirModModal()" class="modify-or-delete-button" type="submit">
+          <img src="" alt="">
+          <span>Modificar usuario</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
