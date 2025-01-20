@@ -4,11 +4,12 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { ActivatedRoute, ParamMap } from '@angular/router';
 import { ApiService } from '../../../../services/api.service';
 import { TipoEquipo } from '../../../../interfaces/TipoEquipo.interface';
+import { FormatInputSoloNumerosDirective } from '../../../../directives/solo-numeros.directive';
 
 @Component({
   selector: 'shared-crear-equipo',
   standalone: true,
-  imports: [ReactiveFormsModule, CommonModule],
+  imports: [ReactiveFormsModule, CommonModule, FormatInputSoloNumerosDirective],
   templateUrl: './crear-equipo.component.html',
   styleUrl: './crear-equipo.component.css'
 })
@@ -77,10 +78,5 @@ export class CrearEquipoComponent {
     const Element = event.currentTarget as HTMLAnchorElement;
 
     Element.classList.add('colorSelect')
-  }
-
-  soloNumeros(event: any): void {
-    const input = event.target;
-    input.value = input.value.replace(/[^0-9]/g, '');
   }
 }

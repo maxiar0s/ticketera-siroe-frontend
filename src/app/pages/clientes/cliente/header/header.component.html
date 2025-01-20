@@ -2,28 +2,44 @@
   <h2 class="title">Sucursales</h2>
   <form formGroup="filterForm" class="filter-form">
 
-    <div class="select">
-      <select class="search" name="fecha" id="fecha" formControlName="fecha">
-        <option disabled selected value="">Filtrar por fecha ingreso</option>
-        <option value="">1</option>
-        <option value="">2</option>
-        <option value="">3</option>
-        <option value="">4</option>
-        <option value="">5</option>
-      </select>
-      <img src="/assets/svg/arrow-down.svg" class="svg-arrow-down" alt="arrow_down.svg">
-    </div>
+    @if(esAdministrador) {
+      <div class="add-clients-button">
+        <button type="button" class="option-button" (click)="abrirModal()">
+          <img src="/assets/svg/agregar-equipo-hover.svg" class="svg" alt="agregar.svg">
+          <span>Añadir usuarios</span>
+        </button>
+      </div>
+    } @else {
+      <div class="select">
+        <select class="search" name="fecha" id="fecha" formControlName="fecha">
+          <option disabled selected value="">Filtrar por fecha ingreso</option>
+          <option value="">1</option>
+          <option value="">2</option>
+          <option value="">3</option>
+          <option value="">4</option>
+          <option value="">5</option>
+        </select>
+        <img src="/assets/svg/arrow-down.svg" class="svg-arrow-down" alt="arrow_down.svg">
+      </div>
 
-    <div class="select">
-      <select name="ubicacion" id="ubicacion" class="search" formControlName="ubicacion">
-        <option disabled selected value="">Filtrar por ubicación</option>
-        <option value="">1</option>
-        <option value="">2</option>
-        <option value="">3</option>
-        <option value="">4</option>
-        <option value="">5</option>
-      </select>
-      <img src="/assets/svg/arrow-down.svg" class="svg-arrow-down" alt="arrow_down.svg">
-    </div>
+      <div class="select">
+        <select name="ubicacion" id="ubicacion" class="search" formControlName="ubicacion">
+          <option disabled selected value="">Filtrar por ubicación</option>
+          <option value="">1</option>
+          <option value="">2</option>
+          <option value="">3</option>
+          <option value="">4</option>
+          <option value="">5</option>
+        </select>
+        <img src="/assets/svg/arrow-down.svg" class="svg-arrow-down" alt="arrow_down.svg">
+      </div>
+    }
   </form>
 </section>
+
+<shared-crear-modificar-sucursal class="form-crear-cliente"
+*ngIf="isModalVisible"
+[casaMatrizId]="casaMatrizId"
+(cerrarModal)="cerrarModal()"
+(enviarFormulario)="crearSucursal($event)">
+</shared-crear-modificar-sucursal>

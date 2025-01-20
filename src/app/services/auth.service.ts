@@ -1,6 +1,5 @@
-import { Injectable, signal } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { jwtDecode } from 'jwt-decode';
-import { BehaviorSubject } from 'rxjs';
 
 interface Token {
   id:         number;

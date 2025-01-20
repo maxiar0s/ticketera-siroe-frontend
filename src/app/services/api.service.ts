@@ -31,6 +31,11 @@ export class ApiService {
     return this.postInformation(data, endpoint);
   }
 
+  createModifyBranch(data: any):Observable<any> {
+    const endpoint = 'ingresar-sucursal';
+    return this.postInformation(data, endpoint);
+  }
+
   createModifyUser(data: any):Observable<any> {
     const endpoint = 'crear-modificar-cuenta';
     return this.postInformation(data, endpoint);
@@ -59,6 +64,11 @@ export class ApiService {
   // GET
   deleteUser(id: number):Observable<any> {
     const endpoint = `eliminar-cuenta/${id}`;
+    return this.getInformation(endpoint);
+  }
+
+  deleteBranch(id: string):Observable<any> {
+    const endpoint = `eliminar-sucursal/${id}`;
     return this.getInformation(endpoint);
   }
 

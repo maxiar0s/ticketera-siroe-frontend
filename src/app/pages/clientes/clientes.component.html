@@ -1,5 +1,11 @@
 
 <div class="clients">
+  <div class="add-clients-button" *ngIf="esAdministrador">
+    <button type="button" class="option-button" (click)="abrirModal()">
+      <img src="/assets/svg/agregar-equipo-hover.svg" class="svg" alt="agregar.svg">
+      <span>Añadir usuarios</span>
+    </button>
+  </div>
   @if(!casasMatricez) {
     <div class="container-spinner">
       <div class="spinner-section spinner-size-section"></div>
@@ -23,9 +29,9 @@
             </div>
             <div>
               <div class="information">
-                <p>RUT Cliente: <span>{{casaMatriz.rut}}</span></p>
+                <p>RUT Cliente: <span>{{casaMatriz.rut.toString() | rut}}</span></p>
                 <p>ID Cliente: <span>{{casaMatriz.id}}</span></p>
-                <p>Teléfono: <span>{{casaMatriz.telefonoEncargado}}</span></p>
+                <p>Teléfono: <span>{{ casaMatriz.telefonoEncargado.toString() | telefono }}</span></p>
               </div>
             </div>
             <div>

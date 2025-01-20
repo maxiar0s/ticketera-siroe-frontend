@@ -22,7 +22,7 @@
 
               @if(campo.type === 'file') {
                 <div class="custom-file-input" style="width: 100%;">
-                  <div style="display: flex; justify-content: space-between; width: 100%;">
+                  <div class="imagen-container">
                     <p *ngIf="!equipoForm.value.imagen" id="file-placeholder">Toma o sube una foto del equipo</p>
                     <p *ngIf="equipoForm.value.imagen" id="file-placeholder">{{ equipoForm.value.imagen }}</p>
                     <img src="/assets/svg/camera.svg" alt="camera_svg" class="svg">
@@ -52,7 +52,7 @@
           </div>
 
           <!-- Botones -->
-          <div class="form-actions">
+          <div class="form-actions" style="margin-top: 15px;">
             <button class="equiptment-button" type="submit" [disabled]="equipoForm.invalid">Guardar datos</button>
           </div>
         </form>

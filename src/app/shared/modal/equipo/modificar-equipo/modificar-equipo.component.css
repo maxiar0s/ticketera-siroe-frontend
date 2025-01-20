@@ -2,7 +2,7 @@
   background-color: #f7f6f6;
   border-radius: 2rem;
   width: 90%;
-  max-width: 110rem;
+  max-width: 800px;
   box-shadow: 0 5px 15px rgba(0,0,0,0.3);
   position: relative;
 }
@@ -19,8 +19,8 @@
 .grid-form {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  column-gap: 2.5rem;
-  row-gap: 2rem;
+  column-gap: 25px;
+  row-gap: 15px;
 }
 
 .full-width {
@@ -51,8 +51,8 @@
 }
 
 .svg {
-  height: 2.5rem;
-  margin-right: 0.3rem;
+  height: 15px;
+  margin-right: 3px;
 }
 
 .comments {

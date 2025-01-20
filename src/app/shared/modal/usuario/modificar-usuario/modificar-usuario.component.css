@@ -11,13 +11,6 @@
   color: #d9d9d9;
 }
 
-.two-inputs {
-  box-sizing: border-box;
-  margin-bottom: 2rem;
-  display: flex;
-  gap: 1.5rem;
-}
-
 .width-50 {
   box-sizing: border-box;
   width: 50%;
@@ -31,6 +24,7 @@
 
 .prefijo-telefono {
   all: unset;
+  height: 42px;
   color: #474747;
   font-size: 12px;
   width: 55px;
@@ -44,7 +38,7 @@
 }
 
 .input-telefono {
-  all: unset;
+  min-width: 0%;
   color: #474747;
   font-size: 12px;
   width: 100%;

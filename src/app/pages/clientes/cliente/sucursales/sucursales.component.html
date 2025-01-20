@@ -1,5 +1,5 @@
-<section *ngIf="obtainedSucursales && sucursales.length > 0; else noSucursales" class="sucursales">
-  <div *ngFor="let sucursal of sucursales" class="sucursal">
+<section *ngIf="sucursales && sucursales.length > 0; else noSucursales" class="sucursales">
+  <div *ngFor="let sucursal of sucursales; let i = index;" class="sucursal">
     <!-- Estado Sucursal -->
     <div class="sucursal-campo sucursal-campo-estado">
       <h3 class="table-title">Estado</h3>
@@ -29,6 +29,9 @@
     </div>
     <div class="div-button">
       <a [routerLink]="['/clientes', sucursal.casaMatrizId ,'sucursal', sucursal.id]" routerLinkActive="router-link-active" class="button">Seleccionar sucursal</a>
+      <button class="button-ajustes" (click)="abrirModalAjustesSucursal(i)">
+        <img *ngIf="esAdministrador" src="/assets/svg/ajustes.svg" alt="ajustes.svg" class="svg-ajustes-sucursal">
+      </button>
     </div>
   </div>
 </section>
@@ -36,3 +39,20 @@
 <ng-template #noSucursales>
   <p class="no-sucursales">No hay sucursales registradas</p>
 </ng-template>
+
+<shared-opciones-sucursal
+*ngIf="isModalVisibleAjustesSucursal"
+[idSucursal]="idSucursal"
+[sucursal]="selectedSucursal"
+(cerrarModal)="cerrarModalAjustesSucursal()"
+(enviarFormulario)="eliminarSucursal($event)"
+(abrirModificar)="abrirModModal($event)">
+</shared-opciones-sucursal>
+
+<shared-crear-modificar-sucursal
+*ngIf="isModalVisibleModificarSucursal"
+[idSucursal]="idSucursal"
+[sucursal]="selectedSucursal"
+(enviarFormulario)="enviarSucursal($event)"
+(cerrarModal)="cerrarModalEditarSucursal()">
+</shared-crear-modificar-sucursal>

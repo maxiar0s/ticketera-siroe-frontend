@@ -18,4 +18,8 @@ export class AppComponent {
   constructor(
     public authService: AuthService) {
   }
+
+  ngOnInit() {
+    console.log(this.authService.userSigned);
+  }
 }

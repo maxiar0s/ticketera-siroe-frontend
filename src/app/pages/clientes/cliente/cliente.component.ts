@@ -12,21 +12,25 @@ import { SignalService } from '../../../services/signal.service';
 import { Cliente } from '../../../interfaces/Cliente.interface';
 import { NavegationComponent } from "../../../shared/navegation/navegation.component";
 import { CommonModule } from '@angular/common';
+import { AuthService } from '../../../services/auth.service';
 
 @Component({
   selector: 'cliente',
   standalone: true,
-  imports: [HeaderComponent, OptionsComponent, SucursalesComponent, LoaderComponent, CasaMatrizComponent, NavegationComponent, CommonModule],
+  imports: [HeaderComponent, OptionsComponent, SucursalesComponent, CasaMatrizComponent, NavegationComponent, CommonModule],
   templateUrl: './cliente.component.html',
   styleUrl: './cliente.component.css'
 })
 export class ClienteComponent {
+  public esAdministrador: boolean = false;
   // Elementos para el paginador
   public paginaActual:          number = 1;
   public paginas:               number = 1;
   // Filtro de sucursales
   private option!:              string;
   // Arreglo de sucursales
+  public indiceTabla!:          number;
+  public casaMatrizId!:         string;
   public cliente?:              Cliente;
   public sucursales:            Sucursal[] | undefined = undefined;
   public obtainedSucursales:    boolean = false;
@@ -38,10 +42,12 @@ export class ClienteComponent {
     private signalService:      SignalService,
     private router:             Router,
     public loaderService:       LoaderService,
+    private authService: AuthService,
   ) {  }
 
   ngOnInit() {
     this.cambiarSucursal();
+    this.esAdministrador = this.authService.esAdministrador();
   }
 
   selectedOption(value: string) {
@@ -51,14 +57,54 @@ export class ClienteComponent {
     this.cambiarSucursal();
   }
 
+  crearModificarSucursal(datos: any) {
+    this.apiService.createModifyBranch(datos).subscribe({
+      next: (respuesta) => {
+        console.log(respuesta);
+        if(respuesta.resp == 'mod') {
+          console.log(respuesta.sucursal);
+          if(this.sucursales) {
+            console.log(this.indiceTabla);
+            this.sucursales[this.indiceTabla] = respuesta.sucursal;
+          }
+        } else {
+          this.cambiarSucursal();
+        }
+      },
+      error: (error) => {
+        console.error('Error al crear o modificar sucursal:', error);
+      }
+    })
+  }
+
+  eliminarSucursal(datos: any) {
+    console.log(datos)
+    this.apiService.deleteBranch(datos).subscribe({
+      next: (respuesta) => {
+        if(respuesta) {
+          this.cambiarSucursal();
+        }
+      },
+      error: (error) => {
+        console.error('Error al crear o modificar sucursal:', error);
+      }
+    })
+  }
+
+  modificarIndiceTable(event: number) {
+    this.indiceTabla = event;
+  }
+
   cambiarSucursal() {
+    this.sucursales = undefined;
     this.loaderService.showSection();
     this.obtainedSucursales = false;
 
     if(!this.Title) this.signalService.updateData('');;
 
     this.route.params.subscribe(params => {
-      const id = params['id']
+      const id = params['id'];
+      this.casaMatrizId = id;
       this.apiService.client(id, this.paginaActual, this.option).subscribe({
         next: (respuesta) => {
           this.loaderService.hideSection();

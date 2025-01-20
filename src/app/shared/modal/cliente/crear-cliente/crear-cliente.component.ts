@@ -1,11 +1,14 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Output } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormatInputRutDirective } from '../../../../directives/rut.directive';
+import { FormatInputTelefonoDirective } from '../../../../directives/telefono.directive';
+import { validarRut } from '../../../../validators/rut.validator';
 
 @Component({
   selector: 'shared-crear-cliente',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, FormatInputRutDirective, FormatInputTelefonoDirective],
   templateUrl: './crear-cliente.component.html',
   styleUrl: './crear-cliente.component.css'
 })
@@ -22,12 +25,12 @@ export class CrearClienteComponent {
 
   constructor(private fb: FormBuilder) {
     this.clientForm = this.fb.group({
-      rut: ['', [Validators.required, Validators.pattern(/^\d{7,8}-[kK\d]$/)]],
+      rut: ['', [Validators.required, validarRut()]],
       razonSocial: ['', Validators.required],
       imagen: ['', Validators.required],
       encargadoGeneral: ['', Validators.required],
       correo: ['', [Validators.required, Validators.email]],
-      telefonoEncargado: ['', [Validators.required, Validators.pattern(/^\+?\d{7,15}$/)]]
+      telefonoEncargado: ['', [Validators.required, Validators.pattern('^[\\s\\S]{11,12}$')]]
     });
   }
 

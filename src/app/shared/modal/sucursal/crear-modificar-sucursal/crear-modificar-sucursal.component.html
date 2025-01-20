@@ -1,0 +1,82 @@
+<div class="modal-overlay" *ngIf="isVisible">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2 class="header-form">Añadir Sucursal</h2>
+      <img src="/assets/svg/exit-button.svg" (click)="cerrar()" alt="exit_button" class="close-button">
+    </div>
+    <div class="modal-body">
+      <p class="description-form">Rellena todos los campos con los datos requeridos para registrar una nueva sucursal. Asegúrate de que la información sea correcta antes de guardar.</p>
+      <form [formGroup]="sucursalForm" (ngSubmit)="onSubmit()">
+        <input *ngIf="this.sucursalForm.get('casaMatrizId')" type="hidden" formControlName="casaMatrizId">
+        <input *ngIf="this.sucursalForm.get('sucursalId')" type="hidden" formControlName="sucursalId">
+
+        <div class="two-inputs">
+          <!-- Campo Sucursal -->
+          <div class="form-group width-50">
+            <label for="sucursal">Sucursal</label>
+            <input class="width-50" id="sucursal" formControlName="sucursal" type="text" placeholder="Ingrese la sucursal"/>
+            <div *ngIf="sucursalForm.get('sucursal')?.getError('required') && sucursalForm.get('sucursal')?.touched" class="error">
+              Nombre es requerido
+            </div>
+          </div>
+
+          <!-- Campo Direccion -->
+          <div class="form-group width-50">
+            <label for="direccion">Dirección</label>
+            <input class="width-50" id="direccion" formControlName="direccion" type="text" placeholder="Ingresa la dirección"/>
+            <div *ngIf="sucursalForm.get('direccion')?.invalid && sucursalForm.get('direccion')?.touched" class="error">
+              Dirección es requerida
+            </div>
+          </div>
+        </div>
+
+        <div class="two-inputs">
+          <!-- Campo Encargado Sucursal -->
+          <div class="form-group width-50">
+            <label for="encargadoSucursal">Encargado Sucursal</label>
+            <input id="encargadoSucursal" formControlName="encargadoSucursal" type="text" placeholder="Ingresa el encargado sucursal"/>
+            <div *ngIf="sucursalForm.get('encargadoSucursal')?.invalid && sucursalForm.get('encargadoSucursal')?.touched" class="error">
+              Encargado General es requerido
+            </div>
+          </div>
+
+          <!-- Campo Encargado General -->
+          <div class="form-group width-50">
+            <label for="correoSucursal">Correo Sucursal</label>
+            <input id="correoSucursal" formControlName="correoSucursal" type="text" placeholder="Ingresa el correo sucursal"/>
+            <div *ngIf="sucursalForm.get('correoSucursal')?.invalid && sucursalForm.get('correoSucursal')?.touched" class="error">
+              Correo sucursal es requerido
+            </div>
+          </div>
+        </div>
+
+        <div class="two-inputs">
+          <!-- Campo Teléfono Sucursal -->
+          <div class="form-group width-50">
+            <label for="telefonoSucursal">Teléfono</label>
+            <div style="display: flex; justify-content: center; align-items: center;">
+              <input class="prefijo-telefono" type="text" disabled value="+56">
+              <input class="input-telefono" formatInputTelefono type="text" id="telefonoSucursal" formatInputTelefono formControlName="telefonoSucursal" autocomplete="tel" placeholder="Ingrese el teléfono" formatInputNumber>
+            </div>
+            <div *ngIf="sucursalForm.get('telefonoSucursal')?.hasError('required') && sucursalForm.get('telefonoSucursal')?.touched" class="error">
+              Ingrese un teléfono valido
+            </div>
+            <div *ngIf="sucursalForm.get('telefonoSucursal')?.hasError('pattern') && sucursalForm.get('telefonoSucursal')?.touched && sucursalForm.get('telefonoSucursal')?.invalid" class="error">
+              El teléfono debe contener 9 números
+            </div>
+          </div>
+        </div>
+
+        <!-- Mensaje de Error -->
+        <div *ngIf="errorMessage" class="error-message">
+          {{ errorMessage }}
+        </div>
+
+        <!-- Botones -->
+        <div class="form-actions">
+          <button class="equiptment-button" type="submit" [disabled]="sucursalForm.invalid">{{ boton_texto }}</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

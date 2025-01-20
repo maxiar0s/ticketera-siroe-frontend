@@ -31,7 +31,7 @@
           <!-- Campo cantidad -->
           <div class="form-group width-50">
             <label for="cantidad">Añadir cantidad de equipos</label>
-            <input class="width-50" id="cantidad" formControlName="cantidad" (input)="soloNumeros($event)" type="text" placeholder="Ingrese la cantidad"/>
+            <input class="width-50" id="cantidad" formControlName="cantidad" formatInputNumber type="text" placeholder="Ingrese la cantidad"/>
             <div *ngIf="equipoForm.get('cantidad')?.invalid && equipoForm.get('cantidad')?.touched" class="error">
               Cantidad invalida.
             </div>

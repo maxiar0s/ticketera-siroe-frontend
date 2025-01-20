@@ -1,6 +1,6 @@
 <div class="information-grid">
   <div class="title">
-    <h2 *ngIf="sucursal" class="header-title">Sucursal Cencosud Florida</h2>
+    <h2 *ngIf="sucursal" class="header-title">Sucursal {{ sucursal.sucursal }}</h2>
     <h2 *ngIf="!sucursal" class="temp-title header-title">Cargando información...</h2>
     <h2 class="header-direccion">{{sucursal?.direccion}}</h2>
   </div>

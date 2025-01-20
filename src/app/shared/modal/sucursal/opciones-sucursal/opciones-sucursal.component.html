@@ -1,21 +1,21 @@
 <div class="modal-overlay" *ngIf="isVisible">
   <div class="modal-content">
     <div class="modal-header">
-      <h2 class="header-form">Gestionar usuario</h2>
+      <h2 class="header-form">Gestionar sucursal</h2>
       <img src="/assets/svg/exit-button.svg" (click)="cerrar()" alt="exit_button" class="close-button">
     </div>
     <div class="modal-body">
-      <h2 class="colaborador">Colaborador: {{ usuario?.name }}</h2>
-      <p class="description-form" style="text-align: center;">Elige si deseas modificar o eliminar al colaborador.</p>
+      <h2 class="colaborador">{{ sucursal?.sucursal }}</h2>
+      <p class="description-form" style="text-align: center;">Elige si deseas modificar o eliminar la sucursal.</p>
 
       <div class="buttons">
         <button (click)="onSubmit()" class="modify-or-delete-button" type="submit">
           <img src="/assets/svg/delete.svg" alt="delete.svg" class="svg">
-          <span>Eliminar usuario</span>
+          <span>Eliminar sucursal</span>
         </button>
         <button (click)="abrirModModal()" class="modify-or-delete-button" type="submit">
           <img src="/assets/svg/agregar-datos.svg" alt="agregar-datos.svg" class="svg">
-          <span>Modificar usuario</span>
+          <span>Editar sucursal</span>
         </button>
       </div>
     </div>

@@ -157,7 +157,6 @@ html, body { height: 100%; }
   display: flex;
   flex-direction: column;
   padding: 25px;
-  gap: 20px;
 }
 
 .text-center {
@@ -215,7 +214,7 @@ html, body { height: 100%; }
 
 .description-form {
   font-size: 1.2rem;
-  margin-bottom: 2rem;
+  margin-bottom: 15px;
   color: #474747;
 }
 
@@ -223,6 +222,13 @@ html, body { height: 100%; }
   cursor: pointer;
   max-width: 3rem;
   min-width: 3rem;
+}
+
+.two-inputs {
+  box-sizing: border-box;
+  margin-bottom: 15px;
+  display: flex;
+  gap: 15px;
 }
 
 .form-group label {
@@ -262,6 +268,7 @@ input[type=number] {
 }
 
 .custom-file-input {
+  height: 42px;
   display: inline-block;
   position: relative;
   cursor: pointer;
@@ -271,14 +278,16 @@ input[type=number] {
   width: 100%;
   padding: 0.6rem;
 }
-@media (max-width: 1400px) {
-  .custom-file-input {
-    padding: 0.175rem;
-    border-radius: 1rem;
-  }
+
+.imagen-container {
+  display: flex;
+  justify-content: space-between;
+  height: 100%;
+  align-items: center;
 }
 
 .custom-file-input input[type="file"] {
+  height: 42px;
   position: absolute;
   top: 0;
   left: 0;
@@ -289,6 +298,7 @@ input[type=number] {
 }
 
 .custom-file-input p {
+  margin: auto 0;
   pointer-events: none;
   margin-left: 0.45rem;
   color: #d9d9d9;

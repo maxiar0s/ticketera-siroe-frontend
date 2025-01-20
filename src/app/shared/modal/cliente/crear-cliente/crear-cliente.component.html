@@ -5,66 +5,79 @@
       <img src="/assets/svg/exit-button.svg" (click)="cerrar()" alt="exit_button" class="close-button">
     </div>
     <div class="modal-body">
-      <p class="description-form">Crea una nueva casa matriz, en donde podrás ingresar equipos.</p>
+      <p class="description-form">Rellena todos los campos con los datos requeridos. Asegúrate de que la información sea correcta antes de guardar.</p>
       <form [formGroup]="clientForm" (ngSubmit)="onSubmit()">
 
         <div class="two-inputs">
-          <!-- Campo RUT -->
+          <!-- Campo Rut -->
           <div class="form-group width-50">
-            <label for="rut">RUT</label>
-            <input class="width-50" id="rut" formControlName="rut" type="text" placeholder="Ingrese el rut"/>
-            <div *ngIf="clientForm.get('rut')?.invalid && clientForm.get('rut')?.touched" class="error">
-              RUT inválido.
+            <label for="rut">Rut</label>
+            <input class="width-50" formatInputRut id="rut" formControlName="rut" type="text" placeholder="Ingrese el rut"/>
+            <div *ngIf="clientForm.get('rut')?.getError('required') && clientForm.get('rut')?.touched" class="error">
+              Rut es requerido
+            </div>
+            <div *ngIf="clientForm.get('rut')?.getError('invalidRutLength') && clientForm.get('rut')?.touched" class="error">
+              Rut ingresado es invalido
             </div>
           </div>
 
           <!-- Campo Razón Social -->
-          <div class="form-group">
+          <div class="form-group width-50">
             <label for="razonSocial">Razón Social</label>
             <input class="width-50" id="razonSocial" formControlName="razonSocial" type="text" placeholder="Ingresa la razón social"/>
             <div *ngIf="clientForm.get('razonSocial')?.invalid && clientForm.get('razonSocial')?.touched" class="error">
-              Razón Social es requerida.
+              Razón Social es requerida
             </div>
           </div>
         </div>
 
-        <!-- Campo Logo -->
-        <div class="form-group">
-          <label for="imagen">Logo o Imagen</label>
-          <div class="custom-file-input" style="width: 100%;">
-            <div style="display: flex; justify-content: space-between; width: 100%;">
-              <p *ngIf="!clientForm.value.imagen" class="imagen-placeholder">Sube el logo o la imagen del cliente</p>
-              <p *ngIf="clientForm.value.imagen" class="imagen-text">{{ clientForm.value.imagen }}</p>
-              <img src="/assets/svg/camera.svg" alt="camera_svg" class="svg">
+        <div class="two-inputs">
+          <!-- Campo Logo -->
+          <div class="form-group width-50">
+            <label for="imagen">Imagen</label>
+            <div class="custom-file-input" style="width: 100%;">
+              <div class="imagen-container">
+                <p *ngIf="!clientForm.value.imagen" class="imagen-placeholder">Sube el logo o la imagen del cliente</p>
+                <p *ngIf="clientForm.value.imagen" class="imagen-text">{{ clientForm.value.imagen }}</p>
+                <img src="/assets/svg/camera.svg" alt="camera_svg" class="svg">
+              </div>
+              <input class="inputs" (change)="onFileSelected($event)" type="file" accept="image/*" capture="environment" type="file" id="imagen" formControlName="imagen"/>
             </div>
-            <input class="inputs" (change)="onFileSelected($event)" type="file" accept="image/*" capture="environment" type="file" formControlName="imagen"/>
+          </div>
+
+          <!-- Campo Encargado General -->
+          <div class="form-group width-50">
+            <label for="encargadoGeneral">Encargado General</label>
+            <input id="encargadoGeneral" formControlName="encargadoGeneral" type="text" placeholder="Ingresa el encargado general"/>
+            <div *ngIf="clientForm.get('encargadoGeneral')?.invalid && clientForm.get('encargadoGeneral')?.touched" class="error">
+              Encargado General es requerido
+            </div>
           </div>
         </div>
 
-        <!-- Campo Encargado General -->
-        <div class="form-group">
-          <label for="encargadoGeneral">Encargado General</label>
-          <input id="encargadoGeneral" formControlName="encargadoGeneral" type="text" placeholder="Ingresa el encargado general"/>
-          <div *ngIf="clientForm.get('encargadoGeneral')?.invalid && clientForm.get('encargadoGeneral')?.touched" class="error">
-            Encargado General es requerido.
+        <div class="two-inputs">
+          <!-- Campo Correo -->
+          <div class="form-group width-50">
+            <label for="correo">Correo Electrónico</label>
+            <input id="correo" formControlName="correo" type="email" placeholder="Ingresa el correo electrónico"/>
+            <div *ngIf="clientForm.get('correo')?.invalid && clientForm.get('correo')?.touched" class="error">
+              Correo electrónico inválido
+            </div>
           </div>
-        </div>
 
-        <!-- Campo Correo -->
-        <div class="form-group">
-          <label for="correo">Correo Electrónico</label>
-          <input id="correo" formControlName="correo" type="email" placeholder="Ingresa el correo electrónico"/>
-          <div *ngIf="clientForm.get('correo')?.invalid && clientForm.get('correo')?.touched" class="error">
-            Correo electrónico inválido.
-          </div>
-        </div>
-
-        <!-- Campo Teléfono Encargado -->
-        <div class="form-group">
-          <label for="telefonoEncargado">Teléfono Encargado</label>
-          <input id="telefonoEncargado" formControlName="telefonoEncargado" type="text" placeholder="Ingresa el teléfono"/>
-          <div *ngIf="clientForm.get('telefonoEncargado')?.invalid && clientForm.get('telefonoEncargado')?.touched" class="error">
-            Teléfono inválido.
+          <!-- Campo Teléfono Encargado -->
+          <div class="form-group width-50">
+            <label for="telefonoEncargado">Teléfono</label>
+            <div style="display: flex; justify-content: center; align-items: center;">
+              <input class="prefijo-telefono" type="text" disabled value="+56">
+              <input class="input-telefono" type="text" id="telefonoEncargado" formatInputTelefono formControlName="telefonoEncargado" autocomplete="tel" placeholder="Ingrese el teléfono" formatInputNumber>
+            </div>
+            <div *ngIf="clientForm.get('telefonoEncargado')?.hasError('required') && clientForm.get('telefonoEncargado')?.touched" class="error">
+              Ingrese un teléfono valido
+            </div>
+            <div *ngIf="clientForm.get('telefonoEncargado')?.hasError('pattern') && clientForm.get('telefonoEncargado')?.touched && clientForm.get('telefonoEncargado')?.invalid" class="error">
+              El teléfono debe contener 9 números
+            </div>
           </div>
         </div>
 

@@ -5,19 +5,23 @@ import { CrearClienteComponent } from '../../shared/modal/cliente/crear-cliente/
 import { ApiService } from '../../services/api.service';
 import { Cliente } from '../../interfaces/Cliente.interface';
 import { SignalService } from '../../services/signal.service';
-import { LoaderComponent } from '../../shared/loader/loader.component';
 import { LoaderService } from '../../services/loader.service';
 import { NavegationComponent } from "../../shared/navegation/navegation.component";
 import { SignedUrlPipe } from '../../pipes/generar-url.pipe';
+import { AuthService } from '../../services/auth.service';
+import { TelefonoPipe } from '../../pipes/telefono.pipe';
+import { RutPipe } from '../../pipes/rut.pipe';
 
 @Component({
   selector: 'clientes',
   standalone: true,
-  imports: [CommonModule, RouterModule, CrearClienteComponent, LoaderComponent, NavegationComponent, NavegationComponent, SignedUrlPipe],
+  imports: [CommonModule, RouterModule, CrearClienteComponent, NavegationComponent, NavegationComponent, SignedUrlPipe, TelefonoPipe, RutPipe],
   templateUrl: './clientes.component.html',
   styleUrl: './clientes.component.css'
 })
 export class ClientesComponent {
+  public esAdministrador: boolean = false;
+
   // Elementos para el paginador
   public paginaActual:    number = 1;
   public paginas:         number = 1;
@@ -33,10 +37,12 @@ export class ClientesComponent {
     private apiService: ApiService,
     private signalService: SignalService,
     public loaderService: LoaderService,
+    private authService: AuthService,
   ) {}
 
   ngOnInit(): void {
     this.signalService.updateData('Clientes');
+    this.esAdministrador = this.authService.esAdministrador();
     this.cargarClientes();
   }
 
@@ -55,6 +61,7 @@ export class ClientesComponent {
       next: (respuesta) => {
         console.log('Cliente creado exitosamente:', respuesta);
         this.successMessage = 'Cliente creado exitosamente!';
+        this.cargarClientes();
         this.cerrarModal();
       },
       error: (error) => {
@@ -65,6 +72,7 @@ export class ClientesComponent {
   }
 
   cargarClientes():void {
+    this.casasMatricez = undefined;
     this.obtainedClients = false;
     this.loaderService.showSection();
     this.apiService.clients(this.paginaActual)

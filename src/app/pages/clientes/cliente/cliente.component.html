@@ -1,20 +1,19 @@
 <div class="section client">
-  <cliente-casa-matriz [cliente]="cliente"></cliente-casa-matriz>
-  <cliente-header></cliente-header>
-  <shared-options (optionSelected)="selectedOption($event)"></shared-options>
-  <div class="div-loader">
-    @if(!sucursales){
-      <div class="loader">
-        <div class="spinner-section spinner-size-section"></div>
-      </div>
-    }
-    @else {
-      <cliente-sucursales [setSucursales]="sucursales"></cliente-sucursales>
-      <div *ngIf="obtainedSucursales && sucursales.length > 0" class="navegation-section" style="margin-top: 10px;">
-        <shared-navegation [paginaActual]="paginaActual"
-        [paginas]="paginas"
-        (cambiarPagina)="cambiarPagina($event)"></shared-navegation>
-      </div>
-    }
-  </div>
+  <cliente-casa-matriz [cliente]="cliente" class="mb-20"></cliente-casa-matriz>
+  <cliente-header [esAdministrador]="esAdministrador" [casaMatrizId]="casaMatrizId" (enviarFormulario)="crearModificarSucursal($event)" class="mb-20"></cliente-header>
+  <shared-options (optionSelected)="selectedOption($event)" class="mb-20"></shared-options>
+
+  @if(!sucursales){
+    <div class="loader">
+      <div class="spinner-section spinner-size-section"></div>
+    </div>
+  }
+  @else {
+    <cliente-sucursales (eliminarForm)="eliminarSucursal($event)" (sucursalForm)="crearModificarSucursal($event)" (indiceTabla)="modificarIndiceTable($event)" [esAdministrador]="esAdministrador" [setSucursales]="sucursales"></cliente-sucursales>
+    <div class="navegation-section" style="margin-top: 10px;">
+      <shared-navegation [paginaActual]="paginaActual"
+      [paginas]="paginas"
+      (cambiarPagina)="cambiarPagina($event)"></shared-navegation>
+    </div>
+  }
 </div>

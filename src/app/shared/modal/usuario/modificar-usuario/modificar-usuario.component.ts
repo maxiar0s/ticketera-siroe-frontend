@@ -1,14 +1,14 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { ApiService } from '../../../../services/api.service';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Cuenta } from '../../../../interfaces/Cuenta.interface';
 import { LoaderService } from '../../../../services/loader.service';
 import { CommonModule } from '@angular/common';
+import { FormatInputSoloNumerosDirective } from '../../../../directives/solo-numeros.directive';
 
 @Component({
   selector: 'shared-modificar-usuario',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, FormatInputSoloNumerosDirective],
   templateUrl: './modificar-usuario.component.html',
   styleUrl: './modificar-usuario.component.css'
 })
@@ -68,10 +68,5 @@ export class ModificarUsuarioComponent {
     } else {
       this.errorMessage = 'Por favor, completa todos los campos requeridos correctamente.';
     }
-  }
-
-  soloNumeros(event: any): void {
-    const input = event.target;
-    input.value = input.value.replace(/[^0-9]/g, '');
   }
 }

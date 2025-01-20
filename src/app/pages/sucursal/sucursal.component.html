@@ -1,8 +1,8 @@
 <div class="section">
-  <sucursal-header [sucursal]="sucursal"></sucursal-header>
-  <sucursal-options [estado]="estado" [selectedDevices]="Devices" (crearEquiposForm)="crearEquipos($event)"></sucursal-options>
-  <shared-options (optionSelected)="selectedOption($event)"></shared-options>
-  <sucursal-table (Devices)="selectedDevices($event)" [equiposRecibidos]="equipos" [paginaActual]="paginaActual"></sucursal-table>
+  <sucursal-header [sucursal]="sucursal" class="mb-20"></sucursal-header>
+  <sucursal-options [estado]="estado" [selectedDevices]="Devices" (crearEquiposForm)="crearEquipos($event)" class="mb-20"></sucursal-options>
+  <shared-options (optionSelected)="selectedOption($event)" class="mb-20"></shared-options>
+  <sucursal-table (Devices)="selectedDevices($event)" [equiposRecibidos]="equipos" [paginaActual]="paginaActual" class="mb-20"></sucursal-table>
   <div *ngIf="obtainedEquipments && equipos" class="navegation-section">
     <shared-navegation [paginaActual]="paginaActual"
     [paginas]="paginas"

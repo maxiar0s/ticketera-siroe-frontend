@@ -2,13 +2,14 @@ import { Component, EventEmitter, Output } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { ApiService } from '../../../../services/api.service';
-import { BehaviorSubject, debounceTime, delay, finalize, of, switchMap } from 'rxjs';
+import { BehaviorSubject, debounceTime, switchMap } from 'rxjs';
 import { correoConArrobaYpunto } from '../../../../validators/correoValido.validator';
+import { FormatInputSoloNumerosDirective } from '../../../../directives/solo-numeros.directive';
 
 @Component({
   selector: 'shared-crear-usuario',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, FormatInputSoloNumerosDirective],
   templateUrl: './crear-usuario.component.html',
   styleUrl: './crear-usuario.component.css'
 })
@@ -87,10 +88,5 @@ export class CrearUsuarioComponent {
     const Element = event.currentTarget as HTMLAnchorElement;
 
     Element.classList.add('colorSelect')
-  }
-
-  soloNumeros(event: any): void {
-    const input = event.target;
-    input.value = input.value.replace(/[^0-9]/g, '');
   }
 }
