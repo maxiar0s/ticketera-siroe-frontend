@@ -81,7 +81,7 @@ export class ButtonsComponent {
       img?.setAttribute('src', '/assets/svg/imprimir-etiquetas.svg');
     } else {
       button?.setAttribute('disabled', 'true');
-      button?.classList.remove('agregar', 'agregar-equipo');
+      button?.classList.remove('imprimir', 'imprimir-equipo');
       button?.classList.add('disabled-button');
       img?.setAttribute('src', '/assets/svg/imprimir-etiquetas-disabled.svg');
     }

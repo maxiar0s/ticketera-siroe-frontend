@@ -24,7 +24,7 @@
               <option value="Servicio al Cliente">Servicio al Cliente</option>
             </select>
             <div *ngIf="equipoForm.get('departamento')?.invalid && equipoForm.get('departamento')?.touched" class="error">
-              Seleccione un departamento.
+              Seleccione un departamento
             </div>
           </div>
 
@@ -33,22 +33,22 @@
             <label for="cantidad">Añadir cantidad de equipos</label>
             <input class="width-50" id="cantidad" formControlName="cantidad" formatInputNumber type="text" placeholder="Ingrese la cantidad"/>
             <div *ngIf="equipoForm.get('cantidad')?.invalid && equipoForm.get('cantidad')?.touched" class="error">
-              Cantidad invalida.
+              Ingrese una cantidad invalida
             </div>
           </div>
         </div>
 
         <!-- Campo tipo -->
         <div class="form-group" style="margin-bottom: 2rem;">
-          <label for="tipo">Tipo de equipo</label>
-          <select (change)="changeSelectColor($event)" id="tipo" formControlName="tipoEquipoId">
+          <label for="tipoEquipoId">Tipo de equipo</label>
+          <select (change)="changeSelectColor($event)" id="tipoEquipoId" formControlName="tipoEquipoId">
             <option value="" disabled selected>Seleccionar</option>
             @for(equipo of TipoEquipos; track equipo) {
               <option [value]="equipo.id">{{ equipo.name }}</option>
             }
           </select>
-          <div *ngIf="equipoForm.get('tipo')?.invalid && equipoForm.get('tipo')?.touched" class="error">
-            Seleccione tipo de equipo.
+          <div *ngIf="equipoForm.get('tipoEquipoId')?.invalid && equipoForm.get('tipoEquipoId')?.touched" class="error">
+            Seleccione tipo de equipo
           </div>
         </div>
 

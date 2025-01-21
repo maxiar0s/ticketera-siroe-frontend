@@ -6,11 +6,12 @@ import { ModificarEquipoComponent } from '../../../shared/modal/equipo/modificar
 import { LoaderService } from '../../../services/loader.service';
 import { FormatoFechaPipe } from '../../../pipes/formato-fecha.pipe';
 import { ImprimirEquipo } from '../../../interfaces/ImprimirEquipo.interface';
+import { VerInformacionComponent } from '../../../shared/modal/equipo/ver-informacion/ver-informacion.component';
 
 @Component({
   selector: 'sucursal-table',
   standalone: true,
-  imports: [CommonModule, ModificarEquipoComponent, FormatoFechaPipe],
+  imports: [CommonModule, ModificarEquipoComponent, FormatoFechaPipe, VerInformacionComponent],
   templateUrl: './table.component.html',
   styleUrl: './table.component.css'
 })
@@ -18,10 +19,11 @@ export class TableComponent {
   // Arreglo de equipos
   public obtainedEquipments:  boolean = false;
   public equipos?:            Equipo[] | undefined | null;
-  @Input() paginaActual!: number;
+  @Input() paginaActual!:     number;
 
   // Modal de edicion de equipo
   public selectedEquipoId!:   number;
+  public equipo!:             Equipo;
 
   // Para modal de imprimir etiquetas
   public checkboxesState:     boolean[] = [];
@@ -30,6 +32,7 @@ export class TableComponent {
 
   // Modal
   public isModalVisible:    boolean = false;
+  public isModalVerInfo:    boolean = false;
   public successMessage:    string = '';
   public errorMessage:      string = '';
 
@@ -54,6 +57,14 @@ export class TableComponent {
   abrirModal(id: number) {
     this.selectedEquipoId = id;
     this.isModalVisible = true;
+  }
+
+  abrirModalVer(idEquipo: number, indice: number) {
+    if(this.equipos) {
+      this.selectedEquipoId = idEquipo;
+      this.equipo = this.equipos[indice];
+      this.isModalVerInfo = true;
+    }
   }
 
   cerrarModal() {

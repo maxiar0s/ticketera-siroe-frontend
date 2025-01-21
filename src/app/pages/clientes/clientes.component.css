@@ -5,12 +5,6 @@
   padding: 25px;
   min-height: 75vh;
 }
-@media (max-width: 1400px) {
-  .clients {
-    padding: 2rem;
-    gap: 1rem;
-  }
-}
 
 .add-clients-button {
   display: flex;
@@ -148,7 +142,6 @@
 
 .navegation-section {
   width: 100%;
-  margin-top: 2rem;
   display: flex;
   justify-content: center;
 }

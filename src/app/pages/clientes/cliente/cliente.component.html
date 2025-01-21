@@ -1,7 +1,7 @@
 <div class="section client">
-  <cliente-casa-matriz [cliente]="cliente" class="mb-20"></cliente-casa-matriz>
-  <cliente-header [esAdministrador]="esAdministrador" [casaMatrizId]="casaMatrizId" (enviarFormulario)="crearModificarSucursal($event)" class="mb-20"></cliente-header>
-  <shared-options (optionSelected)="selectedOption($event)" class="mb-20"></shared-options>
+  <cliente-casa-matriz [cliente]="cliente"></cliente-casa-matriz>
+  <cliente-header [esAdministrador]="esAdministrador" [casaMatrizId]="casaMatrizId" (enviarFormulario)="crearModificarSucursal($event)"></cliente-header>
+  <shared-options (optionSelected)="selectedOption($event)"></shared-options>
 
   @if(!sucursales){
     <div class="loader">
@@ -10,7 +10,7 @@
   }
   @else {
     <cliente-sucursales (eliminarForm)="eliminarSucursal($event)" (sucursalForm)="crearModificarSucursal($event)" (indiceTabla)="modificarIndiceTable($event)" [esAdministrador]="esAdministrador" [setSucursales]="sucursales"></cliente-sucursales>
-    <div class="navegation-section" style="margin-top: 10px;">
+    <div class="navegation-section">
       <shared-navegation [paginaActual]="paginaActual"
       [paginas]="paginas"
       (cambiarPagina)="cambiarPagina($event)"></shared-navegation>

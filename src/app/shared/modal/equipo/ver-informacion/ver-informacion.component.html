@@ -1,0 +1,100 @@
+<div class="modal-overlay" *ngIf="isVisible">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2 class="header-form">Añadir datos: <span>{{ Equipo.tipoEquipo.name }} {{Equipo.codigoId }}</span></h2>
+      <img src="/assets/svg/exit-button.svg" (click)="cerrar()" alt="exit_button" class="close-button">
+    </div>
+    <div class="modal-body">
+
+      <div class="information-section">
+        <div class="image-container">
+          <img *ngIf="Equipo.imagen | signedUrl | async as signedUrl; else loading" [src]="signedUrl" alt="device_image.png" class="image-device">
+          <ng-template #loading>
+            <div class="loader-section">
+              <div class="spinner-images spinner-size-images"></div>
+            </div>
+          </ng-template>
+        </div>
+
+        <div class="information">
+          <div class="information-device">
+            <div *ngIf="Equipo.placaMadre">
+              <h3 class="device-component">Placa Madre</h3>
+              <p class="device-value">{{ Equipo.placaMadre }}</p>
+            </div>
+            <div *ngIf="Equipo.fuenteDePoder">
+              <h3 class="device-component">Fuente de poder</h3>
+              <p class="device-value">{{ Equipo.fuenteDePoder }}</p>
+            </div>
+            <div *ngIf="Equipo.marca">
+              <h3 class="device-component">Marca</h3>
+              <p class="device-value">{{ Equipo.marca }}</p>
+            </div>
+            <div *ngIf="Equipo.modelo">
+              <h3 class="device-component">Modelo</h3>
+              <p class="device-value">{{ Equipo.modelo }}</p>
+            </div>
+            <div *ngIf="Equipo.numeroSerie">
+              <h3 class="device-component">Número de serie</h3>
+              <p class="device-value">{{ Equipo.numeroSerie }}</p>
+            </div>
+            <div *ngIf="Equipo.procesador">
+              <h3 class="device-component">Procesador</h3>
+              <p class="device-value">{{ Equipo.procesador }}</p>
+            </div>
+            <div *ngIf="Equipo.velocidadProcesador">
+              <h3 class="device-component">Vel. del procesador</h3>
+              <p class="device-value">{{ Equipo.velocidadProcesador }}</p>
+            </div>
+            <div *ngIf="Equipo.ram">
+              <h3 class="device-component">Ram</h3>
+              <p class="device-value">{{ Equipo.ram }}</p>
+            </div>
+            <div *ngIf="Equipo.tipoAlmacenamiento">
+              <h3 class="device-component">Tipo almacenamiento</h3>
+              <p class="device-value">{{ Equipo.tipoAlmacenamiento }}</p>
+            </div>
+            <div *ngIf="Equipo.cantidadAlmacenamiento">
+              <h3 class="device-component">Cant. almacenamiento</h3>
+              <p class="device-value">{{ Equipo.cantidadAlmacenamiento }}</p>
+            </div>
+            <div *ngIf="Equipo.sistemaOperativo">
+              <h3 class="device-component">Sistema operativo</h3>
+              <p class="device-value">{{ Equipo.sistemaOperativo }}</p>
+            </div>
+            <div *ngIf="Equipo.ofimatica">
+              <h3 class="device-component">Ofimática</h3>
+              <p class="device-value">{{ Equipo.ofimatica }}</p>
+            </div>
+            <div *ngIf="Equipo.antivirus">
+              <h3 class="device-component">Antivirus</h3>
+              <p class="device-value">{{ Equipo.antivirus }}</p>
+            </div>
+          </div>
+
+          <div class="comments-section">
+            <div class="observation-title">
+              <h3 class="device-component">Observaciones:</h3>
+            </div>
+            <div class="date-title">
+              <h3 class="device-component">Fecha:</h3>
+            </div>
+
+            @for(observacion of Equipo.observaciones; track Equipo.observaciones) {
+              <div class="observation-title">
+                <p class="device-value">{{ observacion.text }}</p>
+              </div>
+              <div class="date-title">
+                <p class="device-value">{{ observacion.fechaIngreso }}</p>
+              </div>
+            }
+          </div>
+        </div>
+      </div>
+
+      <div class="button-section">
+        <button class="equiptment-button" type="submit">Añadir nueva observación</button>
+      </div>
+    </div>
+  </div>
+</div>

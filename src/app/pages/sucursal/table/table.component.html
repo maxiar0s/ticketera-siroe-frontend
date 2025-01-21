@@ -1,4 +1,7 @@
 <div class="div-loader-equipments">
+  <img style="display: none;" src="/assets/svg/imprimir-etiqueta-hover.svg">
+  <img style="display: none;" src="/assets/svg/agregar-datos-hover.svg">
+  <img style="display: none;" src="/assets/svg/ver-datos-hover.svg">
   <div *ngIf="obtainedEquipments" class="div-table">
     <table class="table">
       <thead>
@@ -46,8 +49,8 @@
                   <button [disabled]="equipo.estado === 3" (click)="abrirModal(equipo.id)" class="actions">
                     <img [src]="equipo.estado === 3 ? '/assets/svg/agregar-datos-disabled.svg' : '/assets/svg/agregar-datos.svg' " [ngClass]="{'svg-cursor agregar-datos' : equipo.estado !== 3}" class="svg" alt="agregar-datos.svg">
                   </button>
-                  <button class="actions">
-                    <img src="/assets/svg/ver-datos.svg" class="svg-cursor ver-datos svg" alt="ver-datos.svg">
+                  <button [disabled]="equipo.estado != 3" class="actions" (click)="abrirModalVer(equipo.id, i)">
+                    <img [src]="equipo.estado != 3 ? '/assets/svg/ver-datos-disabled.svg' : '/assets/svg/ver-datos.svg' " [ngClass]="{'svg-cursor ver-datos': equipo.estado === 3}" class="svg" alt="ver-datos.svg">
                   </button>
               </td>
           </tr>
@@ -69,3 +72,12 @@
 (enviarFormulario)="modificarEquipo($event)"
 (cerrarModal)="cerrarModal()"
 ></shared-modificar-equipo>
+
+<shared-ver-informacion
+*ngIf="isModalVerInfo"
+[idEquipo]="selectedEquipoId"
+[Equipo]="equipo"
+(enviarFormulario)="modificarEquipo($event)"
+(cerrarModal)="cerrarModal()">
+
+</shared-ver-informacion>

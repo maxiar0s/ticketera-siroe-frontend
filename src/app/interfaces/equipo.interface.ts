@@ -1,3 +1,4 @@
+import { Observaciones } from "./Observaciones.interface";
 import { TipoEquipo } from "./TipoEquipo.interface";
 
 export interface Equipo {
@@ -8,19 +9,22 @@ export interface Equipo {
   fechaIngreso:           Date;
   departamento:           string;
   usuario:                string;
-  imagen:                 null;
-  marca:                  null;
-  modelo:                 null;
-  numeroSerie:            null;
-  procesador:             null;
-  velocidadProcesador:    null;
-  ram:                    null;
-  tipoAlmacenamiento:     null;
-  cantidadAlmacenamiento: null;
-  sistemaOperativo:       null;
-  ofimatica:              null;
-  antivirus:              null;
-  casaMatrizId:           null;
+  imagen:                 string | undefined;
+  placaMadre:             string | null;
+  fuenteDePoder:          string | null;
+  marca:                  string | null;
+  modelo:                 string | null;
+  numeroSerie:            string | null;
+  procesador:             string | null;
+  velocidadProcesador:    string | null;
+  ram:                    string | null;
+  tipoAlmacenamiento:     string | null;
+  cantidadAlmacenamiento: string | null;
+  sistemaOperativo:       string | null;
+  ofimatica:              string | null;
+  antivirus:              string | null;
+  observaciones:          Observaciones[];
+  casaMatrizId:           string | null;
   sucursalId:             string;
   tipoEquipoId:           number;
   tipoEquipo:             TipoEquipo;
