@@ -69,7 +69,7 @@
           <div class="form-group width-50">
             <label for="telefonoEncargado">Teléfono</label>
             <div style="display: flex; justify-content: center; align-items: center;">
-              <input class="prefijo-telefono" type="text" disabled value="+56">
+              <input class="prefijo-telefono" disabled value="+56">
               <input class="input-telefono" type="text" id="telefonoEncargado" formatInputTelefono formControlName="telefonoEncargado" autocomplete="tel" placeholder="Ingrese el teléfono" formatInputNumber>
             </div>
             <div *ngIf="clientForm.get('telefonoEncargado')?.hasError('required') && clientForm.get('telefonoEncargado')?.touched" class="error">
@@ -88,7 +88,8 @@
 
         <!-- Botones -->
         <div class="form-actions">
-          <button class="equiptment-button" type="submit" [disabled]="clientForm.invalid">Enviar</button>
+          <button *ngIf="!creating" class="btn form-size" type="submit" [ngClass]="{'invalid-form': clientForm.invalid, 'valid-form': clientForm.valid }" [disabled]="clientForm.invalid">Añadir cliente</button>
+          <button *ngIf=" creating" class="btn form-size"><div class="spinner-buttons spinner-size-buttons spinner-color"></div></button>
         </div>
       </form>
     </div>

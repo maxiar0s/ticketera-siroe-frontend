@@ -136,16 +136,19 @@ html, body { height: 100%; }
 .spinner-buttons {
   margin: auto;
   border: 8px solid #f5f5f5;
-  border-top: 8px solid #555555;
-  border-left: 8px solid #555555;
-  border-right: 8px solid #555555;
   border-radius: 50%;
   animation: spin 1s linear infinite;
 }
 
 .spinner-size-buttons {
-  height: 15px;
-  width: 15px;
+  height: 10px;
+  width: 10px;
+}
+
+.spinner-color {
+  border-top: 8px solid #b61652;
+  border-left: 8px solid #b61652;
+  border-right: 8px solid #b61652;
 }
 
 @keyframes spin {
@@ -245,11 +248,17 @@ html, body { height: 100%; }
 .form-group select {
   color: #474747;
   min-width: 100%;
+  height: 42px;
   padding: 1.3rem;
   box-sizing: border-box;
   border-radius: 1.5rem;
   border: 1px solid #EBEEF2;
   background-color: #fffefe;
+}
+
+.form-group textarea {
+  overflow-y: hidden;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
 }
 
 input::-webkit-outer-spin-button,
@@ -322,22 +331,36 @@ input[type=number] {
   justify-content: flex-end;
 }
 
-.equiptment-button {
-  padding: 8px 50px;
-  border-radius: 50px;
+.btn {
+  width: 100%;
+  height: 25px;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 0.5rem 0;
+  border-radius: 20px;
+  display: block;
+  text-align: center;
+  background-color: #ebeaea;
+  transition: 200ms;
+  border: 1px solid #ebeef2;
+}
+
+.form-size {
+  width: 160px;
+}
+
+.invalid-form {
+  color: #d9d9d9;
+}
+
+.valid-form {
+  color: #464746;
+}
+.valid-form:hover {
+  border: 1px solid #b61652;
   cursor: pointer;
-  border: 0;
-}
-
-.equiptment-button[type="submit"] {
-  background-color: #b71653;
-  color: #fff;
-}
-
-.equiptment-button:disabled {
-  background-color: #ebebeb;
-  cursor: not-allowed;
-  color: #474747;
+  background-color: #b61652;
+  color: #f5f5f5;
 }
 
 /* Table */

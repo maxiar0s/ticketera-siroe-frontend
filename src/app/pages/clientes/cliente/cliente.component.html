@@ -1,6 +1,6 @@
 <div class="section client">
   <cliente-casa-matriz [cliente]="cliente"></cliente-casa-matriz>
-  <cliente-header [esAdministrador]="esAdministrador" [casaMatrizId]="casaMatrizId" (enviarFormulario)="crearModificarSucursal($event)"></cliente-header>
+  <cliente-header [cerrarCrear]="cerrarModal" [esAdministrador]="esAdministrador" [casaMatrizId]="casaMatrizId" (enviarFormulario)="crearModificarSucursal($event)"></cliente-header>
   <shared-options (optionSelected)="selectedOption($event)"></shared-options>
 
   @if(!sucursales){

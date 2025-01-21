@@ -17,6 +17,11 @@ export class AuthService {
 
   constructor() { }
 
+  ngOnInit() {
+    if(localStorage.getItem(this.key)) this.userSigned = true;
+    else this.userSigned = false;
+  }
+
   guardarToken(token: string): void {
     localStorage.setItem(this.key, token);
     this.userSigned = true;

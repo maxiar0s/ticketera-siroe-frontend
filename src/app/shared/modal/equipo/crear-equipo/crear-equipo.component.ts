@@ -20,6 +20,7 @@ export class CrearEquipoComponent {
   public TipoEquipos: TipoEquipo[] = [];
 
   public isVisible: boolean = true;
+  public creating!: boolean;
   public equipoForm: FormGroup;
   public errorMessage: string = '';
   public id: string | null = null;
@@ -67,8 +68,9 @@ export class CrearEquipoComponent {
 
   onSubmit() {
     if (this.equipoForm.valid) {
+      this.creating = true;
       this.enviarFormulario.emit(this.equipoForm.value);
-      this.cerrar();
+      // this.cerrar();
     } else {
       this.errorMessage = 'Por favor, completa todos los campos requeridos correctamente.';
     }

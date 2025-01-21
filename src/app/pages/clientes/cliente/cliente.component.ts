@@ -2,7 +2,6 @@ import { Component } from '@angular/core';
 import { HeaderComponent } from './header/header.component';
 import { SucursalesComponent } from './sucursales/sucursales.component';
 import { LoaderService } from '../../../services/loader.service';
-import { LoaderComponent } from "../../../shared/loader/loader.component";
 import { CasaMatrizComponent } from "./casa-matriz/casa-matriz.component";
 import { OptionsComponent } from '../../../shared/options/options.component';
 import { Sucursal } from '../../../interfaces/Sucursal.interface';
@@ -22,6 +21,7 @@ import { AuthService } from '../../../services/auth.service';
   styleUrl: './cliente.component.css'
 })
 export class ClienteComponent {
+  public cerrarModal!: boolean;
   public esAdministrador: boolean = false;
   // Elementos para el paginador
   public paginaActual:          number = 1;
@@ -60,16 +60,14 @@ export class ClienteComponent {
   crearModificarSucursal(datos: any) {
     this.apiService.createModifyBranch(datos).subscribe({
       next: (respuesta) => {
-        console.log(respuesta);
         if(respuesta.resp == 'mod') {
-          console.log(respuesta.sucursal);
           if(this.sucursales) {
-            console.log(this.indiceTabla);
             this.sucursales[this.indiceTabla] = respuesta.sucursal;
           }
         } else {
           this.cambiarSucursal();
         }
+        this.cerrarModal = false;
       },
       error: (error) => {
         console.error('Error al crear o modificar sucursal:', error);

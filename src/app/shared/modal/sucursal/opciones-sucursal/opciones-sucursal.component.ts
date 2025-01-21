@@ -16,6 +16,7 @@ export class OpcionesSucursalComponent {
 
     public isVisible: boolean = true;
     public errorMessage: string = '';
+    public deleting!: boolean;
 
     // Control del modal
     @Output() cerrarModal = new EventEmitter<void>();
@@ -34,8 +35,9 @@ export class OpcionesSucursalComponent {
 
     onSubmit() {
       if (this.idSucursal) {
+        this.deleting = true;
         this.enviarFormulario.emit(this.idSucursal);
-        this.cerrar();
+        // this.cerrar();
       }
     }
 

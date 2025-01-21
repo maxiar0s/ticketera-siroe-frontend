@@ -16,6 +16,7 @@ export class CrearClienteComponent {
   @Output() cerrarModal = new EventEmitter<void>();
   @Output() enviarFormulario = new EventEmitter<any>();
 
+  public creating!: boolean;
   public selectedFile: File | null = null;
   private formData = new FormData();
 
@@ -52,6 +53,7 @@ export class CrearClienteComponent {
 
   onSubmit() {
     if (this.clientForm.valid) {
+      this.creating = true;
 
       Object.keys(this.clientForm.value).forEach(key => {
         this.formData.append(key, this.clientForm.value[key]);
@@ -59,7 +61,7 @@ export class CrearClienteComponent {
       if(this.selectedFile) this.formData.set('imagen', this.selectedFile);
 
       this.enviarFormulario.emit(this.formData);
-      this.cerrar();
+      // this.cerrar();
     } else {
       this.errorMessage = 'Por favor, completa todos los campos requeridos correctamente.';
     }

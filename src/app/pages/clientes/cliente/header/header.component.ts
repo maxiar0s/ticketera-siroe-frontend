@@ -29,12 +29,16 @@ export class HeaderComponent {
     public fb: FormBuilder
   ) {}
 
+  @Input()
+  set cerrarCrear(event: boolean) {
+    this.isModalVisible = event;
+  }
+
   crearSucursal(datos: any) {
     this.enviarFormulario.emit(datos);
   }
 
   abrirModal() {
-    // event.preventDefault();
     this.isModalVisible = true;
   }
 

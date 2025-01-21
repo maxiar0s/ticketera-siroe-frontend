@@ -35,21 +35,6 @@
   grid-column: span 2;
 }
 
-
-.form-group textarea {
-  overflow-y: hidden;
-  padding: auto 0.3rem;
-  max-height: 4.3rem;
-  font-family: Roboto, "Helvetica Neue", sans-serif;
-}
-
-@media (max-width: 1400px) {
-  .form-group textarea {
-    padding: auto 0.3rem;
-    max-height: 3.3rem;
-  }
-}
-
 .svg {
   height: 15px;
   margin-right: 3px;

@@ -12,7 +12,7 @@ import { ImprimirEquipo } from '../../interfaces/ImprimirEquipo.interface';
 import { Equipo } from '../../interfaces/Equipo.interface';
 import { LoaderService } from '../../services/loader.service';
 import { NavegationComponent } from '../../shared/navegation/navegation.component';
-import { concatMap, from } from 'rxjs';
+import { concatMap, forkJoin, from } from 'rxjs';
 
 @Component({
   selector: 'sucursal',
@@ -32,7 +32,8 @@ export class SucursalComponent {
   public equipos:             Equipo[] | undefined = undefined;
   public obtainedEquipments:  boolean = false;
   public estado:              boolean = false;
-  public Title:                 boolean = false;
+  public Title:               boolean = false;
+  public cerrarModal!:        boolean;
 
   public Devices:       ImprimirEquipo[] = [];
 
@@ -49,24 +50,32 @@ export class SucursalComponent {
   }
 
   crearEquipos(datos: any) {
+    this.cerrarModal = true;
     const { cantidad } = datos;
-    from(Array(cantidad).keys()).pipe(
-      concatMap(() => this.apiService.createEquiptment(datos))
-    ).subscribe({
-      next: (respuesta) => {
-        if (respuesta.error) {
-          console.error('Error al crear equipo:', respuesta.error);
-        } else {
-          console.log('Equipo creado exitosamente:', respuesta);
-        }
+
+    const solicitudes = Array.from({ length: cantidad }, () =>
+      this.apiService.createEquiptment(datos)
+    );
+
+    forkJoin(solicitudes).subscribe({
+      next: (respuestas) => {
+        respuestas.forEach((respuesta, index) => {
+          if (respuesta.error) {
+            console.error(`Error en el equipo ${index + 1}:`, respuesta.error);
+          } else {
+            console.log(`Equipo ${index + 1} creado exitosamente:`, respuesta);
+          }
+        });
       },
       error: (error) => {
-        console.error('Error al crear equipos:', error);
+        console.error('Error general al crear equipos:', error);
       },
       complete: () => {
+        console.log('Proceso de creación de equipos completado.');
+        this.cerrarModal = false;
         this.cambiarSeleccion();
       }
-    })
+    });
   }
 
   selectedOption(value: string) {

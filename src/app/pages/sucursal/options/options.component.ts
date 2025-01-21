@@ -86,4 +86,10 @@ export class ButtonsComponent {
       img?.setAttribute('src', '/assets/svg/imprimir-etiquetas-disabled.svg');
     }
   }
+
+  @Input()
+  set cerrarModal(event: boolean) {
+    console.log(event);
+    this.isModalVisibleCrearEquipo = event;
+  }
 }

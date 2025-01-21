@@ -18,6 +18,7 @@ export class CrearModificarSucursalComponent {
   @Input() casaMatrizId!: string;
   @Input() idSucursal?: string;
   @Input() sucursal?: Sucursal;
+  public creating!: boolean;
 
   public boton_texto!: string;
   public isVisible: boolean = true;
@@ -70,9 +71,10 @@ export class CrearModificarSucursalComponent {
 
   onSubmit() {
     if (this.sucursalForm.valid) {
+      this.creating = true;
 
       this.enviarFormulario.emit(this.sucursalForm.value);
-      this.cerrar();
+      // this.cerrar();
     } else {
       this.errorMessage = 'Por favor, completa todos los campos requeridos correctamente.';
     }

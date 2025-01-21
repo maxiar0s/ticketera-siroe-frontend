@@ -1,6 +1,6 @@
 <div class="login-page">
   <div class="form-layout">
-    <img src="/assets/img/siroe-logo.png" alt="siroe_logo" class="img-logo">
+    <img src="/assets/img/soporte.png" alt="siroe_logo" class="img-logo">
     <div></div>
     <div *ngIf="errorMessage" class="error-header error">
       Correo electrónico o contraseña incorrecta, intente nuevamente.
@@ -20,8 +20,8 @@
           Contraseña invalida.
         </div>
       </div>
-      <button *ngIf="!logging" [disabled]="loginForm.invalid" type="submit" [ngClass]="{'invalid-form': loginForm.invalid, 'valid-form': loginForm.valid}" class="btn-login">Iniciar sesión</button>
-      <button *ngIf="logging" class="btn-login"><div class="spinner spinner-size"></div></button>
+      <button *ngIf="!logging" style="margin-top: 1.8rem;" [disabled]="loginForm.invalid" type="submit" [ngClass]="{'invalid-form': loginForm.invalid, 'valid-form': loginForm.valid}" class="btn">Iniciar sesión</button>
+      <button *ngIf="logging" style="margin-top: 1.8rem;" class="btn"><div class="spinner-buttons spinner-size-buttons spinner-color"></div></button>
     </form>
   </div>
 </div>

@@ -9,10 +9,13 @@
       <p class="description-form" style="text-align: center;">Elige si deseas modificar o eliminar la sucursal.</p>
 
       <div class="buttons">
-        <button (click)="onSubmit()" class="modify-or-delete-button" type="submit">
+        <!-- Botones Eliminar -->
+        <button *ngIf="!deleting" (click)="onSubmit()" class="modify-or-delete-button" type="submit">
           <img src="/assets/svg/delete.svg" alt="delete.svg" class="svg">
           <span>Eliminar sucursal</span>
         </button>
+        <button *ngIf="deleting" class="modify-or-delete-button" type="submit"><div class="spinner-buttons spinner-size-buttons spinner-color"></div></button>
+
         <button (click)="abrirModModal()" class="modify-or-delete-button" type="submit">
           <img src="/assets/svg/agregar-datos.svg" alt="agregar-datos.svg" class="svg">
           <span>Editar sucursal</span>

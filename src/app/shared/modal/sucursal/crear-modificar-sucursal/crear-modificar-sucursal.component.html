@@ -74,7 +74,8 @@
 
         <!-- Botones -->
         <div class="form-actions">
-          <button class="equiptment-button" type="submit" [disabled]="sucursalForm.invalid">{{ boton_texto }}</button>
+          <button *ngIf="!creating" class="btn form-size" type="submit" [ngClass]="{'invalid-form': sucursalForm.invalid, 'valid-form': sucursalForm.valid }">{{ boton_texto }}</button>
+          <button *ngIf="creating" class="btn form-size"><div class="spinner-buttons spinner-size-buttons spinner-color"></div></button>
         </div>
       </form>
     </div>

@@ -59,7 +59,8 @@
 
         <!-- Botones -->
         <div class="form-actions">
-          <button class="equiptment-button" type="submit" [disabled]="equipoForm.invalid">Crear equipos</button>
+          <button *ngIf="!creating" class="btn form-size" [ngClass]="{'invalid-form': equipoForm.invalid, 'valid-form': equipoForm.valid}" type="submit" [disabled]="equipoForm.invalid">Crear equipos</button>
+          <button *ngIf="creating" class="btn form-size" type="submit" [disabled]="equipoForm.invalid"><div class="spinner-buttons spinner-size-buttons spinner-color"></div></button>
         </div>
       </form>
     </div>
