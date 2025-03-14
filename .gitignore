@@ -1,6 +1,4 @@
-# See https://docs.github.com/get-started/getting-started-with-git/ignoring-files for more about ignoring files.
 
-# Compiled output
 /dist
 /tmp
 /out-tsc
@@ -40,3 +38,13 @@ testem.log
 # System files
 .DS_Store
 Thumbs.db
+
+# Firebase
+.firebase/
+firebase-debug.log
+ui-debug.log
+.runtimeconfig.json
+
+# Environment files
+/src/environments/*.ts
+!/src/environments/environment.ts

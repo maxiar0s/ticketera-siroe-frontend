@@ -8,7 +8,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  border-bottom: 1px solid #e6eff5;;
+  border-bottom: 1px solid #e6eff5;
 }
 
 @media (max-width: 1400px) {
@@ -66,7 +66,7 @@ input {
 } */
 
 .user {
-  background-color: #4F4F4F;
+  background-color: #4f4f4f;
   height: 4.5rem;
   width: 4.5rem;
   border-radius: 100%;
@@ -82,13 +82,14 @@ input {
   }
 }
 
-.user-text {
+.user-profile-picture {
   display: flex;
   justify-content: center;
   align-items: center;
   margin: 0;
   line-height: 0;
   color: #fefffe;
+  height: 25px;
 }
 /* @media (max-width: 1400px) {
   .user-text {
