@@ -14,6 +14,12 @@
   }
 }
 
+@media (max-width: 800px) {
+  .menu {
+    width: 11rem;
+  }
+}
+
 /* Logo Siroe */
 .logo {
   object-fit: contain;
@@ -61,7 +67,7 @@
   }
 }
 
-.subItem.open{
+.subItem.open {
   max-height: fit-content;
 }
 
@@ -83,7 +89,7 @@
   }
 } */
 
-.subItem-nav{
+.subItem-nav {
   max-height: 0px;
   overflow: hidden;
   opacity: 0;

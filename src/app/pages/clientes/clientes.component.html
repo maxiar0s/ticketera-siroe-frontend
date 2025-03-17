@@ -1,61 +1,100 @@
-
 <div class="clients">
   <div class="add-clients-button" *ngIf="esAdministrador">
     <button type="button" class="option-button" (click)="abrirModal()">
-      <img src="/assets/svg/agregar-equipo-hover.svg" class="svg" alt="agregar.svg">
-      <span>Añadir usuarios</span>
+      <img
+        src="/assets/svg/agregar-equipo-hover.svg"
+        class="svg"
+        alt="agregar.svg"
+      />
+      <span>Añadir cliente</span>
     </button>
   </div>
   @if(!casasMatricez) {
-    <div class="container-spinner">
-      <div class="spinner-section spinner-size-section"></div>
-    </div>
-  }
-  @else {
-    <div *ngIf="obtainedClients && casasMatricez && casasMatricez.length > 0; else noClientes" class="grid-clients">
-      @for (casaMatriz of casasMatricez; track casasMatricez) {
-        <div class="card-body">
-          <img *ngIf="casaMatriz.imagen | signedUrl | async as signedUrl; else loading" class="logo" [src]="signedUrl" [alt]="casaMatriz.imagen">
-          <ng-template #loading>
-            <div #loading class="spinner-images spinner-size-images"></div>
-          </ng-template>
-          <div class="card-information">
-            <div>
-              <div class="information">
-                <p>Razón social: <span>{{casaMatriz.razonSocial}}</span></p>
-                <p>Encargado General: <span>{{casaMatriz.encargadoGeneral}}</span></p>
-                <p>Correo: <span>{{casaMatriz.correo}}</span></p>
-              </div>
-            </div>
-            <div>
-              <div class="information">
-                <p>RUT Cliente: <span>{{casaMatriz.rut.toString() | rut}}</span></p>
-                <p>ID Cliente: <span>{{casaMatriz.id}}</span></p>
-                <p>Teléfono: <span>{{ casaMatriz.telefonoEncargado.toString() | telefono }}</span></p>
-              </div>
-            </div>
-            <div>
-              <a [routerLink]="['/clientes', casaMatriz.id]" routerLinkActive="router-link-active" class="client-button">Seleccionar cliente</a>
-            </div>
+  <div class="container-spinner">
+    <div class="spinner-section spinner-size-section"></div>
+  </div>
+  } @else {
+  <div
+    *ngIf="
+      obtainedClients && casasMatricez && casasMatricez.length > 0;
+      else noClientes
+    "
+    class="grid-clients"
+  >
+    @for (casaMatriz of casasMatricez; track casasMatricez) {
+    <div class="card-body">
+      <img
+        *ngIf="casaMatriz.imagen | signedUrl | async as signedUrl; else loading"
+        class="logo"
+        [src]="signedUrl"
+        [alt]="casaMatriz.imagen"
+      />
+      <ng-template #loading>
+        <div #loading class="spinner-images spinner-size-images"></div>
+      </ng-template>
+      <div class="card-information">
+        <div>
+          <div class="information">
+            <p>
+              Razón social: <span>{{ casaMatriz.razonSocial }}</span>
+            </p>
+            <p>
+              Encargado General: <span>{{ casaMatriz.encargadoGeneral }}</span>
+            </p>
+            <p>
+              Correo: <span>{{ casaMatriz.correo }}</span>
+            </p>
           </div>
         </div>
-      }
+        <div>
+          <div class="information">
+            <p>
+              RUT Cliente: <span>{{ casaMatriz.rut.toString() | rut }}</span>
+            </p>
+            <p>
+              ID Cliente: <span>{{ casaMatriz.id }}</span>
+            </p>
+            <p>
+              Teléfono:
+              <span>{{
+                casaMatriz.telefonoEncargado.toString() | telefono
+              }}</span>
+            </p>
+          </div>
+        </div>
+        <div>
+          <a
+            [routerLink]="['/clientes', casaMatriz.id]"
+            routerLinkActive="router-link-active"
+            class="client-button"
+            >Seleccionar cliente</a
+          >
+        </div>
+      </div>
     </div>
+    }
+  </div>
 
-    <ng-template #noClientes>
-      <p class="no-sucursales">No hay clientes registrados</p>
-    </ng-template>
+  <ng-template #noClientes>
+    <p class="no-sucursales">No hay clientes registrados</p>
+  </ng-template>
 
-    <div *ngIf="obtainedClients && casasMatricez.length > 0" class="navegation-section">
-      <shared-navegation [paginaActual]="paginaActual"
+  <div
+    *ngIf="obtainedClients && casasMatricez.length > 0"
+    class="navegation-section"
+  >
+    <shared-navegation
+      [paginaActual]="paginaActual"
       [paginas]="paginas"
-      (cambiarPagina)="cambiarPagina($event)"></shared-navegation>
-    </div>
+      (cambiarPagina)="cambiarPagina($event)"
+    ></shared-navegation>
+  </div>
   }
 </div>
 
-<shared-crear-cliente class="form-crear-cliente"
-*ngIf="isModalVisible"
-(cerrarModal)="cerrarModal()"
-(enviarFormulario)="crearCliente($event)"
+<shared-crear-cliente
+  class="form-crear-cliente"
+  *ngIf="isModalVisible"
+  (cerrarModal)="cerrarModal()"
+  (enviarFormulario)="crearCliente($event)"
 ></shared-crear-cliente>

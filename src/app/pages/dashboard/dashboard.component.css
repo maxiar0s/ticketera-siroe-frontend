@@ -1,3 +1,9 @@
+@media (max-width: 800px) {
+  .section {
+    padding: 1rem;
+  }
+}
+
 .title {
   color: #474747;
 }
