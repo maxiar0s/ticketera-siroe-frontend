@@ -1,6 +1,18 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, Output, ɵSSR_CONTENT_INTEGRITY_MARKER } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  Output,
+  ɵSSR_CONTENT_INTEGRITY_MARKER,
+} from '@angular/core';
+import {
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { LoaderService } from '../../../../services/loader.service';
 import { ApiService } from '../../../../services/api.service';
 import { Equipo } from '../../../../interfaces/Equipo.interface';
@@ -12,13 +24,13 @@ import { LoaderModalComponent } from '../../../loader-modal/loader-modal.compone
   standalone: true,
   imports: [ReactiveFormsModule, CommonModule, LoaderModalComponent],
   templateUrl: './modificar-equipo.component.html',
-  styleUrl: './modificar-equipo.component.css'
+  styleUrl: './modificar-equipo.component.css',
 })
 export class ModificarEquipoComponent {
   // Form group general
   public selectedFile: File | null = null;
   public equipoForm: FormGroup = this.fb.group({
-    id: ['', Validators.required]
+    id: ['', Validators.required],
   });
   private formData = new FormData();
   // Espera para cargar el titulo del modal
@@ -44,8 +56,8 @@ export class ModificarEquipoComponent {
   constructor(
     private fb: FormBuilder,
     public loaderService: LoaderService,
-    private apiService: ApiService,
-  ) { }
+    private apiService: ApiService
+  ) {}
 
   ngOnInit() {
     this.loaderService.showModal();
@@ -58,30 +70,42 @@ export class ModificarEquipoComponent {
 
         this.apiService.formEquipment(this.tipoEquipoActual).subscribe({
           next: (campos) => {
-            this.camposDinamicos = campos;
+            const camposSinDuplicados = this.eliminarDuplicados(campos, 'name');
+            this.camposDinamicos = camposSinDuplicados;
+
             this.actualizarFormularioConCampos(campos, respuesta);
             this.loaderService.hideModal();
             this.formCharged = true;
+            console.log(this.camposDinamicos);
           },
           error: (error) => {
             console.error('Error al obtener los campos', error);
             this.loaderService.hideModal();
-          }
+          },
         });
       },
       error: (error) => {
         console.error('Error al obtener el equipo', error);
         this.loaderService.hideModal();
-      }
+      },
     });
   }
 
+  eliminarDuplicados(array: any[], prop: string): any[] {
+    return array.filter(
+      (obj, index, self) =>
+        index === self.findIndex((o) => o[prop] === obj[prop])
+    );
+  }
 
-  actualizarFormularioConCampos(campos: EquipoFormField[], respuesta: any): void {
+  actualizarFormularioConCampos(
+    campos: EquipoFormField[],
+    respuesta: any
+  ): void {
     const controlesActuales = Object.keys(this.equipoForm.controls);
 
-    controlesActuales.forEach(controlName => {
-      if (!campos.find(campo => campo.name === controlName)) {
+    controlesActuales.forEach((controlName) => {
+      if (!campos.find((campo) => campo.name === controlName)) {
         this.equipoForm.removeControl(controlName);
       }
     });
@@ -89,22 +113,25 @@ export class ModificarEquipoComponent {
     const control = new FormControl('', Validators.required);
     this.equipoForm.addControl('id', control);
     this.equipoForm.patchValue({
-      id: this.idEquipo
+      id: this.idEquipo,
     });
 
     const text = new FormControl('');
     this.equipoForm.addControl('text', text);
 
-    campos.forEach(campo => {
+    campos.forEach((campo) => {
       if (!this.equipoForm.contains(campo.name)) {
         const control = new FormControl('');
         this.equipoForm.addControl(campo.name, control);
       }
 
-      if (respuesta[campo.name] !== null && respuesta[campo.name] !== undefined) {
-        if(campo.name !== 'imagen') {
+      if (
+        respuesta[campo.name] !== null &&
+        respuesta[campo.name] !== undefined
+      ) {
+        if (campo.name !== 'imagen') {
           this.equipoForm.patchValue({
-            [campo.name]: respuesta[campo.name]
+            [campo.name]: respuesta[campo.name],
           });
         }
       }
@@ -130,35 +157,35 @@ export class ModificarEquipoComponent {
 
   onSubmit() {
     if (this.equipoForm.valid) {
-
-      Object.keys(this.equipoForm.value).forEach(key => {
+      Object.keys(this.equipoForm.value).forEach((key) => {
         this.formData.append(key, this.equipoForm.value[key]);
       });
-      if(this.selectedFile) {
-        this.formData.set('imagen', this.selectedFile)
+      if (this.selectedFile) {
+        this.formData.set('imagen', this.selectedFile);
       }
 
       const comentario = this.equipoForm.value.text;
 
       this.enviarFormulario.emit(this.formData);
 
-      if(comentario != '') {
+      if (comentario != '') {
         const observacion = {
           equipoId: this.idEquipo,
-          text: comentario
+          text: comentario,
         };
         this.apiService.createComment(observacion).subscribe({
           next: (respuesta) => {
-            console.log(respuesta)
+            console.log(respuesta);
           },
           error: (error) => {
             console.error('Error al crear observacion', error);
-          }
-        })
+          },
+        });
       }
       this.cerrar();
     } else {
-      this.errorMessage = 'Por favor, completa todos los campos requeridos correctamente.';
+      this.errorMessage =
+        'Por favor, completa todos los campos requeridos correctamente.';
     }
   }
 }

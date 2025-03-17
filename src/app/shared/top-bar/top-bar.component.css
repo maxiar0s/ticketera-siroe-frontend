@@ -124,3 +124,125 @@ input {
 .search-bar input::placeholder {
   color: #d8d9d8;
 }
+
+@media (max-width: 800px) {
+  .flex {
+    height: 100%;
+    width: 100%;
+    min-height: 7rem;
+    max-height: 7rem;
+    background-color: #f7f7f7;
+    padding: 0rem 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid #e6eff5;
+  }
+
+  .title {
+    font-size: 2rem;
+  }
+
+  @media (max-width: 800px) {
+    .flex {
+      height: 100%;
+      width: 100%;
+      min-height: 7rem;
+      max-height: 7rem;
+      background-color: #f7f7f7;
+      padding: 0rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid #e6eff5;
+      position: relative; /* Para posicionamiento de elementos expandidos */
+    }
+
+    .title {
+      font-size: 2rem;
+    }
+
+    /* Estilo para la searchbar colapsada */
+    .search-bar {
+      width: 4rem;
+      height: 4rem;
+      border-radius: 50%;
+      overflow: hidden;
+      transition: all 0.3s ease;
+      position: relative;
+      z-index: 10;
+    }
+
+    /* Ocultar el input cuando está colapsado */
+    .search-bar input {
+      width: 0;
+      padding: 0;
+      opacity: 0;
+      transition: all 0.3s ease;
+    }
+
+    /* Centrar la lupa en el círculo */
+    .search-bar label {
+      padding: 1rem;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+    }
+
+    /* Estilo para la searchbar expandida */
+    .search-bar.expanded {
+      width: calc(100% - 4rem); /* Expandirse casi al ancho completo */
+      border-radius: 25px;
+      position: absolute;
+      right: 2rem;
+    }
+
+    /* Mostrar el input cuando está expandido */
+    .search-bar.expanded input {
+      width: calc(100% - 5rem);
+      opacity: 1;
+      padding: 0.6rem 1rem 0.6rem 0;
+    }
+
+    /* Ajustar la posición de la lupa cuando está expandido */
+    .search-bar.expanded label {
+      padding: 1rem 0 1rem 1rem;
+    }
+
+    /* Ocultar el placeholder */
+    .search-bar input::placeholder {
+      color: transparent;
+    }
+
+    .svg {
+      width: 2rem;
+    }
+
+    .search-bar label img,
+    .search-bar.expanded label img {
+      min-height: 1.7rem;
+      max-height: 1.7rem;
+      width: auto;
+    }
+    .search-bar label {
+      padding: 1rem;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      min-width: 4rem; /* Garantizar un ancho mínimo */
+      min-height: 4rem; /* Garantizar una altura mínima */
+    }
+  }
+
+  @media (max-width: 500px) {
+    .flex-search {
+      gap: 0.5rem;
+    }
+
+    .title {
+      font-size: 1.5rem;
+    }
+  }
+}

@@ -1,16 +1,17 @@
 <div class="flex">
   <h1 class="title">{{ title() }}</h1>
   <div class="flex-search">
-    <div class="search-bar">
-      <label for="search">
+    <div class="search-bar" #searchBar>
+      <label for="search" #searchLabel>
         <img src="/assets/svg/search.svg" alt="search_SVG" class="svg" />
       </label>
       <input
         type="text"
-        class=""
+        class="search-bar-input"
         placeholder="Escribe para buscar..."
         name="search"
         id="search"
+        #searchInput
       />
     </div>
     <a

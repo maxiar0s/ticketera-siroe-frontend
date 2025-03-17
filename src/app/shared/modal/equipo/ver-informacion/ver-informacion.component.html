@@ -1,14 +1,26 @@
 <div class="modal-overlay" *ngIf="isVisible">
   <div class="modal-content">
     <div class="modal-header">
-      <h2 class="header-form">Añadir datos: <span>{{ Equipo.tipoEquipo.name }} {{Equipo.codigoId }}</span></h2>
-      <img src="/assets/svg/exit-button.svg" (click)="cerrar()" alt="exit_button" class="close-button">
+      <h2 class="header-form">
+        Añadir datos:
+        <span>{{ Equipo.tipoEquipo.name }} {{ Equipo.codigoId }}</span>
+      </h2>
+      <img
+        src="/assets/svg/exit-button.svg"
+        (click)="cerrar()"
+        alt="exit_button"
+        class="close-button"
+      />
     </div>
     <div class="modal-body">
-
       <div class="information-section">
         <div class="image-container">
-          <img *ngIf="Equipo.imagen | signedUrl | async as signedUrl; else loading" [src]="signedUrl" alt="device_image.png" class="image-device">
+          <img
+            *ngIf="Equipo.imagen | signedUrl | async as signedUrl; else loading"
+            [src]="signedUrl"
+            alt="device_image.png"
+            class="image-device"
+          />
           <ng-template #loading>
             <div class="loader-section">
               <div class="spinner-images spinner-size-images"></div>
@@ -80,20 +92,23 @@
               <h3 class="device-component">Fecha:</h3>
             </div>
 
-            @for(observacion of Equipo.observaciones; track Equipo.observaciones) {
-              <div class="observation-title">
-                <p class="device-value">{{ observacion.text }}</p>
-              </div>
-              <div class="date-title">
-                <p class="device-value">{{ observacion.fechaIngreso }}</p>
-              </div>
+            @for(observacion of Equipo.observaciones; track
+            Equipo.observaciones) {
+            <div class="observation-title">
+              <p class="device-value">{{ observacion.text }}</p>
+            </div>
+            <div class="date-title">
+              <p class="device-value">{{ observacion.fechaIngreso }}</p>
+            </div>
             }
           </div>
         </div>
       </div>
 
       <div class="button-section">
-        <button class="equiptment-button" type="submit">Añadir nueva observación</button>
+        <button class="equiptment-button" type="submit">
+          Añadir nueva observación
+        </button>
       </div>
     </div>
   </div>
