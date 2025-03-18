@@ -4,10 +4,14 @@
   border-radius: 50%;
   margin: 0 auto;
 }
-/* @media (max-width: 1400px) {
+
+@media (max-width: 768px) {
   .estado {
+    width: 0.8rem;
+    height: 0.8rem;
   }
-} */
+}
+
 .abierto {
   background-color: #1ec6b8;
 }
@@ -31,6 +35,11 @@
 @media (max-width: 1400px) {
   .svg {
     max-height: 1.8rem;
+  }
+}
+@media (max-width: 768px) {
+  .svg {
+    max-height: 1.5rem;
   }
 }
 .svg-cursor:hover {
@@ -58,14 +67,21 @@ input[type="checkbox"] {
     max-height: 1.25rem;
   }
 }
+@media (max-width: 768px) {
+  input[type="checkbox"] {
+    max-width: 1rem;
+    max-height: 1rem;
+  }
+}
 
 .no-equipos {
   height: 90px;
 }
-/* @media (max-width: 1400px) {
+@media (max-width: 768px) {
   .no-equipos {
+    height: 70px;
   }
-} */
+}
 
 .navegation-section {
   width: 100%;
@@ -74,6 +90,7 @@ input[type="checkbox"] {
   justify-content: center;
 }
 
+/* Columnas de la tabla */
 .col-1 {
   width: 50px;
 }
@@ -100,4 +117,107 @@ input[type="checkbox"] {
 }
 .col-9 {
   width: 295px;
+}
+
+/* Media queries para diferentes tamaños de pantalla */
+@media (max-width: 1200px) {
+  .col-1 {
+    width: 40px;
+  }
+  .col-2 {
+    width: 35px;
+  }
+  .col-3 {
+    width: 80px;
+  }
+  .col-4 {
+    width: 150px;
+  }
+  .col-5 {
+    width: 250px;
+  }
+  .col-6 {
+    width: 200px;
+  }
+  .col-7 {
+    width: 220px;
+  }
+  .col-8 {
+    width: 90px;
+  }
+  .col-9 {
+    width: 200px;
+  }
+}
+
+@media (max-width: 992px) {
+  .col-1 {
+    width: 35px;
+  }
+  .col-2 {
+    width: 30px;
+  }
+  .col-3 {
+    width: 60px;
+  }
+  .col-4 {
+    width: 120px;
+  }
+  .col-5 {
+    width: 180px;
+  }
+  .col-6 {
+    width: 150px;
+  }
+  .col-7 {
+    width: 160px;
+  }
+  .col-8 {
+    width: 80px;
+  }
+  .col-9 {
+    width: 150px;
+  }
+}
+
+@media (max-width: 768px) {
+  .col-8{
+    display: none;
+  }
+
+  .row-border :nth-child(8){
+    display: none;
+  }
+}
+
+@media (max-width: 600px) {
+  .col-7{
+    display: none;
+  }
+
+  .row-border :nth-child(7){
+    display: none;
+  }
+
+}
+
+@media (max-width: 500px) {
+  .col-6{
+    display: none;
+  }
+
+  .row-border :nth-child(6){
+    display: none;
+  }
+}
+
+/* Estilos para mejorar la experiencia en dispositivos táctiles */
+@media (hover: none) {
+  .svg-cursor {
+    padding: 8px;
+  }
+  
+  .actions {
+    margin: 0 2px;
+  }
 }

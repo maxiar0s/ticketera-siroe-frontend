@@ -1,74 +1,172 @@
+/* Variables para facilitar mantenimiento */
+:root {
+}
+
+/* Estilos base con Grid */
 .options-flex {
-  display: flex;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: auto 1fr;
   align-items: center;
+  width: 100%;
+  height: 100%;
+  gap: 2rem;
+  justify-content: space-around;
 }
 
 .title {
-  color: #474747;
+  color: var(--primary-color);
+  font-size: 1.5rem;
+  font-weight: 700; /* Aumentado de 600 a 700 para mayor prominencia */
+  margin: 0;
 }
-/* @media (max-width: 1400px) {
-  .title {
-  }
-} */
 
 .flex-buttons {
-  min-height: 4rem;
-  height: 4rem;
-  display: flex;
-  gap: 2rem;
-  align-items: center;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: 1fr;
   justify-content: end;
-}
-@media (max-width: 1400px) {
-  .flex-buttons {
-    gap: 0.7rem;
-  }
+  gap: 2rem; /* Aumentado de 2rem a 2.5rem */
 }
 
 .option-button {
-  display: flex;
+  display: grid;
+  grid-template-columns: 1fr 2fr;
   align-items: center;
   justify-content: center;
-  gap: 10px;
-  width: 175px;
-  border-radius: 40px;
-  padding: 0.6rem 0;
-  background-color: #ebebeb;
-  color: #474747;
+  padding: 0.8rem 1.5rem; /* Aumentado de 0.6rem 1rem a 0.8rem 1.5rem */
+  font-size: 1rem;
+  font-weight: 500; /* Añadido para mayor legibilidad */
+  text-align: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Sombra sutil para dar profundidad */
+  border-radius: 10px;
 }
 
 .imprimir,
 .importar,
 .agregar {
   cursor: pointer;
-  background-color: #F7F7F7;
-  font-weight: 400;
-  color: #474747;
-  transition: 200ms;
-}
-
-.agregar-equipo:hover {
-  background-color: #B71653;
-  color: #FFFFFF;
-}
-.agregar-equipo:hover img {
-  content: url('/assets/svg/agregar-equipo-hover.svg');
-}
-
-.imprimir-equipo:hover {
-  background-color: #B71653;
-  color: #FFFFFF;
-}
-.imprimir-equipo:hover img {
-  content: url('/assets/svg/imprimir-etiquetas-hover.svg');
+  font-weight: 500; /* Aumentado de 400 a 500 */
 }
 
 .svg {
-  max-width: 2.5rem;
+  max-width: 3rem; /* Aumentado de 2.5rem a 3rem */
+  width: 3rem;
+  justify-self: center;
 }
 
 .size-modal {
   min-width: 100%;
   min-height: 100%;
+}
+
+/* Estilos para el listado de equipos */
+.equipment-list {
+  width: 100%;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  margin-top: 1.5rem;
+}
+
+.equipment-list-header {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  background-color: #f0f0f0;
+  padding: 1.2rem 1.5rem;
+  font-weight: 600;
+  font-size: 1.1rem;
+  color: var(--primary-color);
+  border-bottom: 2px solid #e0e0e0;
+}
+
+.equipment-list-item {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  padding: 1.2rem 1.5rem;
+  border-bottom: 1px solid #eaeaea;
+  font-size: 1rem;
+  transition: background-color 0.2s;
+}
+
+.equipment-list-item:hover {
+  background-color: #f9f9f9;
+}
+
+.equipment-list-item:last-child {
+  border-bottom: none;
+}
+
+/* Pantallas medianas */
+@media (max-width: 992px) {
+  .flex-buttons {
+    gap: 1rem;
+  }
+
+  .option-button {
+    padding: 0.6rem 1rem;
+  }
+
+  .svg {
+    max-width: 2.5rem;
+  }
+
+  .equipment-list-header {
+    padding: 1rem 1.3rem;
+    font-size: 0.95rem;
+  }
+
+  .equipment-list-item {
+    padding: 1rem 1.3rem;
+    font-size: 0.9rem;
+  }
+}
+
+/* Tablets */
+@media (max-width: 768px) {
+  :root {
+    --button-font-size: 0.9rem;
+    --title-font-size: 1.4rem;
+    --button-height: 4rem;
+  }
+
+  .options-flex {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto;
+    gap: 1.2rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .flex-buttons {
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    justify-content: start;
+    gap: 1rem;
+  }
+
+  .option-button {
+    padding: 0.6rem 0.8rem;
+  }
+
+  .svg {
+    max-width: 2.2rem;
+  }
+
+  .equipment-list-header {
+    padding: 0.9rem 1.2rem;
+    font-size: 0.9rem;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  }
+
+  .equipment-list-item {
+    padding: 0.9rem 1.2rem;
+    font-size: 0.85rem;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  }
+}
+
+/* Móviles grandes */
+@media (max-width: 600px) {
+  .flex-buttons {
+    grid-template-columns: 1fr;
+    grid-template-rows: repeat(3, 1fr);
+  }
 }
