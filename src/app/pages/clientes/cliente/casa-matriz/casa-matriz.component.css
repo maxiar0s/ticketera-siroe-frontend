@@ -9,6 +9,7 @@
   background-color: #f6f6f7;
   border: 1px solid #ebebea;
   padding: 0 1.5rem;
+  width: 100%;
 }
 
 .logo {
@@ -33,20 +34,18 @@
   box-sizing: border-box;
   color: #474747;
 }
-/* @media (max-width: 1400px) {
-  .casa-matriz {
-  }
-} */
 
 .temp-title {
   color: #b6b6b6;
 }
 
+/* Grid con 3 columnas por defecto */
 .grid {
   display: grid;
   box-sizing: border-box;
   grid-template-columns: 40% 25% 25%;
   gap: 1.5rem;
+  width: 100%;
 }
 
 .body-flex {
@@ -67,11 +66,10 @@
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.4;
 }
-/* @media (max-width: 1400px) {
-  .information h1 {
-  }
-} */
 
 .information p span {
   flex: 1;
@@ -82,7 +80,148 @@
   white-space: nowrap;
   text-overflow: ellipsis;
 }
-/* @media (max-width: 1400px) {
-  .information h1 span {
+
+/* Media queries para pantallas grandes */
+@media (max-width: 1400px) {
+  .main-grid {
+    padding: 0 1.2rem;
   }
-} */
+
+  .flex-column {
+    padding: 1.5rem;
+  }
+
+  .information p {
+    font-size: 13px;
+  }
+}
+
+/* Media queries para pantallas medianas */
+@media (max-width: 992px) {
+  .main-grid {
+    padding: 0 1rem;
+    min-height: 10rem;
+    max-height: 10rem;
+  }
+
+  .flex-column {
+    padding: 1.2rem;
+  }
+
+  .grid {
+    gap: 1.2rem;
+  }
+
+  .information p {
+    font-size: 12px;
+  }
+
+  .logo {
+    max-height: 8rem;
+  }
+}
+
+/* Cambio a 2 columnas a los 800px */
+@media (max-width: 800px) {
+  .main-grid {
+    grid-template-columns: 100%;
+    min-height: auto;
+    max-height: none;
+    padding: 1rem;
+  }
+
+  .logo {
+    max-height: 7rem;
+    padding: 0.5rem;
+    margin: 0 auto;
+  }
+
+  .flex-column {
+    padding: 1rem;
+  }
+
+  /* Cambio a 2 columnas */
+  .grid {
+    grid-template-columns: 50% 50%;
+    gap: 1rem;
+  }
+
+  .information p {
+    font-size: 12px;
+  }
+}
+
+/* Cambio a 1 columna a los 500px, pero con la imagen al lado */
+@media (max-width: 500px) {
+  .main-grid {
+    grid-template-columns: 70% 30%; /* Cambio importante: mantener 2 columnas */
+    min-height: auto;
+    max-height: none;
+    padding: 0.8rem;
+    border-radius: 15px;
+    align-items: center; /* Centrar verticalmente */
+  }
+
+  .logo {
+    max-height: 5rem;
+    max-width: 100%;
+    padding: 0.3rem;
+    margin: 0 auto;
+    grid-column: 2; /* Mover la imagen a la segunda columna */
+    grid-row: 1; /* Asegurar que esté en la primera fila */
+    order: 2; /* Para flexbox si se usa */
+  }
+
+  .flex-column {
+    padding: 0.8rem 0.5rem;
+    grid-column: 1; /* Mover la información a la primera columna */
+    grid-row: 1; /* Asegurar que esté en la primera fila */
+    order: 1; /* Para flexbox si se usa */
+  }
+
+  /* Cambio a 1 columna para la información */
+  .grid {
+    grid-template-columns: 100%;
+    gap: 0.8rem;
+  }
+
+  .information p {
+    font-size: 11px;
+    white-space: normal;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .information p span {
+    margin-left: 0;
+    margin-top: 0.2rem;
+  }
+}
+
+/* Ajustes adicionales para móviles pequeños */
+@media (max-width: 400px) {
+  .main-grid {
+    padding: 0.6rem;
+    grid-template-columns: 65% 35%; /* Ajustar proporción para pantallas muy pequeñas */
+  }
+
+  .logo {
+    max-height: 4.5rem;
+  }
+
+  .flex-column {
+    padding: 0.6rem 0.4rem;
+  }
+
+  .grid {
+    gap: 0.6rem;
+  }
+
+  .information p {
+    font-size: 10px;
+  }
+
+  .casa-matriz {
+    margin-bottom: 0.5rem;
+  }
+}

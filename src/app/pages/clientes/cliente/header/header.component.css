@@ -1,25 +1,25 @@
 .flex {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: space-around;
+  width: 100%;
+  box-sizing: border-box;
+  flex-wrap: nowrap; /* Permite que los elementos se envuelvan en pantallas pequeñas */
+  gap: 15px; /* Espacio entre elementos cuando se envuelven */
 }
 
 .title {
   color: #474747;
+  font-size: 2rem;
+  font-weight: 600;
+  margin: 0;
 }
-/* @media (max-width: 1400px) {
-  .title {
-  }
-} */
 
 .filter-form {
   display: flex;
   gap: 2.5rem;
-}
-@media (max-width: 1400px) {
-  .filter-form {
-    gap: 1rem;
-  }
+  align-items: center;
+  flex-wrap: wrap; /* Permite que los elementos se envuelvan en pantallas pequeñas */
 }
 
 .select {
@@ -28,42 +28,47 @@
   align-items: center;
   background-color: #ebebeb;
   border-radius: 2.5rem;
+  min-width: 150px; /* Ancho mínimo para evitar que se comprima demasiado */
+  max-width: 100%; /* Asegurar que no se desborde */
+  box-sizing: border-box;
 }
+
 .select label {
-  padding: 0.8rem 2rem 0.8rem 0;
+  padding: 0.8rem 2rem 0.8rem 1rem; /* Ajustado el padding derecho */
+  white-space: nowrap; /* Evitar que el texto se rompa */
+  overflow: hidden;
+  text-overflow: ellipsis; /* Mostrar ... si el texto es demasiado largo */
+  max-width: calc(100% - 30px); /* Dejar espacio para la flecha */
 }
 
 .svg-arrow-down {
   position: absolute;
   top: 50%;
-  right: 1%;
-  transform: translate(-50%, -50%);
+  right: 10px; /* Posición fija desde la derecha */
+  transform: translateY(-50%); /* Centrar verticalmente */
   max-height: 1.3rem;
-}
-@media (max-width: 1400px) {
-  .svg-arrow-down {
-    max-height: 1rem;
-  }
+  pointer-events: none; /* Evitar que interfiera con clics */
 }
 
 .search {
   all: unset;
   padding: 0.8rem 2.5rem 0.8rem 2rem;
   border-radius: 2.5rem;
+  background-color: #ebebeb;
+  width: 180px; /* Ancho base */
+  max-width: 100%; /* Asegurar que no se desborde */
+  box-sizing: border-box;
 }
-@media (max-width: 1400px) {
-  .search {
-    padding: 0.4rem 0 0.4 2rem;
-  }
-}
+
 .search::placeholder {
   color: #474747;
 }
 
 .add-clients-button {
   display: flex;
-  justify-content: end;
+  justify-content: flex-end;
   align-items: center;
+  margin-left: auto; /* Empujar a la derecha */
 }
 
 .option-button {
@@ -72,13 +77,160 @@
   height: 30px;
   padding: 5px 25px;
   gap: 10px;
-  background-color: #B71653;
-  color: #FFFFFF;
-  border-radius: 40px ;
+  background-color: #b71653;
+  color: #ffffff;
+  border-radius: 40px;
+  border: none;
+  transition: background-color 0.3s ease;
+  white-space: nowrap; /* Evitar que el texto se rompa */
 }
+
 .option-button span {
   font-weight: 600;
 }
+
 .option-button:hover {
   cursor: pointer;
+  background-color: #9a1346;
+}
+
+.option-button img {
+  width: 16px;
+  height: 16px;
+}
+
+/* Media queries para pantallas grandes */
+@media (max-width: 1400px) {
+  .filter-form {
+    gap: 1rem;
+  }
+
+  .svg-arrow-down {
+    max-height: 1rem;
+  }
+
+  .search {
+    padding: 0.6rem 2rem 0.6rem 1.5rem;
+    width: 160px;
+  }
+
+  .title {
+    font-size: 2rem;
+  }
+}
+
+/* Media queries para tablets */
+@media (max-width: 800px) {
+  .flex {
+    justify-content: space-around;
+  }
+
+  .filter-form {
+    width: 100%;
+    justify-content: space-around;
+  }
+
+  .select {
+    flex: 1;
+    min-width: 120px;
+  }
+
+  .search {
+    flex: 1;
+    width: auto;
+  }
+
+  .add-clients-button {
+    margin-left: 0;
+    width: 100%;
+    justify-content: flex-end;
+  }
+
+  .title {
+    width: 100%;
+    font-size: 2rem;
+  }
+}
+
+/* Media queries para móviles */
+@media (max-width: 500px) {
+  .flex {
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .filter-form {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+
+  .select,
+  .search {
+    width: 100%;
+  }
+
+  .select label {
+    width: 100%;
+    padding: 0.6rem 1.5rem 0.6rem 1rem;
+    font-size: 13px;
+  }
+
+  .search {
+    padding: 0.6rem 1.5rem;
+    font-size: 13px;
+  }
+
+  .add-clients-button {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .option-button {
+    width: 100%;
+    justify-content: center;
+    padding: 8px 15px;
+    height: auto;
+  }
+
+  .title {
+    font-size: 1.5rem;
+    text-align: center;
+  }
+}
+
+/* Media queries para móviles pequeños */
+@media (max-width: 400px) {
+  .flex {
+    gap: 8px;
+  }
+
+  .select label {
+    padding: 0.5rem 1.5rem 0.5rem 0.8rem;
+    font-size: 12px;
+  }
+
+  .search {
+    padding: 0.5rem 1.2rem;
+    font-size: 12px;
+  }
+
+  .svg-arrow-down {
+    max-height: 0.8rem;
+    right: 8px;
+  }
+
+  .option-button {
+    font-size: 12px;
+    padding: 6px 12px;
+  }
+
+  .option-button img {
+    width: 14px;
+    height: 14px;
+  }
+
+  .title {
+    font-size: 1.1rem;
+  }
 }

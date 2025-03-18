@@ -20,7 +20,17 @@
   padding: 0 1.5rem;
   height: 10rem;
   margin-bottom: 2rem;
+  position: relative;
 }
+
+.logo[src="/assets/img/soporte.png"] {
+  display: block;
+}
+
+.logo[src="/assets/img/soporte-s.png"] {
+  display: none;
+}
+
 @media (max-width: 1400px) {
   .logo {
     height: 7.5rem;
@@ -161,5 +171,18 @@ img[src="/assets/svg/side-menu-arrow-up.svg"],
   /* Ajustar el indicador de ítem activo */
   .active .activated-item {
     width: 4px;
+  }
+
+  .logo[src="/assets/img/soporte.png"] {
+    display: none;
+  }
+
+  /* Mostrar logo pequeño */
+  .logo[src="/assets/img/soporte-s.png"] {
+    display: block;
+    height: 5rem; /* Ajustar tamaño para el logo pequeño */
+    padding: 0 1rem;
+    padding-top: 1.5rem;
+    place-self: center;
   }
 }

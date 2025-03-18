@@ -1,3 +1,4 @@
+/* Estilos base */
 .clients {
   display: flex;
   flex-direction: column;
@@ -8,7 +9,7 @@
 
 .add-clients-button {
   display: flex;
-  justify-content: end;
+  justify-content: flex-end;
   align-items: center;
 }
 
@@ -18,15 +19,25 @@
   height: 30px;
   padding: 5px 25px;
   gap: 10px;
-  background-color: #B71653;
-  color: #FFFFFF;
-  border-radius: 40px ;
+  background-color: #b71653;
+  color: #ffffff;
+  border-radius: 40px;
+  border: none;
+  transition: background-color 0.3s ease;
 }
+
 .option-button span {
   font-weight: 600;
 }
+
 .option-button:hover {
   cursor: pointer;
+  background-color: #9a1346;
+}
+
+.option-button img {
+  width: 16px;
+  height: 16px;
 }
 
 .container-spinner {
@@ -51,7 +62,7 @@
 }
 
 .card-body {
-  height: 140px;
+  min-height: 140px;
   padding: 1.9rem 2.6rem;
   background-color: #f7f7f7;
   border-radius: 10px;
@@ -59,12 +70,6 @@
   display: grid;
   gap: 1rem;
   grid-template-columns: 25% 75%;
-}
-@media (max-width: 1400px) {
-  .card-body {
-    padding: 1.5rem;
-    grid-template-columns: 25% 75%;
-  }
 }
 
 .logo {
@@ -77,6 +82,7 @@
 .card-information {
   display: grid;
   grid-template-columns: 55% 25% 20%;
+  gap: 10px;
 }
 
 .information {
@@ -86,34 +92,42 @@
   flex-direction: column;
   justify-content: space-between;
 }
+
 .information p {
   margin: 0;
   font-weight: 700;
-}
-/* @media (max-width: 1400px) {
-  .information p {
-  }
-} */
-.information p span {
-  font-weight: 400;
+  font-size: 14px;
+  line-height: 1.4;
 }
 
+.information p span {
+  font-weight: 400;
+  word-break: break-word;
+}
+
+/* Corrección para el botón que se sale del contenedor */
 .client-button {
-  padding: 0.75rem 1.5rem;
+  padding: 0.75rem 1rem; /* Reducido el padding horizontal */
   margin: 0 auto auto auto;
   border: 1px solid #4f4f4f;
   border-radius: 25px;
   font-weight: 500;
   color: #474747;
-  transition: 350ms;
+  transition: all 350ms;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  white-space: nowrap;
+  font-size: 13px; /* Reducido el tamaño de fuente base */
+  width: fit-content; /* Ajustar al contenido */
+  max-width: 100%; /* Asegurar que no se salga */
+  box-sizing: border-box; /* Incluir padding y border en el ancho */
 }
-/* @media (max-width: 1400px) {
-  .client-button {
-  }
-} */
+
 .client-button:hover {
   color: #f7f7f7;
   background-color: #b71752;
+  border-color: #b71752;
 }
 
 .crear-cliente {
@@ -144,4 +158,193 @@
   width: 100%;
   display: flex;
   justify-content: center;
+  margin-top: 20px;
+}
+
+.no-sucursales {
+  text-align: center;
+  padding: 30px;
+  background-color: #f7f7f7;
+  border-radius: 10px;
+  border: 1px solid #ebebea;
+  font-weight: 500;
+  color: #666;
+}
+
+/* Pantallas grandes (hasta 1400px) */
+@media (max-width: 1400px) {
+  .card-body {
+    padding: 1.5rem;
+  }
+
+  .information p {
+    font-size: 13px;
+  }
+
+  .client-button {
+    padding: 0.6rem 0.8rem; /* Reducido aún más */
+    font-size: 13px;
+  }
+}
+
+/* Pantallas medianas (hasta 992px) */
+@media (max-width: 992px) {
+  .clients {
+    padding: 15px;
+  }
+
+  .card-body {
+    grid-template-columns: 20% 80%;
+    padding: 1.2rem;
+  }
+
+  .card-information {
+    grid-template-columns: 45% 30% 25%; /* Ajustado para dar más espacio al botón */
+  }
+
+  .information {
+    gap: 1rem;
+  }
+
+  .information p {
+    font-size: 12px;
+  }
+
+  .client-button {
+    padding: 0.5rem 0.7rem;
+    font-size: 12px;
+  }
+
+  .logo {
+    max-width: 12rem;
+  }
+}
+
+/* Tablets (hasta 768px) */
+@media (max-width: 800px) {
+  .clients {
+    padding: 10px;
+  }
+
+  .card-body {
+    grid-template-columns: 100%;
+    height: auto;
+    padding: 1.2rem;
+  }
+
+  .logo {
+    max-width: 10rem;
+    margin-bottom: 15px;
+    height: 80px;
+  }
+
+  .card-information {
+    grid-template-columns: 100%;
+    gap: 20px;
+  }
+
+  .information {
+    gap: 0.8rem;
+  }
+
+  .client-button {
+    margin: 15px auto 0;
+    display: block;
+    width: 100%;
+    max-width: 250px;
+    text-align: center;
+    padding: 0.5rem 1rem; /* Restaurado el padding horizontal */
+    font-size: 13px;
+  }
+
+  .option-button {
+    padding: 5px 15px;
+  }
+
+  .option-button span {
+    font-size: 14px;
+  }
+}
+
+/* Móviles (hasta 576px) */
+@media (max-width: 500px) {
+  .clients {
+    padding: 8px;
+    gap: 15px;
+  }
+
+  .add-clients-button {
+    justify-content: center;
+  }
+
+  .option-button {
+    width: 100%;
+    justify-content: center;
+    padding: 8px 15px;
+    height: auto;
+  }
+
+  .card-body {
+    padding: 1rem;
+  }
+
+  .information {
+    gap: 0.6rem;
+  }
+
+  .information p {
+    font-size: 11px;
+  }
+
+  /* Reorganizar la información para mejor visualización en móviles */
+  .information p {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .information p span {
+    margin-top: 3px;
+  }
+
+  .client-button {
+    width: 100%; /* Ancho completo */
+    max-width: 100%; /* Eliminar restricción de ancho máximo */
+    margin: 15px auto 0;
+    padding: 8px 15px; /* Mismo padding que option-button */
+    font-size: 12px;
+    display: flex; /* Usar flexbox para centrar contenido */
+    justify-content: center;
+    align-items: center;
+    height: auto;
+  }
+
+  .container-spinner {
+    padding: 1rem;
+    height: 100px;
+  }
+}
+
+/* Móviles pequeños (hasta 400px) */
+@media (max-width: 400px) {
+  .clients {
+    padding: 5px;
+  }
+
+  .card-body {
+    padding: 0.8rem;
+  }
+
+  .logo {
+    height: 60px;
+    margin-bottom: 10px;
+  }
+
+  .information p {
+    font-size: 10px;
+  }
+
+  .client-button {
+    font-size: 11px;
+    padding: 0.4rem 0.6rem;
+  }
 }
