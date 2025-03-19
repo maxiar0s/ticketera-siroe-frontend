@@ -6,9 +6,9 @@ import { catchError, map, Observable, of, throwError } from 'rxjs';
   providedIn: 'root',
 })
 export class ApiService {
-  private url = 'http://167.71.172.190:3000' 
+  // private url = 'http://167.71.172.190:3000'
   // private url = 'https://app-soporte-siroe.vercel.app';
-  // private url = "http://localhost:3000";
+  private url = 'http://localhost:3000';
 
   constructor(private http: HttpClient) {}
 
@@ -53,6 +53,11 @@ export class ApiService {
     const endpoint = 'modificar-equipo/' + id;
     return this.postInformation(data, endpoint);
   }
+
+  deleteEquipment(id: number) {
+    return this.deleteInformation(`equipos/${id}`);
+  }
+
   createComment(data: any): Observable<any> {
     const { equipoId: id } = data;
     const endpoint = 'ingresar-observacion/' + id;
@@ -137,6 +142,16 @@ export class ApiService {
   postInformation(data: any, endpoint: string) {
     const url = `${this.url}/${endpoint}`;
     return this.http.post<any>(url, data).pipe(
+      catchError((error) => {
+        console.error(error);
+        return of(null);
+      })
+    );
+  }
+
+  deleteInformation(endpoint: string) {
+    const url = `${this.url}/${endpoint}`;
+    return this.http.delete<any>(url).pipe(
       catchError((error) => {
         console.error(error);
         return of(null);

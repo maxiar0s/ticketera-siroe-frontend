@@ -1,59 +1,107 @@
 <div class="div-loader-equipments">
-  <img style="display: none;" src="/assets/svg/imprimir-etiqueta-hover.svg">
-  <img style="display: none;" src="/assets/svg/agregar-datos-hover.svg">
-  <img style="display: none;" src="/assets/svg/ver-datos-hover.svg">
+  <img style="display: none" src="/assets/svg/imprimir-etiqueta-hover.svg" />
+  <img style="display: none" src="/assets/svg/agregar-datos-hover.svg" />
+  <img style="display: none" src="/assets/svg/delete-hover.svg" />
   <div *ngIf="obtainedEquipments" class="div-table">
     <table class="table">
       <thead>
-          <tr class="thead-properties">
-            <th class="col-1"><input  id="allDevices" [checked]="checkboxSeleccionado()" type="checkbox" (click)="seleccionarTodo($event)"></th>
-            <th class="col-2">N°</th>
-            <th class="col-3">Estado</th>
-            <th class="col-4">Código ID</th>
-            <th class="col-5">Tipo equipo</th>
-            <th class="col-6">Fecha de ingreso</th>
-            <th class="col-7">Departamento</th>
-            <th class="col-8">Usuario</th>
-            <th class="col-9">Acciones</th>
-          </tr>
+        <tr class="thead-properties">
+          <th class="col-1">
+            <input
+              id="allDevices"
+              [checked]="checkboxSeleccionado()"
+              type="checkbox"
+              (click)="seleccionarTodo($event)"
+            />
+          </th>
+          <th class="col-2">N°</th>
+          <th class="col-3">Estado</th>
+          <th class="col-4">Código ID</th>
+          <th class="col-5">Tipo equipo</th>
+          <th class="col-6">Fecha de ingreso</th>
+          <th class="col-7">Departamento</th>
+          <th class="col-8">Usuario</th>
+          <th class="col-9">Acciones</th>
+        </tr>
       </thead>
 
-        <tbody *ngIf="equipos === undefined || equipos === null">
-          <tr>
-            <td colspan="9" class="height-spinner"><div class="spinner-section spinner-size-section"></div></td>
-          </tr>
-        </tbody>
+      <tbody *ngIf="equipos === undefined || equipos === null">
+        <tr>
+          <td colspan="9" class="height-spinner">
+            <div class="spinner-section spinner-size-section"></div>
+          </td>
+        </tr>
+      </tbody>
 
-        <tbody *ngIf="equipos && equipos.length > 0">
-          <tr *ngFor="let equipo of equipos; let i = index" class="row-border">
-              <td class="information-checkbox information-value">
-                <input
-                  type="checkbox"
-                  (change)="seleccionarEquipo(equipo, equipo.codigoId, i)"
-                >
-              </td>
-              <td class="information-checkbox information-value">{{ i + 1 + ((paginaActual-1) * 8) }}</td>
-              <td class="information-value"><div [ngClass]="equipo.estado === 1 ? 'abierto' :
-                equipo.estado === 2 ? 'pendiente' :
-                'cerrado'" class="estado"></div></td>
-              <td class="information-value">{{ equipo.codigoId }}</td>
-              <td class="information-value">{{ equipo.tipoEquipo.name }}</td>
-              <td class="information-value">{{ equipo.fechaIngreso.toString() | formatoFecha }}</td>
-              <td class="information-value">{{ equipo.departamento }}</td>
-              <td class="information-value">{{ equipo.usuario ? equipo.usuario : 'N/A'}}</td>
+      <tbody *ngIf="equipos && equipos.length > 0">
+        <tr *ngFor="let equipo of equipos; let i = index" class="row-border">
+          <td class="information-checkbox information-value">
+            <input
+              type="checkbox"
+              (change)="seleccionarEquipo(equipo, equipo.codigoId, i)"
+            />
+          </td>
+          <td class="information-checkbox information-value">
+            {{ i + 1 + (paginaActual - 1) * 8 }}
+          </td>
+          <td class="information-value">
+            <div
+              [ngClass]="
+                equipo.estado === 1
+                  ? 'abierto'
+                  : equipo.estado === 2
+                  ? 'pendiente'
+                  : 'cerrado'
+              "
+              class="estado"
+            ></div>
+          </td>
+          <td class="information-value">{{ equipo.codigoId }}</td>
+          <td class="information-value">{{ equipo.tipoEquipo.name }}</td>
+          <td class="information-value">
+            {{ equipo.fechaIngreso.toString() | formatoFecha }}
+          </td>
+          <td class="information-value">{{ equipo.departamento }}</td>
+          <td class="information-value">
+            {{ equipo.usuario ? equipo.usuario : "N/A" }}
+          </td>
 
-              <td class="information-value information-actions">
-                  <button class="actions">
-                    <img src="/assets/svg/imprimir-etiqueta.svg" class="svg-cursor svg imprimir-etiqueta" alt="imprimir-etiqueta.svg">
-                  </button>
-                  <button [disabled]="equipo.estado === 3" (click)="abrirModal(equipo.id)" class="actions">
-                    <img [src]="equipo.estado === 3 ? '/assets/svg/agregar-datos-disabled.svg' : '/assets/svg/agregar-datos.svg' " [ngClass]="{'svg-cursor agregar-datos' : equipo.estado !== 3}" class="svg" alt="agregar-datos.svg">
-                  </button>
-                  <button [disabled]="equipo.estado != 3" class="actions" (click)="abrirModalVer(equipo.id, i)">
+          <td class="information-value information-actions">
+            <button class="actions">
+              <img
+                src="/assets/svg/imprimir-etiqueta.svg"
+                class="svg-cursor svg imprimir-etiqueta"
+                alt="imprimir-etiqueta.svg"
+              />
+            </button>
+            <button
+              [disabled]="equipo.estado === 3"
+              (click)="abrirModal(equipo.id)"
+              class="actions"
+            >
+              <img
+                [src]="
+                  equipo.estado === 3
+                    ? '/assets/svg/agregar-datos-disabled.svg'
+                    : '/assets/svg/agregar-datos.svg'
+                "
+                [ngClass]="{ 'svg-cursor agregar-datos': equipo.estado !== 3 }"
+                class="svg"
+                alt="agregar-datos.svg"
+              />
+            </button>
+            <button class="actions" (click)="eliminarEquipo(equipo.id)">
+              <img
+                src="/assets/svg/delete.svg"
+                class="svg-cursor svg eliminar-equipo"
+                alt="eliminar-equipo.svg"
+              />
+            </button>
+            <!-- <button [disabled]="equipo.estado != 3" class="actions" (click)="abrirModalVer(equipo.id, i)">
                     <img [src]="equipo.estado != 3 ? '/assets/svg/ver-datos-disabled.svg' : '/assets/svg/ver-datos.svg' " [ngClass]="{'svg-cursor ver-datos': equipo.estado === 3}" class="svg" alt="ver-datos.svg">
-                  </button>
-              </td>
-          </tr>
+                  </button> -->
+          </td>
+        </tr>
       </tbody>
 
       <tbody *ngIf="equipos && equipos.length === 0">
@@ -61,23 +109,23 @@
           <td colspan="9" class="no-equipos">No hay equipos registrados</td>
         </tr>
       </tbody>
-
     </table>
   </div>
 </div>
 
-<shared-modificar-equipo class="form-crear-cliente"
-*ngIf="isModalVisible"
-[idEquipo]="selectedEquipoId"
-(enviarFormulario)="modificarEquipo($event)"
-(cerrarModal)="cerrarModal()"
+<shared-modificar-equipo
+  class="form-crear-cliente"
+  *ngIf="isModalVisible"
+  [idEquipo]="selectedEquipoId"
+  (enviarFormulario)="modificarEquipo($event)"
+  (cerrarModal)="cerrarModal()"
 ></shared-modificar-equipo>
 
 <shared-ver-informacion
-*ngIf="isModalVerInfo"
-[idEquipo]="selectedEquipoId"
-[Equipo]="equipo"
-(enviarFormulario)="modificarEquipo($event)"
-(cerrarModal)="cerrarModal()">
-
+  *ngIf="isModalVerInfo"
+  [idEquipo]="selectedEquipoId"
+  [Equipo]="equipo"
+  (enviarFormulario)="modificarEquipo($event)"
+  (cerrarModal)="cerrarModal()"
+>
 </shared-ver-informacion>

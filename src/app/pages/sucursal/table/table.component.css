@@ -48,13 +48,13 @@
 }
 
 .imprimir-etiqueta:hover {
-  content: url('/assets/svg/imprimir-etiqueta-hover.svg');
+  content: url("/assets/svg/imprimir-etiqueta-hover.svg");
 }
 .agregar-datos:hover {
-  content: url('/assets/svg/agregar-datos-hover.svg');
+  content: url("/assets/svg/agregar-datos-hover.svg");
 }
 .ver-datos:hover {
-  content: url('/assets/svg/ver-datos-hover.svg');
+  content: url("/assets/svg/delete-hover.svg");
 }
 
 input[type="checkbox"] {
@@ -181,42 +181,41 @@ input[type="checkbox"] {
 }
 
 @media (max-width: 768px) {
-  .col-8{
+  .col-8 {
     display: none;
   }
 
-  .row-border :nth-child(8){
+  .row-border :nth-child(8) {
     display: none;
   }
 }
 
 @media (max-width: 600px) {
-  .col-7{
+  .col-7 {
     display: none;
   }
 
-  .row-border :nth-child(7){
+  .row-border :nth-child(7) {
     display: none;
   }
-
 }
 
 @media (max-width: 500px) {
-  .col-6{
+  .col-6 {
     display: none;
   }
 
-  .row-border :nth-child(6){
+  .row-border :nth-child(6) {
     display: none;
   }
 }
 
 @media (max-width: 400px) {
-  .col-4{
+  .col-4 {
     display: none;
   }
 
-  .row-border :nth-child(4){
+  .row-border :nth-child(4) {
     display: none;
   }
 }
@@ -226,7 +225,7 @@ input[type="checkbox"] {
   .svg-cursor {
     padding: 8px;
   }
-  
+
   .actions {
     margin: 0 2px;
   }
