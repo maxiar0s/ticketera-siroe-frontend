@@ -1,13 +1,13 @@
 <!-- src/app/modal-form/modal-form.component.html -->
 <div class="modal-overlay" *ngIf="isVisible">
-  <div class="modal-content">
+  <div class="modal-content responsive-modal">
     <div class="modal-header">
       <h2 class="header-form">Modificar Usuario</h2>
       <img src="/assets/svg/exit-button.svg" (click)="cerrar()" alt="exit_button" class="close-button">
     </div>
     <div class="modal-body">
       <p class="description-form">Cambia la información del colaborador con los campos correspondientes.</p>
-      <form [formGroup]="usuarioForm" (ngSubmit)="onSubmit()">
+      <form [formGroup]="usuarioForm" (ngSubmit)="onSubmit()" class="responsive-form">
         <input type="hidden" formControlName="id" value="cuenta.id">
 
         <div class="two-inputs">
@@ -32,10 +32,10 @@
         </div>
 
         <div class="two-inputs">
-            <!-- Campo email -->
+            <!-- Campo telefono -->
             <div class="form-group width-50">
               <label for="telefono">Teléfono</label>
-              <div style="display: flex; justify-content: center; align-items: center;">
+              <div class="phone-input-container" style="display: flex; justify-content: center; align-items: center;">
                 <input class="prefijo-telefono" type="text" disabled value="+56">
                 <input class="input-telefono" type="text" id="telefono" formControlName="telefono" autocomplete="tel" placeholder="Ingrese el teléfono" formatInputNumber>
               </div>
@@ -66,7 +66,7 @@
             </select>
           </div>
 
-          <!-- Campo email -->
+          <!-- Campo password -->
           <div class="form-group width-50" style="margin-bottom: 2rem;">
             <label for="password">Cambiar contraseña</label>
             <input type="password" id="password" formControlName="password" placeholder="Ingrese la contraseña" autocomplete="current-password">

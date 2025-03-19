@@ -4,6 +4,7 @@
   flex-direction: column;
   gap: 20px;
   padding: 20px;
+  margin-left: 1rem;
   min-height: 75vh;
   width: 100%;
   box-sizing: border-box;
@@ -33,10 +34,6 @@
 
 /* Media queries para la vista de detalle */
 @media (max-width: 992px) {
-  .section.client {
-    padding: 15px;
-    gap: 15px;
-  }
 
   .loader {
     padding: 1.5rem;
@@ -45,7 +42,7 @@
 
 @media (max-width: 768px) {
   .section.client {
-    padding: 10px;
+    margin-left: 0;
     gap: 10px;
   }
 

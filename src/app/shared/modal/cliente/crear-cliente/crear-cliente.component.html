@@ -35,7 +35,7 @@
           <!-- Campo Logo -->
           <div class="form-group width-50">
             <label for="imagen">Imagen</label>
-            <div class="custom-file-input" style="width: 100%;">
+            <div class="custom-file-input">
               <div class="imagen-container">
                 <p *ngIf="!clientForm.value.imagen" class="imagen-placeholder">Sube el logo o la imagen del cliente</p>
                 <p *ngIf="clientForm.value.imagen" class="imagen-text">{{ clientForm.value.imagen }}</p>
@@ -68,7 +68,7 @@
           <!-- Campo Teléfono Encargado -->
           <div class="form-group width-50">
             <label for="telefonoEncargado">Teléfono</label>
-            <div style="display: flex; justify-content: center; align-items: center;">
+            <div class="telefono-container">
               <input class="prefijo-telefono" disabled value="+56">
               <input class="input-telefono" type="text" id="telefonoEncargado" formatInputTelefono formControlName="telefonoEncargado" autocomplete="tel" placeholder="Ingrese el teléfono" formatInputNumber>
             </div>

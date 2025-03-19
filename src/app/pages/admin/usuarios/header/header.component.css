@@ -1,7 +1,7 @@
 .flex {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: space-around;
 }
 
 .svg {
@@ -15,13 +15,19 @@
   height: 30px;
   padding: 5px 25px;
   gap: 10px;
-  background-color: #B71653;
-  color: #FFFFFF;
-  border-radius: 40px ;
+  background-color: #b71653;
+  color: #ffffff;
+  border-radius: 40px;
 }
 .option-button span {
   font-weight: 600;
 }
 .option-button:hover {
   cursor: pointer;
+}
+
+@media (max-width: 500px) {
+  .title {
+    font-size: 1.5rem;
+  }
 }

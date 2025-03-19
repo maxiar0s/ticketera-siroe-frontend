@@ -2,17 +2,58 @@
   all: unset;
   color: #d0d0d0;
 }
+
+.options {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+  padding: 1rem;
+}
+
 .options button {
   font-weight: 500;
   font-size: 1.3rem;
   padding: 1rem 4rem;
   position: relative;
+  transition: padding 0.3s ease, font-size 0.3s ease;
+  width: 100%;
+  box-sizing: border-box;
 }
+
 @media (max-width: 1400px) {
+  .options {
+    gap: 0;
+  }
+
   .options button {
     padding: 1rem 3.5rem;
   }
 }
+
+@media (max-width: 992px) {
+  .options button {
+    padding: 0.8rem 1rem;
+    font-size: 1.2rem;
+    text-align: center;
+  }
+}
+
+@media (max-width: 768px) {
+  .options button {
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .options {
+    grid-template-rows: 1fr 1fr;
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 400px) {
+}
+
 .options button:hover {
   cursor: pointer;
 }

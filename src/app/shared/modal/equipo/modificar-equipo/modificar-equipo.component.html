@@ -1,11 +1,10 @@
-
   <div class="modal-overlay" *ngIf="isVisible">
     <div class="modal-content">
       <div class="modal-header">
         <h2 class="header-form">Añadir datos: <span class="header-span" *ngIf="headerCharged">{{ this.equipo.codigoId }}</span></h2>
         <img src="/assets/svg/exit-button.svg" (click)="cerrar()" alt="exit_button" class="close-button">
       </div>
-      <div class="modal-body" style="position: relative;">
+      <div class="modal-body">
         <div *ngIf="!formCharged" class="loader-height">
           <shared-loader-modal></shared-loader-modal>
         </div>
@@ -60,6 +59,3 @@
       </div>
     </div>
   </div>
-
-
-

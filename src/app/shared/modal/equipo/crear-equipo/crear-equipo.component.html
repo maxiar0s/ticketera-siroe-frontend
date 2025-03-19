@@ -12,7 +12,7 @@
         <div class="two-inputs">
           <!-- Campo Departamento -->
           <div class="form-group width-50">
-            <label for="departamento">Departamento de equipos</label>
+            <label for="departamento">Departamento de equipo</label>
             <select id="departamentoSelect" class="width-50" id="departamento" (change)="changeSelectColor($event)" formControlName="departamento">
               <option value="" id="seleccionar" disabled selected>Seleccionar</option>
               <option value="Recursos Humanos">Recursos Humanos</option>
@@ -59,7 +59,7 @@
 
         <!-- Botones -->
         <div class="form-actions">
-          <button *ngIf="!creating" class="btn form-size" [ngClass]="{'invalid-form': equipoForm.invalid, 'valid-form': equipoForm.valid}" type="submit" [disabled]="equipoForm.invalid">Crear equipos</button>
+          <button *ngIf="!creating" class="btn form-size" [ngClass]="{'invalid-form': equipoForm.invalid, 'valid-form': equipoForm.valid}" type="submit" [disabled]="equipoForm.invalid">Crear equipo</button>
           <button *ngIf="creating" class="btn form-size" type="submit" [disabled]="equipoForm.invalid"><div class="spinner-buttons spinner-size-buttons spinner-color"></div></button>
         </div>
       </form>

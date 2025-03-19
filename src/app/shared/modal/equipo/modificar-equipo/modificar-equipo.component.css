@@ -3,25 +3,33 @@
   top: 0;
   left: 0;
   width: 100%;
-  
+  height: 100%;
   background-color: rgba(0, 0, 0, 0.5);
   display: flex;
   justify-content: center;
   align-items: center;
   z-index: 1000;
+  overflow: hidden; /* Evita scroll en el overlay */
 }
 
 .modal-content {
   background-color: #f7f6f6;
   border-radius: 2rem;
   width: 90%;
+  max-height: 90vh; /* Altura máxima del 90% de la ventana */
   box-shadow: 0 5px 15px rgba(0,0,0,0.3);
   position: relative;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden; /* Oculta el desbordamiento */
 }
-@media (max-width: 1400px) {
-  .modal-content {
-    margin: 5rem 0;
-  }
+
+.modal-body {
+  overflow-y: auto; /* Permite scroll vertical */
+  padding: 1rem;
+  flex: 1;
+  max-height: calc(90vh - 70px); /* Ajustar según la altura del header */
+  position: relative; /* Mantener el comportamiento del estilo inline */
 }
 
 .header-span {
@@ -73,14 +81,30 @@
   min-width: 100%;
 }
 
+.equiptment-button {
+  padding: 1rem;
+  background: #b71653;
+  color: #fff;
+  border: none;
+  border-radius: 2rem;
+  cursor: pointer;
+}
+
+.equiptment-button:hover {
+  background: #920d42;
+}
+
 @media (max-width: 730px) {
   .grid-form {
     grid-template-columns: repeat(2, 1fr);
   }
   .modal-content {
-
     width: 98%;
-
+  }
+  
+  .modal-body {
+    max-height: calc(90vh - 70px); /* Ajustar según la altura del header */
+    position: relative; 
   }
 }
 
@@ -91,5 +115,27 @@
 
   .form-group.full-width {
     grid-column: 1;
+  }
+  
+  .modal-content {
+    width: 95%;
+    max-height: 85vh; /* Reduce un poco más la altura en pantallas muy pequeñas */
+  }
+  
+  .modal-body {
+    padding: 1rem;
+    max-height: calc(85vh - 70px); /* Ajustar según la altura del header */
+    position: relative; 
+  }
+
+  .equiptment-button {
+    padding: 0.5rem;
+  }
+
+  .form-actions {
+    flex-direction: column;
+    justify-content: center;
+    align-items: stretch;
+    text-align: center;
   }
 }

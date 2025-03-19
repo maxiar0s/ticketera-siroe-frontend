@@ -1,9 +1,16 @@
+.responsive-container {
+  width: 100%;
+  margin: 0 auto;
+}
+
 .users-table {
   border-radius: 20px;
   border: 1px solid #eaeaea;
   background-color: #f7f7f7;
   padding: 5px 35px;
   box-shadow: 4px 4px 18px -2px #E7E4E8CC;
+  overflow-x: auto; /* Add horizontal scrolling */
+  width: 100%;
 }
 
 .pointer {
@@ -24,6 +31,7 @@
   height: 23px;
   padding: 4px 10px 4px 10px;
   border-radius: 10px;
+  white-space: nowrap; /* Prevent text wrapping */
 }
 
 .activo {
@@ -43,10 +51,15 @@
 
 .row-table {
   height: 40px;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .svg {
   height: 15px;
+  width: 15px; /* Add fixed width */
   transition: opacity 0.3s ease;
 }
 
@@ -61,10 +74,10 @@
 }
 
 .col-1 {
-  width: 25px;
+  width: 20px; /* Reduced from 25px */
 }
 .col-2 {
-  width: 100px;
+  width: 60px; /* Reduced from 100px */
 }
 .col-3 {
   width: 150px;
@@ -79,5 +92,150 @@
   width: 105px;
 }
 .col-7 {
-  width: 80px;
+  width: 90px; /* Increased from 80px to accommodate fixed-size icons */
+}
+
+.information-actions {
+  display: flex;
+  gap: 5px;
+  align-items: center;
+  justify-content: center;
+  min-width: 90px; /* Ensure minimum width for action buttons */
+}
+
+.actions {
+  background: none;
+  border: none;
+  padding: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 25px; /* Ensure minimum width for each button */
+}
+
+.table {
+  width: 100%;
+  min-width: 650px; /* Ensure minimum width for readability */
+}
+
+/* Responsive adjustments */
+@media screen and (max-width: 992px) {
+  .users-table {
+    padding: 5px 15px;
+  }
+  
+  .col-3, .col-4, .col-5 {
+    width: 120px;
+  }
+  
+  /* Keep SVG size consistent */
+  .svg {
+    height: 15px;
+    width: 15px;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .users-table {
+    padding: 5px 10px;
+  }
+  
+  .col-1 {
+    width: 15px; /* Further reduced */
+  }
+  
+  .col-2 {
+    width: 50px; /* Further reduced */
+  }
+  
+  .col-3, .col-4, .col-5 {
+    width: 100px;
+  }
+  
+  .estadoCuenta {
+    width: 90px;
+    font-size: 0.9em;
+  }
+  
+  /* Keep SVG size consistent */
+  .svg {
+    height: 15px;
+    width: 15px;
+  }
+}
+
+@media screen and (max-width: 576px) {
+  .users-table {
+    padding: 5px;
+  }
+  
+  .information-actions {
+    flex-direction: row;
+    justify-content: center;
+  }
+  
+  .actions {
+    padding: 3px;
+  }
+  
+  /* Keep SVG size consistent */
+  .svg {
+    height: 15px;
+    width: 15px;
+  }
+}
+
+/* Extra small devices */
+@media screen and (max-width: 480px) {
+  .table {
+    min-width: 500px;
+  }
+  
+  .col-1 {
+    width: 10px; /* Minimum width */
+  }
+  
+  .col-2 {
+    width: 40px; /* Minimum width */
+  }
+  
+  .col-3, .col-4, .col-5 {
+    width: 80px;
+  }
+  
+  .col-6 {
+    width: 90px;
+  }
+  
+  .col-7 {
+    width: 90px; /* Keep space for fixed-size icons */
+  }
+  
+  .estadoCuenta {
+    width: 80px;
+    font-size: 0.85em;
+    padding: 4px 5px;
+  }
+  
+  .information-actions {
+    gap: 2px;
+  }
+  
+  /* Keep SVG size consistent */
+  .svg {
+    height: 15px;
+    width: 15px;
+  }
+  
+  .actions {
+    padding: 3px;
+    min-width: 22px; /* Slightly reduced for very small screens */
+  }
+}
+
+/* Ensure images don't shrink */
+img.svg {
+  min-height: 15px;
+  min-width: 15px;
+  object-fit: contain;
 }
