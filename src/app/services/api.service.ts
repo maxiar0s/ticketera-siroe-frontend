@@ -6,7 +6,8 @@ import { catchError, map, Observable, of, throwError } from 'rxjs';
   providedIn: 'root',
 })
 export class ApiService {
-  private url = 'https://app-soporte-siroe.vercel.app';
+  private url = 'http://167.71.172.190:3000' 
+  // private url = 'https://app-soporte-siroe.vercel.app';
   // private url = "http://localhost:3000";
 
   constructor(private http: HttpClient) {}
