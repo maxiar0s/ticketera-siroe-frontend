@@ -29,11 +29,11 @@
                   <button class="actions pointer">
                     <img src="/assets/svg/ver-datos.svg" class="svg ver-datos" alt="ver-datos.svg">
                   </button>
-                  <button *ngIf="idAdministrador != cuenta.id" class="actions pointer">
-                    <img src="/assets/svg/edit-user.svg" (click)="abrirModalModificarUsuario(i)" class="svg edit-user" alt="edit-user.svg">
+                  <button [disabled]="idAdministrador === cuenta.id" class="actions pointer" [ngClass]="{'disabled-button': idAdministrador === cuenta.id}">
+                    <img src="/assets/svg/edit-user.svg" (click)="idAdministrador !== cuenta.id && abrirModalModificarUsuario(i)"  [ngClass]="{'disabled-icon': idAdministrador === cuenta.id}" class="svg edit-user" alt="edit-user.svg">
                   </button>
-                  <button *ngIf="idAdministrador != cuenta.id" class="actions pointer">
-                    <img src="/assets/svg/delete.svg" (click)="abrirModalEliminarUsuario(i)" class="svg delete" alt="delete.svg">
+                  <button [disabled]="idAdministrador === cuenta.id" class="actions pointer" [ngClass]="{'disabled-button': idAdministrador === cuenta.id}">
+                    <img src="/assets/svg/delete.svg" (click)="idAdministrador !== cuenta.id && abrirModalEliminarUsuario(i)" class="svg delete" [ngClass]="{'disabled-icon': idAdministrador === cuenta.id}" alt="delete.svg">
                   </button>
               </td>
           </tr>

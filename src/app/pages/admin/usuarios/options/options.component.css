@@ -14,6 +14,7 @@
   font-weight: 500;
   font-size: 1.3rem;
   padding: 1rem 4rem;
+  margin-left: 1rem;
   position: relative;
   transition: padding 0.3s ease, font-size 0.3s ease;
   width: 100%;

@@ -7,28 +7,16 @@
   padding: 0rem 3.5rem;
   display: flex;
   align-items: center;
-  justify-content: space-around;
+  justify-content: space-between;
   border-bottom: 1px solid #e6eff5;
 }
 
-@media (max-width: 1400px) {
-  .flex {
-    min-height: 7.5rem;
-    max-height: 7.5rem;
-    padding: 0rem 2rem;
-  }
-}
 
 .flex-search {
   display: flex;
   align-items: center;
   justify-content: end;
   gap: 3rem;
-}
-@media (max-width: 1400px) {
-  .flex-search {
-    gap: 2rem;
-  }
 }
 
 input {
@@ -40,22 +28,13 @@ input {
   padding: 1rem;
   border-radius: 25px;
 }
-@media (max-width: 1400px) {
-  .svg_option {
-    min-height: 3rem;
-  }
-}
+
 
 .svg {
   min-height: 2rem;
   max-height: 2.5rem;
 }
-@media (max-width: 1400px) {
-  .svg {
-    min-height: 2rem;
-    max-height: 2rem;
-  }
-}
+
 
 .title {
   color: #222223;
@@ -75,12 +54,7 @@ input {
   justify-content: center;
   background-color: #b71752;
 }
-@media (max-width: 1400px) {
-  .user {
-    height: 3.5rem;
-    width: 3.5rem;
-  }
-}
+
 
 .user-profile-picture {
   display: flex;
@@ -135,7 +109,7 @@ input {
     padding: 0rem 2rem;
     display: flex;
     align-items: center;
-    justify-content: space-around;
+    justify-content: space-between;
     border-bottom: 1px solid #e6eff5;
     position: relative; /* Para posicionamiento de elementos expandidos */
   }
