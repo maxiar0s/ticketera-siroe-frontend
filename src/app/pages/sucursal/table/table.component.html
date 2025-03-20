@@ -34,7 +34,10 @@
       </tbody>
 
       <tbody *ngIf="equipos && equipos.length > 0">
-        <tr *ngFor="let equipo of equipos; let i = index" class="row-border">
+        <tr
+          *ngFor="let equipo of equipos; let i = index"
+          class="row-border"
+        >
           <td class="information-checkbox information-value">
             <input
               type="checkbox"
@@ -42,7 +45,7 @@
             />
           </td>
           <td class="information-checkbox information-value">
-            {{ i + 1 + (paginaActual - 1) * 8 }}
+            {{ parseInt(equipo.codigoId.slice(-3)) }}
           </td>
           <td class="information-value">
             <div

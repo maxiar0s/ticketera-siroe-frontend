@@ -1,20 +1,32 @@
-<!-- src/app/modal-form/modal-form.component.html -->
 <div class="modal-overlay" *ngIf="isVisible">
   <div class="modal-content">
     <div class="modal-header">
       <h2 class="header-form">Añadir Equipo</h2>
-      <img src="/assets/svg/exit-button.svg" (click)="cerrar()" alt="exit_button" class="close-button">
+      <img
+        src="/assets/svg/exit-button.svg"
+        (click)="cerrar()"
+        alt="exit_button"
+        class="close-button"
+      />
     </div>
     <div class="modal-body">
-      <p class="description-form">Asigna un código único para identificar y registrar equipos en el sistema.</p>
+      <p class="description-form">
+        Asigna un código único para identificar y registrar equipos en el
+        sistema.
+      </p>
       <form [formGroup]="equipoForm" (ngSubmit)="onSubmit()">
-        <input type="hidden" [value]="id" formControlName="sucursalId">
+        <input type="hidden" [value]="id" formControlName="sucursalId" />
         <div class="two-inputs">
           <!-- Campo Departamento -->
           <div class="form-group width-50">
             <label for="departamento">Departamento de equipo</label>
-            <select id="departamentoSelect" class="width-50" id="departamento" (change)="changeSelectColor($event)" formControlName="departamento">
-              <option value="" id="seleccionar" disabled selected>Seleccionar</option>
+            <select
+              id="departamento"
+              class="width-50"
+              (change)="changeSelectColor($event)"
+              formControlName="departamento"
+            >
+              <option value="" disabled selected>Seleccionar</option>
               <option value="Recursos Humanos">Recursos Humanos</option>
               <option value="Informática">Informática</option>
               <option value="Marketing y ventas">Marketing y ventas</option>
@@ -23,7 +35,13 @@
               <option value="Investigación">Investigación</option>
               <option value="Servicio al Cliente">Servicio al Cliente</option>
             </select>
-            <div *ngIf="equipoForm.get('departamento')?.invalid && equipoForm.get('departamento')?.touched" class="error">
+            <div
+              *ngIf="
+                equipoForm.get('departamento')?.invalid &&
+                equipoForm.get('departamento')?.touched
+              "
+              class="error"
+            >
               Seleccione un departamento
             </div>
           </div>
@@ -31,23 +49,46 @@
           <!-- Campo cantidad -->
           <div class="form-group width-50">
             <label for="cantidad">Añadir cantidad de equipos</label>
-            <input class="width-50" id="cantidad" formControlName="cantidad" formatInputNumber type="text" placeholder="Ingrese la cantidad"/>
-            <div *ngIf="equipoForm.get('cantidad')?.invalid && equipoForm.get('cantidad')?.touched" class="error">
+            <input
+              class="width-50"
+              id="cantidad"
+              formControlName="cantidad"
+              formatInputNumber
+              type="text"
+              placeholder="Ingrese la cantidad"
+            />
+            <div
+              *ngIf="
+                equipoForm.get('cantidad')?.invalid &&
+                equipoForm.get('cantidad')?.touched
+              "
+              class="error"
+            >
               Ingrese una cantidad invalida
             </div>
           </div>
         </div>
 
         <!-- Campo tipo -->
-        <div class="form-group" style="margin-bottom: 2rem;">
+        <div class="form-group" style="margin-bottom: 2rem">
           <label for="tipoEquipoId">Tipo de equipo</label>
-          <select (change)="changeSelectColor($event)" id="tipoEquipoId" formControlName="tipoEquipoId">
+          <select
+            (change)="changeSelectColor($event)"
+            id="tipoEquipoId"
+            formControlName="tipoEquipoId"
+          >
             <option value="" disabled selected>Seleccionar</option>
             @for(equipo of TipoEquipos; track equipo) {
-              <option [value]="equipo.id">{{ equipo.name }}</option>
+            <option [value]="equipo.id">{{ equipo.name }}</option>
             }
           </select>
-          <div *ngIf="equipoForm.get('tipoEquipoId')?.invalid && equipoForm.get('tipoEquipoId')?.touched" class="error">
+          <div
+            *ngIf="
+              equipoForm.get('tipoEquipoId')?.invalid &&
+              equipoForm.get('tipoEquipoId')?.touched
+            "
+            class="error"
+          >
             Seleccione tipo de equipo
           </div>
         </div>
@@ -59,8 +100,28 @@
 
         <!-- Botones -->
         <div class="form-actions">
-          <button *ngIf="!creating" class="btn form-size" [ngClass]="{'invalid-form': equipoForm.invalid, 'valid-form': equipoForm.valid}" type="submit" [disabled]="equipoForm.invalid">Crear equipo</button>
-          <button *ngIf="creating" class="btn form-size" type="submit" [disabled]="equipoForm.invalid"><div class="spinner-buttons spinner-size-buttons spinner-color"></div></button>
+          <button
+            *ngIf="!creating"
+            class="btn form-size"
+            [ngClass]="{
+              'invalid-form': equipoForm.invalid,
+              'valid-form': equipoForm.valid
+            }"
+            type="submit"
+            [disabled]="equipoForm.invalid"
+          >
+            Crear equipo
+          </button>
+          <button
+            *ngIf="creating"
+            class="btn form-size"
+            type="submit"
+            [disabled]="equipoForm.invalid"
+          >
+            <div
+              class="spinner-buttons spinner-size-buttons spinner-color"
+            ></div>
+          </button>
         </div>
       </form>
     </div>

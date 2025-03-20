@@ -51,6 +51,7 @@ export class TableComponent {
 
   @Input()
   set equiposRecibidos(value: Equipo[] | undefined | null) {
+    // No ordenamos los equipos aquí porque la paginación se maneja en el backend
     this.equipos = value;
 
     if (this.equipos === undefined || this.equipos === null) {
@@ -171,5 +172,9 @@ export class TableComponent {
 
   enviarEquipos(): void {
     this.Devices.emit([...this.selectedDevices]);
+  }
+
+  parseInt(value: string): number {
+    return parseInt(value);
   }
 }

@@ -108,7 +108,18 @@ export class SucursalComponent {
           if(!this.Title) this.headerTitle(sucursal.casaMatriz.razonSocial);
 
           this.sucursal = sucursal;
-          this.equipos = sucursal.equipos;
+          
+          // Ordenar los equipos por los últimos 3 dígitos del codigoId en orden ascendente
+          if (sucursal.equipos && sucursal.equipos.length > 0) {
+            this.equipos = [...sucursal.equipos].sort((a, b) => {
+              const numA = parseInt(a.codigoId.slice(-3));
+              const numB = parseInt(b.codigoId.slice(-3));
+              return numA - numB;
+            });
+          } else {
+            this.equipos = sucursal.equipos;
+          }
+          
           this.paginas = paginas;
 
           this.obtainedEquipments = true;

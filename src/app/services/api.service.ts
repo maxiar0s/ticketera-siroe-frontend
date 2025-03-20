@@ -91,9 +91,9 @@ export class ApiService {
 
   // Sucursal
   sucursal(id: string, pagina: number, option: string): Observable<any> {
-    let endpoint = `sucursal/` + id + `?pagina=${pagina}`;
+    let endpoint = `sucursal/` + id + `?pagina=${pagina}&sort=asc`;
     if (option) {
-      endpoint = `sucursal/` + id + `?pagina=${pagina}&option=${option}`;
+      endpoint = `sucursal/` + id + `?pagina=${pagina}&option=${option}&sort=asc`;
     }
     return this.getInformation(endpoint);
   }
