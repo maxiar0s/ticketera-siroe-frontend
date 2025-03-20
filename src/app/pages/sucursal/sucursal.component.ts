@@ -9,7 +9,7 @@ import { CommonModule } from '@angular/common';
 import { ButtonsComponent } from './options/options.component';
 import { OptionsComponent } from '../../shared/options/options.component';
 import { ImprimirEquipo } from '../../interfaces/ImprimirEquipo.interface';
-import { Equipo } from '../../interfaces/Equipo.interface';
+import { Equipo } from '../../interfaces/equipo.interface';
 import { LoaderService } from '../../services/loader.service';
 import { NavegationComponent } from '../../shared/navegation/navegation.component';
 import { concatMap, forkJoin, from } from 'rxjs';

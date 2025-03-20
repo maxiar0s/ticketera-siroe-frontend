@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { Equipo } from '../../../../interfaces/Equipo.interface';
+import { Equipo } from '../../../../interfaces/equipo.interface';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { SignedUrlPipe } from '../../../../pipes/generar-url.pipe';
 

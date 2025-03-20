@@ -15,7 +15,7 @@ import {
 } from '@angular/forms';
 import { LoaderService } from '../../../../services/loader.service';
 import { ApiService } from '../../../../services/api.service';
-import { Equipo } from '../../../../interfaces/Equipo.interface';
+import { Equipo } from '../../../../interfaces/equipo.interface';
 import { EquipoFormField } from '../../../../interfaces/EquipoForm.interface';
 import { LoaderModalComponent } from '../../../loader-modal/loader-modal.component';
 

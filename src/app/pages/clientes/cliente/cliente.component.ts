@@ -8,7 +8,7 @@ import { Sucursal } from '../../../interfaces/Sucursal.interface';
 import { ApiService } from '../../../services/api.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SignalService } from '../../../services/signal.service';
-import { Cliente } from '../../../interfaces/Cliente.interface';
+import { Cliente } from '../../../interfaces/cliente.interface';
 import { NavegationComponent } from "../../../shared/navegation/navegation.component";
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../../services/auth.service';

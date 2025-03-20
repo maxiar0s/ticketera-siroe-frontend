@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { Cliente } from '../../../../interfaces/Cliente.interface';
+import { Cliente } from '../../../../interfaces/cliente.interface';
 import { CommonModule } from '@angular/common';
 import { SignedUrlPipe } from '../../../../pipes/generar-url.pipe';
 import { ApiService } from '../../../../services/api.service';

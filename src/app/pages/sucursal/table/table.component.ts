@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { ApiService } from '../../../services/api.service';
-import { Equipo } from '../../../interfaces/Equipo.interface';
+import { Equipo } from '../../../interfaces/equipo.interface';
 import { ModificarEquipoComponent } from '../../../shared/modal/equipo/modificar-equipo/modificar-equipo.component';
 import { LoaderService } from '../../../services/loader.service';
 import { FormatoFechaPipe } from '../../../pipes/formato-fecha.pipe';

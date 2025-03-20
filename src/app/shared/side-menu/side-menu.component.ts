@@ -8,6 +8,16 @@ import menu_administrador from './menu-administrador.json';
 import menu_tecnico from './menu-tecnico.json';
 import menu_config from './menu-config.json';
 
+/*{ Opcion tipo de equipo menu-administrador.json
+  "id": 3,
+  "nombre": "Tipo de equipo ",
+  "route": "/tipo-equipo",
+  "svg": "tipo-de-equipo",
+  "subItem": [
+  ],
+  "isOpen": false
+},*/
+
 @Component({
   selector: 'shared-side-menu',
   standalone: true,

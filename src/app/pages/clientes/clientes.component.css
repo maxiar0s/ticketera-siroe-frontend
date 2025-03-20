@@ -81,16 +81,17 @@
 
 .card-information {
   display: grid;
-  grid-template-columns: 55% 25% 20%;
-  gap: 10px;
+  grid-template-columns: 2fr 2fr 1fr;
+  gap: 1rem;
+  width: 100%;
 }
 
 .information {
   display: flex;
   height: 100%;
-  gap: 1.5rem;
+  gap: 1rem;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: center;
 }
 
 .information p {
@@ -105,10 +106,16 @@
   word-break: break-word;
 }
 
+.client-button-container {
+  display: flex;
+  flex-wrap: wrap;
+  align-content: center;
+}
+
 /* Corrección para el botón que se sale del contenedor */
 .client-button {
-  padding: 0.75rem 1rem; /* Reducido el padding horizontal */
-  margin: 0 auto auto auto;
+  padding: 0.75rem 1.2rem; /* Reducido el padding horizontal */
+  margin: 0;
   border: 1px solid #4f4f4f;
   border-radius: 25px;
   font-weight: 500;
@@ -116,8 +123,6 @@
   transition: all 350ms;
   text-align: center;
   text-decoration: none;
-  display: inline-block;
-  white-space: nowrap;
   font-size: 13px; /* Reducido el tamaño de fuente base */
   width: fit-content; /* Ajustar al contenido */
   max-width: 100%; /* Asegurar que no se salga */
@@ -171,57 +176,9 @@
   color: #666;
 }
 
-/* Pantallas grandes (hasta 1400px) */
-@media (max-width: 1400px) {
-  .card-body {
-    padding: 1.5rem;
-  }
-
-  .information p {
-    font-size: 13px;
-  }
-
-  .client-button {
-    padding: 0.6rem 0.8rem; /* Reducido aún más */
-    font-size: 13px;
-  }
-}
-
-/* Pantallas medianas (hasta 992px) */
-@media (max-width: 992px) {
-  .clients {
-    padding: 15px;
-  }
-
-  .card-body {
-    grid-template-columns: 20% 80%;
-    padding: 1.2rem;
-  }
-
-  .card-information {
-    grid-template-columns: 45% 30% 25%; /* Ajustado para dar más espacio al botón */
-  }
-
-  .information {
-    gap: 1rem;
-  }
-
-  .information p {
-    font-size: 12px;
-  }
-
-  .client-button {
-    padding: 0.5rem 0.7rem;
-    font-size: 12px;
-  }
-
-  .logo {
-    max-width: 12rem;
-  }
-}
 
 /* Tablets (hasta 768px) */
-@media (max-width: 800px) {
+@media (max-width: 1000px) {
   .clients {
     padding: 10px;
   }

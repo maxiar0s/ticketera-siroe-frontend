@@ -3,7 +3,7 @@ import { Component } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { CrearClienteComponent } from '../../shared/modal/cliente/crear-cliente/crear-cliente.component';
 import { ApiService } from '../../services/api.service';
-import { Cliente } from '../../interfaces/Cliente.interface';
+import { Cliente } from '../../interfaces/cliente.interface';
 import { SignalService } from '../../services/signal.service';
 import { LoaderService } from '../../services/loader.service';
 import { NavegationComponent } from "../../shared/navegation/navegation.component";
