@@ -1,10 +1,11 @@
 .flex {
   height: 100%;
   width: 100%;
-  min-height: 9rem;
-  max-height: 9rem;
+  min-height: 7rem;
+  max-height: 7rem;
   background-color: #f7f7f7;
-  padding: 0rem 3.5rem;
+  padding: 0rem 3rem;
+  margin-left: 0.4rem;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -80,16 +81,17 @@ input {
 .search-bar label {
   padding: 1rem 0 1rem 2rem;
 }
-@media (max-width: 1400px) {
-  .search-bar label {
-    padding: 0.5rem 0 0.5rem 1rem;
-  }
-}
+
 .search-bar input {
   font-size: 1.2rem;
   padding: 1rem 7rem 1rem 0;
 }
+
 @media (max-width: 1400px) {
+  .search-bar label {
+    padding: 0.5rem 0 0.5rem 1rem;
+  }
+
   .search-bar input,
   .search-bar input::placeholder {
     padding: 0.6rem 3.5rem 0.6rem 0;
@@ -107,6 +109,7 @@ input {
     max-height: 7rem;
     background-color: #f7f7f7;
     padding: 0rem 2rem;
+    margin-left: 0;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -192,19 +195,9 @@ input {
   }
 }
 
-@media (max-width: 500px) {
-  .flex {
-    justify-content: space-between;
-  }
+@media (max-width : 600px){
+  
   .flex-search {
-    gap: 0.5rem;
-  }
-
-  .title {
-    font-size: 1.5rem;
-  }
-
-  .logo-topbar {
-    background-image: url("/assets/img/soporte-s.png");
+    gap: 1rem;
   }
 }

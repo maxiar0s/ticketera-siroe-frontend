@@ -2,8 +2,9 @@
 .clients {
   display: flex;
   flex-direction: column;
-  gap: 20px;
-  padding: 25px;
+  gap: 1rem;
+  padding: 1rem 2rem;
+  margin-left: 1.4rem;
   min-height: 75vh;
 }
 
@@ -176,41 +177,46 @@
   color: #666;
 }
 
+.logo{
+  border-radius: 25px;
+}
+
 
 /* Tablets (hasta 768px) */
 @media (max-width: 1000px) {
-  .clients {
-    padding: 10px;
-  }
-
   .card-body {
-    grid-template-columns: 100%;
+    grid-template-columns: 1fr;
     height: auto;
     padding: 1.2rem;
   }
 
   .logo {
-    max-width: 10rem;
+    max-width: 15rem;
     margin-bottom: 15px;
-    height: 80px;
+    height: 100px;
   }
 
   .card-information {
-    grid-template-columns: 100%;
-    gap: 20px;
+    grid-template-columns: 1fr 1fr;
   }
 
   .information {
-    gap: 0.8rem;
+    place-self: center;
+  }
+
+  .client-button-container {
+    display: flex;
+    grid-column: 1 / 3;
+    justify-content: center;
+    width: 100%;
   }
 
   .client-button {
-    margin: 15px auto 0;
-    display: block;
-    width: 100%;
-    max-width: 250px;
+    width: auto;
+    min-width: 250px;
+    max-width: 100%;
     text-align: center;
-    padding: 0.5rem 1rem; /* Restaurado el padding horizontal */
+    padding: 0.5rem 1rem;
     font-size: 13px;
   }
 
@@ -223,85 +229,73 @@
   }
 }
 
-/* Móviles (hasta 576px) */
-@media (max-width: 500px) {
+@media (max-width: 800px) {
   .clients {
-    padding: 8px;
-    gap: 15px;
+    margin-left: 0;
   }
+}
 
+/* Móviles (hasta 576px) */
+@media (max-width: 600px) {
+  .clients {
+    padding: 1rem;
+    gap: 1rem;
+    margin-left: 0;
+  }
+  
+  /* Botón Añadir cliente a ancho completo */
   .add-clients-button {
+    width: 100%;
+    display: flex;
     justify-content: center;
   }
-
+  
   .option-button {
     width: 100%;
+    max-width: 100%;
     justify-content: center;
-    padding: 8px 15px;
-    height: auto;
+    padding: 0.75rem 1rem;
+    font-size: 14px;
+  }
+  
+  .option-button span {
+    font-size: 14px;
+  }
+  
+  .card-information{
+    grid-template-columns: 1fr;
+    grid-template-rows: repeat(2, 2fr) 1fr;
+    gap:1rem;
+    place-content: center;
   }
 
-  .card-body {
-    padding: 1rem;
+  .information-content {
+    display: grid;
+    width: fit-content;
+    place-self: center;
+    grid-template-columns: 1fr;
   }
 
-  .information {
-    gap: 0.6rem;
-  }
-
-  .information p {
-    font-size: 11px;
-  }
-
-  /* Reorganizar la información para mejor visualización en móviles */
-  .information p {
+  .client-button-container {
     display: flex;
-    flex-direction: column;
-  }
-
-  .information p span {
-    margin-top: 3px;
+    grid-column: 1 / 2;
+    justify-content: center;
+    width: 100%;
   }
 
   .client-button {
-    width: 100%; /* Ancho completo */
-    max-width: 100%; /* Eliminar restricción de ancho máximo */
-    margin: 15px auto 0;
-    padding: 8px 15px; /* Mismo padding que option-button */
-    font-size: 12px;
-    display: flex; /* Usar flexbox para centrar contenido */
-    justify-content: center;
-    align-items: center;
-    height: auto;
-  }
-
-  .container-spinner {
-    padding: 1rem;
-    height: 100px;
+    width: 100%;
+    max-width: 100%;
+    text-align: center;
+    padding: 0.5rem 1rem;
+    font-size: 13px;
   }
 }
 
 /* Móviles pequeños (hasta 400px) */
 @media (max-width: 400px) {
   .clients {
-    padding: 5px;
+    padding: 0.5 rem;
   }
 
-  .card-body {
-    padding: 0.8rem;
-  }
-
-  .logo {
-    height: 60px;
-    margin-bottom: 10px;
-  }
-
-  .information p {
-    font-size: 10px;
-  }
-
-  .client-button {
-    font-size: 11px;
-    padding: 0.4rem 0.6rem;
-  }
 }

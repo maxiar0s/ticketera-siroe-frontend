@@ -153,7 +153,7 @@
 }
 
 /* Media queries para móviles */
-@media (max-width: 500px) {
+@media (max-width: 600px) {
   .flex {
     gap: 1rem;
     flex-wrap: wrap;
@@ -194,43 +194,8 @@
   }
 
   .title {
-    font-size: 1.5rem;
+    font-size: 2rem;
     text-align: center;
   }
 }
 
-/* Media queries para móviles pequeños */
-@media (max-width: 400px) {
-  .flex {
-    gap: 8px;
-  }
-
-  .select label {
-    padding: 0.5rem 1.5rem 0.5rem 0.8rem;
-    font-size: 12px;
-  }
-
-  .search {
-    padding: 0.5rem 1.2rem;
-    font-size: 12px;
-  }
-
-  .svg-arrow-down {
-    max-height: 0.8rem;
-    right: 8px;
-  }
-
-  .option-button {
-    font-size: 12px;
-    padding: 6px 12px;
-  }
-
-  .option-button img {
-    width: 14px;
-    height: 14px;
-  }
-
-  .title {
-    font-size: 1.1rem;
-  }
-}

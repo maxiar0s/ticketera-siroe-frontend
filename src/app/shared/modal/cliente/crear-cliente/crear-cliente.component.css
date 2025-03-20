@@ -27,7 +27,7 @@
 
 .modal-body {
   overflow-y: auto; /* Permite scroll vertical */
-  padding: 1rem;
+  padding: 1rem 2rem;
   flex: 1;
   max-height: calc(90vh - 70px); /* Ajustar según la altura del header */
   position: relative; /* Mantener el comportamiento del estilo inline */
@@ -35,6 +35,16 @@
 
 .form-group input::placeholder {
   color: #d9d9d9;
+}
+
+/* Estilos para inputs cuando están en focus */
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus,
+.input-telefono:focus,
+.prefijo-telefono:focus {
+  outline: none;
+  border: 2px solid #c2215f;
 }
 
 .svg {
@@ -112,70 +122,21 @@
   .modal-body {
     max-height: calc(90vh - 70px); /* Ajustar según la altura del header */
   }
-}
 
-/* Media queries para pantallas pequeñas */
-@media (max-width: 500px) {
-  .modal-content {
-    width: 95%;
-    max-height: 85vh; /* Reduce un poco más la altura en pantallas muy pequeñas */
-  }
-  
-  .modal-body {
-    padding: 1rem;
-    max-height: calc(85vh - 70px); /* Ajustar según la altura del header */
-    position: relative;
-  }
-  
-  .form-actions {
+  .form-actions{
+    width: 100%;
+    display: flex;
+    justify-content: center;
     flex-direction: column;
     justify-content: center;
     align-content: stretch;
     align-items: center;
     text-align: center;
-
   }
   
-  .form-group input,
-  .form-group textarea,
-  .form-group select {
-    padding: 1rem;
-  }
-  
-  .prefijo-telefono {
-    padding: 1rem;
-    width: 45px;
-  }
-  
-  .input-telefono {
-    padding: 1rem;
-  }
-  
-  .telefono-container {
+  .btn.form-size {
     width: 100%;
-  }
-  
-  .custom-file-input {
-    height: auto;
-    min-height: 42px;
-  }
-  
-  .imagen-container {
-    flex-wrap: wrap;
-  }
-  
-  .imagen-container p {
-    font-size: 12px;
-    margin-bottom: 5px;
-  }
-  
-  .btn {
-    width: 100%;
-    margin-top: 10px;
-  }
-  
-  .form-size {
-    width: 100%;
-    max-width: 200px;
+    max-width: 100%;
+    padding: 0.75rem 1rem;
   }
 }

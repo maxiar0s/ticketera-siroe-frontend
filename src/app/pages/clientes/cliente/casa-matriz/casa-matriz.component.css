@@ -1,32 +1,59 @@
 .main-grid {
   display: grid;
   box-sizing: border-box;
-  grid-template-columns: 20% 80%;
-  gap: 1rem;
-  min-height: 12rem;
-  max-height: 12rem;
+  grid-template-columns: 1fr 3fr;
+  padding: 1rem 0;
   border-radius: 25px;
   background-color: #f6f6f7;
   border: 1px solid #ebebea;
-  padding: 0 1.5rem;
   width: 100%;
+  height: 100%;
 }
 
 .logo {
-  max-height: 9rem;
+  justify-self: center;
+  align-self: center;
+  max-height: 12rem;
   max-width: 100%;
   object-fit: contain;
   margin: auto;
-  padding: 1rem 0.5rem;
+  border-radius: 25px;
+  margin: 1rem 0;
 }
 
 .flex-column {
-  display: flex;
-  justify-content: space-evenly;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, 1fr);  
+  grid-template-areas: 
+    "nombre nombre nombre"
+    "rsocial rut id"
+    "encargado fono correo";
   box-sizing: border-box;
   width: 100%;
   padding: 2rem;
+}
+
+.flex-column :nth-child(1){
+  grid-area: nombre;
+}
+.flex-column :nth-child(2){
+  grid-area: rsocial;
+}
+.flex-column :nth-child(3){
+  grid-area: encargado;
+}
+.flex-column :nth-child(4){
+  grid-area: rut;
+}
+.flex-column :nth-child(5){
+  grid-area: fono;
+}
+.flex-column :nth-child(6){
+  grid-area: id;
+}
+.flex-column :nth-child(7){
+  grid-area: correo;
 }
 
 .casa-matriz {
@@ -81,147 +108,59 @@
   text-overflow: ellipsis;
 }
 
-/* Media queries para pantallas grandes */
-@media (max-width: 1400px) {
-  .main-grid {
-    padding: 0 1.2rem;
-  }
-
-  .flex-column {
-    padding: 1.5rem;
-  }
-
-  .information p {
-    font-size: 13px;
-  }
-}
 
 /* Media queries para pantallas medianas */
-@media (max-width: 992px) {
+@media (max-width: 1200px) {
+
   .main-grid {
-    padding: 0 1rem;
-    min-height: 10rem;
-    max-height: 10rem;
+    grid-template-columns: 1fr 2fr;
+    
   }
 
-  .flex-column {
-    padding: 1.2rem;
-  }
-
-  .grid {
-    gap: 1.2rem;
-  }
-
-  .information p {
-    font-size: 12px;
-  }
-
-  .logo {
-    max-height: 8rem;
+  .flex-column{
+    grid-template-columns: 1.5fr 1fr;
+    grid-template-rows: repeat(4, 1fr);
+    grid-template-areas: 
+      "nombre nombre"
+      "rsocial fono"
+      "encargado id"
+      "rut correo"
   }
 }
 
 /* Cambio a 2 columnas a los 800px */
-@media (max-width: 800px) {
+@media (max-width: 850px) {
   .main-grid {
-    grid-template-columns: 100%;
-    min-height: auto;
-    max-height: none;
-    padding: 1rem;
-  }
-
-  .logo {
-    max-height: 7rem;
-    padding: 0.5rem;
-    margin: 0 auto;
+    grid-template-columns: 1fr 1fr;
+    justify-content: space-around;
+    
   }
 
   .flex-column {
-    padding: 1rem;
+    grid-template-columns: 1fr;
+    grid-template-rows: repeat(7, 1fr);
+    grid-template-areas: 
+      "nombre"
+      "rsocial"
+      "encargado"
+      "rut"
+      "fono"
+      "id"
+      "correo"
   }
 
-  /* Cambio a 2 columnas */
-  .grid {
-    grid-template-columns: 50% 50%;
-    gap: 1rem;
-  }
-
-  .information p {
-    font-size: 12px;
-  }
 }
 
 /* Cambio a 1 columna a los 500px, pero con la imagen al lado */
-@media (max-width: 500px) {
+@media (max-width: 600px) {
   .main-grid {
-    grid-template-columns: 70% 30%; /* Cambio importante: mantener 2 columnas */
-    min-height: auto;
-    max-height: none;
-    padding: 0.8rem;
-    border-radius: 15px;
-    align-items: center; /* Centrar verticalmente */
+    grid-template-columns: 1fr;
   }
-
-  .logo {
-    max-height: 5rem;
-    max-width: 100%;
-    padding: 0.3rem;
-    margin: 0 auto;
-    grid-column: 2; /* Mover la imagen a la segunda columna */
-    grid-row: 1; /* Asegurar que esté en la primera fila */
-    order: 2; /* Para flexbox si se usa */
-  }
-
   .flex-column {
-    padding: 0.8rem 0.5rem;
-    grid-column: 1; /* Mover la información a la primera columna */
-    grid-row: 1; /* Asegurar que esté en la primera fila */
-    order: 1; /* Para flexbox si se usa */
-  }
-
-  /* Cambio a 1 columna para la información */
-  .grid {
-    grid-template-columns: 100%;
-    gap: 0.8rem;
-  }
-
-  .information p {
-    font-size: 11px;
-    white-space: normal;
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .information p span {
-    margin-left: 0;
-    margin-top: 0.2rem;
+    justify-items: center;
+    padding: 0;
+    padding-top: 0.5rem;
   }
 }
 
-/* Ajustes adicionales para móviles pequeños */
-@media (max-width: 400px) {
-  .main-grid {
-    padding: 0.6rem;
-    grid-template-columns: 65% 35%; /* Ajustar proporción para pantallas muy pequeñas */
-  }
 
-  .logo {
-    max-height: 4.5rem;
-  }
-
-  .flex-column {
-    padding: 0.6rem 0.4rem;
-  }
-
-  .grid {
-    gap: 0.6rem;
-  }
-
-  .information p {
-    font-size: 10px;
-  }
-
-  .casa-matriz {
-    margin-bottom: 0.5rem;
-  }
-}

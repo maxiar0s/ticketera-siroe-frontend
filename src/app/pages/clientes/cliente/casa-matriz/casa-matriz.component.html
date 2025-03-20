@@ -10,35 +10,31 @@
   <div class="flex-column">
     <h2 *ngIf="cliente" class="casa-matriz">{{ cliente.razonSocial }}</h2>
     <h2 *ngIf="!cliente" class="temp-title casa-matriz">Cargando cliente...</h2>
-    <div class="grid">
 
-      <div class="body-flex">
         <div class="information">
           <p>Razón Social: <span>{{ cliente?.razonSocial }}</span></p>
         </div>
-        <div class="information">
-          <p>Encargado General: <span>{{ cliente?.encargadoGeneral }}</span></p>
-        </div>
-      </div>
 
-      <div class="body-flex">
+        <div class="information">
+          <p>Encargado: <span>{{ cliente?.encargadoGeneral }}</span></p>
+        </div>
+
         <div class="information">
           <p>RUT Cliente: <span>{{ cliente?.rut }}</span></p>
         </div>
+
         <div class="information">
           <p>Teléfono: <span>{{ cliente?.telefonoEncargado }}</span></p>
         </div>
-      </div>
 
-      <div class="body-flex">
         <div class="information">
           <p>ID Cliente: <span>{{ cliente?.id}}</span></p>
         </div>
+
         <div class="information">
           <p>Correo: <span>{{ cliente?.correo }}</span></p>
         </div>
-      </div>
 
-    </div>
   </div>
+
 </section>
