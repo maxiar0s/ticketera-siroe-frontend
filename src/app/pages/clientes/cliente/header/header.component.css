@@ -1,7 +1,7 @@
 .flex {
   display: flex;
   align-items: center;
-  justify-content: space-around;
+  justify-content: space-between;
   width: 100%;
   box-sizing: border-box;
   flex-wrap: nowrap; /* Permite que los elementos se envuelvan en pantallas pequeñas */
@@ -10,7 +10,7 @@
 
 .title {
   color: #474747;
-  font-size: 2rem;
+  font-size: 2.5rem;
   font-weight: 600;
   margin: 0;
 }
@@ -121,9 +121,6 @@
 
 /* Media queries para tablets */
 @media (max-width: 800px) {
-  .flex {
-    justify-content: space-around;
-  }
 
   .filter-form {
     width: 100%;
@@ -146,10 +143,7 @@
     justify-content: flex-end;
   }
 
-  .title {
-    width: 100%;
-    font-size: 2rem;
-  }
+
 }
 
 /* Media queries para móviles */
@@ -157,6 +151,7 @@
   .flex {
     gap: 1rem;
     flex-wrap: wrap;
+    justify-content: center;
   }
 
   .filter-form {
@@ -193,9 +188,5 @@
     height: auto;
   }
 
-  .title {
-    font-size: 2rem;
-    text-align: center;
-  }
 }
 

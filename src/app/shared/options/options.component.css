@@ -11,36 +11,6 @@
   position: relative;
   white-space: nowrap; /* Prevent text wrapping */
 }
-@media (max-width: 1400px) {
-  .options button {
-    padding: 1rem 3rem;
-    font-size: 1.2rem;
-  }
-}
-@media (max-width: 992px) {
-  .options button {
-    padding: 1rem 2rem;
-    font-size: 1.1rem;
-  }
-}
-@media (max-width: 768px) {
-  .options {
-    justify-content: space-between;
-  }
-  .options button {
-    padding: 0.8rem 1.5rem;
-    font-size: 1rem;
-    flex: 1;
-    text-align: center;
-    justify-content: center;
-  }
-}
-@media (max-width: 576px) {
-  .options button {
-    padding: 0.7rem 1rem;
-    font-size: 1.2rem;
-  }
-}
 .options button:hover {
   cursor: pointer;
 }
@@ -66,15 +36,28 @@
   border-top-right-radius: 10px;
 }
 
-@media (max-width: 360px) {
+@media (max-width: 800px) {
+  .options {
+    justify-content: space-between;
+  }
   .options button {
-    padding: 0.7rem 1rem;
-    font-size: 1rem;
+    padding: 0.8rem 1.5rem;
+    flex: 1;
+    text-align: center;
+    justify-content: center;
   }
 }
-@media (max-width: 310px) {
+
+
+@media (max-width: 400px) {
+  .options button {
+    padding: 0.7rem 1rem;
+    font-size: 1.2rem;
+  }
+}
+@media (max-width: 350px) {
   .options button {
     padding: 0.5rem 0.8rem;
-    font-size: 1rem;
+
   }
 }

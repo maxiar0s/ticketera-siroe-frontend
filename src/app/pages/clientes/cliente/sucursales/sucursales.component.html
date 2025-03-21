@@ -28,10 +28,12 @@
       <p>{{ sucursal.equiposCount}} equipos registrados</p>
     </div>
     <div class="div-button">
-      <a [routerLink]="['/clientes', sucursal.casaMatrizId ,'sucursal', sucursal.id]" routerLinkActive="router-link-active" class="button">Seleccionar sucursal</a>
-      <button class="button-ajustes" (click)="abrirModalAjustesSucursal(i)">
-        <img *ngIf="esAdministrador" src="/assets/svg/ajustes.svg" alt="ajustes.svg" class="svg-ajustes-sucursal">
-      </button>
+      <div class="button-container">
+        <a [routerLink]="['/clientes', sucursal.casaMatrizId ,'sucursal', sucursal.id]" routerLinkActive="router-link-active" class="button">Seleccionar sucursal</a>
+        <button class="button-ajustes" (click)="abrirModalAjustesSucursal(i)">
+          <img *ngIf="esAdministrador" src="/assets/svg/ajustes.svg" alt="ajustes.svg" class="svg-ajustes-sucursal">
+        </button>
+      </div>
     </div>
   </div>
 </section>
