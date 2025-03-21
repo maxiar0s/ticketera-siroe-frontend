@@ -15,10 +15,6 @@
     margin-bottom: 0.8rem;
   }
   
-  .header-sucursal {
-    margin-bottom: 1rem;
-  }
-  
   .navegation-section {
     margin-top: 1rem;
   }
@@ -34,9 +30,6 @@
     margin-bottom: 0.5rem;
   }
   
-  .header-sucursal {
-    margin-bottom: 0.8rem;
-  }
 }
 
 /* Media queries para pantallas muy pequeñas */
@@ -47,10 +40,6 @@
   
   .options-sucursal {
     margin-bottom: 0.3rem;
-  }
-  
-  .header-sucursal {
-    margin-bottom: 0.5rem;
   }
   
   .navegation-section {

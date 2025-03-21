@@ -22,40 +22,78 @@
   grid-template-columns: 1fr 1fr;
   grid-template-rows: 1fr;
   align-items: center;
-  justify-content: space-evenly;
-  padding: 2rem 0;
+  justify-content: space-between;
+  margin: 1rem 0;
 }
 
 .header-title {
-  font-size: 1.8rem;
-  font-weight: 900;
+  font-size: 2rem;
+  font-weight: bold;
   place-self: center;
 }
 
 .header-direccion {
-  font-weight: 600;
-  font-size: 1.8rem;
+  font-weight: normal;
+  font-size: 2rem;
   place-self: center;
 }
 
 .grid-body-container {
   display: grid;
-  padding-bottom: 1.5rem;
 }
 
 .grid-body {
   display: grid;
-  width: 100%;
-  grid-template-columns: 0.8fr repeat(3, 1fr);
-  gap: 1rem;
+  grid-template-columns: 0.7fr 1fr 0.7fr 1fr;
+  grid-template-rows: repeat(3, 1fr);
+  grid-template-areas: 
+    "foto razonSocial rut encargadoSucursal"
+    "foto encargadoGeneral telefonoCasaMatriz telefonoSucursal"
+    "foto correoCasaMatriz id correoSucursal";
+  align-items: center;
+  gap: 0rem 2rem;
+  padding: 0 1rem 0 2rem;
+  margin-bottom: 1rem;
+}
+
+.logo,
+.spinner-images{
+  grid-area: foto;
+}
+#encargadoSucursal{
+  grid-area: encargadoSucursal;
+}
+#razonSocial{
+  grid-area: razonSocial;
+}
+#encargadoGeneral{
+  grid-area: encargadoGeneral;
+}
+#telefonoCasaMatriz{
+  grid-area: telefonoCasaMatriz;
+}
+#telefonoSucursal{
+  grid-area: telefonoSucursal;
+}
+#rut{
+  grid-area: rut;
+}
+#correoCasaMatriz{
+  grid-area: correoCasaMatriz;
+}
+#correoSucursal{
+  grid-area: correoSucursal;
+}
+#id{
+  grid-area: id;
 }
 
 .logo {
-  max-width: 100%;
-  max-height: 10rem;
-  padding: 1rem;
+
   margin: auto;
   object-fit: contain; /* Cambiado de cover a contain para mejor visualización */
+  border-radius: 25px;
+
 }
 
 .information-flex {
@@ -64,41 +102,86 @@
 }
 
 .information-title {
+  font-size: 1.4rem;
   font-weight: bolder;
 }
 
 .information-title span {
+  font-size: 1.4rem;
   font-weight: normal;
 }
 
-/* Tablets */
-@media (max-width: 800px) {
+@media (max-width: 1400px) {
+    .grid-body {
+      display: grid;
+      grid-template-columns: 0.7fr 1fr 1fr;
+      grid-template-rows: repeat(4, 1fr);
+      grid-template-areas: 
+        "foto razonSocial rut"
+        "foto encargadoGeneral encargadoSucursal"
+        "foto correoCasaMatriz correoSucursal"
+        "id telefonoCasaMatriz telefonoSucursal";
+      align-items: center;
+      gap: 0rem 1rem;
+      padding: 0 1rem;
+      justify-items: center;
+    }
+
+}
+
+@media (max-width: 1000px) {
   .grid-body {
+    display: grid;
     grid-template-columns: 1fr 1fr;
-    grid-template-rows: 1fr 1fr;
-    gap: 1rem;
-    justify-content: center;
+    grid-template-rows: repeat(6, 1fr);
+    grid-template-areas: 
+      "foto razonSocial"
+      "foto encargadoGeneral"
+      "foto correoCasaMatriz"
+      "encargadoSucursal telefonoCasaMatriz "
+      "correoSucursal rut"
+      "telefonoSucursal id";
+    align-items: center;
+    gap: 0rem 1rem;
+    padding: 0 1rem;
   }
-
-  .information-flex {
-    justify-content: center;
+  .logo {
+    max-height: 15rem;
   }
 }
 
-/* Móviles grandes */
 @media (max-width: 600px) {
-  .grid-body {
-    grid-template-columns: 1fr;
-    grid-template-rows: repeat(4, 1fr);
-  }
-}
-
-/* Móviles pequeños */
-@media (max-width: 550px) {
   .title {
+    display: grid;
     grid-template-columns: 1fr;
     grid-template-rows: 1fr 1fr;
-    padding: 1fr 0;
-    gap: 0.5rem;
+    align-items: center;
+    justify-content: space-between;
+    margin: 1rem 0 0.5rem 0;
+  }
+  .logo {
+    max-height: 15rem;
+  }
+  .grid-body {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: 5fr repeat(9, 1fr);
+    grid-template-areas: 
+      "foto"
+      "razonSocial"
+      "encargadoGeneral"
+      "correoCasaMatriz"
+      "telefonoCasaMatriz"
+      "encargadoSucursal"
+      "correoSucursal"
+      "telefonoSucursal"
+      "rut"
+      "id";
+    gap: 0rem 1rem;
+    padding: 0 1rem;
+
+  }
+  .logo {
+    padding: 1rem
   }
 }

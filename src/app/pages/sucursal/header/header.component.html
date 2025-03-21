@@ -26,60 +26,55 @@
       } @else {
       <div class="spinner-images spinner-size-images"></div>
       }
-      <div class="information-flex">
-        <div class="flex">
+  
+        <div class="flex" id="encargadoSucursal">
           <p class="information-title">
             Encargado Sucursal: <span>{{ sucursal?.encargadoSucursal }}</span>
           </p>
         </div>
-        <div class="flex">
+        <div class="flex" id="razonSocial">
           <p class="information-title">
             Razón Social: <span>{{ sucursal?.casaMatriz?.razonSocial }}</span>
           </p>
         </div>
-        <div class="flex">
+        
+        <div class="flex" id="encargadoGeneral">
           <p class="information-title">
             Encargado General:
             <span>{{ sucursal?.casaMatriz?.encargadoGeneral }}</span>
           </p>
         </div>
-      </div>
 
-      <div class="information-flex">
-        <div class="flex">
+        <div class="flex" id="telefonoCasaMatriz">
           <p class="information-title">
-            Teléfono: <span>{{ sucursal?.casaMatriz?.telefonoEncargado }}</span>
+            Fono: <span>{{ sucursal?.casaMatriz?.telefonoEncargado }}</span>
           </p>
         </div>
-        <div class="flex">
+        <div class="flex" id="telefonoSucursal">
           <p class="information-title">
-            Sucursal: <span>{{ sucursal?.telefonoSucursal }}</span>
+            Fono Sucursal: <span>{{ sucursal?.telefonoSucursal }}</span>
           </p>
         </div>
-        <div class="flex">
+        <div class="flex" id="rut">
           <p class="information-title">
-            RUT cliente: <span>{{ sucursal?.casaMatriz?.rut }}</span>
+            RUT Cliente: <span>{{ sucursal?.casaMatriz?.rut }}</span>
           </p>
         </div>
-      </div>
-
-      <div class="information-flex">
-        <div class="flex">
+        <div class="flex" id="correoCasaMatriz">
           <p class="information-title">
             Correo: <span>{{ sucursal?.casaMatriz?.correo }}</span>
           </p>
         </div>
-        <div class="flex">
+        <div class="flex" id="correoSucursal">
           <p class="information-title">
-            Sucursal: <span>{{ sucursal?.correoSucursal }}</span>
+            Correo Sucursal: <span>{{ sucursal?.correoSucursal }}</span>
           </p>
         </div>
-        <div class="flex">
+        <div class="flex" id="id">
           <p class="information-title">
-            ID cliente: <span>{{ sucursal?.id }}</span>
+            ID Cliente: <span>{{ sucursal?.id }}</span>
           </p>
         </div>
-      </div>
     </div>
   </div>
 </div>
