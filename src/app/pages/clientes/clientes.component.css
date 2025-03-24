@@ -113,6 +113,10 @@
   align-content: center;
 }
 
+.button-container {
+  display: flex;  gap: 1rem;
+}
+
 /* Corrección para el botón que se sale del contenedor */
 .client-button {
   padding: 0.75rem 1.2rem; /* Reducido el padding horizontal */
@@ -134,6 +138,15 @@
   color: #f7f7f7;
   background-color: #b71752;
   border-color: #b71752;
+}
+
+.button-ajustes:hover{
+  cursor: pointer;
+}
+
+.svg-ajustes-sucursal:hover{
+  cursor: pointer;
+
 }
 
 .crear-cliente {
@@ -242,14 +255,14 @@
     gap: 1rem;
     margin-left: 0;
   }
-  
+
   /* Botón Añadir cliente a ancho completo */
   .add-clients-button {
     width: 100%;
     display: flex;
     justify-content: center;
   }
-  
+
   .option-button {
     width: 100%;
     max-width: 100%;
@@ -257,11 +270,11 @@
     padding: 0.75rem 1rem;
     font-size: 14px;
   }
-  
+
   .option-button span {
     font-size: 14px;
   }
-  
+
   .card-information{
     grid-template-columns: 1fr;
     grid-template-rows: repeat(2, 2fr) 1fr;
@@ -280,6 +293,12 @@
     display: flex;
     grid-column: 1 / 2;
     justify-content: center;
+    width: 100%;
+  }
+
+  .button-container {
+    display: flex;
+    gap: 1rem;
     width: 100%;
   }
 

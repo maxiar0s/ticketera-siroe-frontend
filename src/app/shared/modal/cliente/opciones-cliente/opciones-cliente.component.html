@@ -1,0 +1,26 @@
+<div class="modal-overlay" *ngIf="visible">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2 class="header-form">Gestionar cliente</h2>
+      <img src="/assets/svg/exit-button.svg" (click)="onCerrarModal()" alt="exit_button" class="close-button">
+    </div>
+    <div class="modal-body">
+      <h2 class="colaborador">{{ cliente?.razonSocial }}</h2>
+      <p class="description-form" style="text-align: center;">Elige si deseas modificar o eliminar el cliente.</p>
+
+      <div class="buttons">
+        <!-- Botones Eliminar -->
+        <button *ngIf="!deleting" (click)="onEliminarCliente()" class="modify-or-delete-button" type="submit">
+          <img src="/assets/svg/delete.svg" alt="delete.svg" class="svg">
+          <span>Eliminar cliente</span>
+        </button>
+        <button *ngIf="deleting" class="modify-or-delete-button" type="submit"><div class="spinner-buttons spinner-size-buttons spinner-color"></div></button>
+
+        <button (click)="onEditarCliente()" class="modify-or-delete-button" type="submit">
+          <img src="/assets/svg/agregar-datos.svg" alt="agregar-datos.svg" class="svg">
+          <span>Editar cliente</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

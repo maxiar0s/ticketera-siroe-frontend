@@ -1,9 +1,10 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { FormatInputRutDirective } from '../../../../directives/rut.directive';
 import { FormatInputTelefonoDirective } from '../../../../directives/telefono.directive';
 import { validarRut } from '../../../../validators/rut.validator';
+import { Cliente } from '../../../../interfaces/cliente.interface';
 
 @Component({
   selector: 'shared-crear-cliente',
@@ -12,7 +13,9 @@ import { validarRut } from '../../../../validators/rut.validator';
   templateUrl: './crear-cliente.component.html',
   styleUrl: './crear-cliente.component.css'
 })
-export class CrearClienteComponent {
+export class CrearClienteComponent implements OnChanges {
+  @Input() cliente: Cliente | null = null;
+  @Input() modoEdicion: boolean = false;
   @Output() cerrarModal = new EventEmitter<void>();
   @Output() enviarFormulario = new EventEmitter<any>();
 
@@ -23,16 +26,48 @@ export class CrearClienteComponent {
   isVisible: boolean = true;
   clientForm: FormGroup;
   errorMessage: string = '';
+  tituloModal: string = 'Crear Cliente';
 
   constructor(private fb: FormBuilder) {
     this.clientForm = this.fb.group({
       rut: ['', [Validators.required, validarRut()]],
       razonSocial: ['', Validators.required],
-      imagen: ['', Validators.required],
+      imagen: [''],
       encargadoGeneral: ['', Validators.required],
       correo: ['', [Validators.required, Validators.email]],
       telefonoEncargado: ['', [Validators.required, Validators.pattern('^[\\s\\S]{11,12}$')]]
     });
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['cliente'] && changes['cliente'].currentValue) {
+      this.cargarDatosCliente();
+    }
+    
+    if (changes['modoEdicion']) {
+      this.tituloModal = this.modoEdicion ? 'Editar Cliente' : 'Crear Cliente';
+      
+      // Si estamos en modo edición, la imagen no es obligatoria
+      if (this.modoEdicion) {
+        this.clientForm.get('imagen')?.clearValidators();
+        this.clientForm.get('imagen')?.updateValueAndValidity();
+      } else {
+        this.clientForm.get('imagen')?.setValidators(Validators.required);
+        this.clientForm.get('imagen')?.updateValueAndValidity();
+      }
+    }
+  }
+
+  cargarDatosCliente() {
+    if (this.cliente) {
+      this.clientForm.patchValue({
+        rut: this.cliente.rut,
+        razonSocial: this.cliente.razonSocial,
+        encargadoGeneral: this.cliente.encargadoGeneral,
+        correo: this.cliente.correo,
+        telefonoEncargado: this.cliente.telefonoEncargado
+      });
+    }
   }
 
   abrirModal() {
@@ -54,16 +89,60 @@ export class CrearClienteComponent {
   onSubmit() {
     if (this.clientForm.valid) {
       this.creating = true;
-
+      
+      // Crear un nuevo FormData para evitar duplicados
+      const formData = new FormData();
+      
+      // Asegurarse de que todos los campos requeridos se incluyan
+      const requiredFields = ['rut', 'razonSocial', 'encargadoGeneral', 'correo', 'telefonoEncargado'];
+      
+      // Agregar todos los campos del formulario al FormData
       Object.keys(this.clientForm.value).forEach(key => {
-        this.formData.append(key, this.clientForm.value[key]);
+        const value = this.clientForm.value[key];
+        if (value !== null && value !== undefined && value !== '') {
+          // Convertir números a strings para evitar problemas
+          formData.append(key, value.toString());
+        }
       });
-      if(this.selectedFile) this.formData.set('imagen', this.selectedFile);
+      
+      // Verificar que todos los campos requeridos estén presentes
+      const missingFields = requiredFields.filter(field => 
+        !formData.get(field) && this.clientForm.get(field)?.value
+      );
+      
+      // Si faltan campos, agregarlos explícitamente
+      missingFields.forEach(field => {
+        const value = this.clientForm.get(field)?.value;
+        if (value) {
+          formData.append(field, value.toString());
+        }
+      });
+      
+      // Manejar el archivo de imagen
+      if (this.selectedFile) {
+        formData.set('imagen', this.selectedFile);
+      }
+      
+      // Si estamos en modo edición y no se seleccionó una nueva imagen, 
+      // no enviamos el campo imagen para mantener la imagen actual
+      if (this.modoEdicion && !this.selectedFile) {
+        formData.delete('imagen');
+      }
+      
+      // Imprimir los datos que se van a enviar para depuración
+      console.log('Datos del formulario a enviar:');
+      requiredFields.forEach(field => {
+        console.log(`${field}: ${formData.get(field)}`);
+      });
 
-      this.enviarFormulario.emit(this.formData);
-      // this.cerrar();
+      this.enviarFormulario.emit(formData);
     } else {
       this.errorMessage = 'Por favor, completa todos los campos requeridos correctamente.';
+      
+      // Marcar todos los campos como touched para mostrar los errores
+      Object.keys(this.clientForm.controls).forEach(key => {
+        this.clientForm.get(key)?.markAsTouched();
+      });
     }
   }
 }

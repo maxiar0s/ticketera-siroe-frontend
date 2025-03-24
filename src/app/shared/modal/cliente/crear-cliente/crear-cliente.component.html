@@ -1,7 +1,7 @@
 <div class="modal-overlay" *ngIf="isVisible">
   <div class="modal-content">
     <div class="modal-header">
-      <h2 class="header-form">Crear Cliente</h2>
+      <h2 class="header-form">{{ tituloModal }}</h2>
       <img src="/assets/svg/exit-button.svg" (click)="cerrar()" alt="exit_button" class="close-button">
     </div>
     <div class="modal-body">
@@ -37,11 +37,12 @@
             <label for="imagen">Imagen</label>
             <div class="custom-file-input">
               <div class="imagen-container">
-                <p *ngIf="!clientForm.value.imagen" class="imagen-placeholder">Sube el logo o la imagen del cliente</p>
-                <p *ngIf="clientForm.value.imagen" class="imagen-text">{{ clientForm.value.imagen }}</p>
+                <p *ngIf="!selectedFile && (!modoEdicion || !cliente?.imagen)" class="imagen-placeholder">Sube el logo o la imagen del cliente</p>
+                <p *ngIf="selectedFile" class="imagen-text">Imagen seleccionada</p>
+                <p *ngIf="modoEdicion && cliente?.imagen && !selectedFile" class="imagen-text">Imagen actual (click para cambiar)</p>
                 <img src="/assets/svg/camera.svg" alt="camera_svg" class="svg">
               </div>
-              <input class="inputs" (change)="onFileSelected($event)" type="file" accept="image/*" capture="environment" type="file" id="imagen" formControlName="imagen"/>
+              <input class="inputs" (change)="onFileSelected($event)" type="file" accept="image/*" capture="environment" id="imagen" formControlName="imagen"/>
             </div>
           </div>
 
@@ -88,8 +89,10 @@
 
         <!-- Botones -->
         <div class="form-actions">
-          <button *ngIf="!creating" class="btn form-size" type="submit" [ngClass]="{'invalid-form': clientForm.invalid, 'valid-form': clientForm.valid }" [disabled]="clientForm.invalid">Añadir cliente</button>
-          <button *ngIf=" creating" class="btn form-size"><div class="spinner-buttons spinner-size-buttons spinner-color"></div></button>
+          <button *ngIf="!creating" class="btn form-size" type="submit" [ngClass]="{'invalid-form': clientForm.invalid, 'valid-form': clientForm.valid }" [disabled]="clientForm.invalid">
+            {{ modoEdicion ? 'Guardar cambios' : 'Añadir cliente' }}
+          </button>
+          <button *ngIf="creating" class="btn form-size"><div class="spinner-buttons spinner-size-buttons spinner-color"></div></button>
         </div>
       </form>
     </div>

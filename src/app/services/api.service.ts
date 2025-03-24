@@ -1,14 +1,15 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { catchError, map, Observable, of, throwError } from 'rxjs';
+import { Cliente } from '../interfaces/cliente.interface';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ApiService {
-  private url = 'http://167.71.172.190:3000'
+  //private url = 'http://167.71.172.190:3000'
   // private url = 'https://app-soporte-siroe.vercel.app';
-  // private url = 'http://localhost:3000';
+  private url = 'http://localhost:3000';
 
   constructor(private http: HttpClient) {}
 
@@ -89,6 +90,60 @@ export class ApiService {
     return this.getInformation(endpoint);
   }
 
+  // todo: Eliminar cliente
+  eliminarCliente(id: string): Observable<any> {
+    const endpoint = `clientes/${id}`;
+    return this.deleteInformation(endpoint);
+  }
+
+  // todo: Modificar cliente
+  modificarCliente(id: string, datos: any): Observable<any> {
+    const endpoint = `modificar-cliente/${id}`;
+    // Si datos es un FormData, lo enviamos directamente
+    if (datos instanceof FormData) {
+      // Crear un objeto simple con los datos del formulario
+      const clienteData: any = {};
+      
+      // Extraer los valores del formulario manualmente
+      const requiredFields = ['rut', 'razonSocial', 'encargadoGeneral', 'correo', 'telefonoEncargado'];
+      for (const field of requiredFields) {
+        // Obtener el valor del campo del FormData
+        const value = datos.get(field);
+        if (value !== null) {
+          // Convertir telefonoEncargado a número
+          if (field === 'telefonoEncargado') {
+            // Eliminar cualquier carácter no numérico
+            const phoneNumber = value.toString().replace(/\D/g, '');
+            // Convertir a número entero
+            clienteData[field] = parseInt(phoneNumber, 10);
+          } else {
+            clienteData[field] = value;
+          }
+        }
+      }
+      
+      // Verificar que todos los campos requeridos estén presentes
+      const missingFields = requiredFields.filter(field => !clienteData[field]);
+      if (missingFields.length > 0) {
+        console.error('Faltan campos requeridos:', missingFields);
+        return throwError(() => new Error(`Faltan campos requeridos: ${missingFields.join(', ')}`));
+      }
+      
+      console.log('Datos a enviar:', clienteData);
+      
+      // Enviar los datos como JSON en lugar de FormData
+      return this.http.post<any>(`${this.url}/${endpoint}`, clienteData).pipe(
+        catchError((error: HttpErrorResponse) => {
+          console.error('Error en la solicitud POST:', error);
+          return throwError(() => error);
+        })
+      );
+    } else {
+      // Si no es FormData, usamos el método postInformation normal
+      return this.postInformation(datos, endpoint);
+    }
+  }
+
   // Sucursal
   sucursal(id: string, pagina: number, option: string): Observable<any> {
     let endpoint = `sucursal/` + id + `?pagina=${pagina}&sort=asc`;
@@ -132,9 +187,9 @@ export class ApiService {
   getInformation(endpoint: string) {
     const url = `${this.url}/${endpoint}`;
     return this.http.get<any>(url).pipe(
-      catchError((error) => {
-        console.error(error);
-        return of(null);
+      catchError((error: HttpErrorResponse) => {
+        console.error('Error en la solicitud GET:', error);
+        return throwError(() => error);
       })
     );
   }
@@ -142,9 +197,9 @@ export class ApiService {
   postInformation(data: any, endpoint: string) {
     const url = `${this.url}/${endpoint}`;
     return this.http.post<any>(url, data).pipe(
-      catchError((error) => {
-        console.error(error);
-        return of(null);
+      catchError((error: HttpErrorResponse) => {
+        console.error('Error en la solicitud POST:', error);
+        return throwError(() => error);
       })
     );
   }
@@ -152,9 +207,9 @@ export class ApiService {
   deleteInformation(endpoint: string) {
     const url = `${this.url}/${endpoint}`;
     return this.http.delete<any>(url).pipe(
-      catchError((error) => {
-        console.error(error);
-        return of(null);
+      catchError((error: HttpErrorResponse) => {
+        console.error('Error en la solicitud DELETE:', error);
+        return throwError(() => error);
       })
     );
   }
