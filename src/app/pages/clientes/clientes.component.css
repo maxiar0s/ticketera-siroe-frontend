@@ -144,8 +144,13 @@
   cursor: pointer;
 }
 
+.svg-ajustes-sucursal {
+  padding: 0 5px;
+}
+
 .svg-ajustes-sucursal:hover{
   cursor: pointer;
+  content: url("/assets/svg/ajustes-hover.svg");
 
 }
 

@@ -53,6 +53,11 @@
 .agregar-datos:hover {
   content: url("/assets/svg/agregar-datos-hover.svg");
 }
+
+.eliminar-equipo:hover {
+  content: url("/assets/svg/delete-hover.svg");
+}
+
 .ver-datos:hover {
   content: url("/assets/svg/delete-hover.svg");
 }

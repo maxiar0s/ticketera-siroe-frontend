@@ -46,7 +46,7 @@
   display: grid;
   grid-template-columns: 0.7fr 1fr 0.7fr 1fr;
   grid-template-rows: repeat(3, 1fr);
-  grid-template-areas: 
+  grid-template-areas:
     "foto razonSocial rut encargadoSucursal"
     "foto encargadoGeneral telefonoCasaMatriz telefonoSucursal"
     "foto correoCasaMatriz id correoSucursal";
@@ -93,6 +93,7 @@
   margin: auto;
   object-fit: contain; /* Cambiado de cover a contain para mejor visualización */
   border-radius: 25px;
+  max-height: 15rem;
 
 }
 
@@ -116,7 +117,7 @@
       display: grid;
       grid-template-columns: 0.7fr 1fr 1fr;
       grid-template-rows: repeat(4, 1fr);
-      grid-template-areas: 
+      grid-template-areas:
         "foto razonSocial rut"
         "foto encargadoGeneral encargadoSucursal"
         "foto correoCasaMatriz correoSucursal"
@@ -134,7 +135,7 @@
     display: grid;
     grid-template-columns: 1fr 1fr;
     grid-template-rows: repeat(6, 1fr);
-    grid-template-areas: 
+    grid-template-areas:
       "foto razonSocial"
       "foto encargadoGeneral"
       "foto correoCasaMatriz"
@@ -166,7 +167,7 @@
     display: grid;
     grid-template-columns: 1fr;
     grid-template-rows: 5fr repeat(9, 1fr);
-    grid-template-areas: 
+    grid-template-areas:
       "foto"
       "razonSocial"
       "encargadoGeneral"
