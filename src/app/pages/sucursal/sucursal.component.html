@@ -15,6 +15,9 @@
     (Devices)="selectedDevices($event)"
     [equiposRecibidos]="equipos"
     [paginaActual]="paginaActual"
+    [sucursalId]="sucursal?.id"
+    (equipoActualizado)="cambiarSeleccion()"
+    (equipoEliminado)="cambiarSeleccion()"
   ></sucursal-table>
   <div *ngIf="obtainedEquipments && equipos" class="navegation-section">
     <shared-navegation

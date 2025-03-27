@@ -47,6 +47,8 @@
           <td class="information-checkbox information-value">
             {{ parseInt(equipo.codigoId.slice(-3)) }}
           </td>
+
+          <!--todo#TODO: Los estados deben ser funcionales-->
           <td class="information-value">
             <div
               [ngClass]="
@@ -57,6 +59,7 @@
                   : 'cerrado'
               "
               class="estado"
+              [title]="getNombreEstado(equipo.estado)"
             ></div>
           </td>
           <td class="information-value">{{ equipo.codigoId }}</td>
@@ -78,18 +81,12 @@
               />
             </button>
             <button
-              [disabled]="equipo.estado === 3"
               (click)="abrirModal(equipo.id)"
               class="actions"
             >
               <img
-                [src]="
-                  equipo.estado === 3
-                    ? '/assets/svg/agregar-datos-disabled.svg'
-                    : '/assets/svg/agregar-datos.svg'
-                "
-                [ngClass]="{ 'svg-cursor agregar-datos': equipo.estado !== 3 }"
-                class="svg"
+                src="/assets/svg/agregar-datos.svg"
+                class="svg-cursor agregar-datos svg"
                 alt="agregar-datos.svg"
               />
             </button>
@@ -122,6 +119,7 @@
   [idEquipo]="selectedEquipoId"
   (enviarFormulario)="modificarEquipo($event)"
   (cerrarModal)="cerrarModal()"
+  (equipoActualizado)="actualizarTabla()"
 ></shared-modificar-equipo>
 
 <shared-ver-informacion

@@ -4,7 +4,6 @@ import {
   EventEmitter,
   Input,
   Output,
-  ɵSSR_CONTENT_INTEGRITY_MARKER,
 } from '@angular/core';
 import {
   FormBuilder,
@@ -18,6 +17,9 @@ import { ApiService } from '../../../../services/api.service';
 import { Equipo } from '../../../../interfaces/equipo.interface';
 import { EquipoFormField } from '../../../../interfaces/EquipoForm.interface';
 import { LoaderModalComponent } from '../../../loader-modal/loader-modal.component';
+import { EstadoEquipo } from '../../../../interfaces/estado-equipo.interface';
+
+// ! #FIXME: Error al actualizar estado de equipo y actualizar el equipo
 
 @Component({
   selector: 'shared-modificar-equipo',
@@ -43,15 +45,25 @@ export class ModificarEquipoComponent {
 
   // Control del modal
   @Output() cerrarModal = new EventEmitter<void>();
-  @Output() enviarFormulario = new EventEmitter<any>();
+  @Output() enviarFormulario = new EventEmitter<FormData>();
+
+  //* Informar al padre de la actualizacion de equipo
+  @Output() equipoActualizado = new EventEmitter<boolean>();
+
   // Equipo opcional en caso de si existe ID
   public equipo!: Equipo;
+
   // Tipo del equipo
   public tipoEquipoActual: string = '';
   public camposDinamicos: EquipoFormField[] = [];
 
+  // Estados de equipo
+  public estadosEquipo: EstadoEquipo[] = [];
+
   public isVisible: boolean = true;
   public errorMessage: string = '';
+  public originalFormValues: any = {};
+  public soloEstadoModificado: boolean = false;
 
   constructor(
     private fb: FormBuilder,
@@ -61,6 +73,10 @@ export class ModificarEquipoComponent {
 
   ngOnInit() {
     this.loaderService.showModal();
+
+    // Cargar los estados de equipo
+    this.cargarEstadosEquipo();
+
     this.apiService.equiptment(this.idEquipo).subscribe({
       next: (respuesta) => {
         this.equipo = respuesta;
@@ -76,6 +92,15 @@ export class ModificarEquipoComponent {
             this.actualizarFormularioConCampos(campos, respuesta);
             this.loaderService.hideModal();
             this.formCharged = true;
+
+            // Guardar los valores originales del formulario
+            this.originalFormValues = {...this.equipoForm.value};
+
+            // Suscribirse a los cambios del formulario para detectar si solo se modificó el estado
+            this.equipoForm.valueChanges.subscribe(() => {
+              this.verificarSoloEstadoModificado();
+            });
+
             console.log(this.camposDinamicos);
           },
           error: (error) => {
@@ -88,6 +113,17 @@ export class ModificarEquipoComponent {
         console.error('Error al obtener el equipo', error);
         this.loaderService.hideModal();
       },
+    });
+  }
+
+  cargarEstadosEquipo() {
+    this.apiService.getEstadosEquipo().subscribe({
+      next: (estados) => {
+        this.estadosEquipo = estados;
+      },
+      error: (error) => {
+        console.error('Error al cargar los estados de equipo:', error);
+      }
     });
   }
 
@@ -115,6 +151,10 @@ export class ModificarEquipoComponent {
     this.equipoForm.patchValue({
       id: this.idEquipo,
     });
+
+    // Agregar control para el estado del equipo
+    const estadoControl = new FormControl(respuesta.estado || '', Validators.required);
+    this.equipoForm.addControl('estado', estadoControl);
 
     const text = new FormControl('');
     this.equipoForm.addControl('text', text);
@@ -157,16 +197,42 @@ export class ModificarEquipoComponent {
 
   onSubmit() {
     if (this.equipoForm.valid) {
-      Object.keys(this.equipoForm.value).forEach((key) => {
-        this.formData.append(key, this.equipoForm.value[key]);
-      });
-      if (this.selectedFile) {
-        this.formData.set('imagen', this.selectedFile);
-      }
-
+      // Guardar el estado actual para actualizar después
+      const nuevoEstado = this.equipoForm.value.estado;
       const comentario = this.equipoForm.value.text;
 
-      this.enviarFormulario.emit(this.formData);
+      // Verificar si solo se está actualizando el estado
+      if (this.soloEstadoModificado) {
+        // Si solo se está actualizando el estado, no enviar el resto del formulario
+        this.actualizarSoloEstado();
+      } else {
+        // Eliminar el estado del formData para evitar duplicación
+        this.equipoForm.removeControl('estado');
+
+        Object.keys(this.equipoForm.value).forEach((key) => {
+          this.formData.append(key, this.equipoForm.value[key]);
+        });
+        if (this.selectedFile) {
+          this.formData.set('imagen', this.selectedFile);
+        }
+
+        this.enviarFormulario.emit(this.formData);
+
+        //? Emitir evento para notificar que el equipo ha sido actualizado
+        this.equipoActualizado.emit(true);
+
+        // Actualizar el estado del equipo
+        if (nuevoEstado) {
+          this.apiService.actualizarEstadoEquipo(this.idEquipo, nuevoEstado).subscribe({
+            next: () => {
+              console.log('Estado del equipo actualizado correctamente');
+            },
+            error: (error) => {
+              console.error('Error al actualizar el estado del equipo:', error);
+            }
+          });
+        }
+      }
 
       if (comentario != '') {
         const observacion = {
@@ -186,6 +252,48 @@ export class ModificarEquipoComponent {
     } else {
       this.errorMessage =
         'Por favor, completa todos los campos requeridos correctamente.';
+    }
+  }
+
+  verificarSoloEstadoModificado() {
+    // Verificar si solo se ha modificado el estado y/o el campo de observaciones
+    const currentValues = this.equipoForm.value;
+    this.soloEstadoModificado = true;
+
+    // Comparar cada campo excepto estado y text (observaciones)
+    Object.keys(currentValues).forEach(key => {
+      if (key !== 'estado' && key !== 'text') {
+        // Si algún campo que no sea estado o text ha cambiado, no es solo modificación de estado
+        if (currentValues[key] !== this.originalFormValues[key]) {
+          this.soloEstadoModificado = false;
+        }
+      }
+    });
+
+    // Verificar si el estado ha cambiado
+    if (currentValues.estado === this.originalFormValues.estado) {
+      // Si el estado no cambió pero solo se modificó el campo de observaciones,
+      // seguimos considerando que solo se modificó el estado
+      if (currentValues.text !== this.originalFormValues.text && currentValues.text !== '') {
+        this.soloEstadoModificado = true;
+      } else {
+        this.soloEstadoModificado = false;
+      }
+    }
+  }
+
+  actualizarSoloEstado() {
+    const nuevoEstado = this.equipoForm.value.estado;
+    if (nuevoEstado) {
+      this.apiService.actualizarEstadoEquipo(this.idEquipo, nuevoEstado).subscribe({
+        next: () => {
+          console.log('Estado del equipo actualizado correctamente');
+          this.cerrarModal.emit();
+        },
+        error: (error) => {
+          console.error('Error al actualizar el estado del equipo:', error);
+        }
+      });
     }
   }
 }

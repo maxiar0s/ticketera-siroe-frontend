@@ -48,11 +48,22 @@ export class ApiService {
   modifyEquiptment(data: any): Observable<any> {
     let formValues: { [key: string]: any } = {};
     data.forEach((value: any, key: any) => {
-      formValues[key] = value;
+      // Handle numeric fields properly
+      if (key === 'cantidadAlmacenamiento' || key === 'ram') {
+        // If the value is 'null' or empty string, set it to null
+        if (value === 'null' || value === '') {
+          formValues[key] = null;
+        } else {
+          // Convert to number if it's a numeric string
+          formValues[key] = isNaN(Number(value)) ? value : Number(value);
+        }
+      } else {
+        formValues[key] = value;
+      }
     });
     const { id } = formValues;
     const endpoint = 'modificar-equipo/' + id;
-    return this.postInformation(data, endpoint);
+    return this.postInformation(formValues, endpoint);
   }
 
   deleteEquipment(id: number) {
@@ -90,20 +101,20 @@ export class ApiService {
     return this.getInformation(endpoint);
   }
 
-  // todo: Eliminar cliente
+  // *: Eliminar cliente
   eliminarCliente(id: string): Observable<any> {
     const endpoint = `clientes/${id}`;
     return this.deleteInformation(endpoint);
   }
 
-  // todo: Modificar cliente
+  // *: Modificar cliente
   modificarCliente(id: string, datos: any): Observable<any> {
     const endpoint = `modificar-cliente/${id}`;
     // Si datos es un FormData, lo enviamos directamente
     if (datos instanceof FormData) {
       // Crear un objeto simple con los datos del formulario
       const clienteData: any = {};
-      
+
       // Extraer los valores del formulario manualmente
       const requiredFields = ['rut', 'razonSocial', 'encargadoGeneral', 'correo', 'telefonoEncargado'];
       for (const field of requiredFields) {
@@ -121,16 +132,16 @@ export class ApiService {
           }
         }
       }
-      
+
       // Verificar que todos los campos requeridos estén presentes
       const missingFields = requiredFields.filter(field => !clienteData[field]);
       if (missingFields.length > 0) {
         console.error('Faltan campos requeridos:', missingFields);
         return throwError(() => new Error(`Faltan campos requeridos: ${missingFields.join(', ')}`));
       }
-      
+
       console.log('Datos a enviar:', clienteData);
-      
+
       // Enviar los datos como JSON en lugar de FormData
       return this.http.post<any>(`${this.url}/${endpoint}`, clienteData).pipe(
         catchError((error: HttpErrorResponse) => {
@@ -181,6 +192,24 @@ export class ApiService {
   equiptment(id: number): Observable<any> {
     const endpoint = `equipo/` + id;
     return this.getInformation(endpoint);
+  }
+
+
+  // ?Obtener estados de equipos
+  getEstadosEquipo(): Observable<any> {
+    const endpoint = 'estados-equipos';
+    return this.getInformation(endpoint);
+  }
+
+  // ?Actualizar estado de equipo
+  actualizarEstadoEquipo(id: number, estado: string): Observable<any> {
+    const endpoint = `actualizar-estado-equipo/${id}`;
+    return this.http.post<any>(`${this.url}/${endpoint}`, { estado }).pipe(
+      catchError((error: HttpErrorResponse) => {
+        console.error('Error al actualizar estado del equipo:', error);
+        return throwError(() => error);
+      })
+    );
   }
 
   // Metodos principales

@@ -7,6 +7,9 @@ import { LoaderService } from '../../../services/loader.service';
 import { FormatoFechaPipe } from '../../../pipes/formato-fecha.pipe';
 import { ImprimirEquipo } from '../../../interfaces/ImprimirEquipo.interface';
 import { VerInformacionComponent } from '../../../shared/modal/equipo/ver-informacion/ver-informacion.component';
+import { EstadoEquipo } from '../../../interfaces/estado-equipo.interface';
+
+//todo#TODO: Los estados deben ser funcionales
 
 @Component({
   selector: 'sucursal-table',
@@ -25,6 +28,8 @@ export class TableComponent {
   public obtainedEquipments: boolean = false;
   public equipos?: Equipo[] | undefined | null;
   @Input() paginaActual!: number;
+  //?
+  @Input() sucursalId?: string;
 
   // Modal de edicion de equipo
   public selectedEquipoId!: number;
@@ -41,13 +46,22 @@ export class TableComponent {
   public successMessage: string = '';
   public errorMessage: string = '';
 
+  //? Estados de equipos
+  public estadosEquipo: EstadoEquipo[] = [];
+
   // Evento para notificar cuando se elimina un equipo
   @Output() equipoEliminado = new EventEmitter<void>();
+
+  @Output() equipoActualizado = new EventEmitter<void>();
 
   constructor(
     private apiService: ApiService,
     public loaderService: LoaderService
-  ) {}
+  ) {
+      // Cargar los estados de equipos al inicializar el componente
+      this.cargarEstadosEquipo();
+
+  }
 
   @Input()
   set equiposRecibidos(value: Equipo[] | undefined | null) {
@@ -62,6 +76,49 @@ export class TableComponent {
 
     this.obtainedEquipments = true;
   }
+
+   // ? Método para cargar los estados de equipos
+  cargarEstadosEquipo() {
+    this.apiService.getEstadosEquipo().subscribe({
+      next: (estados) => {
+        this.estadosEquipo = estados;
+      },
+      error: (error) => {
+        console.error('Error al cargar estados de equipos:', error);
+      }
+    });
+  }
+
+  // ? Método para obtener el nombre del estado según su ID
+  getNombreEstado(estadoId: number): string {
+    const estado = this.estadosEquipo.find(e => e.id === estadoId);
+    return estado ? estado.name : 'Desconocido';
+  }
+
+  // ? Método para actualizar el estado de un equipo
+  cambiarEstadoEquipo(equipoId: number, event: Event) {
+    const selectElement = event.target as HTMLSelectElement;
+    const nuevoEstado = selectElement.value;
+
+    this.loaderService.showModal();
+    this.apiService.actualizarEstadoEquipo(equipoId, nuevoEstado).subscribe({
+      next: () => {
+        // Actualizar el equipo en la lista local
+        if (this.equipos) {
+          const equipo = this.equipos.find(e => e.id === equipoId);
+          if (equipo) {
+            equipo.estado = Number(nuevoEstado);
+          }
+        }
+        this.loaderService.hideModal();
+      },
+      error: (error) => {
+        console.error('Error al actualizar estado del equipo:', error);
+        this.loaderService.hideModal();
+      }
+    });
+  }
+
 
   abrirModal(id: number) {
     this.selectedEquipoId = id;
@@ -108,10 +165,15 @@ export class TableComponent {
         console.log('Equipo modificado exitosamente:', respuesta);
         this.successMessage = 'Equipo modificado exitosamente!';
         this.cerrarModal();
+        //?emitir evento
+        this.equipoActualizado.emit();
+        this.loaderService.hideModal();
+        this.cerrarModal();
       },
       error: (error) => {
         console.error('Error al modificadar equipo:', error);
         this.errorMessage = 'Error al modificadar equipo: ' + error;
+        this.loaderService.hideModal();
       },
     });
   }
@@ -132,6 +194,23 @@ export class TableComponent {
       });
     }
     this.enviarEquipos();
+  }
+
+  actualizarTabla() {
+    if (this.sucursalId) {
+      this.loaderService.showModal();
+      // Obtener los equipos actualizados de la sucursal
+      this.apiService.sucursal(this.sucursalId, this.paginaActual, '').subscribe({
+        next: (respuesta) => {
+          this.equipos = respuesta.equipos;
+          this.loaderService.hideModal();
+        },
+        error: (error) => {
+          console.error('Error al actualizar la tabla de equipos:', error);
+          this.loaderService.hideModal();
+        }
+      });
+    }
   }
 
   checkboxSeleccionado(): boolean {

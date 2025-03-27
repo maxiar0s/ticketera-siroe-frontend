@@ -40,6 +40,15 @@
             </div>
 
             <div class="form-group full-width">
+              <label for="estado">Estado del Equipo</label>
+              <select class="inputs" id="estado" formControlName="estado">
+                <option *ngFor="let estado of estadosEquipo" [value]="estado.id">
+                  {{ estado.name }}
+                </option>
+              </select>
+            </div>
+
+            <div class="form-group full-width">
               <label for="text">Observaciones</label>
               <textarea class="comments" placeholder="Añade cualquier detalle adicional relevante" id="text" formControlName="text"></textarea>
             </div>
@@ -52,7 +61,8 @@
 
           <!-- Botones -->
           <div class="form-actions" style="margin-top: 15px;">
-            <button class="equiptment-button" type="submit" [disabled]="equipoForm.invalid">Guardar datos</button>
+            <button class="equiptment-button" type="submit" [disabled]="equipoForm.invalid" >Guardar datos</button>
+            <!-- <button class="equiptment-button" type="button" (click)="actualizarSoloEstado()" style="margin-left: 10px;">Actualizar estado</button> -->
           </div>
         </form>
 

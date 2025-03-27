@@ -49,6 +49,15 @@ export class SucursalComponent {
     this.cambiarSeleccion();
   }
 
+    // Método para obtener el ID de la sucursal actual de la ruta
+    getSucursalId(): string {
+      let id = '';
+      this.route.params.subscribe(params => {
+        id = params['id'];
+      });
+      return id;
+    }
+
   crearEquipos(datos: any) {
     this.cerrarModal = true;
     const { cantidad } = datos;
@@ -108,7 +117,7 @@ export class SucursalComponent {
           if(!this.Title) this.headerTitle(sucursal.casaMatriz.razonSocial);
 
           this.sucursal = sucursal;
-          
+
           // Ordenar los equipos por los últimos 3 dígitos del codigoId en orden ascendente
           if (sucursal.equipos && sucursal.equipos.length > 0) {
             this.equipos = [...sucursal.equipos].sort((a, b) => {
@@ -119,7 +128,7 @@ export class SucursalComponent {
           } else {
             this.equipos = sucursal.equipos;
           }
-          
+
           this.paginas = paginas;
 
           this.obtainedEquipments = true;
