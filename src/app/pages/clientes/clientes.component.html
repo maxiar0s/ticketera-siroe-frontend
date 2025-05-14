@@ -14,6 +14,7 @@
     <div class="spinner-section spinner-size-section"></div>
   </div>
   } @else {
+
   <div
     *ngIf="
       obtainedClients && casasMatricez && casasMatricez.length > 0;
@@ -22,10 +23,16 @@
     class="grid-clients"
   >
     <div class="clients-container">
-      <div *ngFor="let casaMatriz of casasMatricez; let i = index" class="client">
+      <div
+        *ngFor="let casaMatriz of casasMatricez; let i = index"
+        class="client"
+      >
         <div class="card-body">
           <img
-            *ngIf="casaMatriz.imagen | signedUrl | async as signedUrl; else loading"
+            *ngIf="
+              casaMatriz.imagen | signedUrl | async as signedUrl;
+              else loading
+            "
             class="logo"
             [src]="signedUrl"
             [alt]="casaMatriz.imagen"
@@ -50,7 +57,8 @@
             <div class="information-content">
               <div class="information">
                 <p>
-                  RUT Cliente: <span>{{ casaMatriz.rut.toString() | rut }}</span>
+                  RUT Cliente:
+                  <span>{{ casaMatriz.rut.toString() | rut }}</span>
                 </p>
                 <p>
                   ID Cliente: <span>{{ casaMatriz.id }}</span>
@@ -71,8 +79,16 @@
                   class="client-button"
                   >Seleccionar</a
                 >
-                <button *ngIf="esAdministrador" class="button-ajustes" (click)="abrirModalAjustesCliente(i)">
-                  <img src="/assets/svg/ajustes.svg" alt="ajustes.svg" class="svg-ajustes-sucursal">
+                <button
+                  *ngIf="esAdministrador"
+                  class="button-ajustes"
+                  (click)="abrirModalAjustesCliente(i)"
+                >
+                  <img
+                    src="/assets/svg/ajustes.svg"
+                    alt="ajustes.svg"
+                    class="svg-ajustes-sucursal"
+                  />
                 </button>
               </div>
             </div>

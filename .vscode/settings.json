@@ -1,0 +1,29 @@
+{
+  "angular.enable-strict-mode-prompt": false,
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "editor.formatOnSave": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit"
+  },
+  "html.suggest.angular": true,
+  "angular.view-engine": false,
+  "angular.ngdk": "node_modules/@angular/cli/bin/ng",
+  "angular.experimental-ivy-prompt": false,
+  "html.format.wrapAttributes": "force-aligned",
+  "html.format.wrapLineLength": 80,
+  "[html]": {
+    "editor.defaultFormatter": "vscode.html-language-features"
+  },
+  "[typescript]": {
+    "editor.defaultFormatter": "vscode.typescript-language-features"
+  },
+  "angular.enableIvy": true,
+  "angular.enable-experimental-control-flow": true,
+  "files.associations": {
+    "*.html": "html"
+  },
+  "emmet.includeLanguages": {
+    "typescript": "html"
+  },
+  "editor.linkedEditing": true
+}

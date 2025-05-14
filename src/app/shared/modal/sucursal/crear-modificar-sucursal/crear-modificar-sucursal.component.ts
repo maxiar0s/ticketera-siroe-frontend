@@ -1,8 +1,10 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { FormatInputTelefonoDirective } from '../../../../directives/telefono.directive';
 import { Sucursal } from '../../../../interfaces/Sucursal.interface';
+import { EstadoSucursal } from '../../../../interfaces/estado-sucursal.interface';
+import { ApiService } from '../../../../services/api.service';
 
 @Component({
   selector: 'shared-crear-modificar-sucursal',
@@ -11,7 +13,11 @@ import { Sucursal } from '../../../../interfaces/Sucursal.interface';
   templateUrl: './crear-modificar-sucursal.component.html',
   styleUrl: './crear-modificar-sucursal.component.css'
 })
-export class CrearModificarSucursalComponent {
+export class CrearModificarSucursalComponent implements OnInit {
+  getNombreEstado(estadoId: number): string {
+    const estado = this.estadosSucursal.find(e => e.id == estadoId);
+    return estado ? estado.name : '';
+  }
   @Output() cerrarModal = new EventEmitter<void>();
   @Output() enviarFormulario = new EventEmitter<any>();
 
@@ -24,18 +30,28 @@ export class CrearModificarSucursalComponent {
   public isVisible: boolean = true;
   public sucursalForm: FormGroup;
   public errorMessage: string = '';
+  
+  // Estados de sucursales
+  public estadosSucursal: EstadoSucursal[] = [];
 
-  constructor(private fb: FormBuilder) {
+  constructor(
+    private fb: FormBuilder,
+    private apiService: ApiService
+  ) {
     this.sucursalForm = this.fb.group({
       sucursal: ['', Validators.required],
       direccion: ['', Validators.required],
       encargadoSucursal: ['', Validators.required],
       correoSucursal: ['', [Validators.required, Validators.email]],
-      telefonoSucursal: ['', [Validators.required, Validators.pattern('^[\\s\\S]{11,12}$')]]
+      telefonoSucursal: ['', [Validators.required, Validators.pattern('^[\\s\\S]{11,12}$')]],
+      estado: ['', Validators.required]
     });
   }
 
   ngOnInit() {
+    // Cargar los estados de sucursales
+    this.cargarEstadosSucursal();
+    
     if(this.idSucursal && this.sucursal) {
       this.boton_texto = 'Modificar sucursal';
       this.sucursalForm.addControl('sucursalId', new FormControl('', [Validators.required]));
@@ -46,14 +62,17 @@ export class CrearModificarSucursalComponent {
         direccion: this.sucursal.direccion,
         encargadoSucursal: this.sucursal.encargadoSucursal,
         correoSucursal: this.sucursal.correoSucursal,
-        telefonoSucursal: this.sucursal.telefonoSucursal
+        telefonoSucursal: this.sucursal.telefonoSucursal,
+        estado: this.sucursal.estado
       });
     } else {
       this.boton_texto = 'Añadir sucursal';
       this.sucursalForm.addControl('casaMatrizId', new FormControl('', [Validators.required]));
 
+      // Para nuevas sucursales, establecer el estado por defecto a 1 (Activa)
       this.sucursalForm.patchValue({
-        casaMatrizId: this.casaMatrizId
+        casaMatrizId: this.casaMatrizId,
+        estado: 1 // Estado por defecto: Activa
       });
     }
   }
@@ -78,5 +97,31 @@ export class CrearModificarSucursalComponent {
     } else {
       this.errorMessage = 'Por favor, completa todos los campos requeridos correctamente.';
     }
+  }
+  
+  // Método para cargar los estados de sucursales
+  cargarEstadosSucursal() {
+    this.apiService.getEstadosSucursal().subscribe({
+      next: (estados) => {
+        this.estadosSucursal = estados;
+        // Si no hay estados cargados desde la API, usar valores predeterminados
+        if (!this.estadosSucursal || this.estadosSucursal.length === 0) {
+          this.estadosSucursal = [
+            { id: 1, name: 'Activa' },
+            { id: 2, name: 'Inactiva' },
+            { id: 3, name: 'Suspendida' }
+          ];
+        }
+      },
+      error: (error) => {
+        console.error('Error al cargar estados de sucursales:', error);
+        // En caso de error, usar valores predeterminados
+        this.estadosSucursal = [
+          { id: 1, name: 'Activa' },
+          { id: 2, name: 'Inactiva' },
+          { id: 3, name: 'Suspendida' }
+        ];
+      }
+    });
   }
 }

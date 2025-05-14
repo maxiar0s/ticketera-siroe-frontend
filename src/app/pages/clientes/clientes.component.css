@@ -289,9 +289,13 @@
 
   .information-content {
     display: grid;
-    width: fit-content;
+    width: 100%;
     place-self: center;
     grid-template-columns: 1fr;
+  }
+
+  .information {
+    place-self: center;
   }
 
   .client-button-container {

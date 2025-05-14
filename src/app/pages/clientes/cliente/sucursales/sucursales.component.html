@@ -3,9 +3,12 @@
     <!-- Estado Sucursal -->
     <div class="sucursal-campo sucursal-campo-estado">
       <h3 class="table-title">Estado</h3>
-      <div class="estado" [ngClass]="sucursal.estado === 1 ? 'abierto' :
-                      sucursal.estado === 2 ? 'pendiente' :
-                      'cerrado'"></div>
+      <div class="estado" 
+           [ngClass]="sucursal.estado === 1 ? 'abierto' :
+                     sucursal.estado === 2 ? 'pendiente' :
+                     'cerrado'"
+           [title]="getNombreEstado(sucursal.estado)">
+      </div>
     </div>
     <!-- Nombre Sucursal -->
     <div class="sucursal-campo sucursal-campo-texto">

@@ -65,6 +65,29 @@
               El teléfono debe contener 9 números
             </div>
           </div>
+          
+          <!-- Campo Estado Sucursal -->
+          <div class="form-group width-50">
+            <label for="estado">Estado</label>
+            <div class="estado-modal-row">
+              <span class="estado estado-modal"
+                [ngClass]="{
+                  'abierto': sucursalForm.get('estado')?.value == 1,
+                  'cerrado': sucursalForm.get('estado')?.value == 2,
+                  'pendiente': sucursalForm.get('estado')?.value == 3
+                }"
+                [title]="getNombreEstado(sucursalForm.get('estado')?.value)">
+              </span>
+              <select id="estado" formControlName="estado" class="estado-select">
+                @for (estado of estadosSucursal; track estado.id) {
+                  <option [value]="estado.id">{{ estado.name }}</option>
+                }
+              </select>
+            </div>
+            @if (sucursalForm.get('estado')?.hasError('required') && sucursalForm.get('estado')?.touched) {
+              <div class="error">Estado es requerido</div>
+            }
+          </div>
         </div>
 
         <!-- Mensaje de Error -->
@@ -74,7 +97,7 @@
 
         <!-- Botones -->
         <div class="form-actions">
-          <button *ngIf="!creating" class="btn form-size" type="submit" [ngClass]="{'invalid-form': sucursalForm.invalid, 'valid-form': sucursalForm.valid }">{{ boton_texto }}</button>
+          <button *ngIf="!creating" class="btn form-size" type="submit" [disabled]="!sucursalForm.valid || !sucursalForm.dirty" [ngClass]="{'invalid-form': sucursalForm.invalid, 'valid-form': sucursalForm.valid }">{{ boton_texto }}</button>
           <button *ngIf="creating" class="btn form-size"><div class="spinner-buttons spinner-size-buttons spinner-color"></div></button>
         </div>
       </form>

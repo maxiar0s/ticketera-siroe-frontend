@@ -7,8 +7,8 @@ import { Cliente } from '../interfaces/cliente.interface';
   providedIn: 'root',
 })
 export class ApiService {
-  private url = 'http://167.71.172.190:3000'
-  // private url = 'https://app-soporte-siroe.vercel.app';
+  private url = 'http://167.71.172.190:3000';
+  //private url = 'https://app-soporte-siroe.vercel.app';
   //private url = 'http://localhost:3000';
 
   constructor(private http: HttpClient) {}
@@ -116,7 +116,13 @@ export class ApiService {
       const clienteData: any = {};
 
       // Extraer los valores del formulario manualmente
-      const requiredFields = ['rut', 'razonSocial', 'encargadoGeneral', 'correo', 'telefonoEncargado'];
+      const requiredFields = [
+        'rut',
+        'razonSocial',
+        'encargadoGeneral',
+        'correo',
+        'telefonoEncargado',
+      ];
       for (const field of requiredFields) {
         // Obtener el valor del campo del FormData
         const value = datos.get(field);
@@ -134,10 +140,15 @@ export class ApiService {
       }
 
       // Verificar que todos los campos requeridos estén presentes
-      const missingFields = requiredFields.filter(field => !clienteData[field]);
+      const missingFields = requiredFields.filter(
+        (field) => !clienteData[field]
+      );
       if (missingFields.length > 0) {
         console.error('Faltan campos requeridos:', missingFields);
-        return throwError(() => new Error(`Faltan campos requeridos: ${missingFields.join(', ')}`));
+        return throwError(
+          () =>
+            new Error(`Faltan campos requeridos: ${missingFields.join(', ')}`)
+        );
       }
 
       console.log('Datos a enviar:', clienteData);
@@ -159,7 +170,8 @@ export class ApiService {
   sucursal(id: string, pagina: number, option: string): Observable<any> {
     let endpoint = `sucursal/` + id + `?pagina=${pagina}&sort=asc`;
     if (option) {
-      endpoint = `sucursal/` + id + `?pagina=${pagina}&option=${option}&sort=asc`;
+      endpoint =
+        `sucursal/` + id + `?pagina=${pagina}&option=${option}&sort=asc`;
     }
     return this.getInformation(endpoint);
   }
@@ -194,7 +206,6 @@ export class ApiService {
     return this.getInformation(endpoint);
   }
 
-
   // ?Obtener estados de equipos
   getEstadosEquipo(): Observable<any> {
     const endpoint = 'estados-equipos';
@@ -207,6 +218,23 @@ export class ApiService {
     return this.http.post<any>(`${this.url}/${endpoint}`, { estado }).pipe(
       catchError((error: HttpErrorResponse) => {
         console.error('Error al actualizar estado del equipo:', error);
+        return throwError(() => error);
+      })
+    );
+  }
+
+  // Obtener estados de sucursales
+  getEstadosSucursal(): Observable<any> {
+    const endpoint = 'estados-sucursales';
+    return this.getInformation(endpoint);
+  }
+
+  // Actualizar estado de sucursal
+  actualizarEstadoSucursal(id: string, estado: string): Observable<any> {
+    const endpoint = `actualizar-estado-sucursal/${id}`;
+    return this.http.post<any>(`${this.url}/${endpoint}`, { estado }).pipe(
+      catchError((error: HttpErrorResponse) => {
+        console.error('Error al actualizar estado de la sucursal:', error);
         return throwError(() => error);
       })
     );

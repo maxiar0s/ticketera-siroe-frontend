@@ -1,14 +1,14 @@
 import { Component, Input } from '@angular/core';
 import { Sucursal } from '../../../interfaces/Sucursal.interface';
-import { CommonModule } from '@angular/common';
+import { CommonModule, TitleCasePipe } from '@angular/common';
 import { SignedUrlPipe } from '../../../pipes/generar-url.pipe';
 
 @Component({
   selector: 'sucursal-header',
   standalone: true,
-  imports: [CommonModule, SignedUrlPipe],
+  imports: [CommonModule, SignedUrlPipe, TitleCasePipe],
   templateUrl: './header.component.html',
-  styleUrl: './header.component.css'
+  styleUrl: './header.component.css',
 })
 export class HeaderComponent {
   @Input() sucursal?: Sucursal;
