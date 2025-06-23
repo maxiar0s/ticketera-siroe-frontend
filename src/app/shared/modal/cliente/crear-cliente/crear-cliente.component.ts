@@ -43,10 +43,10 @@ export class CrearClienteComponent implements OnChanges {
     if (changes['cliente'] && changes['cliente'].currentValue) {
       this.cargarDatosCliente();
     }
-    
+
     if (changes['modoEdicion']) {
       this.tituloModal = this.modoEdicion ? 'Editar Cliente' : 'Crear Cliente';
-      
+
       // Si estamos en modo edición, la imagen no es obligatoria
       if (this.modoEdicion) {
         this.clientForm.get('imagen')?.clearValidators();
@@ -89,56 +89,46 @@ export class CrearClienteComponent implements OnChanges {
   onSubmit() {
     if (this.clientForm.valid) {
       this.creating = true;
-      
+
       // Crear un nuevo FormData para evitar duplicados
       const formData = new FormData();
-      
-      // Asegurarse de que todos los campos requeridos se incluyan
-      const requiredFields = ['rut', 'razonSocial', 'encargadoGeneral', 'correo', 'telefonoEncargado'];
-      
+
+      // Limpiar el teléfono antes de enviarlo (solo números, 9 dígitos)
+      let telefono = this.clientForm.value['telefonoEncargado'] || '';
+      telefono = telefono.replace(/\D/g, '').slice(0, 9);
+
       // Agregar todos los campos del formulario al FormData
       Object.keys(this.clientForm.value).forEach(key => {
-        const value = this.clientForm.value[key];
+        let value = this.clientForm.value[key];
+        if (key === 'telefonoEncargado') {
+          value = telefono;
+        }
         if (value !== null && value !== undefined && value !== '') {
-          // Convertir números a strings para evitar problemas
           formData.append(key, value.toString());
         }
       });
-      
-      // Verificar que todos los campos requeridos estén presentes
-      const missingFields = requiredFields.filter(field => 
-        !formData.get(field) && this.clientForm.get(field)?.value
-      );
-      
-      // Si faltan campos, agregarlos explícitamente
-      missingFields.forEach(field => {
-        const value = this.clientForm.get(field)?.value;
-        if (value) {
-          formData.append(field, value.toString());
-        }
-      });
-      
+
       // Manejar el archivo de imagen
       if (this.selectedFile) {
         formData.set('imagen', this.selectedFile);
       }
-      
-      // Si estamos en modo edición y no se seleccionó una nueva imagen, 
+
+      // Si estamos en modo edición y no se seleccionó una nueva imagen,
       // no enviamos el campo imagen para mantener la imagen actual
       if (this.modoEdicion && !this.selectedFile) {
         formData.delete('imagen');
       }
-      
+
       // Imprimir los datos que se van a enviar para depuración
       console.log('Datos del formulario a enviar:');
-      requiredFields.forEach(field => {
+      Object.keys(this.clientForm.value).forEach(field => {
         console.log(`${field}: ${formData.get(field)}`);
       });
 
       this.enviarFormulario.emit(formData);
     } else {
       this.errorMessage = 'Por favor, completa todos los campos requeridos correctamente.';
-      
+
       // Marcar todos los campos como touched para mostrar los errores
       Object.keys(this.clientForm.controls).forEach(key => {
         this.clientForm.get(key)?.markAsTouched();
