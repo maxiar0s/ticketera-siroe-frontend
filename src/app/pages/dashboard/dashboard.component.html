@@ -1,7 +1,7 @@
 <div class="section">
-  <dashboard-charts></dashboard-charts>
+  <dashboard-charts [option]="Option"></dashboard-charts>
   <h2 class="title">Resumen</h2>
   <shared-options (optionSelected)="selectedOption($event)"></shared-options>
-  <dashboard-summary></dashboard-summary>
+  <dashboard-summary [option]="Option"></dashboard-summary>
   <shared-navegation></shared-navegation>
 </div>

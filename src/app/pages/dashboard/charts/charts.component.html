@@ -1,20 +1,12 @@
 <div class="grid-tables">
   <div class="table">
     <h3 class="table-title">Equipos</h3>
-    <div class="chart"></div>
-    <div class="legend">
-      <p>Dato 1</p>
-      <p>Dato 2</p>
-    </div>
+    <simple-bar-chart [data]="equiposData"></simple-bar-chart>
   </div>
 
   <div class="table">
     <h3 class="table-title">Equipos por clientes</h3>
-    <div class="chart"></div>
-    <div class="legend">
-      <p>Dato 1</p>
-      <p>Dato 2</p>
-    </div>
+    <simple-bar-chart [data]="equiposPorClienteData"></simple-bar-chart>
   </div>
 
   <div class="table-big-chart">

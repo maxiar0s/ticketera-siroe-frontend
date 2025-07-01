@@ -13,26 +13,30 @@
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let item of [1, 2, 3]; let i = index" class="table-row-style">
-        <td><div class="id-status red"></div></td>
-        <td>#12548796</td>
-        <td>Slep xxxxxxxxx</td>
-        <td>Colegio xxxxxxxxxxx</td>
-        <td>21 / Noviembre / 24</td>
-        <td>xxxxx</td>
-        <td>xxxxx</td>
-        <td><button class="table-detalle">Ingresar datos</button></td>
+      <tr *ngIf="loading">
+        <td colspan="8" style="text-align:center;">Cargando datos...</td>
       </tr>
-
-      <tr *ngFor="let item of [1, 2]; let i = index" class="table-row-style">
-        <td><div class="id-status cyan"></div></td>
-        <td>#12548796</td>
-        <td>Slep xxxxxxxxx</td>
-        <td>Colegio xxxxxxxxxxx</td>
-        <td>21 / Noviembre / 24</td>
-        <td>xxxxx</td>
-        <td>xxxxx</td>
-        <td><button class="table-detalle">Revisar detalles</button></td>
+      <tr *ngIf="!loading && clientes.length === 0">
+        <td colspan="8" style="text-align:center;">No hay datos para mostrar.</td>
+      </tr>
+      <tr *ngFor="let cliente of clientes" class="table-row-style">
+        <td>
+          <div class="id-status" [ngClass]="{
+            'red': option === 'Todos los ingresos' || option === 'Pendientes',
+            'cyan': option === 'Terminados'
+          }"></div>
+        </td>
+        <td>#{{cliente.id}}</td>
+        <td>{{cliente.razonSocial}}</td>
+        <td>{{cliente.sucursales?.[0]?.sucursal || '-'}}</td>
+        <td>{{cliente.fechaIngreso | date:'dd/MM/yyyy'}}</td>
+        <td>{{cliente.Equipos?.length || 0}}</td>
+        <td>{{cliente.telefonoEncargado}}</td>
+        <td>
+          <button class="table-detalle">
+            {{ option === 'Terminados' ? 'Revisar detalles' : 'Ingresar datos' }}
+          </button>
+        </td>
       </tr>
     </tbody>
   </table>

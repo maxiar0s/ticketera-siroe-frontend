@@ -14,6 +14,14 @@ import { Cliente } from '../../../../interfaces/cliente.interface';
   styleUrl: './crear-cliente.component.css'
 })
 export class CrearClienteComponent implements OnChanges {
+  ngOnInit(): void {
+    // Marcar el formulario como dirty si cualquier campo cambia
+    Object.keys(this.clientForm.controls).forEach(key => {
+      this.clientForm.get(key)?.valueChanges.subscribe(() => {
+        this.clientForm.markAsDirty();
+      });
+    });
+  }
   @Input() cliente: Cliente | null = null;
   @Input() modoEdicion: boolean = false;
   @Output() cerrarModal = new EventEmitter<void>();
@@ -67,6 +75,8 @@ export class CrearClienteComponent implements OnChanges {
         correo: this.cliente.correo,
         telefonoEncargado: this.cliente.telefonoEncargado
       });
+      // Resetear el estado dirty al cargar datos
+      this.clientForm.markAsPristine();
     }
   }
 
@@ -84,6 +94,8 @@ export class CrearClienteComponent implements OnChanges {
   onFileSelected(event: Event) {
     const input = event.target as HTMLInputElement;
     this.selectedFile = input!.files![0];
+    // Marcar el formulario como dirty si se selecciona una imagen
+    this.clientForm.markAsDirty();
   }
 
   onSubmit() {

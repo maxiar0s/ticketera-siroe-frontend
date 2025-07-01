@@ -12,7 +12,7 @@
           <!-- Campo Rut -->
           <div class="form-group width-50">
             <label for="rut">Rut</label>
-            <input class="width-50" formatInputRut id="rut" formControlName="rut" type="text" placeholder="Ingrese el rut"/>
+            <input class="width-50" formatInputRut id="rut" formControlName="rut" type="text" placeholder="Ingrese el rut" (input)="clientForm.markAsDirty()"/>
             <div *ngIf="clientForm.get('rut')?.getError('required') && clientForm.get('rut')?.touched" class="error">
               Rut es requerido
             </div>
@@ -24,7 +24,7 @@
           <!-- Campo Razón Social -->
           <div class="form-group width-50">
             <label for="razonSocial">Razón Social</label>
-            <input class="width-50" id="razonSocial" formControlName="razonSocial" type="text" placeholder="Ingresa la razón social"/>
+            <input class="width-50" id="razonSocial" formControlName="razonSocial" type="text" placeholder="Ingresa la razón social" (input)="clientForm.markAsDirty()"/>
             <div *ngIf="clientForm.get('razonSocial')?.invalid && clientForm.get('razonSocial')?.touched" class="error">
               Razón Social es requerida
             </div>
@@ -49,7 +49,7 @@
           <!-- Campo Encargado General -->
           <div class="form-group width-50">
             <label for="encargadoGeneral">Encargado General</label>
-            <input id="encargadoGeneral" formControlName="encargadoGeneral" type="text" placeholder="Ingresa el encargado general"/>
+            <input id="encargadoGeneral" formControlName="encargadoGeneral" type="text" placeholder="Ingresa el encargado general" (input)="clientForm.markAsDirty()"/>
             <div *ngIf="clientForm.get('encargadoGeneral')?.invalid && clientForm.get('encargadoGeneral')?.touched" class="error">
               Encargado General es requerido
             </div>
@@ -60,7 +60,7 @@
           <!-- Campo Correo -->
           <div class="form-group width-50">
             <label for="correo">Correo Electrónico</label>
-            <input id="correo" formControlName="correo" type="email" placeholder="Ingresa el correo electrónico"/>
+            <input id="correo" formControlName="correo" type="email" placeholder="Ingresa el correo electrónico" (input)="clientForm.markAsDirty()"/>
             <div *ngIf="clientForm.get('correo')?.invalid && clientForm.get('correo')?.touched" class="error">
               Correo electrónico inválido
             </div>
@@ -71,7 +71,7 @@
             <label for="telefonoEncargado">Teléfono</label>
             <div class="telefono-container">
               <input class="prefijo-telefono" disabled value="+56">
-              <input class="input-telefono" type="text" id="telefonoEncargado" formatInputTelefono formControlName="telefonoEncargado" autocomplete="tel" placeholder="Ingrese el teléfono" formatInputNumber>
+              <input class="input-telefono" type="text" id="telefonoEncargado" formatInputTelefono formControlName="telefonoEncargado" autocomplete="tel" placeholder="Ingrese el teléfono" formatInputNumber (input)="clientForm.markAsDirty()">
             </div>
             <div *ngIf="clientForm.get('telefonoEncargado')?.hasError('required') && clientForm.get('telefonoEncargado')?.touched" class="error">
               Ingrese un teléfono valido
@@ -89,7 +89,9 @@
 
         <!-- Botones -->
         <div class="form-actions">
-          <button *ngIf="!creating" class="btn form-size" type="submit" [ngClass]="{'invalid-form': clientForm.invalid, 'valid-form': clientForm.valid }" [disabled]="clientForm.invalid">
+          <button *ngIf="!creating" class="btn form-size" type="submit"
+            [ngClass]="{'invalid-form': clientForm.invalid, 'valid-form': clientForm.valid }"
+            [disabled]="!clientForm.valid || (modoEdicion && !clientForm.dirty && !selectedFile)">
             {{ modoEdicion ? 'Guardar cambios' : 'Añadir cliente' }}
           </button>
           <button *ngIf="creating" class="btn form-size"><div class="spinner-buttons spinner-size-buttons spinner-color"></div></button>
