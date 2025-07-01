@@ -1,3 +1,42 @@
-<div class="section">
-  <p>perfil works!</p>
+
+
+<div class="perfil-section" style="
+    margin-left: 3rem;
+" *ngIf="!loading">
+  <h1 class="perfil-title">Perfil de Usuario</h1>
+  <ng-container *ngIf="usuario as user; else sinUsuario">
+    <div class="perfil-card">
+      <div class="perfil-avatar">
+        <img src="/assets/img/avatar-default.png" alt="Avatar" width="100" height="100" />
+        <span class="perfil-status online" title="En línea"></span>
+      </div>
+      <div class="perfil-info">
+        <h2>{{ user.name }} <span class="perfil-badge">{{ user.tipoCuenta ? user.tipoCuenta.name : 'Usuario' }}</span></h2>
+        <p class="perfil-email"><i class="fa fa-envelope"></i> {{ user.email }}</p>
+        <p class="perfil-rol"><i class="fa fa-user"></i> Rol: {{ user.tipoCuenta ? user.tipoCuenta.name : 'Usuario' }}</p>
+        <div class="perfil-actions">
+          <button class="perfil-btn">Editar perfil</button> <br>
+          <button class="perfil-btn perfil-btn-secundario">Cambiar contraseña</button>
+        </div>
+      </div>
+    </div>
+    <div class="perfil-extra">
+      <h3>Preferencias</h3>
+      <ul>
+        <li><i class="fa fa-bell"></i> Notificaciones: <span class="perfil-tag">Activadas</span></li>
+        <li><i class="fa fa-globe"></i> Idioma: <span class="perfil-tag">Español</span></li>
+      </ul>
+    </div>
+  </ng-container>
+  <ng-template #sinUsuario>
+    <div class="perfil-card">
+      <div class="perfil-info">
+        <h2>No se pudo cargar el perfil de usuario.</h2>
+      </div>
+    </div>
+  </ng-template>
+</div>
+<div *ngIf="loading" class="perfil-section" style="
+    margin-left: 3rem;">
+  <h2>Cargando perfil...</h2>
 </div>

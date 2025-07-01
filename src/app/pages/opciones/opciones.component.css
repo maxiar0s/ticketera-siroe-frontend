@@ -1,0 +1,64 @@
+/* Estilos coherentes con el dashboard y tarjetas */
+.opciones-section {
+  display: flex;
+  flex-direction: column;
+  padding: 2rem 2.5rem;
+
+}
+.opciones-title {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 2rem;
+  color: #22223b;
+}
+.opciones-grid {
+  display: flex;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+.opcion-card {
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 2px 8px 0 #0001;
+  padding: 2rem 1.5rem;
+  min-width: 280px;
+  max-width: 340px;
+  flex: 1 1 300px;
+  display: flex;
+  align-items: flex-start;
+  gap: 1.5rem;
+  transition: box-shadow 0.2s;
+}
+.opcion-card:hover {
+  box-shadow: 0 4px 16px 0 #0002;
+}
+.opcion-icon {
+  background: #f2e9f7;
+  border-radius: 50%;
+  padding: 0.7rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.opcion-info h2 {
+  font-size: 1.2rem;
+  margin: 0 0 0.5rem 0;
+  color: #4a4e69;
+}
+.opcion-info p {
+  color: #6c6c80;
+  margin-bottom: 1rem;
+}
+.opcion-btn {
+  background: #c9184a;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 0.5rem 1.2rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.opcion-btn:hover {
+  background: #a4133c;
+}
