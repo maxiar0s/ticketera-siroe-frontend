@@ -18,14 +18,6 @@
   },
 
   {
-    "id": 3,
-    "nombre": "Inventario",
-    "route": "inventario",
-    "svg": "inventario",
-    "subItem": [],
-    "isOpen": false
-  },
-  {
     "id": 4,
     "nombre": "Usuarios",
     "route": "admin/usuarios",
@@ -34,3 +26,4 @@
     "isOpen": false
   }
 ]
+

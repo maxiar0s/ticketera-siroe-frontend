@@ -12,35 +12,8 @@
     "nombre": "Clientes",
     "route": "/clientes",
     "svg": "clientes",
-    "subItem": [
-      {
-        "nombre": "Equipos",
-        "route": "equipos",
-        "svg": "equipos"
-      }
-    ],
-    "isOpen": false
-  },
-  {
-    "id": 3,
-    "nombre": "Tipo de equipo ",
-    "route": "/tipo-equipo",
-    "svg": "tipo-de-equipo",
-    "subItem": [
-      {
-        "nombre": "Añadir equipo",
-        "route": "/añadir-equipo",
-        "svg": "equipos"
-      }
-    ],
-    "isOpen": false
-  },
-  {
-    "id": 4,
-    "nombre": "Inventario",
-    "route": "inventario",
-    "svg": "inventario",
     "subItem": [],
     "isOpen": false
   }
+
 ]
