@@ -68,12 +68,13 @@ export class CrearClienteComponent implements OnChanges {
 
   cargarDatosCliente() {
     if (this.cliente) {
+      const telefonoFormateado = this.formatearTelefonoParaEdicion(this.cliente.telefonoEncargado);
       this.clientForm.patchValue({
         rut: this.cliente.rut,
         razonSocial: this.cliente.razonSocial,
         encargadoGeneral: this.cliente.encargadoGeneral,
         correo: this.cliente.correo,
-        telefonoEncargado: this.cliente.telefonoEncargado
+        telefonoEncargado: telefonoFormateado
       });
       // Resetear el estado dirty al cargar datos
       this.clientForm.markAsPristine();
@@ -146,5 +147,16 @@ export class CrearClienteComponent implements OnChanges {
         this.clientForm.get(key)?.markAsTouched();
       });
     }
+  }
+
+  private formatearTelefonoParaEdicion(telefono: string | number | null | undefined): string {
+    const soloDigitos = String(telefono ?? '').replace(/\D/g, '').slice(0, 9);
+    if (soloDigitos.length <= 1) {
+      return soloDigitos;
+    }
+    if (soloDigitos.length <= 5) {
+      return `${soloDigitos.slice(0, 1)} ${soloDigitos.slice(1)}`;
+    }
+    return `${soloDigitos.slice(0, 1)} ${soloDigitos.slice(1, 5)} ${soloDigitos.slice(5)}`;
   }
 }
