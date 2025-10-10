@@ -159,6 +159,12 @@ export class TableComponent {
     });
   }
 
+  cerrarModalVerInfo() {
+    this.isModalVerInfo = false;
+    this.actualizarTabla();
+  }
+
+
   modificarEquipo(datos: any) {
     this.apiService.modifyEquiptment(datos).subscribe({
       next: (respuesta) => {
@@ -202,7 +208,10 @@ export class TableComponent {
       // Obtener los equipos actualizados de la sucursal
       this.apiService.sucursal(this.sucursalId, this.paginaActual, '').subscribe({
         next: (respuesta) => {
-          this.equipos = respuesta.equipos;
+          const updatedEquipos = respuesta?.sucursal?.equipos ?? [];
+          this.equipos = updatedEquipos;
+          this.obtainedEquipments = true;
+          this.checkboxesState = new Array(updatedEquipos.length).fill(false);
           this.loaderService.hideModal();
         },
         error: (error) => {
@@ -257,3 +266,4 @@ export class TableComponent {
     return parseInt(value);
   }
 }
+
