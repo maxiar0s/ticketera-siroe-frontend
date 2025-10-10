@@ -24,7 +24,7 @@ export class CrearModificarSucursalComponent implements OnInit {
   @Input() casaMatrizId!: string;
   @Input() idSucursal?: string;
   @Input() sucursal?: Sucursal;
-  public creating!: boolean;
+  public creating: boolean = false;
 
   public boton_texto!: string;
   public isVisible: boolean = true;
@@ -62,9 +62,10 @@ export class CrearModificarSucursalComponent implements OnInit {
         direccion: this.sucursal.direccion,
         encargadoSucursal: this.sucursal.encargadoSucursal,
         correoSucursal: this.sucursal.correoSucursal,
-        telefonoSucursal: this.sucursal.telefonoSucursal,
+        telefonoSucursal: this.formatearTelefono(this.sucursal.telefonoSucursal),
         estado: this.sucursal.estado
       });
+      this.sucursalForm.markAsPristine();
     } else {
       this.boton_texto = 'Añadir sucursal';
       this.sucursalForm.addControl('casaMatrizId', new FormControl('', [Validators.required]));
@@ -85,6 +86,7 @@ export class CrearModificarSucursalComponent implements OnInit {
     this.isVisible = false;
     this.sucursalForm.reset();
     this.errorMessage = '';
+    this.creating = false;
     this.cerrarModal.emit();
   }
 
@@ -92,7 +94,11 @@ export class CrearModificarSucursalComponent implements OnInit {
     if (this.sucursalForm.valid) {
       this.creating = true;
 
-      this.enviarFormulario.emit(this.sucursalForm.value);
+      const payload = { ...this.sucursalForm.value };
+      payload.telefonoSucursal = this.normalizarTelefono(payload.telefonoSucursal);
+
+      this.enviarFormulario.emit(payload);
+      this.creating = false;
       // this.cerrar();
     } else {
       this.errorMessage = 'Por favor, completa todos los campos requeridos correctamente.';
@@ -123,5 +129,20 @@ export class CrearModificarSucursalComponent implements OnInit {
         ];
       }
     });
+  }
+
+  private formatearTelefono(telefono: string | number | null | undefined): string {
+    const soloDigitos = String(telefono ?? '').replace(/\D/g, '').slice(0, 9);
+    if (soloDigitos.length <= 1) {
+      return soloDigitos;
+    }
+    if (soloDigitos.length <= 5) {
+      return `${soloDigitos.slice(0, 1)} ${soloDigitos.slice(1)}`;
+    }
+    return `${soloDigitos.slice(0, 1)} ${soloDigitos.slice(1, 5)} ${soloDigitos.slice(5)}`;
+  }
+
+  private normalizarTelefono(telefono: string): string {
+    return (telefono || '').replace(/\D/g, '').slice(0, 9);
   }
 }

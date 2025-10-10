@@ -76,6 +76,7 @@ export class SucursalesComponent implements OnInit {
 
   enviarSucursal(event: any) {
     this.sucursalForm.emit(event);
+    this.isModalVisibleModificarSucursal = false;
   }
 
   eliminarSucursal(event: any) {
