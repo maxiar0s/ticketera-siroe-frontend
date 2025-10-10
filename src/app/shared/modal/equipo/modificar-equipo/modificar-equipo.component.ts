@@ -34,7 +34,6 @@ export class ModificarEquipoComponent {
   public equipoForm: FormGroup = this.fb.group({
     id: ['', Validators.required],
   });
-  private formData = new FormData();
   // Espera para cargar el titulo del modal
   public headerCharged: boolean = false;
   // Espera para body del modal
@@ -186,6 +185,8 @@ export class ModificarEquipoComponent {
     this.isVisible = false;
     this.equipoForm.reset();
     this.errorMessage = '';
+    this.selectedFile = null;
+    this.soloEstadoModificado = false;
     this.cerrarModal.emit();
   }
 
@@ -197,31 +198,40 @@ export class ModificarEquipoComponent {
 
   onSubmit() {
     if (this.equipoForm.valid) {
-      // Guardar el estado actual para actualizar después
       const nuevoEstado = this.equipoForm.value.estado;
-      const comentario = this.equipoForm.value.text;
+      const comentario = (this.equipoForm.value.text || '').trim();
 
-      // Verificar si solo se está actualizando el estado
       if (this.soloEstadoModificado) {
-        // Si solo se está actualizando el estado, no enviar el resto del formulario
         this.actualizarSoloEstado();
       } else {
-        // Eliminar el estado del formData para evitar duplicación
-        this.equipoForm.removeControl('estado');
+        const formData = new FormData();
 
         Object.keys(this.equipoForm.value).forEach((key) => {
-          this.formData.append(key, this.equipoForm.value[key]);
+          if (key === 'estado' || key === 'imagen' || key === 'text') {
+            return;
+          }
+
+          const rawValue = this.equipoForm.value[key];
+          const normalizedValue = this.normalizarValorCampo(key, rawValue);
+
+          if (normalizedValue !== null) {
+            formData.append(key, normalizedValue);
+          }
         });
-        if (this.selectedFile) {
-          this.formData.set('imagen', this.selectedFile);
+
+        const idControl = this.equipoForm.get('id')?.value;
+        if (idControl !== undefined && idControl !== null && idControl !== '') {
+          formData.append('id', idControl.toString());
         }
 
-        this.enviarFormulario.emit(this.formData);
+        if (this.selectedFile) {
+          formData.append('imagen', this.selectedFile);
+        }
 
-        //? Emitir evento para notificar que el equipo ha sido actualizado
+        this.enviarFormulario.emit(formData);
+
         this.equipoActualizado.emit(true);
 
-        // Actualizar el estado del equipo
         if (nuevoEstado) {
           this.apiService.actualizarEstadoEquipo(this.idEquipo, nuevoEstado).subscribe({
             next: () => {
@@ -234,7 +244,7 @@ export class ModificarEquipoComponent {
         }
       }
 
-      if (comentario != '') {
+      if (comentario !== '') {
         const observacion = {
           equipoId: this.idEquipo,
           text: comentario,
@@ -255,6 +265,32 @@ export class ModificarEquipoComponent {
     }
   }
 
+  private normalizarValorCampo(key: string, valor: any): string | null | Blob {
+    if (valor === undefined || valor === null) {
+      return null;
+    }
+
+    if (typeof valor === 'string') {
+      const trimmed = valor.trim();
+
+      if (key === 'ram' || key === 'cantidadAlmacenamiento') {
+        if (trimmed === '' || trimmed.toLowerCase() === 'null') {
+          return '';
+        }
+
+        const numero = parseInt(trimmed, 10);
+        return Number.isNaN(numero) ? trimmed : numero.toString();
+      }
+
+      if (trimmed === '' || trimmed.toLowerCase() === 'null') {
+        return '';
+      }
+
+      return trimmed;
+    }
+
+    return valor;
+  }
   verificarSoloEstadoModificado() {
     // Verificar si solo se ha modificado el estado y/o el campo de observaciones
     const currentValues = this.equipoForm.value;
@@ -297,3 +333,8 @@ export class ModificarEquipoComponent {
     }
   }
 }
+
+
+
+
+

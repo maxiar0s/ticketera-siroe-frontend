@@ -45,27 +45,45 @@ export class ApiService {
     const endpoint = 'ingresar-equipo';
     return this.postInformation(data, endpoint);
   }
-  modifyEquiptment(data: any): Observable<any> {
-    let formValues: { [key: string]: any } = {};
-    data.forEach((value: any, key: any) => {
-      // Handle numeric fields properly
-      if (key === 'cantidadAlmacenamiento' || key === 'ram') {
-        // If the value is 'null' or empty string, set it to null
-        if (value === 'null' || value === '') {
-          formValues[key] = null;
-        } else {
-          // Convert to number if it's a numeric string
-          formValues[key] = isNaN(Number(value)) ? value : Number(value);
-        }
-      } else {
-        formValues[key] = value;
-      }
-    });
-    const { id } = formValues;
-    const endpoint = 'modificar-equipo/' + id;
-    return this.postInformation(formValues, endpoint);
-  }
+  modifyEquiptment(data: FormData): Observable<any> {
+    const id = data.get('id');
+    if (!id) {
+      return throwError(() => new Error('ID de equipo no proporcionado'));
+    }
 
+    const endpoint = 'modificar-equipo/' + id;
+    const sanitizedData = new FormData();
+
+    data.forEach((value: any, key: string) => {
+      if (key === 'id' || key === 'estado' || key === 'text') {
+        return;
+      }
+
+      if (value === null || value === undefined) {
+        return;
+      }
+
+      if (value instanceof File || value instanceof Blob) {
+        sanitizedData.append(key, value);
+        return;
+      }
+
+      if (typeof value === 'string') {
+        const trimmed = value.trim();
+        if (trimmed === '' || trimmed.toLowerCase() === 'null') {
+          sanitizedData.append(key, '');
+          return;
+        }
+
+        sanitizedData.append(key, trimmed);
+        return;
+      }
+
+      sanitizedData.append(key, value);
+    });
+
+    return this.postInformation(sanitizedData, endpoint);
+  }
   deleteEquipment(id: number) {
     return this.deleteInformation(`equipos/${id}`);
   }
@@ -251,3 +269,5 @@ export class ApiService {
       );
   }
 }
+
+
