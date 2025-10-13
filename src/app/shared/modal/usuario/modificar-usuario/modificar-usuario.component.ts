@@ -1,8 +1,10 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, HostListener, Input, Output } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Cuenta } from '../../../../interfaces/Cuenta.interface';
-import { LoaderService } from '../../../../services/loader.service';
 import { CommonModule } from '@angular/common';
+import { Cuenta } from '../../../../interfaces/Cuenta.interface';
+import { ClienteResumen } from '../../../../interfaces/cliente-resumen.interface';
+import { ApiService } from '../../../../services/api.service';
+import { LoaderService } from '../../../../services/loader.service';
 import { FormatInputSoloNumerosDirective } from '../../../../directives/solo-numeros.directive';
 
 @Component({
@@ -13,34 +15,37 @@ import { FormatInputSoloNumerosDirective } from '../../../../directives/solo-num
   styleUrl: './modificar-usuario.component.css'
 })
 export class ModificarUsuarioComponent {
-  // Form usuario
-  public usuarioForm: FormGroup;
-
-  // ID del usuario
   @Input() usuario?: Cuenta;
+
+  @Output() cerrarModal = new EventEmitter<void>();
+  @Output() enviarFormulario = new EventEmitter<any>();
+
+  public usuarioForm: FormGroup;
 
   public isVisible: boolean = true;
   public errorMessage: string = '';
 
-  // Control del modal
-  @Output() cerrarModal = new EventEmitter<void>();
-  @Output() enviarFormulario = new EventEmitter<any>();
+  public clientesDisponibles: ClienteResumen[] = [];
+  public clientesSeleccionados: ClienteResumen[] = [];
+  public clientesDropdownAbierto: boolean = false;
 
   constructor(
     private fb: FormBuilder,
+    private apiService: ApiService,
     public loaderService: LoaderService
   ) {
     this.usuarioForm = this.fb.group({
-        id: ['', Validators.required],
-        name: ['', Validators.required],
-        tipoCuentaId: ['', Validators.required],
-        telefono: ['', [Validators.required, Validators.pattern('^[0-9]{9}$')]],
-        password: [''],
-        estadoCuentaId: ['', Validators.required],
+      id: ['', Validators.required],
+      name: ['', Validators.required],
+      tipoCuentaId: ['', Validators.required],
+      telefono: ['', [Validators.required, Validators.pattern('^[0-9]{9}$')]],
+      password: [''],
+      estadoCuentaId: ['', Validators.required],
+      clientesAutorizados: [[]],
     });
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.usuarioForm.patchValue({
       id: this.usuario ? this.usuario.id : '',
       name: this.usuario ? this.usuario.name : '',
@@ -48,25 +53,107 @@ export class ModificarUsuarioComponent {
       telefono: this.usuario ? this.usuario.telefono : '',
       estadoCuentaId: this.usuario ? this.usuario.estadoCuentaId : '',
     });
+
+    this.clientesSeleccionados = this.usuario?.clientesAutorizados
+      ? [...this.usuario.clientesAutorizados]
+      : [];
+    this.actualizarControlClientes();
+
+    this.cargarClientesDisponibles();
+
+    this.usuarioForm.get('tipoCuentaId')?.valueChanges.subscribe((valor) => {
+      if (valor === '4' || valor === 4) {
+        return;
+      }
+      this.limpiarSelecciones();
+    });
   }
 
-  abrirModal() {
+  @HostListener('document:click')
+  cerrarDropdownPorDocumento(): void {
+    if (!this.clientesDropdownAbierto) {
+      return;
+    }
+    this.clientesDropdownAbierto = false;
+  }
+
+  get esRolClienteSeleccionado(): boolean {
+    const valor = this.usuarioForm.get('tipoCuentaId')?.value;
+    return valor === '4' || valor === 4;
+  }
+
+  abrirModal(): void {
     this.isVisible = true;
   }
 
-  cerrar() {
+  cerrar(): void {
     this.isVisible = false;
-    this.usuarioForm.reset();
+    this.usuarioForm.reset({ clientesAutorizados: [] });
     this.errorMessage = '';
+    this.limpiarSelecciones();
     this.cerrarModal.emit();
   }
 
-  onSubmit() {
-    if (this.usuarioForm.valid) {
-      this.enviarFormulario.emit(this.usuarioForm.value);
-      this.cerrar();
-    } else {
+  onSubmit(): void {
+    if (!this.usuarioForm.valid) {
       this.errorMessage = 'Por favor, completa todos los campos requeridos correctamente.';
+      return;
     }
+
+    const payload = { ...this.usuarioForm.value };
+    if (!payload.password) {
+      delete payload.password;
+    }
+
+    this.enviarFormulario.emit(payload);
+    this.cerrar();
+  }
+
+  toggleClientesDropdown(event: MouseEvent): void {
+    event.stopPropagation();
+    if (!this.esRolClienteSeleccionado || this.clientesDisponibles.length === 0) {
+      return;
+    }
+
+    this.clientesDropdownAbierto = !this.clientesDropdownAbierto;
+  }
+
+  onToggleCliente(cliente: ClienteResumen, event?: MouseEvent): void {
+    event?.stopPropagation();
+    const index = this.clientesSeleccionados.findIndex((item) => item.id === cliente.id);
+
+    if (index >= 0) {
+      this.clientesSeleccionados.splice(index, 1);
+    } else {
+      this.clientesSeleccionados.push(cliente);
+    }
+
+    this.actualizarControlClientes();
+  }
+
+  estaClienteSeleccionado(id: string): boolean {
+    return this.clientesSeleccionados.some((cliente) => cliente.id === id);
+  }
+
+  private cargarClientesDisponibles(): void {
+    this.apiService.clientesResumen().subscribe({
+      next: (clientes) => {
+        this.clientesDisponibles = clientes ?? [];
+      },
+      error: () => {
+        this.clientesDisponibles = [];
+      },
+    });
+  }
+
+  private limpiarSelecciones(): void {
+    this.clientesSeleccionados = [];
+    this.clientesDropdownAbierto = false;
+    this.usuarioForm.get('clientesAutorizados')?.setValue([]);
+  }
+
+  private actualizarControlClientes(): void {
+    const ids = this.clientesSeleccionados.map((cliente) => cliente.id);
+    this.usuarioForm.get('clientesAutorizados')?.setValue(ids);
   }
 }

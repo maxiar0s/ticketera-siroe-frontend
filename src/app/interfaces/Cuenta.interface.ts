@@ -1,5 +1,6 @@
 import { EstadoCuenta } from "./EstadoCuenta.interface";
 import { TipoCuenta } from "./TipoCuenta.interface";
+import { ClienteResumen } from "./cliente-resumen.interface";
 
 export interface Cuenta {
   id:             number;
@@ -10,4 +11,5 @@ export interface Cuenta {
   tipoCuenta:     TipoCuenta;
   estadoCuentaId: number;
   estadoCuenta:   EstadoCuenta;
+  clientesAutorizados?: ClienteResumen[];
 }

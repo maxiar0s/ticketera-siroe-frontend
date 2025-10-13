@@ -1,9 +1,10 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, HostListener, Output } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { ApiService } from '../../../../services/api.service';
 import { BehaviorSubject, debounceTime, switchMap } from 'rxjs';
 import { correoConArrobaYpunto } from '../../../../validators/correoValido.validator';
+import { ClienteResumen } from '../../../../interfaces/cliente-resumen.interface';
 import { FormatInputSoloNumerosDirective } from '../../../../directives/solo-numeros.directive';
 
 @Component({
@@ -19,11 +20,14 @@ export class CrearUsuarioComponent {
 
   public formError: boolean = true;
   public correoExistente$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
-  public cuentaForm:        FormGroup;
+  public cuentaForm: FormGroup;
 
-  public isVisible:         boolean = true;
-  public errorMessage:      string = '';
-  public id:                string | null = null;
+  public isVisible: boolean = true;
+  public errorMessage: string = '';
+
+  public clientesDisponibles: ClienteResumen[] = [];
+  public clientesSeleccionados: ClienteResumen[] = [];
+  public clientesDropdownAbierto: boolean = false;
 
   constructor(
     private fb: FormBuilder,
@@ -35,58 +39,124 @@ export class CrearUsuarioComponent {
       telefono: ['', [Validators.required, Validators.pattern('^[0-9]{9}$')]],
       email: ['', [Validators.required, correoConArrobaYpunto()]],
       password: ['', Validators.required],
+      clientesAutorizados: [[]],
     });
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.formError = true;
+
     this.cuentaForm.get('email')!.valueChanges.pipe(
       debounceTime(600),
-      switchMap(email => {
-        return this.apiService.verificarCorreoExistente(email).pipe(
-        );
+      switchMap((email) => {
+        return this.apiService.verificarCorreoExistente(email).pipe();
       })
-    ).subscribe(isTaken => {
+    ).subscribe((isTaken) => {
       this.correoExistente$.next(isTaken);
-      if(isTaken) {
-        this.formError = true;
-      } else this.formError = false;
+      this.formError = isTaken;
+    });
+
+    this.cargarClientesDisponibles();
+
+    this.cuentaForm.get('tipoCuentaId')?.valueChanges.subscribe((valor) => {
+      if (valor === '4' || valor === 4) {
+        return;
+      }
+      this.limpiarSelecciones();
     });
   }
 
-  verificarFormulario():boolean {
+  @HostListener('document:click')
+  cerrarDropdownPorDocumento(): void {
+    if (!this.clientesDropdownAbierto) {
+      return;
+    }
+    this.clientesDropdownAbierto = false;
+  }
+
+  get esRolClienteSeleccionado(): boolean {
+    const valor = this.cuentaForm.get('tipoCuentaId')?.value;
+    return valor === '4' || valor === 4;
+  }
+
+  verificarFormulario(): boolean {
     return this.cuentaForm.invalid || this.correoExistente$.getValue() || this.formError;
   }
 
-  validacionCampoCorreo(event: Event): void {
+  validacionCampoCorreo(_: Event): void {
     this.formError = true;
     this.correoExistente$.next(false);
-    const input = event.target as HTMLInputElement;
   }
 
-  abrirModal() {
+  abrirModal(): void {
     this.isVisible = true;
   }
 
-  cerrar() {
+  cerrar(): void {
     this.isVisible = false;
-    this.cuentaForm.reset();
+    this.cuentaForm.reset({ clientesAutorizados: [] });
     this.errorMessage = '';
+    this.limpiarSelecciones();
     this.cerrarModal.emit();
   }
 
-  onSubmit() {
-    if (this.cuentaForm.valid) {
-      this.enviarFormulario.emit(this.cuentaForm.value);
-      this.cerrar();
-    } else {
+  onSubmit(): void {
+    if (!this.cuentaForm.valid) {
       this.errorMessage = 'Por favor, completa todos los campos requeridos correctamente.';
+      return;
     }
+
+    this.enviarFormulario.emit(this.cuentaForm.value);
+    this.cerrar();
   }
 
-  changeSelectColor(event: Event) {
-    const Element = event.currentTarget as HTMLAnchorElement;
+  changeSelectColor(event: Event): void {
+    const element = event.currentTarget as HTMLSelectElement;
+    element.classList.add('colorSelect');
+  }
 
-    Element.classList.add('colorSelect')
+  toggleClientesDropdown(event: MouseEvent): void {
+    event.stopPropagation();
+    if (!this.esRolClienteSeleccionado || this.clientesDisponibles.length === 0) {
+      return;
+    }
+    this.clientesDropdownAbierto = !this.clientesDropdownAbierto;
+  }
+
+  onToggleCliente(cliente: ClienteResumen, event?: MouseEvent): void {
+    event?.stopPropagation();
+    const index = this.clientesSeleccionados.findIndex((item) => item.id === cliente.id);
+    if (index >= 0) {
+      this.clientesSeleccionados.splice(index, 1);
+    } else {
+      this.clientesSeleccionados.push(cliente);
+    }
+    this.actualizarControlClientes();
+  }
+
+  estaClienteSeleccionado(id: string): boolean {
+    return this.clientesSeleccionados.some((cliente) => cliente.id === id);
+  }
+
+  private cargarClientesDisponibles(): void {
+    this.apiService.clientesResumen().subscribe({
+      next: (clientes) => {
+        this.clientesDisponibles = clientes ?? [];
+      },
+      error: () => {
+        this.clientesDisponibles = [];
+      },
+    });
+  }
+
+  private limpiarSelecciones(): void {
+    this.clientesSeleccionados = [];
+    this.clientesDropdownAbierto = false;
+    this.cuentaForm.get('clientesAutorizados')?.setValue([]);
+  }
+
+  private actualizarControlClientes(): void {
+    const ids = this.clientesSeleccionados.map((cliente) => cliente.id);
+    this.cuentaForm.get('clientesAutorizados')?.setValue(ids);
   }
 }

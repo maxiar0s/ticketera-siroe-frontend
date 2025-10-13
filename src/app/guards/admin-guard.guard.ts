@@ -9,7 +9,8 @@ export const AdminGuard: CanActivateFn = () => {
   if (authService.esAdministrador()) {
     return true;
   } else {
-    router.navigate(['/dashboard']);
+    router.navigate([authService.esCliente() ? '/clientes' : '/dashboard']);
     return false;
   }
 };
+

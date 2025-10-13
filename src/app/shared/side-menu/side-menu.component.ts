@@ -6,6 +6,7 @@ import { AuthService } from '../../services/auth.service';
 // Menus
 import menu_administrador from './menu-administrador.json';
 import menu_tecnico from './menu-tecnico.json';
+import menu_cliente from './menu-cliente.json';
 import menu_config from './menu-config.json';
 
 /*{ Opcion tipo de equipo menu-administrador.json
@@ -32,6 +33,7 @@ export class SideMenuComponent {
   // Menus
   public menu: any;
   public menuConfig = menu_config;
+  public logoRoute: string = '/dashboard';
 
   constructor(
     private authService: AuthService,
@@ -40,9 +42,16 @@ export class SideMenuComponent {
   ) {}
 
   ngOnInit():void {
-    if(this.authService.esAdministrador()) {
-      this.menu = menu_administrador
-    } else this.menu = menu_tecnico;
+    if (this.authService.esAdministrador()) {
+      this.menu = menu_administrador;
+      this.logoRoute = '/dashboard';
+    } else if (this.authService.esCliente()) {
+      this.menu = menu_cliente;
+      this.logoRoute = '/clientes';
+    } else {
+      this.menu = menu_tecnico;
+      this.logoRoute = '/dashboard';
+    }
 
     const path = this.location.path();
     this.currentGroup = path;

@@ -8,7 +8,7 @@
     <div class="modal-body">
       <p class="description-form">Cambia la información del colaborador con los campos correspondientes.</p>
       <form [formGroup]="usuarioForm" (ngSubmit)="onSubmit()" class="responsive-form">
-        <input type="hidden" formControlName="id" value="cuenta.id">
+        <input type="hidden" formControlName="id">
 
         <div class="two-inputs">
           <!-- Campo rol -->
@@ -18,6 +18,7 @@
               <option value="1">Administrador</option>
               <option value="2">Técnico</option>
               <option value="3">Mesa de ayuda</option>
+              <option value="4">Cliente</option>
             </select>
           </div>
 
@@ -26,33 +27,61 @@
             <label for="name">Nombre completo</label>
             <input class="width-50" id="name" formControlName="name" type="text" autocomplete="name" placeholder="Ingrese el nombre completo"/>
             <div *ngIf="usuarioForm.get('name')?.invalid && usuarioForm.get('name')?.touched" class="error">
-              Ingrese un nombre valido
+              Ingrese un nombre válido
             </div>
           </div>
         </div>
 
         <div class="two-inputs">
-            <!-- Campo telefono -->
-            <div class="form-group width-50">
-              <label for="telefono">Teléfono</label>
-              <div class="phone-input-container" style="display: flex; justify-content: center; align-items: center;">
-                <input class="prefijo-telefono" type="text" disabled value="+56">
-                <input class="input-telefono" type="text" id="telefono" formControlName="telefono" autocomplete="tel" placeholder="Ingrese el teléfono" formatInputNumber>
-              </div>
-              <div *ngIf="usuarioForm.get('telefono')?.hasError('required') && usuarioForm.get('telefono')?.touched" class="error">
-                Ingrese un teléfono valido
-              </div>
-              <div *ngIf="usuarioForm.get('telefono')?.hasError('pattern') && usuarioForm.get('telefono')?.touched && usuarioForm.get('telefono')?.invalid" class="error">
-                El teléfono debe contener 9 números
-              </div>
+          <!-- Campo telefono -->
+          <div class="form-group width-50">
+            <label for="telefono">Teléfono</label>
+            <div class="phone-input-container">
+              <input class="prefijo-telefono" type="text" disabled value="+56">
+              <input class="input-telefono" type="text" id="telefono" formControlName="telefono" autocomplete="tel" placeholder="Ingrese el teléfono" formatInputNumber>
             </div>
-
-            <!-- Campo email -->
-            <div class="form-group width-50">
-              <label for="email">Correo electrónico</label>
-              <input class="disabled" type="email" id="email" placeholder="Ingrese el correo electrónico" disabled [value]="usuario?.email">
+            <div *ngIf="usuarioForm.get('telefono')?.hasError('required') && usuarioForm.get('telefono')?.touched" class="error">
+              Ingrese un teléfono válido
             </div>
+            <div *ngIf="usuarioForm.get('telefono')?.hasError('pattern') && usuarioForm.get('telefono')?.touched && usuarioForm.get('telefono')?.invalid" class="error">
+              El teléfono debe contener 9 números
+            </div>
+          </div>
 
+          <!-- Campo email -->
+          <div class="form-group width-50">
+            <label for="email">Correo electrónico</label>
+            <input class="disabled" type="email" id="email" placeholder="Ingrese el correo electrónico" disabled [value]="usuario?.email">
+          </div>
+        </div>
+
+        <div class="form-group full-width" *ngIf="esRolClienteSeleccionado">
+          <label for="clientesAutorizados">Clientes autorizados</label>
+          <div class="clientes-dropdown" (click)="$event.stopPropagation()">
+            <button type="button" class="dropdown-button" (click)="toggleClientesDropdown($event)" [disabled]="clientesDisponibles.length === 0">
+              <ng-container *ngIf="clientesSeleccionados.length === 0">Selecciona clientes</ng-container>
+              <ng-container *ngIf="clientesSeleccionados.length === 1">{{ clientesSeleccionados[0].razonSocial }}</ng-container>
+              <ng-container *ngIf="clientesSeleccionados.length > 1">{{ clientesSeleccionados.length }} clientes seleccionados</ng-container>
+              <img src="/assets/svg/side-menu-arrow-down.svg" alt="toggle" class="dropdown-arrow" />
+            </button>
+            <div class="dropdown-panel" *ngIf="clientesDropdownAbierto">
+              <button
+                type="button"
+                class="dropdown-option"
+                *ngFor="let cliente of clientesDisponibles"
+                (click)="onToggleCliente(cliente, $event)"
+                [class.selected]="estaClienteSeleccionado(cliente.id)">
+                <span class="checkbox" [class.checked]="estaClienteSeleccionado(cliente.id)"></span>
+                <span>{{ cliente.razonSocial }}</span>
+              </button>
+            </div>
+          </div>
+          <div class="selected-chips" *ngIf="clientesSeleccionados.length > 0">
+            <span class="chip" *ngFor="let cliente of clientesSeleccionados">{{ cliente.razonSocial }}</span>
+          </div>
+          <div class="helper-text" *ngIf="clientesDisponibles.length === 0">
+            No hay clientes disponibles para asignar.
+          </div>
         </div>
 
         <div class="two-inputs">
@@ -67,11 +96,10 @@
           </div>
 
           <!-- Campo password -->
-          <div class="form-group width-50" style="margin-bottom: 2rem;">
+          <div class="form-group width-50 password-group">
             <label for="password">Cambiar contraseña</label>
             <input type="password" id="password" formControlName="password" placeholder="Ingrese la contraseña" autocomplete="current-password">
           </div>
-
         </div>
 
         <!-- Mensaje de Error -->
@@ -80,7 +108,9 @@
         </div>
 
         <div class="form-actions">
-          <button class="equiptment-button" type="submit" [disabled]="usuarioForm.invalid">Modificar usuario</button>
+          <button class="equiptment-button" type="submit" [disabled]="usuarioForm.invalid">
+            Modificar usuario
+          </button>
         </div>
 
       </form>

@@ -36,7 +36,8 @@ export class LoginComponent {
       next: (respuesta) => {
         if(respuesta.token) {
           this.authService.guardarToken(respuesta.token);
-          this.router.navigate(['/dashboard']);
+          const destino = this.authService.esCliente() ? '/clientes' : '/dashboard';
+          this.router.navigate([destino]);
         } else {
           this.errorMessage = true;
         }

@@ -1,6 +1,6 @@
 <div class="options-flex">
   <h2 class="title">Listado de equipos</h2>
-  <div class="flex-buttons">
+  <div class="flex-buttons" *ngIf="!esCliente">
     <button id="inprimir-equipos-button" class="option-button disabled-button" disabled (click)="abrirModalImprimirEtiqueta()">
       <img id="imprimir-equipos-image" src="/assets/svg/imprimir-etiquetas-disabled.svg" class="svg" alt="imprimir-etiquetas.svg">
       <img style="display: none;" src="/assets/svg/imprimir-etiquetas-hover.svg">

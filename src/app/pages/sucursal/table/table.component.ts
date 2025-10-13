@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { ApiService } from '../../../services/api.service';
+import { AuthService } from '../../../services/auth.service';
 import { Equipo } from '../../../interfaces/equipo.interface';
 import { ModificarEquipoComponent } from '../../../shared/modal/equipo/modificar-equipo/modificar-equipo.component';
 import { LoaderService } from '../../../services/loader.service';
@@ -48,6 +49,7 @@ export class TableComponent {
 
   //? Estados de equipos
   public estadosEquipo: EstadoEquipo[] = [];
+  public readonly esCliente: boolean;
 
   // Evento para notificar cuando se elimina un equipo
   @Output() equipoEliminado = new EventEmitter<void>();
@@ -56,11 +58,12 @@ export class TableComponent {
 
   constructor(
     private apiService: ApiService,
-    public loaderService: LoaderService
+    public loaderService: LoaderService,
+    private authService: AuthService
   ) {
-      // Cargar los estados de equipos al inicializar el componente
-      this.cargarEstadosEquipo();
-
+    this.esCliente = this.authService.esCliente();
+    // Cargar los estados de equipos al inicializar el componente
+    this.cargarEstadosEquipo();
   }
 
   @Input()
@@ -121,6 +124,9 @@ export class TableComponent {
 
 
   abrirModal(id: number) {
+    if (this.esCliente) {
+      return;
+    }
     this.selectedEquipoId = id;
     this.isModalVisible = true;
   }
@@ -141,6 +147,9 @@ export class TableComponent {
 
   // Método para eliminar un equipo directamente
   eliminarEquipo(id: number) {
+    if (this.esCliente) {
+      return;
+    }
     this.loaderService.showModal();
     this.apiService.deleteEquipment(id).subscribe({
       next: (respuesta) => {
@@ -185,6 +194,9 @@ export class TableComponent {
   }
 
   seleccionarEquipo(equipo: Equipo, codigoId: string, i: number): void {
+    if (this.esCliente) {
+      return;
+    }
     this.checkboxesState[i] = !this.checkboxesState[i];
     const index = this.selectedDevices.findIndex(
       (device) => device.codigoId === codigoId
@@ -228,6 +240,9 @@ export class TableComponent {
   }
 
   seleccionarTodo(event: MouseEvent): void {
+    if (this.esCliente) {
+      return;
+    }
     const checkbox = event.currentTarget as HTMLInputElement;
 
     const checkboxes = document.querySelectorAll('input[type="checkbox"]');
@@ -259,6 +274,10 @@ export class TableComponent {
   }
 
   enviarEquipos(): void {
+    if (this.esCliente) {
+      this.Devices.emit([]);
+      return;
+    }
     this.Devices.emit([...this.selectedDevices]);
   }
 
@@ -266,4 +285,11 @@ export class TableComponent {
     return parseInt(value);
   }
 }
+
+
+
+
+
+
+
 

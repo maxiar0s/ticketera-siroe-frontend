@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { ApiService } from '../../../services/api.service';
+import { AuthService } from '../../../services/auth.service';
 import { CommonModule } from '@angular/common';
 import { CrearEquipoComponent } from '../../../shared/modal/equipo/crear-equipo/crear-equipo.component';
 import { concatMap, from } from 'rxjs';
@@ -26,11 +27,19 @@ export class ButtonsComponent {
   public successMessage: string = '';
   public errorMessage: string = '';
 
+  public readonly esCliente: boolean;
+
   constructor(
-    private apiService: ApiService
-  ) {}
+    private apiService: ApiService,
+    private authService: AuthService
+  ) {
+    this.esCliente = this.authService.esCliente();
+  }
 
   abrirModalCrearEquipo() {
+    if (this.esCliente) {
+      return;
+    }
     this.isModalVisibleCrearEquipo = true;
   }
 
@@ -41,6 +50,9 @@ export class ButtonsComponent {
   }
 
   abrirModalImprimirEtiqueta() {
+    if (this.esCliente) {
+      return;
+    }
     this.isModalVisibleImprimirEtiqueta = true;
   }
 
@@ -52,29 +64,42 @@ export class ButtonsComponent {
 
   @Input()
   set estado(value: boolean) {
+    if (this.esCliente) {
+      this.status = false;
+      return;
+    }
     this.status = value;
 
-    if(!this.status) return;
-    else {
-      const img = document.querySelector('#agregar-image');
-      const button = document.querySelector('#agregar-button');
-
-      button?.removeAttribute('disabled');
-      button?.classList.add('agregar', 'agregar-equipo');
-      img?.setAttribute('src', '/assets/svg/agregar-equipo.svg');
+    if (!this.status) {
+      return;
     }
+
+    const img = document.querySelector('#agregar-image');
+    const button = document.querySelector('#agregar-button');
+
+    button?.removeAttribute('disabled');
+    button?.classList.add('agregar', 'agregar-equipo');
+    img?.setAttribute('src', '/assets/svg/agregar-equipo.svg');
   }
 
   crearEquipos(event: any) {
+    if (this.esCliente) {
+      return;
+    }
     this.crearEquiposForm.emit(event);
   }
 
   @Input()
   set selectedDevices(devices: ImprimirEquipo[]) {
+    this.devices = devices;
+
+    if (this.esCliente) {
+      return;
+    }
+
     const img = document.querySelector('#imprimir-equipos-image');
     const button = document.querySelector('#inprimir-equipos-button');
-    this.devices = devices;
-    if(devices.length > 0) {
+    if (devices.length > 0) {
       button?.removeAttribute('disabled');
       button?.classList.remove('disabled-button');
       button?.classList.add('imprimir', 'imprimir-equipo');
@@ -93,3 +118,7 @@ export class ButtonsComponent {
     this.isModalVisibleCrearEquipo = event;
   }
 }
+
+
+
+

@@ -18,6 +18,7 @@
               <option value="1">Administrador</option>
               <option value="2">Técnico</option>
               <option value="3">Mesa de ayuda</option>
+              <option value="4">Cliente</option>
             </select>
             <div *ngIf="cuentaForm.get('tipoCuentaId')?.invalid && cuentaForm.get('tipoCuentaId')?.touched" class="error">
               Seleccione un rol
@@ -29,46 +30,74 @@
             <label for="name">Nombre completo</label>
             <input class="width-50" id="name" formControlName="name" type="text" autocomplete="name" placeholder="Ingrese el nombre completo"/>
             <div *ngIf="cuentaForm.get('name')?.invalid && cuentaForm.get('name')?.touched" class="error">
-              Ingrese un nombre valido
+              Ingrese un nombre válido
             </div>
           </div>
         </div>
 
         <div class="two-inputs">
-            <!-- Campo telefono -->
-            <div class="form-group width-50">
-              <label for="telefono">Teléfono</label>
-              <div class="phone-input-container" style="display: flex; justify-content: center; align-items: center;">
-                <input class="prefijo-telefono" type="text" disabled value="+56">
-                <input class="input-telefono" type="text" id="telefono" formControlName="telefono" autocomplete="tel" placeholder="Ingrese el teléfono" formatInputNumber>
-              </div>
-              <div *ngIf="cuentaForm.get('telefono')?.hasError('required') && cuentaForm.get('telefono')?.touched" class="error">
-                Ingrese un teléfono valido
-              </div>
-              <div *ngIf="cuentaForm.get('telefono')?.hasError('pattern') && cuentaForm.get('telefono')?.touched && cuentaForm.get('telefono')?.invalid" class="error">
-                El teléfono debe contener 9 números
-              </div>
+          <!-- Campo telefono -->
+          <div class="form-group width-50">
+            <label for="telefono">Teléfono</label>
+            <div class="phone-input-container">
+              <input class="prefijo-telefono" type="text" disabled value="+56">
+              <input class="input-telefono" type="text" id="telefono" formControlName="telefono" autocomplete="tel" placeholder="Ingrese el teléfono" formatInputNumber>
             </div>
-
-            <!-- Campo email -->
-            <div class="form-group width-50">
-              <label for="email">Correo electrónico</label>
-              <input type="email" id="email" formControlName="email" placeholder="Ingrese el correo electrónico" (input)="validacionCampoCorreo($event)" autocomplete="email">
-              <div *ngIf="cuentaForm.get('email')?.hasError('required') && cuentaForm.get('email')?.touched" class="error">
-                Ingrese un correo electrónico
-              </div>
-              <div *ngIf="cuentaForm.get('email')?.hasError('correoInvalido') && cuentaForm.get('email')?.touched" class="error">
-                Ingrese un correo electrónico valido
-              </div>
-              <div *ngIf="correoExistente$ | async" class="error">
-                Este correo electrónico ya está registrado.
-              </div>
+            <div *ngIf="cuentaForm.get('telefono')?.hasError('required') && cuentaForm.get('telefono')?.touched" class="error">
+              Ingrese un teléfono válido
             </div>
+            <div *ngIf="cuentaForm.get('telefono')?.hasError('pattern') && cuentaForm.get('telefono')?.touched && cuentaForm.get('telefono')?.invalid" class="error">
+              El teléfono debe contener 9 números
+            </div>
+          </div>
 
+          <!-- Campo email -->
+          <div class="form-group width-50">
+            <label for="email">Correo electrónico</label>
+            <input type="email" id="email" formControlName="email" placeholder="Ingrese el correo electrónico" (input)="validacionCampoCorreo($event)" autocomplete="email">
+            <div *ngIf="cuentaForm.get('email')?.hasError('required') && cuentaForm.get('email')?.touched" class="error">
+              Ingrese un correo electrónico
+            </div>
+            <div *ngIf="cuentaForm.get('email')?.hasError('correoInvalido') && cuentaForm.get('email')?.touched" class="error">
+              Ingrese un correo electrónico válido
+            </div>
+            <div *ngIf="correoExistente$ | async" class="error">
+              Este correo electrónico ya está registrado.
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group full-width" *ngIf="esRolClienteSeleccionado">
+          <label for="clientesAutorizados">Clientes autorizados</label>
+          <div class="clientes-dropdown" (click)="$event.stopPropagation()">
+            <button type="button" class="dropdown-button" (click)="toggleClientesDropdown($event)" [disabled]="clientesDisponibles.length === 0">
+              <ng-container *ngIf="clientesSeleccionados.length === 0">Selecciona clientes</ng-container>
+              <ng-container *ngIf="clientesSeleccionados.length === 1">{{ clientesSeleccionados[0].razonSocial }}</ng-container>
+              <ng-container *ngIf="clientesSeleccionados.length > 1">{{ clientesSeleccionados.length }} clientes seleccionados</ng-container>
+              <img src="/assets/svg/side-menu-arrow-down.svg" alt="toggle" class="dropdown-arrow" />
+            </button>
+            <div class="dropdown-panel" *ngIf="clientesDropdownAbierto">
+              <button
+                type="button"
+                class="dropdown-option"
+                *ngFor="let cliente of clientesDisponibles"
+                (click)="onToggleCliente(cliente, $event)"
+                [class.selected]="estaClienteSeleccionado(cliente.id)">
+                <span class="checkbox" [class.checked]="estaClienteSeleccionado(cliente.id)"></span>
+                <span>{{ cliente.razonSocial }}</span>
+              </button>
+            </div>
+          </div>
+          <div class="selected-chips" *ngIf="clientesSeleccionados.length > 0">
+            <span class="chip" *ngFor="let cliente of clientesSeleccionados">{{ cliente.razonSocial }}</span>
+          </div>
+          <div class="helper-text" *ngIf="clientesDisponibles.length === 0">
+            No hay clientes disponibles para asignar.
+          </div>
         </div>
 
         <!-- Campo password -->
-        <div class="form-group" style="margin-bottom: 2rem;">
+        <div class="form-group password-group">
           <label for="password">Contraseña</label>
           <input type="password" id="password" formControlName="password" placeholder="Ingrese la contraseña" autocomplete="current-password">
           <div *ngIf="cuentaForm.get('password')?.invalid && cuentaForm.get('password')?.touched" class="error">
@@ -82,11 +111,13 @@
         </div>
 
         <div class="form-actions">
-          <button *ngIf="verificarFormulario()" class="equiptment-button" type="submit" disabled>Crear usuario</button>
-          <button *ngIf="!verificarFormulario()" class="equiptment-button" type="submit">Crear usuario</button>
+          <button [disabled]="verificarFormulario()" class="equiptment-button" type="submit">
+            Crear usuario
+          </button>
         </div>
 
       </form>
     </div>
   </div>
 </div>
+

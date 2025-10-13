@@ -117,14 +117,14 @@
 
 <shared-crear-cliente
   class="form-crear-cliente"
-  *ngIf="isModalVisible"
+  *ngIf="esAdministrador && isModalVisible"
   [cliente]="clienteParaEditar"
   [modoEdicion]="modoEdicion"
   (cerrarModal)="cerrarModal()"
   (enviarFormulario)="guardarCliente($event)"
 ></shared-crear-cliente>
 
-<app-opciones-cliente
+<app-opciones-cliente *ngIf="esAdministrador"
   [visible]="isModalAjustesClienteVisible"
   [cliente]="selectedCliente"
   (cerrarModal)="cerrarModalAjustesCliente()"

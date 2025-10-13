@@ -31,6 +31,7 @@ import { OpcionesClienteComponent } from '../../shared/modal/cliente/opciones-cl
 })
 export class ClientesComponent implements OnInit {
   public esAdministrador: boolean = false;
+  public esCliente: boolean = false;
 
   // Elementos para el paginador
   public paginaActual:    number = 1;
@@ -61,6 +62,7 @@ export class ClientesComponent implements OnInit {
   ngOnInit(): void {
     this.signalService.updateData('Clientes');
     this.esAdministrador = this.authService.esAdministrador();
+    this.esCliente = this.authService.esCliente();
     this.cargarClientes();
   }
 
@@ -208,3 +210,4 @@ export class ClientesComponent implements OnInit {
     }
   }
 }
+

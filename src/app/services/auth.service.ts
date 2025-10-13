@@ -57,15 +57,21 @@ export class AuthService {
     return true;
   }
 
+  obtenerTipoCuenta(): number | null {
+    const decodificado = this.decodificarToken();
+    if (decodificado) {
+      return decodificado.tipoCuenta;
+    }
+    return null;
+  }
+
   // Metodo para verificar tipo de usuario
   esAdministrador(): boolean {
-    const decodificado = this.decodificarToken();
-    if(decodificado) {
-      const { tipoCuenta } = decodificado;
-      if(tipoCuenta == 1) return true;
-      else return false;
-    }
-    else return false;
+    return this.obtenerTipoCuenta() === 1;
+  }
+
+  esCliente(): boolean {
+    return this.obtenerTipoCuenta() === 4;
   }
 
   // Método para verificar la validez del token

@@ -2,6 +2,7 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { catchError, map, Observable, of, throwError } from 'rxjs';
 import { Cliente } from '../interfaces/cliente.interface';
+import { ClienteResumen } from '../interfaces/cliente-resumen.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -108,6 +109,11 @@ export class ApiService {
   // Casas Matricez
   clients(pagina: number): Observable<any> {
     const endpoint = `clientes?pagina=${pagina}`;
+    return this.getInformation(endpoint);
+  }
+
+  clientesResumen(): Observable<ClienteResumen[]> {
+    const endpoint = 'clientes/listado';
     return this.getInformation(endpoint);
   }
 

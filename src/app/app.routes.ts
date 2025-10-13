@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 import { protegerRutaGuard } from './guards/proteger-ruta.guard';
 import { AdminGuard } from './guards/admin-guard.guard';
+import { NoClienteGuard } from './guards/no-cliente.guard';
 
 export const routes: Routes = [
   // Redireccionamiento
@@ -18,7 +19,7 @@ export const routes: Routes = [
   // Home
   {
     path: 'dashboard',
-    canActivate: [protegerRutaGuard],
+    canActivate: [protegerRutaGuard, NoClienteGuard],
     loadComponent: () => import('./pages/dashboard/dashboard.component').then( m => m.DashboardComponent ),
   },
 

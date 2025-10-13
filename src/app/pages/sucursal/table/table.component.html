@@ -14,7 +14,7 @@
 
         <tr class="thead-properties">
 
-          <th class="col-1">
+          <th class="col-1" *ngIf="!esCliente">
 
             <input
 
@@ -56,7 +56,7 @@
 
         <tr>
 
-          <td colspan="9" class="height-spinner">
+          <td [attr.colspan]="esCliente ? 8 : 9" class="height-spinner">
 
             <div class="spinner-section spinner-size-section"></div>
 
@@ -78,9 +78,7 @@
 
         >
 
-          <td class="information-checkbox information-value">
-
-            <input
+          <td class="information-checkbox information-value" *ngIf="!esCliente">\r\n\n            <input
 
               type="checkbox"
 
@@ -144,61 +142,35 @@
 
 
           <td class="information-value information-actions">
-
-            <button class="actions">
-
-              <img
-
-                src="/assets/svg/imprimir-etiqueta.svg"
-
-                class="svg-cursor svg imprimir-etiqueta"
-
-                alt="imprimir-etiqueta.svg"
-
-              />
-
-            </button>
-
-            <button
-
-              (click)="abrirModal(equipo.id)"
-
-              class="actions"
-
-            >
-
-              <img
-
-                src="/assets/svg/agregar-datos.svg"
-
-                class="svg-cursor agregar-datos svg"
-
-                alt="agregar-datos.svg"
-
-              />
-
-            </button>
-
-            <button class="actions" (click)="eliminarEquipo(equipo.id)">
-
-              <img
-
-                src="/assets/svg/delete.svg"
-
-                class="svg-cursor svg eliminar-equipo"
-
-                alt="eliminar-equipo.svg"
-
-              />
-
-            </button>
-
+            <ng-container *ngIf="!esCliente">
+              <button class="actions">
+                <img
+                  src="/assets/svg/imprimir-etiqueta.svg"
+                  class="svg-cursor svg imprimir-etiqueta"
+                  alt="imprimir-etiqueta.svg"
+                />
+              </button>
+              <button
+                (click)="abrirModal(equipo.id)"
+                class="actions"
+              >
+                <img
+                  src="/assets/svg/agregar-datos.svg"
+                  class="svg-cursor agregar-datos svg"
+                  alt="agregar-datos.svg"
+                />
+              </button>
+              <button class="actions" (click)="eliminarEquipo(equipo.id)">
+                <img
+                  src="/assets/svg/delete.svg"
+                  class="svg-cursor svg eliminar-equipo"
+                  alt="eliminar-equipo.svg"
+                />
+              </button>
+            </ng-container>
             <button class="actions" (click)="abrirModalVer(equipo.id, i)">
-
-                    <img [src]="'/assets/svg/ver-datos.svg' " [ngClass]="{'svg-cursor ver-datos': equipo.estado === 3}" class="svg" alt="ver-datos.svg">
-
-                  </button>
-
+              <img [src]="'/assets/svg/ver-datos.svg' " [ngClass]="{'svg-cursor ver-datos': equipo.estado === 3}" class="svg" alt="ver-datos.svg">
+            </button>
           </td>
 
         </tr>
@@ -211,7 +183,7 @@
 
         <tr>
 
-          <td colspan="9" class="no-equipos">No hay equipos registrados</td>
+          <td [attr.colspan]="esCliente ? 8 : 9" class="no-equipos">No hay equipos registrados</td>
 
         </tr>
 
@@ -258,6 +230,9 @@
 >
 
 </shared-ver-informacion>
+
+
+
 
 
 
