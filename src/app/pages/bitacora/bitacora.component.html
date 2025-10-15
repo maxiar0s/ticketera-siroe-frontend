@@ -236,11 +236,14 @@
       <p>
         {{ bitacoraSeleccionada.descripcion }}
       </p>
-      <div class="adjuntos" *ngIf="bitacoraSeleccionada.adjuntos?.length">
+      <div class="adjuntos" *ngIf="bitacoraSeleccionada.adjuntos && bitacoraSeleccionada.adjuntos.length > 0">
         <h4>Archivos adjuntos</h4>
-        <ul>
+        <ul class="adjuntos-list">
           <li *ngFor="let a of bitacoraSeleccionada.adjuntos">
-            <button type="button" class="link-button" (click)="downloadAdjunto(a)">{{ a }}</button>
+            <button type="button" class="link-button" (click)="downloadAdjunto(a)">
+              <i class="fas fa-download"></i>
+              {{ a.split('/').pop() }}
+            </button>
           </li>
         </ul>
       </div>

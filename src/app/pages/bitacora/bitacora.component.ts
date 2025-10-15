@@ -90,15 +90,29 @@ export class BitacoraComponent implements OnInit {
   }
 
   downloadAdjunto(fileName: string): void {
-    if (!fileName) return;
+    if (!fileName) {
+      console.error('Nombre de archivo no proporcionado');
+      return;
+    }
+    
     this.apiService.signedUrl(fileName).subscribe({
       next: (url) => {
         if (url) {
-          window.open(url, '_blank');
+          // Crear un enlace temporal y simular clic para la descarga
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = fileName.split('/').pop() || fileName; // Usar solo el nombre del archivo, no la ruta completa
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+        } else {
+          console.error('URL firmada no disponible');
+          this.errorMensaje = 'No se pudo descargar el archivo. URL no disponible.';
         }
       },
       error: (err) => {
         console.error('Error al obtener URL firmada:', err);
+        this.errorMensaje = 'Error al descargar el archivo. Por favor, intenta nuevamente.';
       },
     });
   }
