@@ -10,7 +10,7 @@ import { ClienteResumen } from '../interfaces/cliente-resumen.interface';
 export class ApiService {
   //private url = 'http://167.71.172.190:3000';
   //private url = 'https://app-soporte-siroe.vercel.app';
-  private url = 'http://localhost:3000';
+  private url = 'https://api-soporte-siroe.onrender.com';
 
   constructor(private http: HttpClient) {}
 
