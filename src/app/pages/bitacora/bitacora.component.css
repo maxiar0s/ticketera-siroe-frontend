@@ -2,7 +2,8 @@
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
-  padding: 1.5rem;
+  /* Agregado padding izquierdo para separar del side menu */
+  padding: 1.5rem 1.5rem 1.5rem 2.25rem;
 }
 
 .bitacora-header {
@@ -14,7 +15,7 @@
 
 .bitacora-header h1 {
   margin: 0;
-  font-size: 1.75rem;
+  font-size: 1.95rem;
   color: #2f2f2f;
 }
 
@@ -121,7 +122,8 @@ textarea {
   border: 1px solid #dadada;
   background-color: #fafafa;
   padding: 0.75rem 1rem;
-  font-size: 0.95rem;
+  font-size: 1.05rem; /* un poco más grande */
+  font-family: inherit;
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
@@ -189,7 +191,8 @@ textarea {
 .bitacora-table td {
   padding: 1rem 1.25rem;
   text-align: left;
-  font-size: 0.95rem;
+  font-size: 1.05rem;
+  font-family: inherit;
 }
 
 .bitacora-table th {
@@ -226,6 +229,8 @@ textarea {
 .bitacora-table td.acciones {
   display: flex;
   gap: 0.5rem;
+  /* separacion izquierda para que no quede pegado al borde */
+  padding-left: 0.75rem;
 }
 
 .link-button {
@@ -274,7 +279,7 @@ textarea {
 
 .bitacora-detail h2 {
   margin: 0;
-  font-size: 1.4rem;
+  font-size: 1.55rem;
   color: #2f2f2f;
 }
 
@@ -300,6 +305,7 @@ textarea {
 .detail-note h3 {
   margin: 0 0 0.75rem;
   color: #c4006b;
+  font-size: 1.15rem;
 }
 
 .detail-note p {
@@ -335,9 +341,12 @@ textarea {
   align-items: flex-start;
   justify-content: space-between;
   gap: 1rem;
+  /* igualar border-radius del header con el contenedor blanco para que no sobresalga */
   padding: 1.5rem 1.75rem 1.25rem;
   background: linear-gradient(90deg, #c4006b 0%, #e10880 100%);
   color: #ffffff;
+  border-top-left-radius: 1.5rem;
+  border-top-right-radius: 1.5rem;
 }
 
 .modal-header h2 {

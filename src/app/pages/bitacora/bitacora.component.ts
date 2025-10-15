@@ -48,6 +48,7 @@ export class BitacoraComponent implements OnInit {
 
   formularioVisible = false;
   modoEdicion = false;
+  selectedFiles: File[] = [];
 
   readonly esAdmin: boolean;
   readonly esTecnico: boolean;
@@ -86,6 +87,20 @@ export class BitacoraComponent implements OnInit {
       descripcion: ['', [Validators.required, Validators.minLength(5)]],
     });
 
+  }
+
+  downloadAdjunto(fileName: string): void {
+    if (!fileName) return;
+    this.apiService.signedUrl(fileName).subscribe({
+      next: (url) => {
+        if (url) {
+          window.open(url, '_blank');
+        }
+      },
+      error: (err) => {
+        console.error('Error al obtener URL firmada:', err);
+      },
+    });
   }
 
   ngOnInit(): void {
@@ -310,9 +325,27 @@ export class BitacoraComponent implements OnInit {
     this.guardando = true;
     this.errorMensaje = '';
 
-    const solicitud$ = esEdicion
-      ? this.apiService.actualizarBitacora(formValue.id, payload)
-      : this.apiService.crearBitacora(payload);
+    let solicitud$;
+
+    // Si hay archivos seleccionados, enviamos FormData
+    if (this.selectedFiles?.length) {
+      const formData = new FormData();
+      // adjuntamos payload como JSON en campo 'payload'
+      formData.append('payload', JSON.stringify(payload));
+      this.selectedFiles.forEach((file, idx) => {
+        formData.append('files', file, file.name);
+      });
+
+      if (esEdicion) {
+        solicitud$ = this.apiService.actualizarBitacora(formValue.id, formData);
+      } else {
+        solicitud$ = this.apiService.crearBitacora(formData);
+      }
+    } else {
+      solicitud$ = esEdicion
+        ? this.apiService.actualizarBitacora(formValue.id, payload)
+        : this.apiService.crearBitacora(payload);
+    }
 
     solicitud$
       .pipe(finalize(() => (this.guardando = false)))
@@ -340,6 +373,23 @@ export class BitacoraComponent implements OnInit {
         },
       });
   }
+
+    onFilesSelected(files: FileList | null): void {
+      if (!files) {
+        return;
+      }
+      // append selected files to array
+      for (let i = 0; i < files.length; i++) {
+        const f = files.item(i);
+        if (f) this.selectedFiles.push(f);
+      }
+    }
+
+    removeSelectedFile(index: number): void {
+      if (index >= 0 && index < this.selectedFiles.length) {
+        this.selectedFiles.splice(index, 1);
+      }
+    }
 
   onClienteFiltroChange(clienteId: string): void {
     this.filtroForm.patchValue({ sucursalId: '' }, { emitEvent: false });

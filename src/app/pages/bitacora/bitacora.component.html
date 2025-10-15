@@ -125,13 +125,6 @@
             <button
               type="button"
               class="link-button"
-              (click)="seleccionarBitacora(bitacora); $event.stopPropagation()"
-            >
-              Ver
-            </button>
-            <button
-              type="button"
-              class="link-button"
               *ngIf="puedeEditarBitacora(bitacora)"
               (click)="abrirFormularioEditar(bitacora, $event)"
             >
@@ -243,6 +236,14 @@
       <p>
         {{ bitacoraSeleccionada.descripcion }}
       </p>
+      <div class="adjuntos" *ngIf="bitacoraSeleccionada.adjuntos?.length">
+        <h4>Archivos adjuntos</h4>
+        <ul>
+          <li *ngFor="let a of bitacoraSeleccionada.adjuntos">
+            <button type="button" class="link-button" (click)="downloadAdjunto(a)">{{ a }}</button>
+          </li>
+        </ul>
+      </div>
     </article>
   </section>
 </div>
@@ -259,14 +260,6 @@
           Completa los datos para dejar registro de la visita realizada.
         </p>
       </div>
-      <button
-        type="button"
-        class="close-button"
-        aria-label="Cerrar formulario"
-        (click)="cerrarFormulario()"
-      >
-        ×
-      </button>
     </header>
     <form [formGroup]="bitacoraForm" (ngSubmit)="guardarBitacora()">
       <div class="modal-grid">
@@ -339,6 +332,20 @@
             rows="4"
             placeholder="Describe las actividades realizadas, hallazgos y compromisos."
           ></textarea>
+        </label>
+
+        <label class="full">
+          <span class="label">Adjuntar documentos / imágenes</span>
+          <input type="file" (change)="onFilesSelected($any($event.target).files)" accept="image/*,.pdf,.doc,.docx" multiple />
+
+          <div class="selected-files" *ngIf="selectedFiles.length > 0">
+            <ul>
+              <li *ngFor="let f of selectedFiles; let i = index">
+                <span class="file-name">{{ f.name }}</span>
+                <button type="button" class="link-button" (click)="removeSelectedFile(i)">Quitar</button>
+              </li>
+            </ul>
+          </div>
         </label>
       </div>
 

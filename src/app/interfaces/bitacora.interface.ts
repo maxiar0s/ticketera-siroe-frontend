@@ -32,6 +32,7 @@ export interface Bitacora {
     name: string;
     email: string;
   };
+  adjuntos?: string[];
 }
 
 export interface BitacoraListadoResponse {
