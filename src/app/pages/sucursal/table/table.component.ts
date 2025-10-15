@@ -46,6 +46,9 @@ export class TableComponent {
   public isModalVerInfo: boolean = false;
   public successMessage: string = '';
   public errorMessage: string = '';
+  public isModalAccionesVisible: boolean = false;
+  public equipoAccionesSeleccionado?: Equipo;
+  private indiceEquipoAcciones: number = -1;
 
   //? Estados de equipos
   public estadosEquipo: EstadoEquipo[] = [];
@@ -139,6 +142,73 @@ export class TableComponent {
     }
   }
 
+  abrirModalAcciones(equipo: Equipo, indice: number): void {
+    if (this.esCliente) {
+      return;
+    }
+    this.equipoAccionesSeleccionado = equipo;
+    this.indiceEquipoAcciones = indice;
+    this.isModalAccionesVisible = true;
+  }
+
+  cerrarModalAcciones(): void {
+    this.isModalAccionesVisible = false;
+    this.equipoAccionesSeleccionado = undefined;
+    this.indiceEquipoAcciones = -1;
+  }
+
+  toggleSeleccionEquipoDesdeModal(): void {
+    if (
+      !this.equipoAccionesSeleccionado ||
+      this.indiceEquipoAcciones === -1
+    ) {
+      return;
+    }
+    this.seleccionarEquipo(
+      this.equipoAccionesSeleccionado,
+      this.equipoAccionesSeleccionado.codigoId,
+      this.indiceEquipoAcciones
+    );
+  }
+
+  abrirModalDesdeAcciones(): void {
+    if (!this.equipoAccionesSeleccionado) {
+      return;
+    }
+    const equipoId = this.equipoAccionesSeleccionado.id;
+    this.cerrarModalAcciones();
+    this.abrirModal(equipoId);
+  }
+
+  eliminarEquipoDesdeModal(): void {
+    if (!this.equipoAccionesSeleccionado) {
+      return;
+    }
+    const equipoId = this.equipoAccionesSeleccionado.id;
+    this.cerrarModalAcciones();
+    this.eliminarEquipo(equipoId);
+  }
+
+  abrirModalVerDesdeAcciones(): void {
+    if (
+      !this.equipoAccionesSeleccionado ||
+      this.indiceEquipoAcciones === -1
+    ) {
+      return;
+    }
+    const equipoId = this.equipoAccionesSeleccionado.id;
+    const indice = this.indiceEquipoAcciones;
+    this.cerrarModalAcciones();
+    this.abrirModalVer(equipoId, indice);
+  }
+
+  get equipoAccionesSeleccionadoMarcado(): boolean {
+    if (this.indiceEquipoAcciones === -1) {
+      return false;
+    }
+    return this.checkboxesState[this.indiceEquipoAcciones] ?? false;
+  }
+
   cerrarModal() {
     this.isModalVisible = false;
     this.successMessage = '';
@@ -193,18 +263,30 @@ export class TableComponent {
     });
   }
 
-  seleccionarEquipo(equipo: Equipo, codigoId: string, i: number): void {
+  seleccionarEquipo(
+    equipo: Equipo,
+    codigoId: string,
+    i: number,
+    event?: Event
+  ): void {
     if (this.esCliente) {
       return;
     }
-    this.checkboxesState[i] = !this.checkboxesState[i];
+    const inputEvent = event?.target as HTMLInputElement | undefined;
+    const debeSeleccionar =
+      inputEvent !== undefined
+        ? inputEvent.checked
+        : !this.checkboxesState[i];
+
+    this.checkboxesState[i] = debeSeleccionar;
+
     const index = this.selectedDevices.findIndex(
       (device) => device.codigoId === codigoId
     );
 
-    if (index !== -1) {
+    if (!debeSeleccionar && index !== -1) {
       this.selectedDevices.splice(index, 1);
-    } else {
+    } else if (debeSeleccionar && index === -1) {
       this.selectedDevices.push({
         codigoId: equipo.codigoId,
         fechaIngreso: equipo.fechaIngreso,
@@ -239,38 +321,26 @@ export class TableComponent {
     return this.checkboxesState.every((state) => state);
   }
 
-  seleccionarTodo(event: MouseEvent): void {
-    if (this.esCliente) {
+  seleccionarTodo(event: Event): void {
+    if (this.esCliente || !this.equipos) {
       return;
     }
-    const checkbox = event.currentTarget as HTMLInputElement;
+    const checkbox = event.target as HTMLInputElement;
+    const seleccionado = checkbox.checked;
 
-    const checkboxes = document.querySelectorAll('input[type="checkbox"]');
-    if (checkboxes) {
-      const allCheckboxes = Array.from(checkboxes).slice(1);
+    this.checkboxesState = new Array(this.equipos.length).fill(seleccionado);
 
-      if (checkbox.checked) {
-        allCheckboxes.forEach((checkbox) => {
-          const check = checkbox as HTMLInputElement;
-          check.checked = true;
-        });
-        this.selectedDevices = this.equipos!.map((equipo) => ({
-          codigoId: equipo.codigoId,
-          fechaIngreso: equipo.fechaIngreso,
-          departamento: equipo.departamento,
-        }));
-        this.checkboxesState.fill(checkbox.checked);
-        this.enviarEquipos();
-      } else {
-        allCheckboxes.forEach((checkbox) => {
-          const check = checkbox as HTMLInputElement;
-          check.checked = false;
-        });
-        this.selectedDevices = [];
-        this.checkboxesState.fill(checkbox.checked);
-        this.enviarEquipos();
-      }
+    if (seleccionado) {
+      this.selectedDevices = this.equipos.map((equipo) => ({
+        codigoId: equipo.codigoId,
+        fechaIngreso: equipo.fechaIngreso,
+        departamento: equipo.departamento,
+      }));
+    } else {
+      this.selectedDevices = [];
     }
+
+    this.enviarEquipos();
   }
 
   enviarEquipos(): void {

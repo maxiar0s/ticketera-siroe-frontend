@@ -24,7 +24,7 @@
 
               type="checkbox"
 
-              (click)="seleccionarTodo($event)"
+              (change)="seleccionarTodo($event)"
 
             />
 
@@ -78,12 +78,11 @@
 
         >
 
-          <td class="information-checkbox information-value" *ngIf="!esCliente">\r\n\n            <input
-
+          <td class="information-checkbox information-value" *ngIf="!esCliente">
+            <input
               type="checkbox"
-
-              (change)="seleccionarEquipo(equipo, equipo.codigoId, i)"
-
+              [checked]="checkboxesState[i]"
+              (change)="seleccionarEquipo(equipo, equipo.codigoId, i, $event)"
             />
 
           </td>
@@ -142,34 +141,58 @@
 
 
           <td class="information-value information-actions">
-            <ng-container *ngIf="!esCliente">
-              <button class="actions">
-                <img
-                  src="/assets/svg/imprimir-etiqueta.svg"
-                  class="svg-cursor svg imprimir-etiqueta"
-                  alt="imprimir-etiqueta.svg"
-                />
+            <div class="desktop-actions">
+              <ng-container *ngIf="!esCliente">
+                <button class="actions">
+                  <img
+                    src="/assets/svg/imprimir-etiqueta.svg"
+                    class="svg-cursor svg imprimir-etiqueta"
+                    alt="imprimir-etiqueta.svg"
+                  />
+                </button>
+                <button
+                  (click)="abrirModal(equipo.id)"
+                  class="actions"
+                >
+                  <img
+                    src="/assets/svg/agregar-datos.svg"
+                    class="svg-cursor agregar-datos svg"
+                    alt="agregar-datos.svg"
+                  />
+                </button>
+                <button class="actions" (click)="eliminarEquipo(equipo.id)">
+                  <img
+                    src="/assets/svg/delete.svg"
+                    class="svg-cursor svg eliminar-equipo"
+                    alt="eliminar-equipo.svg"
+                  />
+                </button>
+              </ng-container>
+              <button class="actions" (click)="abrirModalVer(equipo.id, i)">
+                <img [src]="'/assets/svg/ver-datos.svg' " [ngClass]="{'svg-cursor ver-datos': equipo.estado === 3}" class="svg" alt="ver-datos.svg">
               </button>
-              <button
-                (click)="abrirModal(equipo.id)"
-                class="actions"
-              >
-                <img
-                  src="/assets/svg/agregar-datos.svg"
-                  class="svg-cursor agregar-datos svg"
-                  alt="agregar-datos.svg"
-                />
-              </button>
-              <button class="actions" (click)="eliminarEquipo(equipo.id)">
-                <img
-                  src="/assets/svg/delete.svg"
-                  class="svg-cursor svg eliminar-equipo"
-                  alt="eliminar-equipo.svg"
-                />
-              </button>
-            </ng-container>
-            <button class="actions" (click)="abrirModalVer(equipo.id, i)">
-              <img [src]="'/assets/svg/ver-datos.svg' " [ngClass]="{'svg-cursor ver-datos': equipo.estado === 3}" class="svg" alt="ver-datos.svg">
+            </div>
+            <button
+              *ngIf="!esCliente"
+              type="button"
+              class="actions mobile-actions"
+              (click)="abrirModalAcciones(equipo, i)"
+              aria-label="Mostrar acciones del equipo"
+            >
+              <span class="mobile-actions__icon">&hellip;</span>
+            </button>
+            <button
+              *ngIf="esCliente"
+              type="button"
+              class="actions mobile-actions"
+              (click)="abrirModalVer(equipo.id, i)"
+              aria-label="Ver detalles del equipo"
+            >
+              <img
+                src="/assets/svg/ver-datos.svg"
+                class="svg svg-cursor"
+                alt="ver-datos.svg"
+              />
             </button>
           </td>
 
@@ -230,6 +253,101 @@
 >
 
 </shared-ver-informacion>
+
+<div
+  class="actions-modal-backdrop"
+  *ngIf="isModalAccionesVisible"
+  (click)="cerrarModalAcciones()"
+>
+  <div class="actions-modal" (click)="$event.stopPropagation()">
+    <div class="actions-modal__header">
+      <span class="actions-modal__title">Acciones del equipo</span>
+      <button
+        type="button"
+        class="actions-modal__close"
+        aria-label="Cerrar acciones"
+        (click)="cerrarModalAcciones()"
+      >
+        &times;
+      </button>
+    </div>
+    <div class="actions-modal__body">
+      <div class="actions-modal__identity" *ngIf="equipoAccionesSeleccionado">
+        <h3 class="actions-modal__label">
+          {{ equipoAccionesSeleccionado.codigoId }}
+        </h3>
+        <p class="actions-modal__subtitle">
+          {{
+            equipoAccionesSeleccionado.tipoEquipo.name || 'Equipo sin clasificacion'
+          }}
+        </p>
+      </div>
+      <p class="actions-modal__hint">
+        Elige qué deseas hacer con este equipo.
+      </p>
+      <div class="actions-modal__options">
+        <button
+          type="button"
+          class="actions-modal__option"
+          [ngClass]="{
+            'actions-modal__option--active': equipoAccionesSeleccionadoMarcado
+          }"
+          [attr.aria-pressed]="equipoAccionesSeleccionadoMarcado"
+          (click)="toggleSeleccionEquipoDesdeModal()"
+        >
+          <img
+            src="/assets/svg/imprimir-etiqueta.svg"
+            alt=""
+            class="actions-modal__icon"
+          />
+          <span>
+            {{
+              equipoAccionesSeleccionadoMarcado
+                ? 'Quitar de impresión'
+                : 'Imprimir etiqueta'
+            }}
+          </span>
+        </button>
+        <button
+          type="button"
+          class="actions-modal__option"
+          (click)="abrirModalDesdeAcciones()"
+        >
+          <img
+            src="/assets/svg/agregar-datos.svg"
+            alt=""
+            class="actions-modal__icon"
+          />
+          <span>Editar equipo</span>
+        </button>
+        <button
+          type="button"
+          class="actions-modal__option actions-modal__option--danger"
+          (click)="eliminarEquipoDesdeModal()"
+        >
+          <img
+            src="/assets/svg/delete.svg"
+            alt=""
+            class="actions-modal__icon"
+          />
+          <span>Eliminar equipo</span>
+        </button>
+        <button
+          type="button"
+          class="actions-modal__option actions-modal__option--secondary"
+          (click)="abrirModalVerDesdeAcciones()"
+        >
+          <img
+            src="/assets/svg/ver-datos.svg"
+            alt=""
+            class="actions-modal__icon"
+          />
+          <span>Ver detalles</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
 
 
 

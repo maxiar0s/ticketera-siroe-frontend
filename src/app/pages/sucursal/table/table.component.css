@@ -29,6 +29,48 @@
 .actions {
   all: unset;
 }
+.information-actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  gap: 0.75rem;
+}
+.desktop-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+.mobile-actions {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  min-width: 2.5rem;
+  height: 2.5rem;
+  padding: 0 0.85rem;
+  border-radius: 999px;
+  border: 1px solid #e2e2e2;
+  background-color: #ffffff;
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.14);
+  color: #5b5b5b;
+  font-weight: 600;
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+  cursor: pointer;
+}
+.mobile-actions:hover,
+.mobile-actions:focus-visible {
+  transform: translateY(-1px);
+  box-shadow: 0 16px 32px rgba(0, 0, 0, 0.18);
+  outline: none;
+}
+.mobile-actions__icon {
+  font-size: 1.4rem;
+  letter-spacing: 0.2rem;
+  line-height: 1;
+}
+.mobile-actions img {
+  max-height: 1.6rem;
+}
 .svg {
   max-height: 2rem;
 }
@@ -40,6 +82,17 @@
 @media (max-width: 768px) {
   .svg {
     max-height: 1.5rem;
+  }
+}
+@media (max-width: 1000px) {
+  .information-actions {
+    justify-content: center;
+  }
+  .desktop-actions {
+    display: none;
+  }
+  .mobile-actions {
+    display: inline-flex;
   }
 }
 .svg-cursor:hover {
@@ -233,5 +286,152 @@ input[type="checkbox"] {
 
   .actions {
     margin: 0 2px;
+  }
+}
+
+.actions-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  z-index: 1100;
+}
+.actions-modal {
+  width: min(380px, 100%);
+  background-color: #ffffff;
+  border-radius: 1.25rem;
+  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.22);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.actions-modal__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.25rem;
+  background: linear-gradient(90deg, #c4006b 0%, #e10880 100%);
+  color: #ffffff;
+}
+.actions-modal__title {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 700;
+}
+.actions-modal__close {
+  background: transparent;
+  border: none;
+  color: inherit;
+  font-size: 1.6rem;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+.actions-modal__close:hover,
+.actions-modal__close:focus-visible {
+  background-color: rgba(255, 255, 255, 0.2);
+  transform: rotate(90deg);
+  outline: none;
+}
+.actions-modal__body {
+  padding: 1.5rem 1.5rem 1.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  text-align: center;
+}
+.actions-modal__identity {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+.actions-modal__label {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #2f2f2f;
+}
+.actions-modal__subtitle {
+  margin: 0;
+  font-size: 0.95rem;
+  color: #8a8a8a;
+}
+.actions-modal__hint {
+  margin: 0;
+  font-size: 0.95rem;
+  color: #6b6b6b;
+}
+.actions-modal__options {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+.actions-modal__option {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.85rem 1rem;
+  border: none;
+  border-radius: 0.9rem;
+  background-color: #f6f6f6;
+  color: #2f2f2f;
+  font-weight: 600;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+.actions-modal__option span {
+  flex: 1;
+}
+.actions-modal__option:hover,
+.actions-modal__option:focus-visible {
+  background-color: #ededed;
+  transform: translateY(-1px);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.12);
+  outline: none;
+}
+.actions-modal__option--active {
+  background-color: #e6f6f4;
+  color: #0c7665;
+}
+.actions-modal__option--active:hover,
+.actions-modal__option--active:focus-visible {
+  background-color: #d1ebe7;
+}
+.actions-modal__option--danger {
+  background-color: #ffe7eb;
+  color: #d43448;
+}
+.actions-modal__option--danger:hover,
+.actions-modal__option--danger:focus-visible {
+  background-color: #ffd4da;
+}
+.actions-modal__option--secondary {
+  background-color: #edf2ff;
+  color: #3044a3;
+}
+.actions-modal__option--secondary:hover,
+.actions-modal__option--secondary:focus-visible {
+  background-color: #dbe4ff;
+}
+.actions-modal__icon {
+  width: 1.45rem;
+  height: 1.45rem;
+  object-fit: contain;
+}
+@media (max-width: 480px) {
+  .actions-modal__body {
+    padding: 1.25rem;
   }
 }
