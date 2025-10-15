@@ -16,6 +16,14 @@
     ],
     "isOpen": false
   },
+  {
+    "id": 3,
+    "nombre": "Bitácora",
+    "route": "/bitacora",
+    "svg": "importar",
+    "subItem": [],
+    "isOpen": false
+  },
 
   {
     "id": 4,

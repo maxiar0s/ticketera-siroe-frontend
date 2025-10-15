@@ -1,0 +1,359 @@
+<div class="bitacora-container">
+  <header class="bitacora-header">
+    <div>
+      <h1>Bitacora de visitas</h1>
+      <p class="subtitle">
+        Revisa y registra el detalle de cada visita realizada a tus clientes.
+      </p>
+    </div>
+    <button
+      type="button"
+      class="primary-button"
+      *ngIf="puedeCrear"
+      (click)="abrirFormularioCrear()"
+    >
+      Registrar visita
+    </button>
+  </header>
+
+  <form
+    class="bitacora-filters"
+    [formGroup]="filtroForm"
+    (ngSubmit)="buscarBitacoras()"
+  >
+    <div class="filters-grid">
+      <label class="filter-field">
+        <span class="label">Cliente</span>
+        <select
+          formControlName="clienteId"
+          (change)="onClienteFiltroChange($any($event.target).value)"
+        >
+          <option value="">Todos los clientes</option>
+          <option
+            *ngFor="let cliente of clientes"
+            [value]="cliente.id"
+          >
+            {{ cliente.razonSocial }}
+          </option>
+        </select>
+      </label>
+
+      <label class="filter-field">
+        <span class="label">Sucursal</span>
+        <select formControlName="sucursalId" [disabled]="sucursalesFiltro.length === 0">
+          <option value="">Todas</option>
+          <option
+            *ngFor="let sucursal of sucursalesFiltro"
+            [value]="sucursal.id"
+          >
+            {{ sucursal.sucursal }}
+          </option>
+        </select>
+      </label>
+
+      <label class="filter-field grow">
+        <span class="label">Buscar</span>
+        <input
+          type="text"
+          formControlName="buscar"
+          placeholder="Buscar por título o nota"
+        />
+      </label>
+    </div>
+
+    <div class="filter-actions">
+      <button type="submit" class="primary-button small">Aplicar filtros</button>
+      <button type="button" class="ghost-button small" (click)="limpiarFiltros()">
+        Limpiar
+      </button>
+    </div>
+  </form>
+
+  <div *ngIf="errorMensaje" class="alert alert-error">
+    {{ errorMensaje }}
+  </div>
+  <div *ngIf="exitoMensaje" class="alert alert-success">
+    {{ exitoMensaje }}
+  </div>
+
+  <div *ngIf="cargando" class="bitacora-loading">
+    Cargando bitacoras...
+  </div>
+
+  <div
+    *ngIf="!cargando && bitacoras.length === 0"
+    class="bitacora-empty"
+  >
+    No hay bitacoras registradas para los filtros seleccionados.
+  </div>
+
+  <div *ngIf="!cargando && bitacoras.length > 0" class="bitacora-table-wrapper">
+    <table class="bitacora-table">
+      <thead>
+        <tr>
+          <th>Fecha</th>
+          <th>Cliente</th>
+          <th>Sucursal</th>
+          <th>Técnicos</th>
+          <th>Nota</th>
+          <th class="acciones">Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr
+          *ngFor="let bitacora of bitacoras"
+          (click)="seleccionarBitacora(bitacora)"
+          [class.selected]="bitacoraSeleccionada?.id === bitacora.id"
+        >
+          <td>{{ bitacora.fechaVisita | date : 'dd/MM/yyyy' }}</td>
+          <td>{{ bitacora.casaMatriz?.razonSocial || 'N/A' }}</td>
+          <td>{{ bitacora.sucursal?.sucursal || 'General' }}</td>
+          <td class="tecnicos">
+            <ng-container *ngIf="bitacora.tecnicos?.length; else sinTecnicos">
+              <span
+                *ngFor="let tecnico of bitacora.tecnicos; let last = last"
+              >
+                {{ tecnico }}<span *ngIf="!last">, </span>
+              </span>
+            </ng-container>
+            <ng-template #sinTecnicos>Sin registrar</ng-template>
+          </td>
+          <td class="nota">
+            {{ bitacora.descripcion }}
+          </td>
+          <td class="acciones">
+            <button
+              type="button"
+              class="link-button"
+              (click)="seleccionarBitacora(bitacora); $event.stopPropagation()"
+            >
+              Ver
+            </button>
+            <button
+              type="button"
+              class="link-button"
+              *ngIf="puedeEditarBitacora(bitacora)"
+              (click)="abrirFormularioEditar(bitacora, $event)"
+            >
+              Editar
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="pagination" *ngIf="paginasTotales > 1">
+    <button
+      type="button"
+      class="ghost-button"
+      (click)="cambiarPagina(paginaActual - 1)"
+      [disabled]="paginaActual === 1"
+    >
+      Anterior
+    </button>
+    <span class="page-indicator">
+      Pagina {{ paginaActual }} de {{ paginasTotales }}
+    </span>
+    <button
+      type="button"
+      class="ghost-button"
+      (click)="cambiarPagina(paginaActual + 1)"
+      [disabled]="paginaActual === paginasTotales"
+    >
+      Siguiente
+    </button>
+  </div>
+
+  <section
+    class="bitacora-detail"
+    *ngIf="bitacoraSeleccionada"
+  >
+    <header>
+      <h2>
+        {{ bitacoraSeleccionada.titulo || 'Detalle de la visita' }}
+      </h2>
+      <button
+        type="button"
+        class="link-button"
+        *ngIf="puedeEditarBitacora(bitacoraSeleccionada)"
+        (click)="abrirFormularioEditar(bitacoraSeleccionada)"
+      >
+        Editar
+      </button>
+    </header>
+
+    <div class="detail-grid">
+      <div>
+        <span class="label">Cliente</span>
+        <span class="value">
+          {{ bitacoraSeleccionada.casaMatriz?.razonSocial || 'N/A' }}
+        </span>
+      </div>
+      <div>
+        <span class="label">Sucursal</span>
+        <span class="value">
+          {{ bitacoraSeleccionada.sucursal?.sucursal || 'General' }}
+        </span>
+      </div>
+      <div>
+        <span class="label">Fecha visita</span>
+        <span class="value">
+          {{ bitacoraSeleccionada.fechaVisita | date : 'fullDate' }}
+        </span>
+      </div>
+      <div>
+        <span class="label">Hora llegada</span>
+        <span class="value">
+          {{ bitacoraSeleccionada.horaLlegada | date : 'short' }}
+        </span>
+      </div>
+      <div>
+        <span class="label">Hora salida</span>
+        <span class="value">
+          {{ bitacoraSeleccionada.horaSalida | date : 'short' }}
+        </span>
+      </div>
+      <div>
+        <span class="label">Técnicos</span>
+        <span class="value">
+          {{
+            bitacoraSeleccionada.tecnicos.length
+              ? bitacoraSeleccionada.tecnicos.join(', ')
+              : 'Sin registrar'
+          }}
+        </span>
+      </div>
+      <div>
+        <span class="label">Creado por</span>
+        <span class="value">
+          {{ bitacoraSeleccionada.creadoPor?.name || 'N/A' }}
+        </span>
+      </div>
+      <div>
+        <span class="label">Última actualización</span>
+        <span class="value">
+          {{ bitacoraSeleccionada.updatedAt | date : 'short' }}
+        </span>
+      </div>
+    </div>
+
+    <article class="detail-note">
+      <h3>Nota de la visita</h3>
+      <p>
+        {{ bitacoraSeleccionada.descripcion }}
+      </p>
+    </article>
+  </section>
+</div>
+
+<div
+  class="bitacora-modal-backdrop"
+  *ngIf="formularioVisible"
+>
+  <div class="bitacora-modal" role="dialog" aria-modal="true">
+    <header class="modal-header">
+      <div>
+        <h2>{{ modoEdicion ? 'Editar bitacora' : 'Registrar visita' }}</h2>
+        <p class="subtitle">
+          Completa los datos para dejar registro de la visita realizada.
+        </p>
+      </div>
+      <button
+        type="button"
+        class="close-button"
+        aria-label="Cerrar formulario"
+        (click)="cerrarFormulario()"
+      >
+        ×
+      </button>
+    </header>
+    <form [formGroup]="bitacoraForm" (ngSubmit)="guardarBitacora()">
+      <div class="modal-grid">
+        <label>
+          <span class="label">Título (opcional)</span>
+          <input
+            type="text"
+            formControlName="titulo"
+            placeholder="Ej. Visita preventiva"
+          />
+        </label>
+
+        <label>
+          <span class="label">Cliente</span>
+          <select
+            formControlName="clienteId"
+            (change)="onClienteFormChange($any($event.target).value)"
+          >
+            <option value="" disabled>Selecciona un cliente</option>
+            <option
+              *ngFor="let cliente of clientes"
+              [value]="cliente.id"
+            >
+              {{ cliente.razonSocial }}
+            </option>
+          </select>
+        </label>
+
+        <label>
+          <span class="label">Sucursal</span>
+          <select formControlName="sucursalId">
+            <option value="">General</option>
+            <option
+              *ngFor="let sucursal of sucursalesFormulario"
+              [value]="sucursal.id"
+            >
+              {{ sucursal.sucursal }}
+            </option>
+          </select>
+        </label>
+
+        <label>
+          <span class="label">Fecha de la visita</span>
+          <input type="date" formControlName="fechaVisita" />
+        </label>
+
+        <label>
+          <span class="label">Hora de llegada</span>
+          <input type="datetime-local" formControlName="horaLlegada" />
+        </label>
+
+        <label>
+          <span class="label">Hora de salida</span>
+          <input type="datetime-local" formControlName="horaSalida" />
+        </label>
+
+        <label class="full">
+          <span class="label">Técnicos</span>
+          <input
+            type="text"
+            formControlName="tecnicos"
+            placeholder="Separa cada técnico con coma"
+          />
+        </label>
+
+        <label class="full">
+          <span class="label">Nota de la visita</span>
+          <textarea
+            formControlName="descripcion"
+            rows="4"
+            placeholder="Describe las actividades realizadas, hallazgos y compromisos."
+          ></textarea>
+        </label>
+      </div>
+
+      <div class="modal-actions">
+        <button
+          type="button"
+          class="ghost-button"
+          (click)="cerrarFormulario()"
+        >
+          Cancelar
+        </button>
+        <button type="submit" class="primary-button" [disabled]="guardando">
+          {{ guardando ? 'Guardando...' : (modoEdicion ? 'Actualizar' : 'Registrar') }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

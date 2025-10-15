@@ -42,6 +42,13 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/sucursal/sucursal.component').then( m => m.SucursalComponent ),
   },
 
+  // Bitacora
+  {
+    path: 'bitacora',
+    canActivate: [protegerRutaGuard],
+    loadComponent: () => import('./pages/bitacora/bitacora.component').then( m => m.BitacoraComponent ),
+  },
+
   // Config
   {
     path: 'opciones',

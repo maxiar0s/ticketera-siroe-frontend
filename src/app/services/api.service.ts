@@ -10,7 +10,8 @@ import { ClienteResumen } from '../interfaces/cliente-resumen.interface';
 export class ApiService {
   //private url = 'http://167.71.172.190:3000';
   //private url = 'https://app-soporte-siroe.vercel.app';
-  private url = 'https://api-soporte-siroe.onrender.com';
+  //private url = 'https://api-soporte-siroe.onrender.com';
+  private url = 'http://localhost:3000';
 
   constructor(private http: HttpClient) {}
 
@@ -117,11 +118,21 @@ export class ApiService {
     return this.getInformation(endpoint);
   }
 
+  clientesBitacora(): Observable<any> {
+    const endpoint = 'bitacoras/clientes';
+    return this.getInformation(endpoint);
+  }
+
   client(id: string, pagina: number, option: string): Observable<any> {
     let endpoint = 'cliente/' + id + `?pagina=${pagina}`;
     if (option) {
       endpoint = 'cliente/' + id + `?pagina=${pagina}&option=${option}`;
     }
+    return this.getInformation(endpoint);
+  }
+
+  sucursalesPorCliente(id: string): Observable<any> {
+    const endpoint = `cliente/${id}/sucursales`;
     return this.getInformation(endpoint);
   }
 
@@ -183,6 +194,38 @@ export class ApiService {
     return this.getInformation(endpoint);
   }
 
+  bitacoras(params: Record<string, any> = {}): Observable<any> {
+    const searchParams = new URLSearchParams();
+    Object.entries(params).forEach(([key, value]) => {
+      if (value === undefined || value === null) {
+        return;
+      }
+      const stringValue = typeof value === 'string' ? value.trim() : String(value);
+      if (stringValue !== '') {
+        searchParams.append(key, stringValue);
+      }
+    });
+
+    const query = searchParams.toString();
+    const endpoint = query ? `bitacoras?${query}` : 'bitacoras';
+    return this.getInformation(endpoint);
+  }
+
+  bitacora(id: number): Observable<any> {
+    const endpoint = `bitacoras/${id}`;
+    return this.getInformation(endpoint);
+  }
+
+  crearBitacora(payload: any): Observable<any> {
+    const endpoint = 'bitacoras';
+    return this.postInformation(payload, endpoint);
+  }
+
+  actualizarBitacora(id: number, payload: any): Observable<any> {
+    const endpoint = `bitacoras/${id}`;
+    return this.putInformation(payload, endpoint);
+  }
+
   // Obtener equipo por ID
   equiptment(id: number): Observable<any> {
     const endpoint = `equipo/` + id;
@@ -239,6 +282,16 @@ export class ApiService {
     return this.http.post<any>(url, data).pipe(
       catchError((error: HttpErrorResponse) => {
         console.error('Error en la solicitud POST:', error);
+        return throwError(() => error);
+      })
+    );
+  }
+
+  putInformation(data: any, endpoint: string) {
+    const url = `${this.url}/${endpoint}`;
+    return this.http.put<any>(url, data).pipe(
+      catchError((error: HttpErrorResponse) => {
+        console.error('Error en la solicitud PUT:', error);
         return throwError(() => error);
       })
     );

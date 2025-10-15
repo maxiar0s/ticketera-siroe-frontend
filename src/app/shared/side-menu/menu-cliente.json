@@ -6,5 +6,13 @@
     "svg": "clientes",
     "subItem": [],
     "isOpen": false
+  },
+  {
+    "id": 2,
+    "nombre": "Bitácora",
+    "route": "/bitacora",
+    "svg": "importar",
+    "subItem": [],
+    "isOpen": false
   }
 ]

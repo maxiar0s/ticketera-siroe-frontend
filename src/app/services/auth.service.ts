@@ -70,6 +70,14 @@ export class AuthService {
     return this.obtenerTipoCuenta() === 1;
   }
 
+  esTecnico(): boolean {
+    return this.obtenerTipoCuenta() === 2;
+  }
+
+  esMesaAyuda(): boolean {
+    return this.obtenerTipoCuenta() === 3;
+  }
+
   esCliente(): boolean {
     return this.obtenerTipoCuenta() === 4;
   }
