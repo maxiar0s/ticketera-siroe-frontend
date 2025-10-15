@@ -94,7 +94,7 @@ export class BitacoraComponent implements OnInit {
       console.error('Nombre de archivo no proporcionado');
       return;
     }
-    
+
     this.apiService.signedUrl(fileName).subscribe({
       next: (url) => {
         if (url) {
