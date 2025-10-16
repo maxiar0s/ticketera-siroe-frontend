@@ -96,7 +96,7 @@
           <th>Sucursal</th>
           <th>Técnicos</th>
           <th>Nota</th>
-          <th class="acciones">Acciones</th>
+            <!-- Acciones column removed -->
         </tr>
       </thead>
       <tbody>
@@ -121,16 +121,7 @@
           <td class="nota">
             {{ bitacora.descripcion }}
           </td>
-          <td class="acciones">
-            <button
-              type="button"
-              class="link-button"
-              *ngIf="puedeEditarBitacora(bitacora)"
-              (click)="abrirFormularioEditar(bitacora, $event)"
-            >
-              Editar
-            </button>
-          </td>
+            <!-- Acciones cell removed -->
         </tr>
       </tbody>
     </table>

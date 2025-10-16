@@ -54,8 +54,15 @@ export class SideMenuComponent {
     }
 
     const path = this.location.path();
-    this.currentGroup = path;
-    this.currentSubGroup = path;
+    // Solo marcar como activo un route del menu principal, no de menuConfig
+    const mainRoutes = this.menu?.map((item: any) => item.route) || [];
+    if (path && mainRoutes.includes(path)) {
+      this.currentGroup = path;
+      this.currentSubGroup = path;
+    } else if (mainRoutes.length > 0) {
+      this.currentGroup = mainRoutes[0];
+      this.currentSubGroup = mainRoutes[0];
+    }
   }
 
   cerrarSesion():void {
