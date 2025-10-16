@@ -105,7 +105,7 @@
           (click)="seleccionarBitacora(bitacora)"
           [class.selected]="bitacoraSeleccionada?.id === bitacora.id"
         >
-          <td>{{ bitacora.fechaVisita | date : 'dd/MM/yyyy' }}</td>
+          <td>{{ bitacora.fechaVisita | formatoFecha:'dd/MM/yyyy' }}</td>
           <td>{{ bitacora.casaMatriz?.razonSocial || 'N/A' }}</td>
           <td>{{ bitacora.sucursal?.sucursal || 'General' }}</td>
           <td class="tecnicos">
@@ -192,19 +192,19 @@
       <div>
         <span class="label">Fecha visita</span>
         <span class="value">
-          {{ bitacoraSeleccionada.fechaVisita | date : 'fullDate' }}
+          {{ bitacoraSeleccionada.fechaVisita | formatoFecha:'fullDate' }}
         </span>
       </div>
       <div>
         <span class="label">Hora llegada</span>
         <span class="value">
-          {{ bitacoraSeleccionada.horaLlegada | date : 'short' }}
+          {{ bitacoraSeleccionada.horaLlegada | formatoFecha:'short' }}
         </span>
       </div>
       <div>
         <span class="label">Hora salida</span>
         <span class="value">
-          {{ bitacoraSeleccionada.horaSalida | date : 'short' }}
+          {{ bitacoraSeleccionada.horaSalida | formatoFecha:'short' }}
         </span>
       </div>
       <div>
@@ -226,7 +226,7 @@
       <div>
         <span class="label">Última actualización</span>
         <span class="value">
-          {{ bitacoraSeleccionada.updatedAt | date : 'short' }}
+          {{ bitacoraSeleccionada.updatedAt | formatoFecha:'short' }}
         </span>
       </div>
     </div>

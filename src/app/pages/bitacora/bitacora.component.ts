@@ -1,4 +1,5 @@
 import { CommonModule } from '@angular/common';
+import { FormatoFechaPipe } from '../../pipes/formato-fecha.pipe';
 import { Component, OnInit } from '@angular/core';
 import {
   FormBuilder,
@@ -21,7 +22,7 @@ interface SucursalOption {
 @Component({
   selector: 'app-bitacora',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, FormatoFechaPipe],
   templateUrl: './bitacora.component.html',
   styleUrl: './bitacora.component.css',
 })
