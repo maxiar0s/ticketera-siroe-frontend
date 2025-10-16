@@ -11,7 +11,7 @@
     "id": 2,
     "nombre": "Bitácora",
     "route": "/bitacora",
-    "svg": "importar",
+    "svg": "download",
     "subItem": [],
     "isOpen": false
   }
