@@ -1,60 +1,61 @@
 <div class="grid-tables">
-  <div class="table">
-    <h3 class="table-title">Equipos</h3>
-    <simple-bar-chart [data]="equiposData"></simple-bar-chart>
-  </div>
-
-  <div class="table">
-    <h3 class="table-title">Equipos por clientes</h3>
-    <simple-bar-chart [data]="equiposPorClienteData"></simple-bar-chart>
-  </div>
-
-  <div class="table-big-chart">
-    <div class="table-flex-3">
-      <div class="chart-3"></div>
-      <div class="legend-3">
-        <p>Dato 1</p>
-        <p>Dato 2</p>
-        <p>Dato 3</p>
-        <p>Dato 4</p>
-      </div>
+  <div class="dashboard-card">
+    <div class="card-header">
+      <h3 class="card-title">Equipos por tipo</h3>
+      <span class="card-status" *ngIf="loadingClientes">Cargando...</span>
     </div>
+
+    <p class="card-error" *ngIf="!loadingClientes && clientesError">{{ clientesError }}</p>
+
+    <ng-container *ngIf="!loadingClientes && !clientesError">
+      <ng-container *ngIf="equiposPorTipoData.length; else sinEquiposPorTipo">
+        <simple-bar-chart [data]="equiposPorTipoData"></simple-bar-chart>
+      </ng-container>
+    </ng-container>
+
+    <ng-template #sinEquiposPorTipo>
+      <p class="card-empty">No hay equipos registrados aun.</p>
+    </ng-template>
   </div>
 
-  <div class="table-vert-charts">
-    <div class="table-grid-4">
-      <div>
-        <div class="chart-4"></div>
-        <p class="p-chart-4">Ene</p>
-      </div>
-      <div>
-        <div class="chart-4"></div>
-        <p class="p-chart-4">Feb</p>
-      </div>
-      <div>
-        <div class="chart-4"></div>
-        <p class="p-chart-4">Mar</p>
-      </div>
-      <div>
-        <div class="chart-4"></div>
-        <p class="p-chart-4">Abr</p>
-      </div>
-      <div>
-        <div class="chart-4"></div>
-        <p class="p-chart-4">May</p>
-      </div>
-      <div>
-        <div class="chart-4"></div>
-        <p class="p-chart-4">Jun</p>
-      </div>
-      <div>
-        <div class="chart-4"></div>
-        <p class="p-chart-4">Jul</p>
-      </div>
-      <div>
-        <div class="chart-4"></div>
-        <p class="p-chart-4">Ago</p>
-      </div>
+  <div class="dashboard-card">
+    <div class="card-header">
+      <h3 class="card-title">Equipos por cliente</h3>
+      <span class="card-status" *ngIf="loadingClientes">Cargando...</span>
     </div>
+
+    <p class="card-error" *ngIf="!loadingClientes && clientesError">{{ clientesError }}</p>
+
+    <ng-container *ngIf="!loadingClientes && !clientesError">
+      <ng-container *ngIf="equiposPorClienteData.length; else sinEquiposPorCliente">
+        <simple-bar-chart [data]="equiposPorClienteData"></simple-bar-chart>
+      </ng-container>
+    </ng-container>
+
+    <ng-template #sinEquiposPorCliente>
+      <p class="card-empty">No hay clientes con equipos asociados.</p>
+    </ng-template>
+  </div>
+
+  <div class="dashboard-card">
+    <div class="card-header">
+      <h3 class="card-title">Visitas registradas por mes</h3>
+      <span class="card-status" *ngIf="loadingBitacoras">Cargando...</span>
+    </div>
+
+    <p class="card-error" *ngIf="!loadingBitacoras && bitacorasError">{{ bitacorasError }}</p>
+
+    <ng-container *ngIf="!loadingBitacoras && !bitacorasError">
+      <simple-bar-chart [data]="visitasPorMesData"></simple-bar-chart>
+    </ng-container>
+  </div>
+
+  <div class="calendar-card">
+    <dashboard-calendar
+      [bitacoras]="bitacoras"
+      [cargando]="loadingBitacoras"
+      [mensajeError]="bitacorasError"
+      (refreshRequested)="onVisitaAgendada()"
+    ></dashboard-calendar>
   </div>
 </div>

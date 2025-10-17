@@ -1,23 +1,42 @@
 <div class="dashboard-section">
+  <div class="summary-controls">
+    <label>
+      Datos columna 1
+      <select [value]="selectedVariant1" (change)="setVariant('variante1', $any($event.target).value)">
+        <option *ngFor="let option of variantOptions" [value]="option.value">
+          {{ option.label }}
+        </option>
+      </select>
+    </label>
+
+    <label>
+      Datos columna 2
+      <select [value]="selectedVariant2" (change)="setVariant('variante2', $any($event.target).value)">
+        <option *ngFor="let option of variantOptions" [value]="option.value">
+          {{ option.label }}
+        </option>
+      </select>
+    </label>
+  </div>
+
   <table class="table">
     <thead>
       <tr class="table-row-style">
         <th class="status"><span></span></th>
         <th>ID</th>
         <th>Cliente</th>
-        <th>Casa Matriz</th>
         <th>Fecha ingreso</th>
-        <th>Variante 1</th>
-        <th>Variante 2</th>
+        <th>{{ getVariantLabel(selectedVariant1) }}</th>
+        <th>{{ getVariantLabel(selectedVariant2) }}</th>
         <th class="table-detalle-th">Ir a detalle</th>
       </tr>
     </thead>
     <tbody>
       <tr *ngIf="loading">
-        <td colspan="8" style="text-align:center;">Cargando datos...</td>
+        <td colspan="7" style="text-align:center;">Cargando datos...</td>
       </tr>
       <tr *ngIf="!loading && clientes.length === 0">
-        <td colspan="8" style="text-align:center;">No hay datos para mostrar.</td>
+        <td colspan="7" style="text-align:center;">No hay datos para mostrar.</td>
       </tr>
       <tr *ngFor="let cliente of clientes" class="table-row-style">
         <td>
@@ -28,10 +47,9 @@
         </td>
         <td>#{{cliente.id}}</td>
         <td>{{cliente.razonSocial}}</td>
-        <td>{{cliente.sucursales?.[0]?.sucursal || '-'}}</td>
         <td>{{cliente.fechaIngreso | date:'dd/MM/yyyy'}}</td>
-        <td>{{cliente.Equipos?.length || 0}}</td>
-        <td>{{cliente.telefonoEncargado}}</td>
+        <td>{{ getVariantValue(cliente, selectedVariant1) }}</td>
+        <td>{{ getVariantValue(cliente, selectedVariant2) }}</td>
         <td>
           <button class="table-detalle">
             {{ option === 'Terminados' ? 'Revisar detalles' : 'Ingresar datos' }}

@@ -1,0 +1,160 @@
+<div class="calendar-container">
+  <div class="calendar-panel">
+    <div class="calendar-header">
+      <button type="button" class="nav-button" (click)="prevMonth()">&lt;</button>
+
+      <div class="calendar-header-text">
+        <h3>{{ nombreMesActual }} {{ anioActual }}</h3>
+        <button
+          type="button"
+          class="today-button"
+          *ngIf="!esMesActual"
+          (click)="irAlMesActual()"
+        >
+          Hoy
+        </button>
+      </div>
+
+      <button type="button" class="nav-button" (click)="nextMonth()">&gt;</button>
+    </div>
+
+    <div class="calendar-grid">
+      <div class="day-name" *ngFor="let nombre of diasSemana">{{ nombre }}</div>
+
+      <button
+        type="button"
+        *ngFor="let dia of calendario"
+        class="day-cell"
+        [class.fuera]="!dia.inMonth"
+        [class.hoy]="dia.isToday"
+        [class.seleccionado]="dia.isSelected"
+        [class.con-eventos]="dia.eventCount > 0"
+        (click)="selectDay(dia)"
+      >
+        <span class="dia-numero">{{ dia.day }}</span>
+        <span class="badge" *ngIf="dia.eventCount > 0">{{ dia.eventCount }}</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="sidebar">
+    <div class="sidebar-header">
+      <h4>Visitas {{ etiquetaSeleccion }}</h4>
+      <button type="button" class="add-button" (click)="toggleFormulario()">
+        {{ formularioVisible ? 'Cerrar' : 'Agendar visita' }}
+      </button>
+    </div>
+
+    <p class="sidebar-success" *ngIf="!formularioVisible && exitoMensaje">{{ exitoMensaje }}</p>
+
+    <p class="sidebar-info" *ngIf="cargando">Cargando visitas...</p>
+    <p class="sidebar-error" *ngIf="!cargando && mensajeError">{{ mensajeError }}</p>
+
+    <ng-container *ngIf="!formularioVisible">
+      <ul class="event-list" *ngIf="!cargando && eventosSeleccionados.length > 0">
+        <li *ngFor="let evento of eventosSeleccionados">
+          <div class="evento-cliente">
+            {{ evento.casaMatriz?.razonSocial || 'Cliente sin nombre' }}
+          </div>
+          <div class="evento-detalle">
+            <span class="evento-hora">
+              {{ evento.horaLlegada ? (evento.horaLlegada | date: 'HH:mm') : '--:--' }}
+              -
+              {{ evento.horaSalida ? (evento.horaSalida | date: 'HH:mm') : '--:--' }}
+            </span>
+            <span class="evento-tecnicos">
+              {{ evento.tecnicos.length ? evento.tecnicos.join(', ') : 'Sin tecnicos' }}
+            </span>
+          </div>
+          <p class="evento-descripcion">
+            {{ evento.titulo || (evento.descripcion | slice: 0:120) }}
+          </p>
+        </li>
+      </ul>
+
+      <p class="sidebar-empty" *ngIf="!cargando && eventosSeleccionados.length === 0">
+        No hay visitas registradas para esta fecha.
+      </p>
+    </ng-container>
+
+    <form *ngIf="formularioVisible" [formGroup]="agendaForm" (ngSubmit)="guardarVisita()" class="agenda-form">
+      <div class="form-field">
+        <label for="clienteId">Cliente</label>
+        <select id="clienteId" formControlName="clienteId" (change)="onClienteChange($any($event.target).value)">
+          <option value="">Selecciona un cliente</option>
+          <option *ngFor="let cliente of clientes" [value]="cliente.id">
+            {{ cliente.razonSocial }}
+          </option>
+        </select>
+        <span class="field-error" *ngIf="agendaForm.get('clienteId')?.invalid && agendaForm.get('clienteId')?.touched">
+          Selecciona un cliente.
+        </span>
+      </div>
+
+      <div class="form-field">
+        <label for="sucursalId">Sucursal (opcional)</label>
+        <select id="sucursalId" formControlName="sucursalId">
+          <option value="">Todas las sucursales</option>
+          <option *ngFor="let sucursal of sucursalesDisponibles" [value]="sucursal.id">
+            {{ sucursal.sucursal }}
+          </option>
+        </select>
+      </div>
+
+      <div class="form-field">
+        <label for="fecha">Fecha</label>
+        <input id="fecha" type="date" formControlName="fecha" />
+        <span class="field-error" *ngIf="agendaForm.get('fecha')?.invalid && agendaForm.get('fecha')?.touched">
+          Selecciona una fecha.
+        </span>
+      </div>
+
+      <div class="form-grid">
+        <div class="form-field">
+          <label for="horaLlegada">Hora llegada</label>
+          <input id="horaLlegada" type="time" formControlName="horaLlegada" />
+          <span class="field-error" *ngIf="agendaForm.get('horaLlegada')?.invalid && agendaForm.get('horaLlegada')?.touched">
+            Ingresa la hora de llegada.
+          </span>
+        </div>
+        <div class="form-field">
+          <label for="horaSalida">Hora salida</label>
+          <input id="horaSalida" type="time" formControlName="horaSalida" />
+          <span class="field-error" *ngIf="agendaForm.get('horaSalida')?.invalid && agendaForm.get('horaSalida')?.touched">
+            Ingresa la hora de salida.
+          </span>
+        </div>
+      </div>
+
+      <div class="form-field">
+        <label for="tecnicos">Tecnicos (separados por coma)</label>
+        <textarea id="tecnicos" rows="2" formControlName="tecnicos"></textarea>
+        <span class="field-error" *ngIf="agendaForm.get('tecnicos')?.invalid && agendaForm.get('tecnicos')?.touched">
+          Ingresa al menos un tecnico.
+        </span>
+      </div>
+
+      <div class="form-field">
+        <label for="titulo">Titulo (opcional)</label>
+        <input id="titulo" type="text" formControlName="titulo" />
+      </div>
+
+      <div class="form-field">
+        <label for="descripcion">Descripcion</label>
+        <textarea id="descripcion" rows="3" formControlName="descripcion"></textarea>
+        <span class="field-error" *ngIf="agendaForm.get('descripcion')?.invalid && agendaForm.get('descripcion')?.touched">
+          Ingresa una descripcion (minimo 5 caracteres).
+        </span>
+      </div>
+
+      <div class="form-actions">
+        <button type="submit" [disabled]="guardando">
+          {{ guardando ? 'Guardando...' : 'Guardar visita' }}
+        </button>
+      </div>
+
+      <p class="sidebar-error" *ngIf="errorFormulario">{{ errorFormulario }}</p>
+      <p class="sidebar-success" *ngIf="exitoMensaje">{{ exitoMensaje }}</p>
+    </form>
+  </div>
+</div>
