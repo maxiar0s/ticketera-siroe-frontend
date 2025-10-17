@@ -10,7 +10,9 @@ import { ClienteResumen } from '../interfaces/cliente-resumen.interface';
 export class ApiService {
   //private url = 'https://api-soporte-siroe.onrender.com';
   //private url = 'http://localhost:3000';
-  private url = 'http://167.71.172.190:3000';
+  //private url = 'http://167.71.172.190:3000';
+  //private url = 'https://167.71.172.190';
+  private url = 'https://api.soportesiroe.cl'
 
   constructor(private http: HttpClient) {}
 
