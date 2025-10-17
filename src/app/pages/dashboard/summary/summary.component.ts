@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { catchError, forkJoin, map, of } from 'rxjs';
 import { ApiService } from '../../../services/api.service';
 import { Cliente } from '../../../interfaces/cliente.interface';
 import { Equipo } from '../../../interfaces/equipo.interface';
@@ -15,6 +16,7 @@ export class SummaryComponent implements OnChanges {
   @Input() option: string = 'Todos los ingresos';
   clientes: Cliente[] = [];
   loading = false;
+  private equiposTotalesPorCliente = new Map<string, number>();
 
   readonly variantOptions = [
     { value: 'equipos', label: 'Equipos registrados' },
@@ -43,19 +45,72 @@ export class SummaryComponent implements OnChanges {
     }
   }
 
-  loadData() {
+  loadData(): void {
     this.loading = true;
-    // Aquí puedes cambiar la lógica según el endpoint real y la opción seleccionada
-    // Por ejemplo, si tienes endpoints distintos para pendientes/terminados, cámbialo aquí
+    this.equiposTotalesPorCliente.clear();
+
     this.api.clients(1).subscribe({
       next: (res) => {
-        // Filtra según la opción si es necesario
         this.clientes = res?.clientes || [];
+        this.cargarTotalesEquipos(this.clientes);
         this.loading = false;
       },
       error: () => {
         this.clientes = [];
+        this.equiposTotalesPorCliente.clear();
         this.loading = false;
+      }
+    });
+  }
+
+  private cargarTotalesEquipos(clientes: Cliente[]): void {
+    this.equiposTotalesPorCliente.clear();
+
+    if (!clientes || !clientes.length) {
+      return;
+    }
+
+    const mapaClientes = new Map(clientes.map((cliente) => [cliente.id, cliente] as [string, Cliente]));
+
+    const solicitudes = clientes.map((cliente) =>
+      this.api.equiposPorClienteCompleto(cliente.id).pipe(
+        map((respuesta) => {
+          const detalle = respuesta.cliente;
+          if (detalle) {
+            const previo = mapaClientes.get(cliente.id) ?? cliente;
+            mapaClientes.set(
+              cliente.id,
+              {
+                ...previo,
+                ...detalle,
+                sucursales: detalle.sucursales ?? previo?.sucursales,
+              } as Cliente
+            );
+          }
+          return { id: cliente.id, equipos: respuesta.equipos };
+        }),
+        catchError((error) => {
+          console.error(`Error al obtener equipos del cliente ${cliente.id}`, error);
+          return of({ id: cliente.id, equipos: [] as Equipo[] });
+        })
+      )
+    );
+
+    forkJoin(solicitudes).subscribe({
+      next: (respuestas) => {
+        const nuevoMapa = new Map<string, number>();
+        respuestas.forEach(({ id, equipos }) => {
+          const base = mapaClientes.get(id);
+          if (base) {
+            const total = this.calcularTotalEquiposCliente(base, equipos);
+            nuevoMapa.set(id, total);
+          }
+        });
+        this.clientes = this.clientes.map((cliente) => mapaClientes.get(cliente.id) ?? cliente);
+        this.equiposTotalesPorCliente = nuevoMapa;
+      },
+      error: (error) => {
+        console.error('Error al consolidar equipos por cliente', error);
       }
     });
   }
@@ -76,8 +131,10 @@ export class SummaryComponent implements OnChanges {
 
   getVariantValue(cliente: Cliente, variant: string): string {
     switch (variant) {
-      case 'equipos':
-        return this.contarEquipos(cliente).toString();
+      case 'equipos': {
+        const total = this.equiposTotalesPorCliente.get(cliente.id) ?? this.contarEquipos(cliente);
+        return total.toString();
+      }
       case 'sucursales':
         return (cliente.sucursales?.length ?? 0).toString();
       case 'telefonoEncargado':
@@ -96,35 +153,54 @@ export class SummaryComponent implements OnChanges {
   }
 
   private contarEquipos(cliente: Cliente): number {
+    return this.calcularTotalEquiposCliente(cliente);
+  }
+
+  private calcularTotalEquiposCliente(cliente: Cliente, equiposExternos: Equipo[] = []): number {
     const equipos = new Map<number | string, Equipo>();
+    let fallbackTotal = 0;
+
+    equiposExternos.forEach((equipo) => this.registrarEquipoEnMapa(equipos, equipo));
 
     if (Array.isArray(cliente?.sucursales)) {
       cliente.sucursales.forEach((sucursal: any) => {
-        if (Array.isArray(sucursal?.equipos)) {
-          sucursal.equipos.forEach((equipo: Equipo) => {
-            const key = equipo?.id ?? `${equipo?.codigoId}-${equipo?.numeroSecuencial}`;
-            if (key !== undefined && key !== null) {
-              equipos.set(key, equipo);
-            }
-          });
+        if (Array.isArray(sucursal?.equipos) && sucursal.equipos.length) {
+          sucursal.equipos.forEach((equipo: Equipo) => this.registrarEquipoEnMapa(equipos, equipo));
+        } else if (typeof sucursal?.equiposCount === 'number') {
+          const conteo = Number(sucursal.equiposCount);
+          if (!Number.isNaN(conteo) && conteo > 0) {
+            fallbackTotal += conteo;
+          }
         }
       });
     }
 
-    const listadoAlternativo = Array.isArray(cliente?.Equipos)
-      ? cliente.Equipos
+    const listadoAlternativo = Array.isArray((cliente as any)?.Equipos)
+      ? (cliente as any).Equipos
       : Array.isArray((cliente as any)?.equipos)
         ? (cliente as any).equipos
         : [];
 
-    listadoAlternativo.forEach((equipo: Equipo) => {
-      const key = equipo?.id ?? `${equipo?.codigoId}-${equipo?.numeroSecuencial}`;
-      if (key !== undefined && key !== null) {
-        equipos.set(key, equipo);
-      }
-    });
+    listadoAlternativo.forEach((equipo: Equipo) => this.registrarEquipoEnMapa(equipos, equipo));
 
-    return equipos.size;
+    return equipos.size + fallbackTotal;
+  }
+
+  private registrarEquipoEnMapa(contenedor: Map<number | string, Equipo>, equipo: Equipo | null | undefined): void {
+    if (!equipo) {
+      return;
+    }
+
+    const clave =
+      equipo.id ??
+      equipo.codigoId ??
+      (equipo.numeroSecuencial !== undefined ? `ns-${equipo.numeroSecuencial}` : undefined);
+
+    if (clave === undefined || clave === null) {
+      return;
+    }
+
+    contenedor.set(clave, equipo);
   }
 
   private formatearFecha(valor: Date | string | undefined): string {
@@ -138,3 +214,4 @@ export class SummaryComponent implements OnChanges {
     return this.dateFormatter.format(fecha);
   }
 }
+

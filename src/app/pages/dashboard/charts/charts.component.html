@@ -1,4 +1,13 @@
 <div class="grid-tables">
+  <div class="calendar-card">
+    <dashboard-calendar
+      [bitacoras]="bitacoras"
+      [cargando]="loadingBitacoras"
+      [mensajeError]="bitacorasError"
+      (refreshRequested)="onVisitaAgendada()"
+    ></dashboard-calendar>
+  </div>
+
   <div class="dashboard-card">
     <div class="card-header">
       <h3 class="card-title">Equipos por tipo</h3>
@@ -48,14 +57,5 @@
     <ng-container *ngIf="!loadingBitacoras && !bitacorasError">
       <simple-bar-chart [data]="visitasPorMesData"></simple-bar-chart>
     </ng-container>
-  </div>
-
-  <div class="calendar-card">
-    <dashboard-calendar
-      [bitacoras]="bitacoras"
-      [cargando]="loadingBitacoras"
-      [mensajeError]="bitacorasError"
-      (refreshRequested)="onVisitaAgendada()"
-    ></dashboard-calendar>
   </div>
 </div>

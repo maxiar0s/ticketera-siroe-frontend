@@ -1,18 +1,23 @@
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { catchError, map, Observable, of, throwError } from 'rxjs';
+import { catchError, forkJoin, map, Observable, of, throwError } from 'rxjs';
 import { Cliente } from '../interfaces/cliente.interface';
 import { ClienteResumen } from '../interfaces/cliente-resumen.interface';
+import { Equipo } from '../interfaces/equipo.interface';
+
+type ClienteEquiposDetalle = { cliente: Cliente | null; equipos: Equipo[] };
 
 @Injectable({
   providedIn: 'root',
 })
 export class ApiService {
   //private url = 'https://api-soporte-siroe.onrender.com';
-  //private url = 'http://localhost:3000';
+  private url = 'http://localhost:3000';
   //private url = 'http://167.71.172.190:3000';
   //private url = 'https://167.71.172.190';
-  private url = 'https://api.soportesiroe.cl'
+  //private url = 'https://api.soportesiroe.cl'
+
+  private readonly equiposClienteCache = new Map<string, ClienteEquiposDetalle>();
 
   constructor(private http: HttpClient) {}
 
@@ -132,6 +137,21 @@ export class ApiService {
     return this.getInformation(endpoint);
   }
 
+  clientSinCache(id: string, pagina: number, option: string): Observable<any> {
+    const url = `${this.url}/cliente/${id}`;
+    let params = new HttpParams().set('pagina', pagina);
+    if (option) {
+      params = params.set('option', option);
+    }
+    params = params.set('_ts', Date.now());
+
+    return this.http.get<any>(url, { params }).pipe(
+      catchError((error: HttpErrorResponse) => {
+        console.error('Error en la solicitud GET sin cache:', error);
+        return throwError(() => error);
+      })
+    );
+  }
   sucursalesPorCliente(id: string): Observable<any> {
     const endpoint = `cliente/${id}/sucursales`;
     return this.getInformation(endpoint);
@@ -190,9 +210,203 @@ export class ApiService {
     return this.getInformation(endpoint);
   }
 
-  equipmentsByCasaMatriz(id: string): Observable<any> {
+  equipmentsByCasaMatriz(id: string): Observable<Equipo[]> {
+    if (!id) {
+      return of([]);
+    }
     const endpoint = `cliente/` + id + `/equipos`;
-    return this.getInformation(endpoint);
+    return this.getInformation(endpoint).pipe(
+      map((respuesta) => {
+        console.log('[ApiService] equipmentsByCasaMatriz respuesta', id, respuesta);
+        if (Array.isArray(respuesta)) {
+          return respuesta as Equipo[];
+        }
+
+        if (respuesta && Array.isArray(respuesta?.equipos)) {
+          return respuesta.equipos as Equipo[];
+        }
+
+        return [] as Equipo[];
+      })
+    );
+  }
+
+  equiposPorClienteCompleto(id: string): Observable<ClienteEquiposDetalle> {
+    if (!id) {
+      return of({ cliente: null, equipos: [] });
+    }
+
+    const cached = this.equiposClienteCache.get(id);
+    if (cached) {
+      console.log('[ApiService] equiposPorClienteCompleto cache hit', id, cached);
+      return of(cached);
+    }
+
+    const detalle$ = this.clientSinCache(id, 1, '').pipe(
+      catchError((error) => {
+        console.error('Error al obtener detalle del cliente:', error);
+        return of(null);
+      })
+    );
+
+    const equipos$ = this.equipmentsByCasaMatriz(id).pipe(
+      catchError((error) => {
+        console.error('Error al obtener equipos del cliente:', error);
+        return of([] as Equipo[]);
+      })
+    );
+
+    return forkJoin({ detalle: detalle$, equipos: equipos$ }).pipe(
+      map(({ detalle, equipos }) => {
+        const clienteBase = detalle?.cliente as Cliente | undefined;
+        const clienteDetalle: Cliente | null = clienteBase
+          ? ({ ...clienteBase, sucursales: Array.isArray(clienteBase.sucursales) ? clienteBase.sucursales.map((sucursal: any) => ({ ...sucursal })) : [] } as Cliente)
+          : null;
+
+        const equiposDesdeDetalle = this.extraerEquiposDeDetalle(clienteDetalle);
+        const equiposNormalizados = this.unificarEquiposListas([equiposDesdeDetalle, equipos]);
+        console.log('[ApiService] equiposPorClienteCompleto -> cliente', id, {
+          detalle: clienteDetalle ? { sucursales: clienteDetalle.sucursales?.length ?? 0 } : null,
+          equiposDetalle: equiposDesdeDetalle.length,
+          equiposExternos: equipos.length,
+          equiposNormalizados: equiposNormalizados.length,
+        });
+
+        if (clienteDetalle && Array.isArray(clienteDetalle.sucursales)) {
+          const conteoPorSucursal = this.contarEquiposPorSucursal(equiposNormalizados);
+          clienteDetalle.sucursales = clienteDetalle.sucursales.map((sucursal: any) => {
+            const clave = String(sucursal.id ?? '');
+            const conteo = conteoPorSucursal.get(clave);
+            const existente = typeof sucursal.equiposCount === 'number' ? Number(sucursal.equiposCount) : undefined;
+            return {
+              ...sucursal,
+              equiposCount: existente !== undefined ? existente : (conteo ?? 0),
+            };
+          });
+        }
+
+        const resultado: ClienteEquiposDetalle = {
+          cliente: clienteDetalle,
+          equipos: equiposNormalizados,
+        };
+
+        this.equiposClienteCache.set(id, resultado);
+        return resultado;
+      }),
+      catchError((error) => {
+        console.error('Error al consolidar la informacion de equipos:', error);
+        return of({ cliente: null, equipos: [] });
+      })
+    );
+  }
+
+  limpiarEquiposClienteCache(): void {
+    this.equiposClienteCache.clear();
+  }
+
+  private extraerEquiposDeDetalle(cliente: any): Equipo[] {
+    if (!cliente) {
+      return [];
+    }
+
+    const equiposMap = new Map<number | string, Equipo>();
+
+    if (Array.isArray(cliente?.sucursales)) {
+      cliente.sucursales.forEach((sucursal: any) => {
+        if (Array.isArray(sucursal?.equipos)) {
+          sucursal.equipos.forEach((equipo: Equipo) => {
+            const key = this.normalizarClaveEquipo(equipo);
+            if (key) {
+              equiposMap.set(key, equipo);
+            }
+          });
+        }
+        if (Array.isArray(sucursal?.Equipos)) {
+          sucursal.Equipos.forEach((equipo: Equipo) => {
+            const key = this.normalizarClaveEquipo(equipo);
+            if (key) {
+              equiposMap.set(key, equipo);
+            }
+          });
+        }
+      });
+    }
+
+    const listadoAlternativo = Array.isArray(cliente?.Equipos)
+      ? cliente.Equipos
+      : Array.isArray(cliente?.equipos)
+        ? cliente.equipos
+        : [];
+
+    listadoAlternativo.forEach((equipo: Equipo) => {
+      const key = this.normalizarClaveEquipo(equipo);
+      if (key) {
+        equiposMap.set(key, equipo);
+      }
+    });
+
+    return Array.from(equiposMap.values());
+  }
+
+  private unificarEquiposListas(listados: Array<Equipo[] | null | undefined>): Equipo[] {
+    const mapa = new Map<string, Equipo>();
+
+    listados.forEach((lista) => {
+      if (!Array.isArray(lista)) {
+        console.log('[ApiService] unificarEquiposListas: lista no es arreglo', lista);
+        return;
+      }
+
+      lista.forEach((equipo) => {
+        const key = this.normalizarClaveEquipo(equipo);
+        if (!key) {
+          console.log('[ApiService] unificarEquiposListas: equipo sin clave identificable', equipo);
+          return;
+        }
+
+        const previo = mapa.get(key) ?? {};
+        mapa.set(key, { ...previo, ...equipo });
+      });
+    });
+
+    const resultado = Array.from(mapa.values());
+    console.log('[ApiService] unificarEquiposListas: total equipos combinados', resultado.length);
+    return resultado;
+  }
+
+  private contarEquiposPorSucursal(listado: Equipo[]): Map<string, number> {
+    const conteo = new Map<string, number>();
+
+    listado.forEach((equipo) => {
+      const sucursalId = (equipo as any)?.sucursalId ?? (equipo as any)?.sucursal?.id;
+      if (sucursalId === undefined || sucursalId === null) {
+        return;
+      }
+      const clave = String(sucursalId);
+      conteo.set(clave, (conteo.get(clave) ?? 0) + 1);
+    });
+
+    return conteo;
+  }
+
+  private normalizarClaveEquipo(equipo: Equipo | null | undefined): string | null {
+    if (!equipo) {
+      return null;
+    }
+
+    const clave =
+      (equipo.id !== undefined && equipo.id !== null ? equipo.id : undefined) ??
+      (equipo.codigoId && String(equipo.codigoId).trim() !== '' ? equipo.codigoId : undefined) ??
+      (equipo.numeroSecuencial !== undefined && equipo.numeroSecuencial !== null
+        ? `ns-${equipo.numeroSecuencial}`
+        : undefined);
+
+    if (clave === undefined) {
+      return null;
+    }
+
+    const texto = String(clave).trim();
+    return texto === '' ? null : texto;
   }
 
   bitacoras(params: Record<string, any> = {}): Observable<any> {
