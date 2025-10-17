@@ -29,10 +29,21 @@
         [class.hoy]="dia.isToday"
         [class.seleccionado]="dia.isSelected"
         [class.con-eventos]="dia.eventCount > 0"
+        [class.con-programadas]="dia.scheduledCount > 0 && dia.completedCount === 0"
+        [class.con-mixtas]="dia.scheduledCount > 0 && dia.completedCount > 0"
         (click)="selectDay(dia)"
       >
         <span class="dia-numero">{{ dia.day }}</span>
-        <span class="badge" *ngIf="dia.eventCount > 0">{{ dia.eventCount }}</span>
+        <span
+          class="badge"
+          *ngIf="dia.eventCount > 0"
+          [ngClass]="{
+            'badge-programada': dia.scheduledCount > 0 && dia.completedCount === 0,
+            'badge-mixta': dia.scheduledCount > 0 && dia.completedCount > 0
+          }"
+        >
+          {{ dia.eventCount }}
+        </span>
       </button>
     </div>
   </div>
@@ -52,10 +63,27 @@
 
     <ng-container *ngIf="!formularioVisible">
       <ul class="event-list" *ngIf="!cargando && eventosSeleccionados.length > 0">
-        <li *ngFor="let evento of eventosSeleccionados">
+        <li
+          *ngFor="let evento of eventosSeleccionados"
+          [ngClass]="{
+            'evento-programado': esEventoProgramado(evento),
+            'evento-completada': !esEventoProgramado(evento)
+          }"
+        >
           <div class="evento-cliente">
-            {{ evento.casaMatriz?.razonSocial || 'Cliente sin nombre' }}
+            <span>{{ evento.casaMatriz?.razonSocial || 'Cliente sin nombre' }}</span>
+            <button
+              *ngIf="esAdmin"
+              type="button"
+              class="evento-eliminar"
+              [disabled]="eliminandoId === evento.id"
+              (click)="eliminarEvento(evento)"
+            >
+              {{ eliminandoId === evento.id ? 'Eliminando...' : 'Eliminar' }}
+            </button>
           </div>
+          <span class="evento-etiqueta" *ngIf="esEventoProgramado(evento)">Visita programada</span>
+          <span class="evento-etiqueta" *ngIf="!esEventoProgramado(evento)">Visita completada</span>
           <div class="evento-detalle">
             <span class="evento-hora">
               {{ evento.horaLlegada ? (evento.horaLlegada | date: 'HH:mm') : '--:--' }}

@@ -44,8 +44,8 @@
 
 .nav-button:hover,
 .today-button:hover {
-  background-color: #1976d2;
-  border-color: #1976d2;
+  background-color: #b71653;
+  border-color: #b71653;
   color: #ffffff;
 }
 
@@ -59,7 +59,7 @@
   text-align: center;
   font-weight: 600;
   font-size: 0.9rem;
-  color: #1976d2;
+  color: #b71653;
   text-transform: uppercase;
 }
 
@@ -92,21 +92,37 @@
 }
 
 .day-cell.hoy {
-  border: 2px solid #1976d2;
+  border: 2px solid #b71653;
 }
 
 .day-cell.seleccionado {
-  background-color: #1976d2;
+  background-color: #b71653;
   color: #ffffff;
 }
 
 .day-cell.seleccionado .badge {
   background-color: rgba(255, 255, 255, 0.9);
-  color: #1976d2;
+  color: #b71653;
+}
+
+.day-cell.seleccionado .badge.badge-programada {
+  color: #1f8f56;
+}
+
+.day-cell.seleccionado .badge.badge-mixta {
+  color: #ffffff;
 }
 
 .day-cell.con-eventos {
-  border-left: 4px solid #4caf50;
+  border-left: 4px solid #b71653;
+}
+
+.day-cell.con-programadas {
+  border-left: 4px solid #1f8f56;
+}
+
+.day-cell.con-mixtas {
+  border-left: 4px solid #b71653;
 }
 
 .dia-numero {
@@ -117,11 +133,20 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  background-color: #4caf50;
+  background-color: #b71653;
   color: #ffffff;
   border-radius: 999px;
   padding: 0.1rem 0.5rem;
   font-size: 0.75rem;
+}
+
+.badge-programada {
+  background-color: #1f8f56;
+}
+
+.badge-mixta {
+  background: linear-gradient(90deg, #b71653 0%, #1f8f56 100%);
+  color: #ffffff;
 }
 
 .sidebar {
@@ -146,7 +171,7 @@
 
 .add-button {
   border: none;
-  background-color: #1976d2;
+  background-color: #b71653;
   color: #ffffff;
   border-radius: 6px;
   padding: 0.4rem 1rem;
@@ -155,12 +180,12 @@
 }
 
 .add-button:hover {
-  background-color: #125da8;
+  background-color: #8a113f;
 }
 
 .sidebar-info {
   margin: 0;
-  color: #1976d2;
+  color: #b71653;
 }
 
 .sidebar-error {
@@ -195,19 +220,81 @@
   display: flex;
   flex-direction: column;
   gap: 0.35rem;
+  border-left: 4px solid transparent;
+}
+
+.event-list li.evento-programado {
+  border-left-color: #1f8f56;
+}
+
+.event-list li.evento-programado .evento-cliente {
+  color: #145838;
+}
+
+.event-list li.evento-completada {
+  border-left-color: #b71653;
 }
 
 .evento-cliente {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
   font-weight: 600;
   font-size: 1rem;
+}
+
+.evento-eliminar {
+  border: none;
+  background-color: transparent;
+  color: #c62828;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0.25rem 0.5rem;
+  border-radius: 6px;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.evento-eliminar:hover {
+  background-color: rgba(198, 40, 40, 0.1);
+}
+
+.evento-eliminar:disabled {
+  color: #9e9e9e;
+  cursor: not-allowed;
+  background-color: transparent;
+}
+
+.evento-etiqueta {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: #b71653;
+}
+
+.evento-programado .evento-etiqueta {
+  color: #1f8f56;
+}
+
+.evento-completada .evento-etiqueta {
+  color: #b71653;
 }
 
 .evento-detalle {
   display: flex;
   flex-wrap: wrap;
   gap: 0.75rem;
-  font-size: 0.85rem;
-  color: #1976d2;
+  font-size: 0.95rem;
+  color: #b71653;
+}
+
+.evento-programado .evento-detalle {
+  color: #1f8f56;
+}
+
+.evento-completada .evento-detalle {
+  color: #b71653;
 }
 
 .evento-descripcion {
@@ -224,6 +311,7 @@
   padding: 1rem;
   border-radius: 10px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  font-size: 1rem;
 }
 
 .form-field {
@@ -234,7 +322,8 @@
 
 .form-field label {
   font-weight: 600;
-  font-size: 0.9rem;
+  font-size: 1rem;
+  font-family: inherit;
 }
 
 .form-field input,
@@ -243,9 +332,10 @@
   border: 1px solid #cccccc;
   border-radius: 6px;
   padding: 0.45rem 0.6rem;
-  font-size: 0.95rem;
+  font-size: 1rem;
   color: #4f4f4f;
   background-color: #fafafa;
+  font-family: inherit;
 }
 
 .form-field input:focus,
@@ -270,7 +360,7 @@
 
 .form-actions button {
   border: none;
-  background-color: #1976d2;
+  background-color: #b71653;
   color: #ffffff;
   border-radius: 6px;
   padding: 0.55rem 1.5rem;
@@ -279,12 +369,12 @@
 }
 
 .form-actions button:disabled {
-  background-color: #9bbde3;
+  background-color: #d57aa3;
   cursor: not-allowed;
 }
 
 .form-actions button:not(:disabled):hover {
-  background-color: #125da8;
+  background-color: #8f1041;
 }
 
 .field-error {

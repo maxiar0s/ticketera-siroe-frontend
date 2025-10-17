@@ -50,6 +50,7 @@ export class BitacoraComponent implements OnInit {
   formularioVisible = false;
   modoEdicion = false;
   selectedFiles: File[] = [];
+  eliminandoBitacoraId: number | null = null;
 
   readonly esAdmin: boolean;
   readonly esTecnico: boolean;
@@ -551,5 +552,44 @@ export class BitacoraComponent implements OnInit {
     Object.keys(this.bitacoraForm.controls).forEach((control) => {
       this.bitacoraForm.get(control)?.enable({ emitEvent: false });
     });
+  }
+
+  eliminarBitacora(evento: Event, bitacora: Bitacora): void {
+    evento.stopPropagation();
+    if (!this.esAdmin || !bitacora?.id || this.eliminandoBitacoraId === bitacora.id) {
+      return;
+    }
+
+    const confirmado = confirm('Confirma eliminar esta bitacora?');
+    if (!confirmado) {
+      return;
+    }
+
+    this.errorMensaje = '';
+    this.exitoMensaje = '';
+    this.eliminandoBitacoraId = bitacora.id;
+    const debeRetroceder = this.bitacoras.length === 1 && this.paginaActual > 1;
+
+    this.apiService
+      .eliminarBitacora(bitacora.id)
+      .pipe(finalize(() => (this.eliminandoBitacoraId = null)))
+      .subscribe({
+        next: () => {
+          if (debeRetroceder) {
+            this.paginaActual -= 1;
+          }
+          if (this.bitacoraSeleccionada?.id === bitacora.id) {
+            this.bitacoraSeleccionada = undefined;
+          }
+          this.exitoMensaje = 'Bitacora eliminada correctamente.';
+          this.cargarBitacoras(false);
+        },
+        error: (error) => {
+          console.error('Error al eliminar bitacora', error);
+          this.errorMensaje =
+            error?.error?.error ??
+            'No fue posible eliminar la bitacora. Intenta nuevamente.';
+        },
+      });
   }
 }

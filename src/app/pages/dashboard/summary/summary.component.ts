@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { catchError, forkJoin, map, of } from 'rxjs';
 import { ApiService } from '../../../services/api.service';
 import { Cliente } from '../../../interfaces/cliente.interface';
@@ -8,7 +9,7 @@ import { Equipo } from '../../../interfaces/equipo.interface';
 @Component({
   selector: 'dashboard-summary',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './summary.component.html',
   styleUrl: './summary.component.css'
 })
@@ -183,7 +184,7 @@ export class SummaryComponent implements OnChanges {
 
     listadoAlternativo.forEach((equipo: Equipo) => this.registrarEquipoEnMapa(equipos, equipo));
 
-    return equipos.size + fallbackTotal;
+    return equipos.size > 0 ? equipos.size : fallbackTotal;
   }
 
   private registrarEquipoEnMapa(contenedor: Map<number | string, Equipo>, equipo: Equipo | null | undefined): void {

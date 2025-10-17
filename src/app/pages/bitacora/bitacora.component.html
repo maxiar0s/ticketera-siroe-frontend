@@ -96,7 +96,7 @@
           <th>Sucursal</th>
           <th>Técnicos</th>
           <th>Nota</th>
-            <!-- Acciones column removed -->
+          <th *ngIf="esAdmin">Acciones</th>
         </tr>
       </thead>
       <tbody>
@@ -121,7 +121,20 @@
           <td class="nota">
             {{ bitacora.descripcion }}
           </td>
-            <!-- Acciones cell removed -->
+          <td *ngIf="esAdmin" class="acciones">
+            <button
+              type="button"
+              class="delete-button"
+              [disabled]="eliminandoBitacoraId === bitacora.id"
+              (click)="eliminarBitacora($event, bitacora)"
+            >
+              {{
+                eliminandoBitacoraId === bitacora.id
+                  ? 'Eliminando...'
+                  : 'Eliminar'
+              }}
+            </button>
+          </td>
         </tr>
       </tbody>
     </table>
@@ -157,14 +170,29 @@
       <h2>
         {{ bitacoraSeleccionada.titulo || 'Detalle de la visita' }}
       </h2>
-      <button
-        type="button"
-        class="link-button"
-        *ngIf="puedeEditarBitacora(bitacoraSeleccionada)"
-        (click)="abrirFormularioEditar(bitacoraSeleccionada)"
-      >
-        Editar
-      </button>
+      <div class="detail-actions">
+        <button
+          type="button"
+          class="link-button"
+          *ngIf="puedeEditarBitacora(bitacoraSeleccionada)"
+          (click)="abrirFormularioEditar(bitacoraSeleccionada)"
+        >
+          Editar
+        </button>
+        <button
+          type="button"
+          class="link-button danger"
+          *ngIf="esAdmin"
+          [disabled]="eliminandoBitacoraId === bitacoraSeleccionada.id"
+          (click)="eliminarBitacora($event, bitacoraSeleccionada)"
+        >
+          {{
+            eliminandoBitacoraId === bitacoraSeleccionada.id
+              ? 'Eliminando...'
+              : 'Eliminar'
+          }}
+        </button>
+      </div>
     </header>
 
     <div class="detail-grid">

@@ -67,7 +67,6 @@ export class ChartsComponent implements OnInit {
   private cargarClientesConEquipos(): void {
     this.loadingClientes = true;
     this.clientesError = '';
-    console.log('[Dashboard] cargarClientesConEquipos -> inicio');
 
     this.obtenerTodosLosClientes()
       .pipe(
@@ -107,7 +106,6 @@ export class ChartsComponent implements OnInit {
       )
       .subscribe({
         next: ({ detalles }) => {
-          console.log('[Dashboard] cargarClientesConEquipos -> detalles recibidos', detalles.length);
           this.procesarResumenClientes(detalles);
           this.loadingClientes = false;
         },
@@ -226,15 +224,6 @@ export class ChartsComponent implements OnInit {
     const conteosPorTipo = new Map<string, number>();
     const conteosPorCliente: { label: string; value: number }[] = [];
 
-    if (detalles.length) {
-      console.log('[Dashboard] procesarResumenClientes -> clientes recibidos:', detalles.map(({ cliente, equipos }) => ({
-        clienteId: cliente?.id,
-        razonSocial: cliente?.razonSocial,
-        sucursales: cliente?.sucursales?.length ?? 0,
-        equiposExternos: equipos.length,
-      })));
-    }
-
     detalles.forEach(({ cliente, equipos }) => {
       const { listado, total } = this.compilarEquiposCliente(cliente, equipos);
       const label = cliente?.razonSocial ?? 'Sin nombre';
@@ -243,9 +232,6 @@ export class ChartsComponent implements OnInit {
 
       listado.forEach((equipo) => {
         const tipo = this.obtenerNombreTipoEquipo(equipo);
-        if (!tipo) {
-          console.warn('[Dashboard] Equipo sin tipo identificable:', equipo);
-        }
         conteosPorTipo.set(tipo, (conteosPorTipo.get(tipo) ?? 0) + 1);
       });
     });
@@ -273,7 +259,6 @@ export class ChartsComponent implements OnInit {
           const conteo = Number(sucursal.equiposCount);
           if (!Number.isNaN(conteo) && conteo > 0) {
             fallbackTotal += conteo;
-            console.log('[Dashboard] conteo fallback sucursal', sucursal?.id, conteo);
           }
         }
       });
@@ -288,14 +273,13 @@ export class ChartsComponent implements OnInit {
     listadoAlternativo.forEach((equipo: Equipo) => this.registrarEquipoEnMapa(equiposMap, equipo));
 
     const listado = Array.from(equiposMap.values());
-    const total = listado.length + fallbackTotal;
+    const total = listado.length > 0 ? listado.length : fallbackTotal;
 
     return { listado, total };
   }
 
   private obtenerNombreTipoEquipo(equipo: Equipo | null | undefined): string {
     if (!equipo) {
-      console.warn('[Dashboard] obtenerNombreTipoEquipo: equipo nulo');
       return 'Sin tipo';
     }
 
@@ -307,9 +291,6 @@ export class ChartsComponent implements OnInit {
     const tipoId = (equipo as any)?.tipoEquipoId;
     if (typeof tipoId === 'number') {
       const nombreCatalogo = this.tiposEquipoMapa.get(tipoId);
-      if (!nombreCatalogo) {
-        console.log('[Dashboard] Catalogo sin entrada para tipoEquipoId', tipoId, 'equipo:', equipo);
-      }
       if (nombreCatalogo && nombreCatalogo.trim() !== '') {
         return nombreCatalogo.trim();
       }

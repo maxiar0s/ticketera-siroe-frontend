@@ -4,6 +4,7 @@ import { catchError, forkJoin, map, Observable, of, throwError } from 'rxjs';
 import { Cliente } from '../interfaces/cliente.interface';
 import { ClienteResumen } from '../interfaces/cliente-resumen.interface';
 import { Equipo } from '../interfaces/equipo.interface';
+import { VisitaProgramada } from '../interfaces/visita-programada.interface';
 
 type ClienteEquiposDetalle = { cliente: Cliente | null; equipos: Equipo[] };
 
@@ -217,7 +218,6 @@ export class ApiService {
     const endpoint = `cliente/` + id + `/equipos`;
     return this.getInformation(endpoint).pipe(
       map((respuesta) => {
-        console.log('[ApiService] equipmentsByCasaMatriz respuesta', id, respuesta);
         if (Array.isArray(respuesta)) {
           return respuesta as Equipo[];
         }
@@ -238,7 +238,6 @@ export class ApiService {
 
     const cached = this.equiposClienteCache.get(id);
     if (cached) {
-      console.log('[ApiService] equiposPorClienteCompleto cache hit', id, cached);
       return of(cached);
     }
 
@@ -265,12 +264,6 @@ export class ApiService {
 
         const equiposDesdeDetalle = this.extraerEquiposDeDetalle(clienteDetalle);
         const equiposNormalizados = this.unificarEquiposListas([equiposDesdeDetalle, equipos]);
-        console.log('[ApiService] equiposPorClienteCompleto -> cliente', id, {
-          detalle: clienteDetalle ? { sucursales: clienteDetalle.sucursales?.length ?? 0 } : null,
-          equiposDetalle: equiposDesdeDetalle.length,
-          equiposExternos: equipos.length,
-          equiposNormalizados: equiposNormalizados.length,
-        });
 
         if (clienteDetalle && Array.isArray(clienteDetalle.sucursales)) {
           const conteoPorSucursal = this.contarEquiposPorSucursal(equiposNormalizados);
@@ -353,14 +346,12 @@ export class ApiService {
 
     listados.forEach((lista) => {
       if (!Array.isArray(lista)) {
-        console.log('[ApiService] unificarEquiposListas: lista no es arreglo', lista);
         return;
       }
 
       lista.forEach((equipo) => {
         const key = this.normalizarClaveEquipo(equipo);
         if (!key) {
-          console.log('[ApiService] unificarEquiposListas: equipo sin clave identificable', equipo);
           return;
         }
 
@@ -369,9 +360,7 @@ export class ApiService {
       });
     });
 
-    const resultado = Array.from(mapa.values());
-    console.log('[ApiService] unificarEquiposListas: total equipos combinados', resultado.length);
-    return resultado;
+    return Array.from(mapa.values());
   }
 
   private contarEquiposPorSucursal(listado: Equipo[]): Map<string, number> {
@@ -429,6 +418,26 @@ export class ApiService {
   bitacora(id: number): Observable<any> {
     const endpoint = `bitacoras/${id}`;
     return this.getInformation(endpoint);
+  }
+
+  eliminarBitacora(id: number): Observable<any> {
+    const endpoint = `bitacoras/${id}`;
+    return this.deleteInformation(endpoint);
+  }
+
+  visitasProgramadas(): Observable<VisitaProgramada[]> {
+    const endpoint = 'visitas-programadas';
+    return this.getInformation(endpoint);
+  }
+
+  crearVisitaProgramada(payload: any): Observable<any> {
+    const endpoint = 'visitas-programadas';
+    return this.postInformation(payload, endpoint);
+  }
+
+  eliminarVisitaProgramada(id: number): Observable<any> {
+    const endpoint = `visitas-programadas/${id}`;
+    return this.deleteInformation(endpoint);
   }
 
   crearBitacora(payload: any): Observable<any> {

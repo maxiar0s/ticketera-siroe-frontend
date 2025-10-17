@@ -2,7 +2,7 @@
   <div class="summary-controls">
     <label>
       Datos columna 1
-      <select [value]="selectedVariant1" (change)="setVariant('variante1', $any($event.target).value)">
+      <select [(ngModel)]="selectedVariant1" (ngModelChange)="setVariant('variante1', $event)">
         <option *ngFor="let option of variantOptions" [value]="option.value">
           {{ option.label }}
         </option>
@@ -11,7 +11,7 @@
 
     <label>
       Datos columna 2
-      <select [value]="selectedVariant2" (change)="setVariant('variante2', $any($event.target).value)">
+      <select [(ngModel)]="selectedVariant2" (ngModelChange)="setVariant('variante2', $event)">
         <option *ngFor="let option of variantOptions" [value]="option.value">
           {{ option.label }}
         </option>
