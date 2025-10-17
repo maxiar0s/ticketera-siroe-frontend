@@ -112,7 +112,7 @@
 }
 
 .ver-datos:hover {
-  content: url("/assets/svg/delete-hover.svg");
+  content: url("/assets/svg/ver-datos-hover.svg");
 }
 
 input[type="checkbox"] {

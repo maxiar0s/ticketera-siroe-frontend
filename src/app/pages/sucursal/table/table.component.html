@@ -6,6 +6,8 @@
 
   <img style="display: none" src="/assets/svg/delete-hover.svg" />
 
+  <img style="display: none" src="/assets/svg/ver-datos-hover.svg" />
+
   <div *ngIf="obtainedEquipments" class="div-table">
 
     <table class="table">
@@ -169,7 +171,11 @@
                 </button>
               </ng-container>
               <button class="actions" (click)="abrirModalVer(equipo.id, i)">
-                <img [src]="'/assets/svg/ver-datos.svg' " [ngClass]="{'svg-cursor ver-datos': equipo.estado === 3}" class="svg" alt="ver-datos.svg">
+                <img
+                  src="/assets/svg/ver-datos.svg"
+                  class="svg svg-cursor ver-datos"
+                  alt="ver-datos.svg"
+                />
               </button>
             </div>
             <button
@@ -190,7 +196,7 @@
             >
               <img
                 src="/assets/svg/ver-datos.svg"
-                class="svg svg-cursor"
+                class="svg svg-cursor ver-datos"
                 alt="ver-datos.svg"
               />
             </button>

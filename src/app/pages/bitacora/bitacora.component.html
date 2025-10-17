@@ -95,8 +95,8 @@
           <th>Cliente</th>
           <th>Sucursal</th>
           <th>Técnicos</th>
-          <th>Nota</th>
-          <th *ngIf="esAdmin">Acciones</th>
+          <th class="nota">Nota</th>
+          <th *ngIf="esAdmin" class="acciones">Acciones</th>
         </tr>
       </thead>
       <tbody>
@@ -122,18 +122,27 @@
             {{ bitacora.descripcion }}
           </td>
           <td *ngIf="esAdmin" class="acciones">
-            <button
-              type="button"
-              class="delete-button"
-              [disabled]="eliminandoBitacoraId === bitacora.id"
-              (click)="eliminarBitacora($event, bitacora)"
-            >
-              {{
-                eliminandoBitacoraId === bitacora.id
-                  ? 'Eliminando...'
-                  : 'Eliminar'
-              }}
-            </button>
+            <div class="acciones-wrapper">
+              <button
+                type="button"
+                class="ghost-button small"
+                (click)="abrirFormularioEditar(bitacora); $event.stopPropagation()"
+              >
+                Editar
+              </button>
+              <button
+                type="button"
+                class="delete-button"
+                [disabled]="eliminandoBitacoraId === bitacora.id"
+                (click)="eliminarBitacora($event, bitacora)"
+              >
+                {{
+                  eliminandoBitacoraId === bitacora.id
+                    ? 'Eliminando...'
+                    : 'Eliminar'
+                }}
+              </button>
+            </div>
           </td>
         </tr>
       </tbody>

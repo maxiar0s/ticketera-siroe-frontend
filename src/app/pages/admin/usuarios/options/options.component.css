@@ -5,7 +5,7 @@
 
 .options {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(5, 1fr);
   gap: 1rem;
   padding: 1rem;
 }
@@ -37,12 +37,14 @@
     font-size: 1.2rem;
     text-align: center;
   }
+  .options {
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+  }
 }
 
 @media (max-width: 768px) {
-  .options button {
-    font-size: 1rem;
-  }
+
 }
 
 @media (max-width: 576px) {
