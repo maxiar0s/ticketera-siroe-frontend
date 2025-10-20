@@ -10,6 +10,8 @@ export interface Cliente {
   fechaIngreso:      Date;
   visitasMensuales:  number | null;
   visitasEmergenciaAnuales: number | null;
+  visitasMensualesRealizadas?: number;
+  visitasEmergenciaAnualesRealizadas?: number;
   Equipos?:           any[];
   sucursales?:        Sucursal[];
 }

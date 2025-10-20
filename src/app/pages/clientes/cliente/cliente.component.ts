@@ -115,32 +115,35 @@ export class ClienteComponent {
 
           if(!this.Title) this.headerTitle(cliente.razonSocial);
 
-          if(!this.cliente) {
-            const {
-              id,
-              imagen,
-              rut,
-              razonSocial,
-              encargadoGeneral,
-              correo,
-              telefonoEncargado,
-              fechaIngreso,
-              visitasMensuales = 0,
-              visitasEmergenciaAnuales = 0,
-            } = cliente;
-            this.cliente = {
-              id,
-              imagen,
-              rut,
-              razonSocial,
-              encargadoGeneral,
-              correo,
-              telefonoEncargado,
-              fechaIngreso,
-              visitasMensuales,
-              visitasEmergenciaAnuales,
-            };
-          }
+          const {
+            id,
+            imagen,
+            rut,
+            razonSocial,
+            encargadoGeneral,
+            correo,
+            telefonoEncargado,
+            fechaIngreso,
+            visitasMensuales = 0,
+            visitasEmergenciaAnuales = 0,
+            visitasMensualesRealizadas = 0,
+            visitasEmergenciaAnualesRealizadas = 0,
+          } = cliente;
+          this.cliente = {
+            ...(this.cliente ?? {}),
+            id,
+            imagen,
+            rut,
+            razonSocial,
+            encargadoGeneral,
+            correo,
+            telefonoEncargado,
+            fechaIngreso,
+            visitasMensuales,
+            visitasEmergenciaAnuales,
+            visitasMensualesRealizadas,
+            visitasEmergenciaAnualesRealizadas,
+          };
           this.paginas = paginas;
           this.sucursales = cliente.sucursales;
           this.loaderService.hideSection();

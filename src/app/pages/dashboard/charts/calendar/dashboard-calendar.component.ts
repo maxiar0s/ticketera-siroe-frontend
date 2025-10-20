@@ -22,6 +22,7 @@ interface CalendarDay {
   eventCount: number;
   completedCount: number;
   scheduledCount: number;
+  emergencyCount: number;
   isToday: boolean;
   isSelected: boolean;
 }
@@ -397,6 +398,7 @@ export class DashboardCalendarComponent implements OnInit {
       const eventosDia = this.eventosPorDia.get(clave) ?? [];
       const completadas = eventosDia.filter((evento) => evento.tipo === 'completada').length;
       const programadas = eventosDia.filter((evento) => evento.tipo === 'programada').length;
+      const emergencias = eventosDia.filter((evento) => this.esEventoEmergencia(evento)).length;
 
       dias.push({
         date: fecha,
@@ -406,6 +408,7 @@ export class DashboardCalendarComponent implements OnInit {
         eventCount: eventosDia.length,
         completedCount: completadas,
         scheduledCount: programadas,
+        emergencyCount: emergencias,
         isToday:
           fecha.getFullYear() === hoy.getFullYear() &&
           fecha.getMonth() === hoy.getMonth() &&
@@ -519,6 +522,10 @@ export class DashboardCalendarComponent implements OnInit {
 
   esEventoProgramado(evento: EventoCalendario): boolean {
     return evento.tipo === 'programada';
+  }
+
+  esEventoEmergencia(evento: EventoCalendario): evento is Bitacora & { tipo: 'completada' } {
+    return evento.tipo === 'completada' && !!evento.isEmergencia;
   }
 
   eliminarEvento(evento: EventoCalendario): void {

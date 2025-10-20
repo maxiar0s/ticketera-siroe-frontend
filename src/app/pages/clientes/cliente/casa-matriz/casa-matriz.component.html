@@ -36,11 +36,25 @@
         </div>
 
         <div class="information info-visitas">
-          <p>Visitas mensuales: <span>{{ cliente?.visitasMensuales ?? 0 }}</span></p>
+          <p>
+            Visitas mensuales:
+            <span>
+              {{ cliente?.visitasMensuales ?? 0 }}
+              /
+              {{ cliente?.visitasMensualesRealizadas ?? 0 }}
+            </span>
+          </p>
         </div>
 
         <div class="information info-emergencia">
-          <p>Visitas de emergencia (anuales): <span>{{ cliente?.visitasEmergenciaAnuales ?? 0 }}</span></p>
+          <p>
+            Visitas de emergencia (anuales):
+            <span>
+              {{ cliente?.visitasEmergenciaAnuales ?? 0 }}
+              /
+              {{ cliente?.visitasEmergenciaAnualesRealizadas ?? 0 }}
+            </span>
+          </p>
         </div>
 
   </div>

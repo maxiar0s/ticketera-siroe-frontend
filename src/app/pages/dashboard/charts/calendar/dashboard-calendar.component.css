@@ -125,6 +125,11 @@
   border-left: 4px solid #b71653;
 }
 
+.day-cell.con-emergencias {
+  border-left: 4px solid #ff3b30;
+  background-color: rgba(255, 59, 48, 0.12);
+}
+
 .dia-numero {
   font-weight: 600;
 }
@@ -147,6 +152,10 @@
 .badge-mixta {
   background: linear-gradient(90deg, #b71653 0%, #1f8f56 100%);
   color: #ffffff;
+}
+
+.badge-emergencia {
+  background-color: #ff3b30;
 }
 
 .sidebar {
@@ -295,6 +304,19 @@
 
 .evento-completada .evento-detalle {
   color: #b71653;
+}
+
+.event-list li.evento-emergencia {
+  border-left-color: #ff3b30;
+}
+
+.event-list li.evento-emergencia .evento-cliente {
+  color: #ff3b30;
+}
+
+.evento-emergencia .evento-etiqueta,
+.evento-emergencia .evento-detalle {
+  color: #ff3b30;
 }
 
 .evento-descripcion {

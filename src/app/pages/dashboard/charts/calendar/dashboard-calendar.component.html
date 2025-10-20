@@ -31,6 +31,7 @@
         [class.con-eventos]="dia.eventCount > 0"
         [class.con-programadas]="dia.scheduledCount > 0 && dia.completedCount === 0"
         [class.con-mixtas]="dia.scheduledCount > 0 && dia.completedCount > 0"
+        [class.con-emergencias]="dia.emergencyCount > 0"
         (click)="selectDay(dia)"
       >
         <span class="dia-numero">{{ dia.day }}</span>
@@ -39,7 +40,8 @@
           *ngIf="dia.eventCount > 0"
           [ngClass]="{
             'badge-programada': dia.scheduledCount > 0 && dia.completedCount === 0,
-            'badge-mixta': dia.scheduledCount > 0 && dia.completedCount > 0
+            'badge-mixta': dia.scheduledCount > 0 && dia.completedCount > 0,
+            'badge-emergencia': dia.emergencyCount > 0 && dia.scheduledCount === 0
           }"
         >
           {{ dia.eventCount }}
@@ -67,7 +69,8 @@
           *ngFor="let evento of eventosSeleccionados"
           [ngClass]="{
             'evento-programado': esEventoProgramado(evento),
-            'evento-completada': !esEventoProgramado(evento)
+            'evento-completada': !esEventoProgramado(evento),
+            'evento-emergencia': esEventoEmergencia(evento)
           }"
         >
           <div class="evento-cliente">
@@ -83,7 +86,9 @@
             </button>
           </div>
           <span class="evento-etiqueta" *ngIf="esEventoProgramado(evento)">Visita programada</span>
-          <span class="evento-etiqueta" *ngIf="!esEventoProgramado(evento)">Visita completada</span>
+          <span class="evento-etiqueta" *ngIf="!esEventoProgramado(evento)">
+            {{ esEventoEmergencia(evento) ? 'Visita de emergencia completada' : 'Visita completada' }}
+          </span>
           <div class="evento-detalle">
             <span class="evento-hora">
               {{ evento.horaLlegada ? (evento.horaLlegada | date: 'HH:mm') : '--:--' }}
