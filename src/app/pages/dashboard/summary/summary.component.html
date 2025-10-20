@@ -22,39 +22,22 @@
   <table class="table">
     <thead>
       <tr class="table-row-style">
-        <th class="status"><span></span></th>
-        <th>ID</th>
         <th>Cliente</th>
-        <th>Fecha ingreso</th>
         <th>{{ getVariantLabel(selectedVariant1) }}</th>
         <th>{{ getVariantLabel(selectedVariant2) }}</th>
-        <th class="table-detalle-th">Ir a detalle</th>
       </tr>
     </thead>
     <tbody>
       <tr *ngIf="loading">
-        <td colspan="7" style="text-align:center;">Cargando datos...</td>
+        <td colspan="3" style="text-align:center;">Cargando datos...</td>
       </tr>
       <tr *ngIf="!loading && clientes.length === 0">
-        <td colspan="7" style="text-align:center;">No hay datos para mostrar.</td>
+        <td colspan="3" style="text-align:center;">No hay datos para mostrar.</td>
       </tr>
       <tr *ngFor="let cliente of clientes" class="table-row-style">
-        <td>
-          <div class="id-status" [ngClass]="{
-            'red': option === 'Todos los ingresos' || option === 'Pendientes',
-            'cyan': option === 'Terminados'
-          }"></div>
-        </td>
-        <td>#{{cliente.id}}</td>
-        <td>{{cliente.razonSocial}}</td>
-        <td>{{cliente.fechaIngreso | date:'dd/MM/yyyy'}}</td>
+        <td>{{ cliente.razonSocial }}</td>
         <td>{{ getVariantValue(cliente, selectedVariant1) }}</td>
         <td>{{ getVariantValue(cliente, selectedVariant2) }}</td>
-        <td>
-          <button class="table-detalle">
-            {{ option === 'Terminados' ? 'Revisar detalles' : 'Ingresar datos' }}
-          </button>
-        </td>
       </tr>
     </tbody>
   </table>
