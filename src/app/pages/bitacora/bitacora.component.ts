@@ -86,6 +86,7 @@ export class BitacoraComponent implements OnInit {
       horaLlegada: ['', Validators.required],
       horaSalida: ['', Validators.required],
       tecnicos: ['', Validators.required],
+      isEmergencia: [false],
       descripcion: ['', [Validators.required, Validators.minLength(5)]],
     });
 
@@ -237,6 +238,7 @@ export class BitacoraComponent implements OnInit {
       this.filtroForm.value.clienteId ||
       (this.clientes.length === 1 ? this.clientes[0].id : '');
 
+    this.selectedFiles = [];
     this.bitacoraForm.reset({
       id: null,
       titulo: '',
@@ -246,6 +248,7 @@ export class BitacoraComponent implements OnInit {
       horaLlegada: '',
       horaSalida: '',
       tecnicos: '',
+      isEmergencia: false,
       descripcion: '',
     });
 
@@ -268,6 +271,7 @@ export class BitacoraComponent implements OnInit {
     }
 
     this.habilitarTodosLosControles();
+    this.selectedFiles = [];
     this.bitacoraForm.reset({
       id: bitacora.id,
       titulo: bitacora.titulo ?? '',
@@ -277,6 +281,7 @@ export class BitacoraComponent implements OnInit {
       horaLlegada: this.formatearParaInputFecha(bitacora.horaLlegada),
       horaSalida: this.formatearParaInputFecha(bitacora.horaSalida),
       tecnicos: (bitacora.tecnicos ?? []).join(', '),
+      isEmergencia: !!bitacora.isEmergencia,
       descripcion: bitacora.descripcion,
     });
 
@@ -301,8 +306,9 @@ export class BitacoraComponent implements OnInit {
     this.formularioVisible = false;
     this.modoEdicion = false;
     this.guardando = false;
-    this.bitacoraForm.reset();
+    this.bitacoraForm.reset({ isEmergencia: false });
     this.sucursalesFormulario = [];
+    this.selectedFiles = [];
     this.habilitarTodosLosControles();
   }
 
@@ -390,22 +396,24 @@ export class BitacoraComponent implements OnInit {
       });
   }
 
-    onFilesSelected(files: FileList | null): void {
-      if (!files) {
-        return;
-      }
-      // append selected files to array
-      for (let i = 0; i < files.length; i++) {
-        const f = files.item(i);
-        if (f) this.selectedFiles.push(f);
-      }
+  onFilesSelected(event: Event): void {
+    const input = event.target as HTMLInputElement | null;
+    const files = input?.files ? Array.from(input.files) : [];
+    if (!files.length) {
+      return;
     }
 
-    removeSelectedFile(index: number): void {
-      if (index >= 0 && index < this.selectedFiles.length) {
-        this.selectedFiles.splice(index, 1);
-      }
+    files.forEach((file) => this.selectedFiles.push(file));
+    if (input) {
+      input.value = '';
     }
+  }
+
+  removeSelectedFile(index: number): void {
+    if (index >= 0 && index < this.selectedFiles.length) {
+      this.selectedFiles.splice(index, 1);
+    }
+  }
 
   onClienteFiltroChange(clienteId: string): void {
     this.filtroForm.patchValue({ sucursalId: '' }, { emitEvent: false });
@@ -493,6 +501,7 @@ export class BitacoraComponent implements OnInit {
       tecnicos,
       descripcion: formValue.descripcion.trim(),
       titulo: formValue.titulo ? formValue.titulo.trim() : null,
+      isEmergencia: !!formValue.isEmergencia,
     };
   }
 
@@ -541,6 +550,7 @@ export class BitacoraComponent implements OnInit {
       'horaSalida',
       'tecnicos',
       'titulo',
+      'isEmergencia',
     ];
     controles.forEach((control) =>
       this.bitacoraForm.get(control)?.disable({ emitEvent: false })

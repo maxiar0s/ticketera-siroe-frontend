@@ -1,4 +1,4 @@
-.bitacora-container {
+﻿.bitacora-container {
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
@@ -157,7 +157,7 @@ textarea {
   border: 1px solid #dadada;
   background-color: #fafafa;
   padding: 0.75rem 1rem;
-  font-size: 1.05rem; /* un poco más grande */
+  font-size: 1.05rem; /* un poco mÃ¡s grande */
   font-family: inherit;
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
@@ -258,14 +258,6 @@ textarea {
   color: #505050;
 }
 
-.bitacora-table th.nota,
-.bitacora-table td.nota {
-  overflow: hidden;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  word-break: break-word;
-}
 
 .bitacora-table td.nota {
   width: auto;
@@ -273,7 +265,7 @@ textarea {
 
 .bitacora-table th.acciones {
   width: 160px;
-  text-align: left;
+  text-align: center;
 }
 
 .bitacora-table td.acciones {
@@ -359,12 +351,15 @@ textarea {
   gap: 1.2rem;
 }
 
+
 .bitacora-detail header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   gap: 1rem;
 }
+
+
 
 .detail-actions {
   display: flex;
@@ -396,6 +391,7 @@ textarea {
   border-radius: 1rem;
   padding: 1.25rem;
 }
+
 
 .detail-note h3 {
   margin: 0 0 0.75rem;

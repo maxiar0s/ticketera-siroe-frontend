@@ -431,3 +431,26 @@ input[type=number] {
     gap: 1rem;
   }
 }
+/* Bitacora modal enhancements */
+.modal-grid label.checkbox-field{flex-direction:row;align-items:flex-start;gap:0.75rem;border:1px solid #e5e2e7;border-radius:0.75rem;padding:0.9rem 1rem;background-color:#faf6fb;}
+.modal-grid label.checkbox-field input[type="checkbox"]{width:1.15rem;height:1.15rem;margin-top:0.1rem;border:1px solid #c4006b;cursor:pointer;}
+.checkbox-copy{display:flex;flex-direction:column;gap:0.25rem;}
+.checkbox-title{font-weight:600;color:#b71653;}
+.checkbox-description{font-size:0.85rem;color:#5b5b5b;line-height:1.35;}
+.modal-grid label.file-upload-field{gap:0.75rem;}
+.file-upload-field .file-input{display:none;}
+.file-picker{display:flex;align-items:center;gap:1rem;flex-wrap:wrap;background-color:#faf6fb;border:1px dashed #d3c0d5;border-radius:0.75rem;padding:0.75rem 1rem;}
+.file-button{padding:0.45rem 1.1rem;border-radius:999px;border:1px solid #b71653;background:#fff;color:#b71653;font-weight:600;cursor:pointer;transition:background-color .2s ease,color .2s ease;}
+.file-button:hover,.file-button:focus-visible{background-color:#b71653;color:#fff;outline:none;}
+.file-status{font-size:0.9rem;color:#555;}
+.selected-files ul{list-style:none;padding:0;margin:0.5rem 0 0;display:flex;flex-direction:column;gap:0.35rem;}
+.selected-files .file-name{font-size:0.9rem;color:#4a4a4a;font-weight:500;}
+.selected-files .link-button{margin-left:0.5rem;font-size:0.85rem;}
+.bitacora-table tbody tr.emergencia{background-color:rgba(214,31,91,.12);border-left:4px solid #d61f5b;}
+.bitacora-table tbody tr.emergencia:hover{background-color:rgba(214,31,91,.18);}
+.bitacora-table tbody tr.emergencia.selected{background-color:rgba(214,31,91,.24)!important;}
+.bitacora-table tbody tr.emergencia td{border-top-color:rgba(214,31,91,.08);}
+.bitacora-detail.emergencia{border:1px solid rgba(214,31,91,.18);box-shadow:0 22px 48px rgba(214,31,91,.16);}
+.bitacora-detail.emergencia .detail-note{background-color:rgba(214,31,91,.08);}
+.detail-heading{display:flex;align-items:center;gap:0.75rem;}
+.emergency-badge{display:inline-flex;align-items:center;padding:0.2rem 0.75rem;border-radius:999px;background-color:rgba(214,31,91,.12);color:#b71653;font-weight:600;font-size:0.85rem;text-transform:uppercase;letter-spacing:0.02em;}

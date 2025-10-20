@@ -1,4 +1,4 @@
-<div class="bitacora-container">
+﻿<div class="bitacora-container">
   <header class="bitacora-header">
     <div>
       <h1>Bitacora de visitas</h1>
@@ -104,6 +104,7 @@
           *ngFor="let bitacora of bitacoras"
           (click)="seleccionarBitacora(bitacora)"
           [class.selected]="bitacoraSeleccionada?.id === bitacora.id"
+          [class.emergencia]="bitacora.isEmergencia"
         >
           <td>{{ bitacora.fechaVisita | formatoFecha:'dd/MM/yyyy' }}</td>
           <td>{{ bitacora.casaMatriz?.razonSocial || 'N/A' }}</td>
@@ -173,12 +174,21 @@
 
   <section
     class="bitacora-detail"
+    [class.emergencia]="bitacoraSeleccionada.isEmergencia"
     *ngIf="bitacoraSeleccionada"
   >
     <header>
-      <h2>
-        {{ bitacoraSeleccionada.titulo || 'Detalle de la visita' }}
-      </h2>
+      <div class="detail-heading">
+        <h2>
+          {{ bitacoraSeleccionada.titulo || 'Detalle de la visita' }}
+        </h2>
+        <span
+          *ngIf="bitacoraSeleccionada.isEmergencia"
+          class="emergency-badge"
+        >
+          Visita de emergencia
+        </span>
+      </div>
       <div class="detail-actions">
         <button
           type="button"
@@ -365,9 +375,45 @@
           ></textarea>
         </label>
 
-        <label class="full">
-          <span class="label">Adjuntar documentos / imágenes</span>
-          <input type="file" (change)="onFilesSelected($any($event.target).files)" accept="image/*,.pdf,.doc,.docx" multiple />
+        <label class="full checkbox-field">
+          <input
+            id="isEmergencia"
+            type="checkbox"
+            formControlName="isEmergencia"
+          />
+          <div class="checkbox-copy">
+            <span class="checkbox-title">Visita de emergencia</span>
+            <span class="checkbox-description">
+              Marca esta opcion cuando la visita corresponda a una atencion prioritaria.
+            </span>
+          </div>
+        </label>
+
+        <label class="full file-upload-field">
+          <span class="label">Adjuntar documentos / imagenes</span>
+          <input
+            #fileInput
+            type="file"
+            class="file-input"
+            (change)="onFilesSelected($event)"
+            accept="image/*,.pdf,.doc,.docx"
+            multiple
+          />
+
+          <div class="file-picker">
+            <button type="button" class="file-button" (click)="fileInput.click()">
+              Elegir archivo
+            </button>
+            <span class="file-status">
+              {{
+                selectedFiles.length === 0
+                  ? 'No se ha subido archivo.'
+                  : selectedFiles.length === 1
+                    ? selectedFiles[0].name
+                    : selectedFiles.length + ' archivos seleccionados'
+              }}
+            </span>
+          </div>
 
           <div class="selected-files" *ngIf="selectedFiles.length > 0">
             <ul>

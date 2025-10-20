@@ -12,6 +12,7 @@ export interface Bitacora {
   actualizadoPorId: number;
   createdAt: string;
   updatedAt: string;
+  isEmergencia: boolean;
   casaMatriz?: {
     id: string;
     razonSocial: string;
