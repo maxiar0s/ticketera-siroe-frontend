@@ -203,11 +203,6 @@
   color: #666;
 }
 
-.logo{
-  border-radius: 25px;
-}
-
-
 /* Tablets (hasta 768px) */
 @media (max-width: 1000px) {
   .card-body {
