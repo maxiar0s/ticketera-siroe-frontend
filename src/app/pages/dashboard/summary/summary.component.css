@@ -50,11 +50,11 @@
 
 .table th, .table td {
   border-bottom: 1px solid #e7eff4;
-  font-size: 1.2rem;
+  font-size: 1.1rem;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  padding: 10px 8px; /* Añade padding para mejorar legibilidad */
+  padding: 12px 10px;
 }
 
 .table-row-style {
@@ -69,12 +69,12 @@
 /* Media queries para pantallas grandes */
 @media (max-width: 1400px) {
   .table {
-    font-size: 1rem;
+    font-size: 1.05rem;
   }
   
   .table th, .table td {
-    font-size: 1rem;
-    padding: 8px 6px;
+    font-size: 1.05rem;
+    padding: 10px 8px;
   }
 }
 
@@ -94,8 +94,8 @@
   }
   
   .table th, .table td {
-    font-size: 0.9rem;
-    padding: 6px 4px;
+    font-size: 0.95rem;
+    padding: 7px 5px;
   }
   
   .table-row-style {
@@ -119,8 +119,8 @@
   }
   
   .table th, .table td {
-    font-size: 0.85rem;
-    padding: 5px 3px;
+    font-size: 0.9rem;
+    padding: 6px 4px;
   }
   
   .table-row-style {
@@ -145,8 +145,8 @@
   }
   
   .table th, .table td {
-    font-size: 0.8rem;
-    padding: 4px 2px;
+    font-size: 0.85rem;
+    padding: 5px 3px;
   }
   
   .table-row-style {

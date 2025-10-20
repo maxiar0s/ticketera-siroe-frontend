@@ -27,6 +27,12 @@ export class SummaryComponent implements OnChanges {
     { value: 'encargadoGeneral', label: 'Encargado general' },
     { value: 'rut', label: 'RUT' },
     { value: 'fechaIngreso', label: 'Fecha de ingreso' },
+    { value: 'visitasMensuales', label: 'Visitas mensuales' },
+    { value: 'visitasMensualesRealizadas', label: 'Visitas mensuales realizadas' },
+    { value: 'visitasEmergencia', label: 'Visitas de emergencia' },
+    { value: 'visitasEmergenciaRealizadas', label: 'Visitas de emergencia realizadas' },
+    { value: 'visitasTotalesRealizadas', label: 'Visitas realizadas totales' },
+    { value: 'visitasEmergenciaTotalesRealizadas', label: 'Visitas de emergencia realizadas totales' },
   ] as const;
 
   selectedVariant1: typeof this.variantOptions[number]['value'] = 'equipos';
@@ -148,6 +154,20 @@ export class SummaryComponent implements OnChanges {
         return cliente.rut || '-';
       case 'fechaIngreso':
         return this.formatearFecha(cliente.fechaIngreso);
+      case 'visitasMensuales':
+        return this.formatearCantidad(cliente.visitasMensuales);
+      case 'visitasMensualesRealizadas':
+        return this.formatearCantidad(cliente.visitasMensualesRealizadas);
+      case 'visitasEmergencia':
+        return this.formatearCantidad(cliente.visitasEmergenciaAnuales);
+      case 'visitasEmergenciaRealizadas':
+        return this.formatearCantidad(cliente.visitasEmergenciaAnualesRealizadas);
+      case 'visitasTotalesRealizadas':
+        return this.formatearCantidad(
+          (cliente.visitasMensualesRealizadas ?? 0) + (cliente.visitasEmergenciaAnualesRealizadas ?? 0)
+        );
+      case 'visitasEmergenciaTotalesRealizadas':
+        return this.formatearCantidad(cliente.visitasEmergenciaAnualesRealizadas);
       default:
         return '-';
     }
@@ -214,5 +234,9 @@ export class SummaryComponent implements OnChanges {
     }
     return this.dateFormatter.format(fecha);
   }
-}
 
+  private formatearCantidad(valor: number | null | undefined): string {
+    const numero = Number(valor ?? 0);
+    return Number.isFinite(numero) ? numero.toString() : '0';
+  }
+}
