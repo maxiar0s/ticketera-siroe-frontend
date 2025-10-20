@@ -29,23 +29,23 @@
         [class.hoy]="dia.isToday"
         [class.seleccionado]="dia.isSelected"
         [class.con-eventos]="dia.eventCount > 0"
-        [class.con-programadas]="dia.scheduledCount > 0 && dia.completedCount === 0"
-        [class.con-mixtas]="dia.scheduledCount > 0 && dia.completedCount > 0"
-        [class.con-emergencias]="dia.emergencyCount > 0"
+        [ngStyle]="obtenerEstilosDia(dia)"
         (click)="selectDay(dia)"
       >
-        <span class="dia-numero">{{ dia.day }}</span>
-        <span
-          class="badge"
-          *ngIf="dia.eventCount > 0"
-          [ngClass]="{
-            'badge-programada': dia.scheduledCount > 0 && dia.completedCount === 0,
-            'badge-mixta': dia.scheduledCount > 0 && dia.completedCount > 0,
-            'badge-emergencia': dia.emergencyCount > 0 && dia.scheduledCount === 0
-          }"
-        >
-          {{ dia.eventCount }}
-        </span>
+        <div class="day-content">
+          <span class="dia-numero">{{ dia.day }}</span>
+          <div class="badge-column" *ngIf="dia.eventCount > 0">
+            <span class="badge badge-completada" *ngIf="dia.regularCompletedCount > 0">
+              {{ dia.regularCompletedCount }}
+            </span>
+            <span class="badge badge-emergencia" *ngIf="dia.emergencyCount > 0">
+              {{ dia.emergencyCount }}
+            </span>
+            <span class="badge badge-programada" *ngIf="dia.scheduledCount > 0">
+              {{ dia.scheduledCount }}
+            </span>
+          </div>
+        </div>
       </button>
     </div>
   </div>

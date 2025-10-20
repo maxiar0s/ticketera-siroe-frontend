@@ -66,7 +66,7 @@
 .day-cell {
   position: relative;
   border: none;
-  background-color: #ffffff;
+  background: var(--day-background, #ffffff);
   color: #4f4f4f;
   border-radius: 10px;
   min-height: 64px;
@@ -79,11 +79,26 @@
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   cursor: pointer;
   transition: transform 0.15s ease, box-shadow 0.15s ease;
+  overflow: hidden;
 }
 
 .day-cell:hover {
   transform: translateY(-2px);
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.18);
+}
+
+.day-cell::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 4px;
+  background: var(--day-border-gradient, transparent);
+  border-top-left-radius: 10px;
+  border-bottom-left-radius: 10px;
+  pointer-events: none;
+  display: none;
 }
 
 .day-cell.fuera {
@@ -96,66 +111,55 @@
 }
 
 .day-cell.seleccionado {
-  background-color: #b71653;
+  background: #b71653;
   color: #ffffff;
 }
 
-.day-cell.seleccionado .badge {
-  background-color: rgba(255, 255, 255, 0.9);
-  color: #b71653;
-}
-
-.day-cell.seleccionado .badge.badge-programada {
-  color: #1f8f56;
-}
-
-.day-cell.seleccionado .badge.badge-mixta {
-  color: #ffffff;
-}
-
-.day-cell.con-eventos {
-  border-left: 4px solid #b71653;
-}
-
-.day-cell.con-programadas {
-  border-left: 4px solid #1f8f56;
-}
-
-.day-cell.con-mixtas {
-  border-left: 4px solid #b71653;
-}
-
-.day-cell.con-emergencias {
-  border-left: 4px solid #ff3b30;
-  background-color: rgba(255, 59, 48, 0.12);
+.day-cell.con-eventos::before {
+  display: block;
 }
 
 .dia-numero {
   font-weight: 600;
 }
 
+.day-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  width: 100%;
+}
+
+.badge-column {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
 .badge {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  background-color: #b71653;
+  background: var(--badge-background, #b71653);
   color: #ffffff;
   border-radius: 999px;
-  padding: 0.1rem 0.5rem;
+  min-width: 1.35rem;
+  height: 1.35rem;
+  padding: 0 0.4rem;
   font-size: 0.75rem;
+  font-weight: 600;
 }
 
-.badge-programada {
-  background-color: #1f8f56;
-}
-
-.badge-mixta {
-  background: linear-gradient(90deg, #b71653 0%, #1f8f56 100%);
-  color: #ffffff;
+.badge-completada {
+  --badge-background: #b71653;
 }
 
 .badge-emergencia {
-  background-color: #ff3b30;
+  --badge-background: #ff3b30;
+}
+
+.badge-programada {
+  --badge-background: #1f8f56;
 }
 
 .sidebar {

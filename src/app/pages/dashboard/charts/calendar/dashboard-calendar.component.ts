@@ -14,6 +14,8 @@ import { VisitaProgramada } from '../../../../interfaces/visita-programada.inter
 import { AuthService } from '../../../../services/auth.service';
 import { Tecnico } from '../../../../interfaces/tecnico.interface';
 
+type TipoEventoDia = 'programada' | 'completada' | 'emergencia';
+
 interface CalendarDay {
   date: Date;
   key: string;
@@ -21,10 +23,12 @@ interface CalendarDay {
   day: number;
   eventCount: number;
   completedCount: number;
+  regularCompletedCount: number;
   scheduledCount: number;
   emergencyCount: number;
   isToday: boolean;
   isSelected: boolean;
+  tipos: TipoEventoDia[];
 }
 
 interface SucursalOption {
@@ -83,6 +87,11 @@ export class DashboardCalendarComponent implements OnInit {
   puedeAgendarVisitas = true;
   eliminandoId: number | null = null;
   tecnicosDropdownAbierto = false;
+  private readonly coloresEvento: Record<TipoEventoDia, string> = {
+    programada: '#1f8f56',
+    completada: '#b71653',
+    emergencia: '#ff3b30',
+  };
 
   private vista = {
     year: new Date().getFullYear(),
@@ -407,6 +416,17 @@ export class DashboardCalendarComponent implements OnInit {
       const completadas = eventosDia.filter((evento) => evento.tipo === 'completada').length;
       const programadas = eventosDia.filter((evento) => evento.tipo === 'programada').length;
       const emergencias = eventosDia.filter((evento) => this.esEventoEmergencia(evento)).length;
+      const completadasRegulares = Math.max(completadas - emergencias, 0);
+      const tipos: TipoEventoDia[] = [];
+      if (emergencias > 0) {
+        tipos.push('emergencia');
+      }
+      if (completadasRegulares > 0) {
+        tipos.push('completada');
+      }
+      if (programadas > 0) {
+        tipos.push('programada');
+      }
 
       dias.push({
         date: fecha,
@@ -415,8 +435,10 @@ export class DashboardCalendarComponent implements OnInit {
         day: fecha.getDate(),
         eventCount: eventosDia.length,
         completedCount: completadas,
+        regularCompletedCount: completadasRegulares,
         scheduledCount: programadas,
         emergencyCount: emergencias,
+        tipos,
         isToday:
           fecha.getFullYear() === hoy.getFullYear() &&
           fecha.getMonth() === hoy.getMonth() &&
@@ -534,6 +556,72 @@ export class DashboardCalendarComponent implements OnInit {
 
   esEventoEmergencia(evento: EventoCalendario): evento is Bitacora & { tipo: 'completada' } {
     return evento.tipo === 'completada' && !!evento.isEmergencia;
+  }
+
+  obtenerEstilosDia(dia: CalendarDay): Record<string, string> {
+    const estilos: Record<string, string> = {};
+
+    if (dia.eventCount <= 0) {
+      estilos['--day-border-gradient'] = 'transparent';
+      estilos['--day-background'] = '#ffffff';
+      return estilos;
+    }
+
+    const gradienteBorde = this.crearGradiente(dia.tipos, 'vertical');
+    estilos['--day-border-gradient'] = gradienteBorde ?? 'transparent';
+
+    const fondoEmergencia = dia.tipos.includes('emergencia')
+      ? this.crearGradiente(['emergencia'], 'vertical', 0.12)
+      : '#ffffff';
+    estilos['--day-background'] = fondoEmergencia ?? '#ffffff';
+
+    return estilos;
+  }
+
+  private crearGradiente(
+    tipos: TipoEventoDia[],
+    orientacion: 'vertical' | 'horizontal',
+    alpha = 1
+  ): string | null {
+    if (!tipos.length) {
+      return null;
+    }
+
+    const colores = tipos
+      .map((tipo) => this.coloresEvento[tipo])
+      .filter((color) => !!color);
+
+    if (!colores.length) {
+      return null;
+    }
+
+    const direccion = orientacion === 'vertical' ? '180deg' : '90deg';
+    const total = colores.length;
+    const paradas: string[] = [];
+
+    colores.forEach((colorHex, indice) => {
+      const inicio = (indice / total) * 100;
+      const fin = ((indice + 1) / total) * 100;
+      const color = alpha < 1 ? this.hexToRgba(colorHex, alpha) : colorHex;
+      const inicioStr = this.formatearPorcentaje(inicio);
+      const finStr = this.formatearPorcentaje(fin);
+      paradas.push(`${color} ${inicioStr}%`, `${color} ${finStr}%`);
+    });
+
+    return `linear-gradient(${direccion}, ${paradas.join(', ')})`;
+  }
+
+  private hexToRgba(hex: string, alpha = 1): string {
+    const normalizado = hex.replace('#', '');
+    const valor = parseInt(normalizado, 16);
+    const r = (valor >> 16) & 255;
+    const g = (valor >> 8) & 255;
+    const b = valor & 255;
+    return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+  }
+
+  private formatearPorcentaje(valor: number): string {
+    return Number(valor.toFixed(2)).toString();
   }
 
   eliminarEvento(evento: EventoCalendario): void {
