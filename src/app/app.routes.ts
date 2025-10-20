@@ -2,6 +2,7 @@ import { Routes } from '@angular/router';
 import { protegerRutaGuard } from './guards/proteger-ruta.guard';
 import { AdminGuard } from './guards/admin-guard.guard';
 import { NoClienteGuard } from './guards/no-cliente.guard';
+import { ClienteGuard } from './guards/cliente.guard';
 
 export const routes: Routes = [
   // Redireccionamiento
@@ -21,6 +22,11 @@ export const routes: Routes = [
     path: 'dashboard',
     canActivate: [protegerRutaGuard, NoClienteGuard],
     loadComponent: () => import('./pages/dashboard/dashboard.component').then( m => m.DashboardComponent ),
+  },
+  {
+    path: 'dashboard-cliente',
+    canActivate: [protegerRutaGuard, ClienteGuard],
+    loadComponent: () => import('./pages/dashboard-cliente/client-dashboard.component').then( m => m.ClientDashboardComponent ),
   },
 
   // Clientes

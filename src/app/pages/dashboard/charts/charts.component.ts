@@ -20,11 +20,15 @@ type ClienteConEquipos = { cliente: Cliente; equipos: Equipo[] };
 })
 export class ChartsComponent implements OnInit {
   @Input() option: string = 'Todos los ingresos';
+  @Input() modoCliente = false;
 
   equiposPorTipoData: { label: string; value: number }[] = [];
   equiposPorClienteData: { label: string; value: number }[] = [];
   visitasPorMesData: { label: string; value: number }[] = [];
   bitacoras: Bitacora[] = [];
+  visitasMensualesResumen = { asignadas: 0, registradas: 0, restantes: 0 };
+  visitasEmergenciaResumen = { asignadas: 0, registradas: 0, restantes: 0 };
+  visitasEmergenciaAsignadasAnuales = 0;
 
   loadingClientes = false;
   loadingBitacoras = false;
@@ -34,6 +38,7 @@ export class ChartsComponent implements OnInit {
   private readonly mesesCortos = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
   private readonly maxClientesEnGrafico = 8;
   private tiposEquipoMapa = new Map<number, string>();
+  private totalVisitasMensualesAsignadas = 0;
 
   constructor(private api: ApiService) {}
 
@@ -128,12 +133,14 @@ export class ChartsComponent implements OnInit {
         next: (bitacoras) => {
           this.bitacoras = bitacoras;
           this.visitasPorMesData = this.calcularVisitasPorMes(bitacoras);
+          this.actualizarMetricasVisitas(bitacoras);
           this.loadingBitacoras = false;
         },
         error: (error) => {
           console.error('Error al cargar bitacoras para dashboard', error);
           this.bitacoras = [];
           this.visitasPorMesData = this.calcularVisitasPorMes([]);
+          this.actualizarMetricasVisitas([]);
           this.loadingBitacoras = false;
           this.bitacorasError = 'No fue posible cargar las visitas registradas.';
         }
@@ -218,6 +225,11 @@ export class ChartsComponent implements OnInit {
     if (!detalles.length) {
       this.equiposPorClienteData = [];
       this.equiposPorTipoData = [];
+      if (this.modoCliente) {
+        this.totalVisitasMensualesAsignadas = 0;
+        this.visitasEmergenciaAsignadasAnuales = 0;
+        this.actualizarMetricasVisitas(this.bitacoras);
+      }
       return;
     }
 
@@ -243,6 +255,74 @@ export class ChartsComponent implements OnInit {
     this.equiposPorTipoData = Array.from(conteosPorTipo.entries())
       .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
       .map(([label, value]) => ({ label, value }));
+
+    if (this.modoCliente) {
+      this.totalVisitasMensualesAsignadas = detalles.reduce((acumulado, { cliente }) => {
+        return acumulado + this.normalizarCantidad((cliente as any)?.visitasMensuales);
+      }, 0);
+
+      this.visitasEmergenciaAsignadasAnuales = detalles.reduce((acumulado, { cliente }) => {
+        return acumulado + this.normalizarCantidad((cliente as any)?.visitasEmergenciaAnuales);
+      }, 0);
+
+      this.actualizarMetricasVisitas(this.bitacoras);
+    }
+  }
+
+  private normalizarCantidad(valor: number | null | undefined): number {
+    const numero = Number(valor ?? 0);
+    if (!Number.isFinite(numero) || numero <= 0) {
+      return 0;
+    }
+    return Math.floor(numero);
+  }
+
+  private actualizarMetricasVisitas(bitacoras: Bitacora[]): void {
+    if (!this.modoCliente) {
+      return;
+    }
+
+    const ahora = new Date();
+    const mesActual = ahora.getMonth();
+    const anioActual = ahora.getFullYear();
+
+    let registradasMensuales = 0;
+    let registradasEmergenciaAnual = 0;
+
+    bitacoras.forEach((bitacora) => {
+      const fechaBase = bitacora?.fechaVisita ?? bitacora?.createdAt ?? bitacora?.updatedAt;
+      if (!fechaBase) {
+        return;
+      }
+
+      const fecha = new Date(fechaBase);
+      if (Number.isNaN(fecha.getTime()) || fecha.getFullYear() !== anioActual) {
+        return;
+      }
+
+      if (bitacora.isEmergencia) {
+        registradasEmergenciaAnual += 1;
+        return;
+      }
+
+      if (fecha.getMonth() === mesActual) {
+        registradasMensuales += 1;
+      }
+    });
+
+    const asignadasMensuales = this.totalVisitasMensualesAsignadas;
+
+    this.visitasMensualesResumen = {
+      asignadas: asignadasMensuales,
+      registradas: registradasMensuales,
+      restantes: Math.max(asignadasMensuales - registradasMensuales, 0),
+    };
+
+    this.visitasEmergenciaResumen = {
+      asignadas: this.visitasEmergenciaAsignadasAnuales,
+      registradas: registradasEmergenciaAnual,
+      restantes: Math.max(this.visitasEmergenciaAsignadasAnuales - registradasEmergenciaAnual, 0),
+    };
   }
 
   private compilarEquiposCliente(cliente: Cliente, equiposExternos: Equipo[] = []): { listado: Equipo[]; total: number } {

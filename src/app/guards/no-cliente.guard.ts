@@ -7,7 +7,7 @@ export const NoClienteGuard: CanActivateFn = () => {
   const router = inject(Router);
 
   if (authService.esCliente()) {
-    router.navigate(['/clientes']);
+    router.navigate(['/dashboard-cliente']);
     return false;
   }
 

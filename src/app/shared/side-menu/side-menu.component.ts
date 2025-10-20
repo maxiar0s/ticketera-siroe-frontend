@@ -47,7 +47,7 @@ export class SideMenuComponent {
       this.logoRoute = '/dashboard';
     } else if (this.authService.esCliente()) {
       this.menu = menu_cliente;
-      this.logoRoute = '/clientes';
+      this.logoRoute = '/dashboard-cliente';
     } else {
       this.menu = menu_tecnico;
       this.logoRoute = '/dashboard';

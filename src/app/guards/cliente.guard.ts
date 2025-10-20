@@ -1,15 +1,16 @@
+import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
 import { AuthService } from '../services/auth.service';
-import { inject } from '@angular/core';
 
-export const AdminGuard: CanActivateFn = () => {
+export const ClienteGuard: CanActivateFn = () => {
   const authService = inject(AuthService);
   const router = inject(Router);
 
-  if (authService.esAdministrador()) {
+  if (authService.esCliente()) {
     return true;
   }
 
-  router.navigate([authService.esCliente() ? '/dashboard-cliente' : '/dashboard']);
+  router.navigate(['/dashboard']);
   return false;
 };
+

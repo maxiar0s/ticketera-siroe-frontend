@@ -1,6 +1,14 @@
 [
   {
     "id": 1,
+    "nombre": "Dashboard",
+    "route": "/dashboard-cliente",
+    "svg": "dashboard",
+    "subItem": [],
+    "isOpen": false
+  },
+  {
+    "id": 2,
     "nombre": "Clientes",
     "route": "/clientes",
     "svg": "clientes",
@@ -8,8 +16,8 @@
     "isOpen": false
   },
   {
-    "id": 2,
-    "nombre": "Bitácora",
+    "id": 3,
+    "nombre": "Bitacora",
     "route": "/bitacora",
     "svg": "download",
     "subItem": [],
