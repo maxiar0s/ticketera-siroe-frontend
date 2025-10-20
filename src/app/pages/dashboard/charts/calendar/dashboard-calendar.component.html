@@ -53,7 +53,12 @@
   <div class="sidebar">
     <div class="sidebar-header">
       <h4>Visitas {{ etiquetaSeleccion }}</h4>
-      <button type="button" class="add-button" (click)="toggleFormulario()">
+      <button
+        *ngIf="puedeAgendarVisitas"
+        type="button"
+        class="add-button"
+        (click)="toggleFormulario()"
+      >
         {{ formularioVisible ? 'Cerrar' : 'Agendar visita' }}
       </button>
     </div>
@@ -110,7 +115,12 @@
       </p>
     </ng-container>
 
-    <form *ngIf="formularioVisible" [formGroup]="agendaForm" (ngSubmit)="guardarVisita()" class="agenda-form">
+    <form
+      *ngIf="formularioVisible && puedeAgendarVisitas"
+      [formGroup]="agendaForm"
+      (ngSubmit)="guardarVisita()"
+      class="agenda-form"
+    >
       <div class="form-field">
         <label for="clienteId">Cliente</label>
         <select id="clienteId" formControlName="clienteId" (change)="onClienteChange($any($event.target).value)">

@@ -80,6 +80,7 @@ export class DashboardCalendarComponent implements OnInit {
   private selectedDateKey: string | null = null;
   private _bitacoras: Bitacora[] = [];
   esAdmin = false;
+  puedeAgendarVisitas = true;
   eliminandoId: number | null = null;
   tecnicosDropdownAbierto = false;
 
@@ -104,6 +105,7 @@ export class DashboardCalendarComponent implements OnInit {
       titulo: [''],
     });
     this.esAdmin = this.authService.esAdministrador();
+    this.puedeAgendarVisitas = !this.authService.esTecnico();
   }
 
   ngOnInit(): void {
@@ -164,6 +166,9 @@ export class DashboardCalendarComponent implements OnInit {
   }
 
   toggleFormulario(): void {
+    if (!this.puedeAgendarVisitas) {
+      return;
+    }
     this.formularioVisible = !this.formularioVisible;
     this.exitoMensaje = '';
     this.errorFormulario = '';
@@ -208,6 +213,9 @@ export class DashboardCalendarComponent implements OnInit {
   }
 
   guardarVisita(): void {
+    if (!this.puedeAgendarVisitas) {
+      return;
+    }
     if (this.agendaForm.invalid || this.guardando) {
       this.agendaForm.markAllAsTouched();
       return;
