@@ -14,29 +14,10 @@
         #searchInput
       />
     </div>
-    <!-- <a
-      [routerLink]="['/opciones']"
-      routerLinkActive="router-link-active"
-      class="svg_option"
-    >
-      <img src="/assets/svg/settings.svg" alt="" class="svg" />
-    </a> -->
-    <a
-      class="svg-options"
-      [routerLink]="['/']"
-      routerLinkActive="router-link-active"
-      class="svg_option"
-    >
-      <img src="/assets/svg/notification.svg" alt="" class="svg" />
-    </a>
-    <div>
+    <div class="avatar-wrapper">
       <a [routerLink]="['/perfil']" routerLinkActive="router-link-active">
-        <div class="user">
-          <img
-            src="/assets/svg/profile-picture.svg"
-            class="user-profile-picture"
-            alt=""
-          />
+        <div class="user-avatar" [ngStyle]="{ 'background-color': avatarColor }">
+          {{ avatarIniciales }}
         </div>
       </a>
     </div>

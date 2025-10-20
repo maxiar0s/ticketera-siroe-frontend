@@ -5,12 +5,12 @@ import { ClienteResumen } from "./cliente-resumen.interface";
 export interface Cuenta {
   id:             number;
   name:           string;
-  telefono:       number;
+  telefono:       number | null;
   email:          string;
-  tipoCuentaId:   number;
-  tipoCuenta:     TipoCuenta;
-  estadoCuentaId: number;
-  estadoCuenta:   EstadoCuenta;
-  esTecnico:      boolean;
+  tipoCuentaId?:  number;
+  tipoCuenta?:    TipoCuenta;
+  estadoCuentaId?: number;
+  estadoCuenta?:   EstadoCuenta;
+  esTecnico?:      boolean;
   clientesAutorizados?: ClienteResumen[];
 }

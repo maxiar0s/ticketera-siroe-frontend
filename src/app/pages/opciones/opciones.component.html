@@ -1,36 +1,108 @@
-<div class="opciones-section">
-  <h1 class="opciones-title">Configuración y Opciones</h1>
-  <div class="opciones-grid">
-    <div class="opcion-card">
-      <div class="opcion-icon">
-        <img src="/assets/svg/settings.svg" alt="configuración" width="40" height="40" />
+<div class="opciones-contenedor" *ngIf="!cargando; else opcionesCargando">
+  <aside class="opciones-lista">
+    <div
+      class="opcion-card"
+      *ngFor="let tarjeta of obtenerTarjetas()"
+      [class.opcion-card--activo]="seccionSeleccionada === tarjeta.id"
+      (click)="seleccionarSeccion(tarjeta.id)"
+    >
+      <div class="opcion-icono">
+        <img [src]="tarjeta.icono" [alt]="tarjeta.titulo" width="36" height="36" />
       </div>
       <div class="opcion-info">
-        <h2>Preferencias generales</h2>
-        <p>Personaliza el comportamiento general de la aplicación.</p>
-        <button class="opcion-btn">Editar preferencias</button>
+        <h2>{{ tarjeta.titulo }}</h2>
+        <p>{{ tarjeta.descripcion }}</p>
+        <button type="button">{{ tarjeta.accion }}</button>
       </div>
     </div>
-    <div class="opcion-card">
-      <div class="opcion-icon">
-        <img src="/assets/svg/user.svg" alt="usuarios" width="40" height="40" />
+  </aside>
+
+  <section class="opciones-contenido">
+    <ng-container [ngSwitch]="seccionSeleccionada">
+      <form
+        *ngSwitchCase="'general'"
+        class="preferencias-formulario"
+        [formGroup]="preferenciasForm"
+        (ngSubmit)="guardarPreferencias()"
+      >
+        <header>
+          <h1>Preferencias generales</h1>
+          <p>Personaliza tu experiencia dentro de la plataforma.</p>
+        </header>
+
+        <div class="preferencias-grupo">
+          <label for="tema">Tema de la aplicacion</label>
+          <select id="tema" formControlName="tema">
+            <option value="claro">Claro</option>
+            <option value="oscuro">Oscuro</option>
+            <option value="sistema">Seguir configuracion del sistema</option>
+          </select>
+        </div>
+
+        <div class="preferencias-grupo">
+          <label for="idioma">Idioma preferido</label>
+          <select id="idioma" formControlName="idioma">
+            <option value="es">Espanol</option>
+            <option value="en">English</option>
+          </select>
+        </div>
+
+        <div class="preferencias-switch">
+          <label>
+            <input type="checkbox" formControlName="notificaciones" />
+            <span>Recibir notificaciones importantes</span>
+          </label>
+        </div>
+
+        <div class="preferencias-switch">
+          <label>
+            <input type="checkbox" formControlName="newsletter" />
+            <span>Suscribirme al boletin mensual</span>
+          </label>
+        </div>
+
+        <div class="preferencias-alerta" *ngIf="mensajeGeneral">
+          {{ mensajeGeneral }}
+        </div>
+
+        <button type="submit" class="preferencias-submit">Guardar preferencias</button>
+      </form>
+
+      <div *ngSwitchCase="'backups'" class="respaldo-panel">
+        <header>
+          <h1>Datos y respaldos</h1>
+          <p>Genera una copia de tus datos o restaura una configuracion previa.</p>
+        </header>
+
+        <div class="respaldo-acciones">
+          <button type="button" (click)="descargarRespaldo()">Descargar respaldo</button>
+          <label class="respaldo-subir">
+            Restaurar desde archivo
+            <input type="file" accept="application/json" (change)="restaurarPreferencias($event)" />
+          </label>
+        </div>
+
+        <div class="respaldo-alerta" *ngIf="mensajeRespaldo">{{ mensajeRespaldo }}</div>
+        <div class="respaldo-alerta respaldo-alerta--error" *ngIf="mensajeErrorRespaldo">
+          {{ mensajeErrorRespaldo }}
+        </div>
+
+        <section *ngIf="perfilActual" class="respaldo-detalle">
+          <h2>Resumen de cuenta</h2>
+          <ul>
+            <li><strong>Nombre:</strong> {{ perfilActual.name }}</li>
+            <li><strong>Correo:</strong> {{ perfilActual.email }}</li>
+            <li><strong>Rol:</strong> {{ perfilActual.tipoCuenta?.name ?? 'Usuario' }}</li>
+          </ul>
+        </section>
       </div>
-      <div class="opcion-info">
-        <h2>Gestión de usuarios</h2>
-        <p>Administra los permisos y cuentas de los usuarios.</p>
-        <button class="opcion-btn">Administrar usuarios</button>
-      </div>
-    </div>
-    <div class="opcion-card">
-      <div class="opcion-icon">
-        <img src="/assets/svg/database.svg" alt="datos" width="40" height="40" />
-      </div>
-      <div class="opcion-info">
-        <h2>Datos y respaldos</h2>
-        <p>Gestiona copias de seguridad y restauración de datos.</p>
-        <button class="opcion-btn">Ver opciones de respaldo</button>
-      </div>
-    </div>
-  </div>
+    </ng-container>
+  </section>
 </div>
+
+<ng-template #opcionesCargando>
+  <div class="opciones-cargando">
+    <p>Cargando configuracion...</p>
+  </div>
+</ng-template>
 

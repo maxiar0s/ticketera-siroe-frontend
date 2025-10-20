@@ -6,6 +6,7 @@ import { ClienteResumen } from '../interfaces/cliente-resumen.interface';
 import { Equipo } from '../interfaces/equipo.interface';
 import { VisitaProgramada } from '../interfaces/visita-programada.interface';
 import { Tecnico } from '../interfaces/tecnico.interface';
+import { Cuenta } from '../interfaces/Cuenta.interface';
 
 type ClienteEquiposDetalle = { cliente: Cliente | null; equipos: Equipo[] };
 
@@ -211,6 +212,22 @@ export class ApiService {
       endpoint = endpoint + `&option=${option}`;
     }
     return this.getInformation(endpoint);
+  }
+
+  perfilActual(): Observable<Cuenta> {
+    const endpoint = 'perfil';
+    return this.getInformation(endpoint);
+  }
+
+  actualizarPerfil(payload: {
+    name?: string;
+    telefono?: number | null;
+    email?: string;
+    passwordActual?: string;
+    nuevoPassword?: string;
+  }): Observable<any> {
+    const endpoint = 'perfil';
+    return this.putInformation(payload, endpoint);
   }
 
   typeEquipments(): Observable<any> {

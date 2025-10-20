@@ -1,42 +1,98 @@
-
-
-<div class="perfil-section" style="
-    margin-left: 3rem;
-" *ngIf="!loading">
-  <h1 class="perfil-title">Perfil de Usuario</h1>
-  <ng-container *ngIf="usuario as user; else sinUsuario">
-    <div class="perfil-card">
-      <div class="perfil-avatar">
-        <img src="/assets/img/avatar-default.png" alt="Avatar" width="100" height="100" />
-        <span class="perfil-status online" title="En línea"></span>
+<div class="perfil-contenedor" *ngIf="!loading; else perfilCargando">
+  <ng-container *ngIf="usuario as user; else perfilError">
+    <section class="perfil-resumen">
+      <div class="perfil-avatar" [ngStyle]="{ 'background-color': avatarColor }">
+        {{ avatarIniciales }}
       </div>
-      <div class="perfil-info">
-        <h2>{{ user.name }} <span class="perfil-badge">{{ user.tipoCuenta ? user.tipoCuenta.name : 'Usuario' }}</span></h2>
-        <p class="perfil-email"><i class="fa fa-envelope"></i> {{ user.email }}</p>
-        <p class="perfil-rol"><i class="fa fa-user"></i> Rol: {{ user.tipoCuenta ? user.tipoCuenta.name : 'Usuario' }}</p>
-        <div class="perfil-actions">
-          <button class="perfil-btn">Editar perfil</button> <br>
-          <button class="perfil-btn perfil-btn-secundario">Cambiar contraseña</button>
+      <div class="perfil-identidad">
+        <h1>{{ user.name }}</h1>
+        <p class="perfil-rol">{{ user.tipoCuenta?.name ?? 'Usuario' }}</p>
+        <p class="perfil-email">{{ user.email }}</p>
+        <p class="perfil-telefono">{{ user.telefono }}</p>
+      </div>
+    </section>
+
+    <section class="perfil-contenido">
+      <form class="perfil-formulario" [formGroup]="perfilForm" (ngSubmit)="guardarPerfil()">
+        <header class="perfil-formulario__encabezado">
+          <h2>Datos personales</h2>
+          <p>Actualiza tu informacion de contacto y credenciales.</p>
+        </header>
+
+        <div class="perfil-formulario__grupo">
+          <label for="name">Nombre completo</label>
+          <input id="name" type="text" formControlName="name" placeholder="Ingresa tu nombre" />
+          <span class="perfil-error" *ngIf="perfilForm.get('name')?.invalid && perfilForm.get('name')?.touched">
+            El nombre es obligatorio y debe tener al menos 3 caracteres.
+          </span>
         </div>
-      </div>
-    </div>
-    <div class="perfil-extra">
-      <h3>Preferencias</h3>
-      <ul>
-        <li><i class="fa fa-bell"></i> Notificaciones: <span class="perfil-tag">Activadas</span></li>
-        <li><i class="fa fa-globe"></i> Idioma: <span class="perfil-tag">Español</span></li>
-      </ul>
-    </div>
+
+        <div class="perfil-formulario__grupo">
+          <label for="email">Correo electronico</label>
+          <input id="email" type="email" formControlName="email" placeholder="nombre@dominio.com" />
+          <span class="perfil-error" *ngIf="perfilForm.get('email')?.invalid && perfilForm.get('email')?.touched">
+            Ingresa un correo electronico valido.
+          </span>
+        </div>
+
+        <div class="perfil-formulario__grupo">
+          <label for="telefono">Telefono</label>
+          <input id="telefono" type="tel" formControlName="telefono" placeholder="Ej. 56912345678" />
+          <span class="perfil-error" *ngIf="perfilForm.get('telefono')?.invalid && perfilForm.get('telefono')?.touched">
+            Ingresa un numero de contacto valido (solo digitos).
+          </span>
+        </div>
+
+        <fieldset [formGroup]="passwordForm" class="perfil-formulario__seccion">
+          <legend>Cambiar contrasena</legend>
+          <p class="perfil-ayuda">
+            Este paso es opcional. Completa los tres campos solo si deseas actualizar tu contrasena.
+          </p>
+
+          <div class="perfil-formulario__grupo">
+            <label for="passwordActual">Contrasena actual</label>
+            <input id="passwordActual" type="password" formControlName="passwordActual" placeholder="Contrasena actual" />
+          </div>
+
+          <div class="perfil-formulario__grupo">
+            <label for="nuevoPassword">Nueva contrasena</label>
+            <input id="nuevoPassword" type="password" formControlName="nuevoPassword" placeholder="Nueva contrasena" />
+            <span class="perfil-error" *ngIf="passwordForm.get('nuevoPassword')?.invalid && passwordForm.get('nuevoPassword')?.touched">
+              La Nueva contrasena debe tener al menos 8 caracteres.
+            </span>
+          </div>
+
+          <div class="perfil-formulario__grupo">
+            <label for="confirmarPassword">Confirmar contrasena</label>
+            <input id="confirmarPassword" type="password" formControlName="confirmarPassword" placeholder="Repite la Nueva contrasena" />
+          </div>
+        </fieldset>
+
+        <div class="perfil-alerta" *ngIf="mensajeExito">
+          {{ mensajeExito }}
+        </div>
+        <div class="perfil-alerta perfil-alerta--error" *ngIf="mensajeError">
+          {{ mensajeError }}
+        </div>
+
+        <button type="submit" class="perfil-submit" [disabled]="guardando">
+          {{ guardando ? 'Guardando...' : 'Guardar cambios' }}
+        </button>
+      </form>
+    </section>
   </ng-container>
-  <ng-template #sinUsuario>
-    <div class="perfil-card">
-      <div class="perfil-info">
-        <h2>No se pudo cargar el perfil de usuario.</h2>
-      </div>
-    </div>
-  </ng-template>
 </div>
-<div *ngIf="loading" class="perfil-section" style="
-    margin-left: 3rem;">
-  <h2>Cargando perfil...</h2>
-</div>
+
+<ng-template #perfilError>
+  <div class="perfil-estado">
+    <h2>No se pudo cargar el perfil de usuario.</h2>
+    <p>Intentalo nuevamente en unos instantes.</p>
+  </div>
+</ng-template>
+
+<ng-template #perfilCargando>
+  <div class="perfil-estado">
+    <h2>Cargando perfil...</h2>
+  </div>
+</ng-template>
+
