@@ -116,8 +116,30 @@ export class ClienteComponent {
           if(!this.Title) this.headerTitle(cliente.razonSocial);
 
           if(!this.cliente) {
-            const { id, imagen, rut, razonSocial, encargadoGeneral, correo, telefonoEncargado, fechaIngreso } = cliente;
-            this.cliente = { id, imagen, rut, razonSocial, encargadoGeneral, correo, telefonoEncargado, fechaIngreso };
+            const {
+              id,
+              imagen,
+              rut,
+              razonSocial,
+              encargadoGeneral,
+              correo,
+              telefonoEncargado,
+              fechaIngreso,
+              visitasMensuales = 0,
+              visitasEmergenciaAnuales = 0,
+            } = cliente;
+            this.cliente = {
+              id,
+              imagen,
+              rut,
+              razonSocial,
+              encargadoGeneral,
+              correo,
+              telefonoEncargado,
+              fechaIngreso,
+              visitasMensuales,
+              visitasEmergenciaAnuales,
+            };
           }
           this.paginas = paginas;
           this.sucursales = cliente.sucursales;

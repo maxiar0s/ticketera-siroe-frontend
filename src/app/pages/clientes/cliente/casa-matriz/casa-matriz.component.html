@@ -1,4 +1,4 @@
-<section class="main-grid">
+﻿<section class="main-grid">
   @if(cliente){
     <img *ngIf="cliente.imagen | signedUrl | async as signedUrl; else loading" class="logo" [src]="signedUrl" [alt]="cliente.imagen">
     <ng-template #loading>
@@ -11,28 +11,36 @@
     <h2 *ngIf="cliente" class="casa-matriz">{{ cliente.razonSocial }}</h2>
     <h2 *ngIf="!cliente" class="temp-title casa-matriz">Cargando cliente...</h2>
 
-        <div class="information">
-          <p>Razón Social: <span>{{ cliente?.razonSocial }}</span></p>
+        <div class="information info-razon">
+          <p>Razon Social: <span>{{ cliente?.razonSocial }}</span></p>
         </div>
 
-        <div class="information">
+        <div class="information info-encargado">
           <p>Encargado: <span>{{ cliente?.encargadoGeneral }}</span></p>
         </div>
 
-        <div class="information">
+        <div class="information info-rut">
           <p>RUT Cliente: <span>{{ cliente?.rut }}</span></p>
         </div>
 
-        <div class="information">
-          <p>Teléfono: <span>{{ cliente?.telefonoEncargado }}</span></p>
+        <div class="information info-telefono">
+          <p>Telefono: <span>{{ cliente?.telefonoEncargado }}</span></p>
         </div>
 
-        <div class="information">
+        <div class="information info-id">
           <p>ID Cliente: <span>{{ cliente?.id}}</span></p>
         </div>
 
-        <div class="information">
+        <div class="information info-correo">
           <p>Correo: <span>{{ cliente?.correo }}</span></p>
+        </div>
+
+        <div class="information info-visitas">
+          <p>Visitas mensuales: <span>{{ cliente?.visitasMensuales ?? 0 }}</span></p>
+        </div>
+
+        <div class="information info-emergencia">
+          <p>Visitas de emergencia (anuales): <span>{{ cliente?.visitasEmergenciaAnuales ?? 0 }}</span></p>
         </div>
 
   </div>

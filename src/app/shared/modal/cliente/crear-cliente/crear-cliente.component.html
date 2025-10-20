@@ -82,6 +82,32 @@
           </div>
         </div>
 
+        <div class="two-inputs">
+          <!-- Campo Visitas Mensuales -->
+          <div class="form-group width-50">
+            <label for="visitasMensuales">Visitas mensuales (bitacoras)</label>
+            <input id="visitasMensuales" formControlName="visitasMensuales" type="number" min="0" placeholder="Ingresa la cantidad mensual" (input)="clientForm.markAsDirty()"/>
+            <div *ngIf="clientForm.get('visitasMensuales')?.hasError('required') && clientForm.get('visitasMensuales')?.touched" class="error">
+              Ingresa una cantidad de visitas mensuales.
+            </div>
+            <div *ngIf="clientForm.get('visitasMensuales')?.hasError('min') && clientForm.get('visitasMensuales')?.touched" class="error">
+              Ingresa un numero mayor o igual a 0.
+            </div>
+          </div>
+
+          <!-- Campo Visitas de Emergencia Anuales -->
+          <div class="form-group width-50">
+            <label for="visitasEmergenciaAnuales">Visitas de emergencia anuales</label>
+            <input id="visitasEmergenciaAnuales" formControlName="visitasEmergenciaAnuales" type="number" min="0" placeholder="Ingresa la cantidad anual" (input)="clientForm.markAsDirty()"/>
+            <div *ngIf="clientForm.get('visitasEmergenciaAnuales')?.hasError('required') && clientForm.get('visitasEmergenciaAnuales')?.touched" class="error">
+              Ingresa una cantidad de visitas de emergencia anuales.
+            </div>
+            <div *ngIf="clientForm.get('visitasEmergenciaAnuales')?.hasError('min') && clientForm.get('visitasEmergenciaAnuales')?.touched" class="error">
+              Ingresa un numero mayor o igual a 0.
+            </div>
+          </div>
+        </div>
+
         <!-- Mensaje de Error -->
         <div *ngIf="errorMessage" class="error-message">
           {{ errorMessage }}

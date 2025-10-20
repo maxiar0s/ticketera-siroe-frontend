@@ -30,6 +30,16 @@ export class CrearClienteComponent implements OnChanges {
   public creating!: boolean;
   public selectedFile: File | null = null;
   private formData = new FormData();
+  private readonly initialFormValues = {
+    rut: '',
+    razonSocial: '',
+    imagen: '',
+    encargadoGeneral: '',
+    correo: '',
+    telefonoEncargado: '',
+    visitasMensuales: 0,
+    visitasEmergenciaAnuales: 0
+  };
 
   isVisible: boolean = true;
   clientForm: FormGroup;
@@ -38,12 +48,14 @@ export class CrearClienteComponent implements OnChanges {
 
   constructor(private fb: FormBuilder) {
     this.clientForm = this.fb.group({
-      rut: ['', [Validators.required, validarRut()]],
-      razonSocial: ['', Validators.required],
-      imagen: [''],
-      encargadoGeneral: ['', Validators.required],
-      correo: ['', [Validators.required, Validators.email]],
-      telefonoEncargado: ['', [Validators.required, Validators.pattern('^[\\s\\S]{11,12}$')]]
+      rut: [this.initialFormValues.rut, [Validators.required, validarRut()]],
+      razonSocial: [this.initialFormValues.razonSocial, Validators.required],
+      imagen: [this.initialFormValues.imagen],
+      encargadoGeneral: [this.initialFormValues.encargadoGeneral, Validators.required],
+      correo: [this.initialFormValues.correo, [Validators.required, Validators.email]],
+      telefonoEncargado: [this.initialFormValues.telefonoEncargado, [Validators.required, Validators.pattern('^[\\s\\S]{11,12}$')]],
+      visitasMensuales: [this.initialFormValues.visitasMensuales, [Validators.required, Validators.min(0)]],
+      visitasEmergenciaAnuales: [this.initialFormValues.visitasEmergenciaAnuales, [Validators.required, Validators.min(0)]]
     });
   }
 
@@ -74,7 +86,9 @@ export class CrearClienteComponent implements OnChanges {
         razonSocial: this.cliente.razonSocial,
         encargadoGeneral: this.cliente.encargadoGeneral,
         correo: this.cliente.correo,
-        telefonoEncargado: telefonoFormateado
+        telefonoEncargado: telefonoFormateado,
+        visitasMensuales: this.cliente.visitasMensuales ?? 0,
+        visitasEmergenciaAnuales: this.cliente.visitasEmergenciaAnuales ?? 0
       });
       // Resetear el estado dirty al cargar datos
       this.clientForm.markAsPristine();
@@ -87,7 +101,8 @@ export class CrearClienteComponent implements OnChanges {
 
   cerrar() {
     this.isVisible = false;
-    this.clientForm.reset();
+    this.clientForm.reset(this.initialFormValues);
+    this.selectedFile = null;
     this.errorMessage = '';
     this.cerrarModal.emit();
   }
@@ -115,6 +130,12 @@ export class CrearClienteComponent implements OnChanges {
         let value = this.clientForm.value[key];
         if (key === 'telefonoEncargado') {
           value = telefono;
+        }
+        if (key === 'visitasMensuales' || key === 'visitasEmergenciaAnuales') {
+          const parsedNumber = Number.parseInt(value, 10);
+          const sanitizedNumber = Number.isNaN(parsedNumber) || parsedNumber < 0 ? 0 : parsedNumber;
+          formData.append(key, sanitizedNumber.toString());
+          return;
         }
         if (value !== null && value !== undefined && value !== '') {
           formData.append(key, value.toString());

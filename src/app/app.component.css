@@ -27,8 +27,8 @@
 
 @media (max-width: 800px) {
   .menu-container {
-    min-width: 4rem;
-    max-width: 4rem;
+    min-width: 3rem;
+    max-width: 3rem;
   }
 }
 

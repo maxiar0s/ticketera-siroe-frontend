@@ -145,7 +145,7 @@ img[src="/assets/svg/side-menu-arrow-up.svg"],
 
 @media (max-width: 800px) {
   .menu {
-    width: 4rem;
+    width: 3rem;
   }
 
   .item {

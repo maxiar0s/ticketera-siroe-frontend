@@ -52,14 +52,14 @@
                 <p>
                   Correo: <span>{{ casaMatriz.correo }}</span>
                 </p>
-              </div>
-            </div>
-            <div class="information-content">
-              <div class="information">
                 <p>
                   RUT Cliente:
                   <span>{{ casaMatriz.rut.toString() | rut }}</span>
                 </p>
+              </div>
+            </div>
+            <div class="information-content">
+              <div class="information">
                 <p>
                   ID Cliente: <span>{{ casaMatriz.id }}</span>
                 </p>
@@ -68,6 +68,14 @@
                   <span>{{
                     casaMatriz.telefonoEncargado.toString() | telefono
                   }}</span>
+                </p>
+                <p>
+                  Visitas mensuales:
+                  <span>{{ casaMatriz.visitasMensuales ?? 0 }}</span>
+                </p>
+                <p>
+                  Visitas emergencia anuales:
+                  <span>{{ casaMatriz.visitasEmergenciaAnuales ?? 0 }}</span>
                 </p>
               </div>
             </div>

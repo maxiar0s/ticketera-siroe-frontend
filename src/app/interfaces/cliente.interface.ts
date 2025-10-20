@@ -8,7 +8,8 @@ export interface Cliente {
   correo:            string;
   telefonoEncargado: number;
   fechaIngreso:      Date;
+  visitasMensuales:  number | null;
+  visitasEmergenciaAnuales: number | null;
   Equipos?:           any[];
   sucursales?:        Sucursal[];
 }
-
