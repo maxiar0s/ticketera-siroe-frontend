@@ -1,4 +1,4 @@
-/* @import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap'); */
+﻿/* @import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap'); */
 @import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
 html {
   font-size: 62.5%;
@@ -237,6 +237,8 @@ html, body { height: 100%; }
   display: block;
   font-weight: 400;
   margin-bottom: 0.5rem;
+
+
 }
 /* @media (max-width: 1400px) {
   .form-group label {
@@ -431,6 +433,33 @@ input[type=number] {
     gap: 1rem;
   }
 }
+.clientes-dropdown { position: relative; width: 100%; max-width: 100%; }
+.dropdown-button { width: 100%; box-sizing: border-box; display: flex; justify-content: space-between; align-items: center; padding: 1.1rem 1.5rem; border-radius: 1.5rem; border: 1px solid #ebeef2; background-color: #fffefe; color: #474747; font-size: 12px; cursor: pointer; transition: border-color 0.2s ease; }
+.dropdown-button:disabled { cursor: not-allowed; color: #d9d9d9; border-color: #f0f0f0; }
+.dropdown-button:not(:disabled):hover { border-color: #b71653; }
+.dropdown-arrow { width: 12px; height: 12px; }
+.dropdown-panel { position: absolute; top: calc(100% + 6px); left: 0; width: 100%; max-width: 100%; max-height: 220px; overflow-y: auto; background-color: #ffffff; border: 1px solid #ebeef2; border-radius: 1rem; box-shadow: 0 8px 18px rgba(0, 0, 0, 0.08); z-index: 5; padding: 0.5rem 0; }
+.dropdown-option { width: 100%; background: transparent; border: none; padding: 0.8rem 1.4rem; display: flex; align-items: center; gap: 0.8rem; cursor: pointer; color: #474747; font-size: 12px; text-align: left; }
+.dropdown-option.selected,
+.dropdown-option:hover { background-color: #f6f0f3; }
+.checkbox { width: 14px; height: 14px; border: 1px solid #bcbcbc; border-radius: 4px; display: inline-flex; align-items: center; justify-content: center; background-color: #ffffff; }
+.checkbox.checked { background-color: #b71653; border-color: #b71653; }
+.checkbox.checked::after { content: ""; width: 6px; height: 6px; background-color: #ffffff; border-radius: 2px; }
+.selected-chips { margin-top: 0.8rem; display: flex; flex-wrap: wrap; gap: 0.6rem; max-width: 100%; }
+.chip { padding: 0.3rem 0.8rem; border-radius: 1.2rem; background-color: #f0d9e2; color: #6a2a47; font-size: 11px; }
+.helper-text { margin-top: 0.6rem; font-size: 11px; color: #a0a0a0; }
+.checkbox-label { display: flex; align-items: center; gap: 0.6rem; font-size: 12px; color: #474747; }
+.checkbox-label input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  margin: 0;
+  accent-color: #b71653;
+  display: inline-block;
+}
+.checkbox-label span {
+  flex: 1;
+  line-height: 1.4;
+}
 /* Bitacora modal enhancements */
 .modal-grid label.checkbox-field{flex-direction:row;align-items:flex-start;gap:0.75rem;border:1px solid #e5e2e7;border-radius:0.75rem;padding:0.9rem 1rem;background-color:#faf6fb;}
 .modal-grid label.checkbox-field input[type="checkbox"]{width:1.15rem;height:1.15rem;margin-top:0.1rem;border:1px solid #c4006b;cursor:pointer;}
@@ -454,3 +483,8 @@ input[type=number] {
 .bitacora-detail.emergencia .detail-note{background-color:rgba(214,31,91,.08);}
 .detail-heading{display:flex;align-items:center;gap:0.75rem;}
 .emergency-badge{display:inline-flex;align-items:center;padding:0.2rem 0.75rem;border-radius:999px;background-color:rgba(214,31,91,.12);color:#b71653;font-weight:600;font-size:0.85rem;text-transform:uppercase;letter-spacing:0.02em;}
+
+
+
+
+

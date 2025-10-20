@@ -67,6 +67,16 @@
           </div>
         </div>
 
+        <div class="form-group full-width" *ngIf="esRolAdminSeleccionado">
+          <label class="checkbox-label">
+            <span>Este administrador también realiza visitas técnicas.</span>
+            <input type="checkbox" id="checkbox-tecnico" formControlName="esTecnico"/>
+          </label>
+          <p class="helper-text">
+            Los administradores marcados aparecen disponibles en los selectores de técnicos.
+          </p>
+        </div>
+
         <div class="form-group full-width" *ngIf="esRolClienteSeleccionado">
           <label for="clientesAutorizados">Clientes autorizados</label>
           <div class="clientes-dropdown" (click)="$event.stopPropagation()">

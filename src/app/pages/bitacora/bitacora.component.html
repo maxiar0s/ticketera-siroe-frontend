@@ -357,13 +357,40 @@
           <input type="datetime-local" formControlName="horaSalida" />
         </label>
 
-        <label class="full">
-          <span class="label">Técnicos</span>
-          <input
-            type="text"
-            formControlName="tecnicos"
-            placeholder="Separa cada técnico con coma"
-          />
+                <label class="full">
+          <span class="label">Tecnicos</span>
+          <div class="clientes-dropdown" (click)="$event.stopPropagation()">
+            <button
+            type="button"
+            class="dropdown-button"
+            (click)="toggleTecnicosDropdown($event)"
+            [disabled]="tecnicosDisponibles.length === 0 || bitacoraForm.get('tecnicos')?.disabled"
+          >
+              {{ resumenTecnicosSeleccionados }}
+              <img src="/assets/svg/side-menu-arrow-down.svg" alt="toggle" class="dropdown-arrow" />
+            </button>
+            <div class="dropdown-panel" *ngIf="tecnicosDropdownAbierto">
+              <button
+                type="button"
+                class="dropdown-option"
+                *ngFor="let tecnico of tecnicosDisponibles"
+                (click)="onToggleTecnico(tecnico, $event)"
+                [class.selected]="estaTecnicoSeleccionado(tecnico)"
+              >
+                <span class="checkbox" [class.checked]="estaTecnicoSeleccionado(tecnico)"></span>
+                <span>{{ tecnico.name }}</span>
+              </button>
+            </div>
+          </div>
+          <div class="selected-chips" *ngIf="tecnicosSeleccionados.length > 0">
+            <span class="chip" *ngFor="let nombre of tecnicosSeleccionados">{{ nombre }}</span>
+          </div>
+          <div class="helper-text" *ngIf="tecnicosDisponibles.length === 0">
+            No hay tecnicos disponibles para seleccionar.
+          </div>
+          <div *ngIf="bitacoraForm.get('tecnicos')?.invalid && bitacoraForm.get('tecnicos')?.touched" class="error">
+            Selecciona al menos un tecnico.
+          </div>
         </label>
 
         <label class="full">
@@ -441,3 +468,6 @@
     </form>
   </div>
 </div>
+
+
+

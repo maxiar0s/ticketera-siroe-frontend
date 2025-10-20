@@ -84,6 +84,16 @@
           </div>
         </div>
 
+        <div class="form-group full-width" *ngIf="esRolAdminSeleccionado">
+          <label class="checkbox-label">
+            <span>Este administrador tambien realiza visitas tecnicas.</span>
+            <input type="checkbox" formControlName="esTecnico"/>
+          </label>
+          <p class="helper-text">
+            Habilita al administrador para aparecer como tecnico disponible.
+          </p>
+        </div>
+
         <div class="two-inputs">
           <!-- Campo Estado -->
           <div class="form-group width-50">

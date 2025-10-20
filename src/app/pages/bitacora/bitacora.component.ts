@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { FormatoFechaPipe } from '../../pipes/formato-fecha.pipe';
-import { Component, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
@@ -10,6 +10,7 @@ import {
 import { finalize } from 'rxjs';
 import { Bitacora } from '../../interfaces/bitacora.interface';
 import { ClienteResumen } from '../../interfaces/cliente-resumen.interface';
+import { Tecnico } from '../../interfaces/tecnico.interface';
 import { ApiService } from '../../services/api.service';
 import { AuthService } from '../../services/auth.service';
 
@@ -37,6 +38,7 @@ export class BitacoraComponent implements OnInit {
   sucursalesFiltro: SucursalOption[] = [];
   sucursalesFormulario: SucursalOption[] = [];
   private sucursalesCache = new Map<string, SucursalOption[]>();
+  tecnicosDisponibles: Tecnico[] = [];
 
   paginaActual = 1;
   paginasTotales = 0;
@@ -51,6 +53,7 @@ export class BitacoraComponent implements OnInit {
   modoEdicion = false;
   selectedFiles: File[] = [];
   eliminandoBitacoraId: number | null = null;
+  tecnicosDropdownAbierto = false;
 
   readonly esAdmin: boolean;
   readonly esTecnico: boolean;
@@ -85,7 +88,7 @@ export class BitacoraComponent implements OnInit {
       fechaVisita: ['', Validators.required],
       horaLlegada: ['', Validators.required],
       horaSalida: ['', Validators.required],
-      tecnicos: ['', Validators.required],
+      tecnicos: [[], Validators.required],
       isEmergencia: [false],
       descripcion: ['', [Validators.required, Validators.minLength(5)]],
     });
@@ -122,6 +125,7 @@ export class BitacoraComponent implements OnInit {
 
   ngOnInit(): void {
     this.cargarClientes();
+    this.cargarTecnicosDisponibles();
   }
 
   private cargarClientes(): void {
@@ -147,6 +151,67 @@ export class BitacoraComponent implements OnInit {
         this.cargarBitacoras();
       },
     });
+  }
+
+  private cargarTecnicosDisponibles(): void {
+    this.apiService.tecnicosDisponibles().subscribe({
+      next: (tecnicos) => {
+        this.tecnicosDisponibles = Array.isArray(tecnicos) ? tecnicos : [];
+      },
+      error: () => {
+        this.tecnicosDisponibles = [];
+      },
+    });
+  }
+
+  get tecnicosSeleccionados(): string[] {
+    const value = this.bitacoraForm.get('tecnicos')?.value;
+    return Array.isArray(value) ? value : [];
+  }
+
+  get resumenTecnicosSeleccionados(): string {
+    const seleccionados = this.tecnicosSeleccionados;
+    if (seleccionados.length === 0) {
+      return 'Selecciona tecnicos';
+    }
+    if (seleccionados.length === 1) {
+      return seleccionados[0];
+    }
+    return `${seleccionados.length} tecnicos seleccionados`;
+  }
+
+  toggleTecnicosDropdown(event: MouseEvent): void {
+    event.stopPropagation();
+    this.tecnicosDropdownAbierto = !this.tecnicosDropdownAbierto;
+  }
+
+  onToggleTecnico(tecnico: Tecnico, event?: MouseEvent): void {
+    event?.stopPropagation();
+    const actuales = this.tecnicosSeleccionados;
+    const index = actuales.indexOf(tecnico.name);
+    let actualizados: string[];
+    if (index >= 0) {
+      actualizados = [
+        ...actuales.slice(0, index),
+        ...actuales.slice(index + 1),
+      ];
+    } else {
+      actualizados = [...actuales, tecnico.name];
+    }
+    this.bitacoraForm.get('tecnicos')?.setValue(actualizados);
+    this.bitacoraForm.get('tecnicos')?.markAsDirty();
+    this.bitacoraForm.get('tecnicos')?.markAsTouched();
+  }
+
+  estaTecnicoSeleccionado(tecnico: Tecnico): boolean {
+    return this.tecnicosSeleccionados.includes(tecnico.name);
+  }
+
+  @HostListener('document:click')
+  cerrarDropdowns(): void {
+    if (this.tecnicosDropdownAbierto) {
+      this.tecnicosDropdownAbierto = false;
+    }
   }
 
   buscarBitacoras(): void {
@@ -239,6 +304,7 @@ export class BitacoraComponent implements OnInit {
       (this.clientes.length === 1 ? this.clientes[0].id : '');
 
     this.selectedFiles = [];
+    this.tecnicosDropdownAbierto = false;
     this.bitacoraForm.reset({
       id: null,
       titulo: '',
@@ -247,7 +313,7 @@ export class BitacoraComponent implements OnInit {
       fechaVisita: this.obtenerFechaActual(),
       horaLlegada: '',
       horaSalida: '',
-      tecnicos: '',
+      tecnicos: [],
       isEmergencia: false,
       descripcion: '',
     });
@@ -272,6 +338,7 @@ export class BitacoraComponent implements OnInit {
 
     this.habilitarTodosLosControles();
     this.selectedFiles = [];
+    this.tecnicosDropdownAbierto = false;
     this.bitacoraForm.reset({
       id: bitacora.id,
       titulo: bitacora.titulo ?? '',
@@ -280,7 +347,7 @@ export class BitacoraComponent implements OnInit {
       fechaVisita: bitacora.fechaVisita?.slice(0, 10) ?? '',
       horaLlegada: this.formatearParaInputFecha(bitacora.horaLlegada),
       horaSalida: this.formatearParaInputFecha(bitacora.horaSalida),
-      tecnicos: (bitacora.tecnicos ?? []).join(', '),
+      tecnicos: Array.isArray(bitacora.tecnicos) ? [...bitacora.tecnicos] : [],
       isEmergencia: !!bitacora.isEmergencia,
       descripcion: bitacora.descripcion,
     });
@@ -306,9 +373,10 @@ export class BitacoraComponent implements OnInit {
     this.formularioVisible = false;
     this.modoEdicion = false;
     this.guardando = false;
-    this.bitacoraForm.reset({ isEmergencia: false });
+    this.bitacoraForm.reset({ isEmergencia: false, tecnicos: [] });
     this.sucursalesFormulario = [];
     this.selectedFiles = [];
+    this.tecnicosDropdownAbierto = false;
     this.habilitarTodosLosControles();
   }
 
@@ -488,10 +556,17 @@ export class BitacoraComponent implements OnInit {
   }
 
   private construirPayloadCompleto(formValue: any): any | null {
-    const tecnicos = this.parseTecnicos(formValue.tecnicos);
+    const tecnicosEntrada = Array.isArray(formValue.tecnicos)
+      ? formValue.tecnicos
+      : [];
+    const tecnicos = tecnicosEntrada
+      .map((item: string) => `${item}`.trim())
+      .filter((item: string) => item.length > 0);
+
     if (tecnicos.length === 0) {
       return null;
     }
+
     return {
       casaMatrizId: formValue.clienteId,
       sucursalId: formValue.sucursalId || null,
@@ -503,16 +578,6 @@ export class BitacoraComponent implements OnInit {
       titulo: formValue.titulo ? formValue.titulo.trim() : null,
       isEmergencia: !!formValue.isEmergencia,
     };
-  }
-
-  private parseTecnicos(value: string): string[] {
-    if (!value) {
-      return [];
-    }
-    return value
-      .split(/[,;\n]/)
-      .map((item) => item.trim())
-      .filter((item) => item.length > 0);
   }
 
   private formatearAISO(value: string): string {

@@ -1,5 +1,5 @@
-import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+﻿import { CommonModule } from '@angular/common';
+import { Component, EventEmitter, HostListener, Input, OnInit, Output } from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
@@ -12,6 +12,7 @@ import { ClienteResumen } from '../../../../interfaces/cliente-resumen.interface
 import { ApiService } from '../../../../services/api.service';
 import { VisitaProgramada } from '../../../../interfaces/visita-programada.interface';
 import { AuthService } from '../../../../services/auth.service';
+import { Tecnico } from '../../../../interfaces/tecnico.interface';
 
 interface CalendarDay {
   date: Date;
@@ -67,6 +68,7 @@ export class DashboardCalendarComponent implements OnInit {
   sucursalesDisponibles: SucursalOption[] = [];
   private sucursalesCache = new Map<string, SucursalOption[]>();
   private visitasProgramadas: VisitaProgramada[] = [];
+  tecnicosDisponibles: Tecnico[] = [];
 
   calendario: CalendarDay[] = [];
   eventosPorDia = new Map<string, EventoCalendario[]>();
@@ -78,6 +80,7 @@ export class DashboardCalendarComponent implements OnInit {
   private _bitacoras: Bitacora[] = [];
   esAdmin = false;
   eliminandoId: number | null = null;
+  tecnicosDropdownAbierto = false;
 
   private vista = {
     year: new Date().getFullYear(),
@@ -95,7 +98,7 @@ export class DashboardCalendarComponent implements OnInit {
       fecha: ['', Validators.required],
       horaLlegada: [''],
       horaSalida: [''],
-      tecnicos: ['', Validators.required],
+      tecnicos: [[], Validators.required],
       descripcion: ['', [Validators.required, Validators.minLength(5)]],
       titulo: [''],
     });
@@ -105,6 +108,7 @@ export class DashboardCalendarComponent implements OnInit {
   ngOnInit(): void {
     this.cargarClientes();
     this.cargarVisitasProgramadas();
+    this.cargarTecnicosDisponibles();
     this.construirCalendario();
   }
 
@@ -165,8 +169,11 @@ export class DashboardCalendarComponent implements OnInit {
 
     if (this.formularioVisible) {
       this.initFormularioConSeleccion();
+      this.agendaForm.get('tecnicos')?.setValue([]);
+      this.tecnicosDropdownAbierto = false;
     } else {
       this.agendaForm.reset();
+      this.tecnicosDropdownAbierto = false;
     }
   }
 
@@ -206,10 +213,10 @@ export class DashboardCalendarComponent implements OnInit {
     }
 
     const valor = this.agendaForm.value;
-    const tecnicos = this.parseTecnicos(valor.tecnicos);
+    const tecnicos = this.normalizarTecnicosEntrada(valor.tecnicos);
 
     if (tecnicos.length === 0) {
-      this.errorFormulario = 'Ingresa al menos un técnico.';
+      this.errorFormulario = 'Ingresa al menos un tecnico.';
       return;
     }
 
@@ -272,6 +279,67 @@ export class DashboardCalendarComponent implements OnInit {
         this.regenerarMapaDeEventos();
       },
     });
+  }
+
+  private cargarTecnicosDisponibles(): void {
+    this.apiService.tecnicosDisponibles().subscribe({
+      next: (tecnicos) => {
+        this.tecnicosDisponibles = Array.isArray(tecnicos) ? tecnicos : [];
+      },
+      error: () => {
+        this.tecnicosDisponibles = [];
+      },
+    });
+  }
+
+  get tecnicosSeleccionados(): string[] {
+    const value = this.agendaForm.get('tecnicos')?.value;
+    return Array.isArray(value) ? value : [];
+  }
+
+  get resumenTecnicosSeleccionados(): string {
+    const seleccionados = this.tecnicosSeleccionados;
+    if (seleccionados.length === 0) {
+      return 'Selecciona tecnicos';
+    }
+    if (seleccionados.length === 1) {
+      return seleccionados[0];
+    }
+    return `${seleccionados.length} tecnicos seleccionados`;
+  }
+
+  toggleTecnicosDropdown(event: MouseEvent): void {
+    event.stopPropagation();
+    this.tecnicosDropdownAbierto = !this.tecnicosDropdownAbierto;
+  }
+
+  onToggleTecnico(tecnico: Tecnico, event?: MouseEvent): void {
+    event?.stopPropagation();
+    const actuales = this.tecnicosSeleccionados;
+    const index = actuales.indexOf(tecnico.name);
+    let actualizados: string[];
+    if (index >= 0) {
+      actualizados = [
+        ...actuales.slice(0, index),
+        ...actuales.slice(index + 1),
+      ];
+    } else {
+      actualizados = [...actuales, tecnico.name];
+    }
+    this.agendaForm.get('tecnicos')?.setValue(actualizados);
+    this.agendaForm.get('tecnicos')?.markAsDirty();
+    this.agendaForm.get('tecnicos')?.markAsTouched();
+  }
+
+  estaTecnicoSeleccionado(tecnico: Tecnico): boolean {
+    return this.tecnicosSeleccionados.includes(tecnico.name);
+  }
+
+  @HostListener('document:click')
+  cerrarDropdownTecnicos(): void {
+    if (this.tecnicosDropdownAbierto) {
+      this.tecnicosDropdownAbierto = false;
+    }
   }
 
   private regenerarMapaDeEventos(): void {
@@ -432,8 +500,18 @@ export class DashboardCalendarComponent implements OnInit {
     return combinada.toISOString();
   }
 
-  private parseTecnicos(valor: string): string[] {
-    return (valor || '')
+  private normalizarTecnicosEntrada(valor: any): string[] {
+    if (Array.isArray(valor)) {
+      return valor
+        .map((item) => `${item}`.trim())
+        .filter((item) => item.length > 0);
+    }
+
+    if (!valor) {
+      return [];
+    }
+
+    return `${valor}`
       .split(/[,;\n]/)
       .map((item) => item.trim())
       .filter((item) => item.length > 0);
@@ -484,3 +562,13 @@ export class DashboardCalendarComponent implements OnInit {
       });
   }
 }
+
+
+
+
+
+
+
+
+
+

@@ -42,6 +42,7 @@ export class ModificarUsuarioComponent {
       password: [''],
       estadoCuentaId: ['', Validators.required],
       clientesAutorizados: [[]],
+      esTecnico: [false],
     });
   }
 
@@ -52,6 +53,7 @@ export class ModificarUsuarioComponent {
       tipoCuentaId: this.usuario ? this.usuario.tipoCuentaId : '',
       telefono: this.usuario ? this.usuario.telefono : '',
       estadoCuentaId: this.usuario ? this.usuario.estadoCuentaId : '',
+      esTecnico: this.usuario ? !!this.usuario.esTecnico : false,
     });
 
     this.clientesSeleccionados = this.usuario?.clientesAutorizados
@@ -62,6 +64,10 @@ export class ModificarUsuarioComponent {
     this.cargarClientesDisponibles();
 
     this.usuarioForm.get('tipoCuentaId')?.valueChanges.subscribe((valor) => {
+      const esAdmin = valor === '1' || valor === 1;
+      if (!esAdmin) {
+        this.usuarioForm.get('esTecnico')?.setValue(false);
+      }
       if (valor === '4' || valor === 4) {
         return;
       }
@@ -82,13 +88,18 @@ export class ModificarUsuarioComponent {
     return valor === '4' || valor === 4;
   }
 
+  get esRolAdminSeleccionado(): boolean {
+    const valor = this.usuarioForm.get('tipoCuentaId')?.value;
+    return valor === '1' || valor === 1;
+  }
+
   abrirModal(): void {
     this.isVisible = true;
   }
 
   cerrar(): void {
     this.isVisible = false;
-    this.usuarioForm.reset({ clientesAutorizados: [] });
+    this.usuarioForm.reset({ clientesAutorizados: [], esTecnico: false });
     this.errorMessage = '';
     this.limpiarSelecciones();
     this.cerrarModal.emit();

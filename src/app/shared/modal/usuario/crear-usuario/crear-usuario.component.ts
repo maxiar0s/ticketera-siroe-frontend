@@ -40,6 +40,7 @@ export class CrearUsuarioComponent {
       email: ['', [Validators.required, correoConArrobaYpunto()]],
       password: ['', Validators.required],
       clientesAutorizados: [[]],
+      esTecnico: [false],
     });
   }
 
@@ -59,6 +60,10 @@ export class CrearUsuarioComponent {
     this.cargarClientesDisponibles();
 
     this.cuentaForm.get('tipoCuentaId')?.valueChanges.subscribe((valor) => {
+      const esAdmin = valor === '1' || valor === 1;
+      if (!esAdmin) {
+        this.cuentaForm.get('esTecnico')?.setValue(false);
+      }
       if (valor === '4' || valor === 4) {
         return;
       }
@@ -79,6 +84,11 @@ export class CrearUsuarioComponent {
     return valor === '4' || valor === 4;
   }
 
+  get esRolAdminSeleccionado(): boolean {
+    const valor = this.cuentaForm.get('tipoCuentaId')?.value;
+    return valor === '1' || valor === 1;
+  }
+
   verificarFormulario(): boolean {
     return this.cuentaForm.invalid || this.correoExistente$.getValue() || this.formError;
   }
@@ -94,7 +104,7 @@ export class CrearUsuarioComponent {
 
   cerrar(): void {
     this.isVisible = false;
-    this.cuentaForm.reset({ clientesAutorizados: [] });
+    this.cuentaForm.reset({ clientesAutorizados: [], esTecnico: false });
     this.errorMessage = '';
     this.limpiarSelecciones();
     this.cerrarModal.emit();

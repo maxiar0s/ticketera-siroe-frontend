@@ -1,10 +1,11 @@
-import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http';
+﻿import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { catchError, forkJoin, map, Observable, of, throwError } from 'rxjs';
 import { Cliente } from '../interfaces/cliente.interface';
 import { ClienteResumen } from '../interfaces/cliente-resumen.interface';
 import { Equipo } from '../interfaces/equipo.interface';
 import { VisitaProgramada } from '../interfaces/visita-programada.interface';
+import { Tecnico } from '../interfaces/tecnico.interface';
 
 type ClienteEquiposDetalle = { cliente: Cliente | null; equipos: Equipo[] };
 
@@ -126,6 +127,16 @@ export class ApiService {
     return this.getInformation(endpoint);
   }
 
+  tecnicosDisponibles(): Observable<Tecnico[]> {
+    const endpoint = 'tecnicos';
+    return this.http.get<Tecnico[]>(`${this.url}/${endpoint}`).pipe(
+      catchError((error: HttpErrorResponse) => {
+        console.error('Error al obtener tÃ©cnicos disponibles:', error);
+        return of([] as Tecnico[]);
+      })
+    );
+  }
+
   clientesBitacora(): Observable<any> {
     const endpoint = 'bitacoras/clientes';
     return this.getInformation(endpoint);
@@ -178,7 +189,7 @@ export class ApiService {
         })
       );
     } else {
-      // Si no es FormData, usamos el método postInformation normal
+      // Si no es FormData, usamos el mÃ©todo postInformation normal
       return this.postInformation(datos, endpoint);
     }
   }
@@ -553,5 +564,6 @@ export class ApiService {
       );
   }
 }
+
 
 
