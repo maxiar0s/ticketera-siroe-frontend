@@ -124,6 +124,16 @@
   text-overflow: ellipsis;
 }
 
+.visita-count-ok {
+  color: #1f8f56;
+  font-weight: 600;
+}
+
+.visita-count-alert {
+  color: #ff3b30;
+  font-weight: 600;
+}
+
 
 /* Media queries para pantallas medianas */
 @media (max-width: 1200px) {

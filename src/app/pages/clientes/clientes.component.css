@@ -115,6 +115,16 @@
   word-break: break-word;
 }
 
+.visita-count-ok {
+  color: #1f8f56;
+  font-weight: 600;
+}
+
+.visita-count-alert {
+  color: #ff3b30;
+  font-weight: 600;
+}
+
 .client-button-container {
   display: flex;
   flex-wrap: wrap;

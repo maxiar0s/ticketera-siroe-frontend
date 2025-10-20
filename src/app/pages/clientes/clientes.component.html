@@ -71,17 +71,19 @@
                 </p>
                 <p>
                   Visitas mensuales:
-                  <span>
-                    {{ casaMatriz.visitasMensuales ?? 0 }}
-                    /
+                  <span
+                    [ngClass]="obtenerClaseVisitas(casaMatriz.visitasMensuales, casaMatriz.visitasMensualesRealizadas)"
+                  >
+                    {{ casaMatriz.visitasMensuales ?? 0 }} /
                     {{ casaMatriz.visitasMensualesRealizadas ?? 0 }}
                   </span>
                 </p>
                 <p>
                   Visitas emergencia anuales:
-                  <span>
-                    {{ casaMatriz.visitasEmergenciaAnuales ?? 0 }}
-                    /
+                  <span
+                    [ngClass]="obtenerClaseVisitas(casaMatriz.visitasEmergenciaAnuales, casaMatriz.visitasEmergenciaAnualesRealizadas)"
+                  >
+                    {{ casaMatriz.visitasEmergenciaAnuales ?? 0 }} /
                     {{ casaMatriz.visitasEmergenciaAnualesRealizadas ?? 0 }}
                   </span>
                 </p>

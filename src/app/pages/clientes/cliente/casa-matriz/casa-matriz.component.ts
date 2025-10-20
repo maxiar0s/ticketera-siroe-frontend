@@ -48,4 +48,19 @@ export class CasaMatrizComponent implements OnInit {
       this.isLoadingImage = false;
     }
   }
+
+  obtenerClaseVisitas(asignadas?: number | null, realizadas?: number | null): string {
+    const totalAsignadas = Number(asignadas ?? 0);
+    const totalRealizadas = Number(realizadas ?? 0);
+
+    if (totalRealizadas > totalAsignadas) {
+      return 'visita-count-alert';
+    }
+
+    if (totalRealizadas === totalAsignadas) {
+      return 'visita-count-ok';
+    }
+
+    return '';
+  }
 }

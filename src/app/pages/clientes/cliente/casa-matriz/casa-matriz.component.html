@@ -38,9 +38,10 @@
         <div class="information info-visitas">
           <p>
             Visitas mensuales:
-            <span>
-              {{ cliente?.visitasMensuales ?? 0 }}
-              /
+            <span
+              [ngClass]="obtenerClaseVisitas(cliente?.visitasMensuales, cliente?.visitasMensualesRealizadas)"
+            >
+              {{ cliente?.visitasMensuales ?? 0 }} /
               {{ cliente?.visitasMensualesRealizadas ?? 0 }}
             </span>
           </p>
@@ -49,9 +50,10 @@
         <div class="information info-emergencia">
           <p>
             Visitas de emergencia (anuales):
-            <span>
-              {{ cliente?.visitasEmergenciaAnuales ?? 0 }}
-              /
+            <span
+              [ngClass]="obtenerClaseVisitas(cliente?.visitasEmergenciaAnuales, cliente?.visitasEmergenciaAnualesRealizadas)"
+            >
+              {{ cliente?.visitasEmergenciaAnuales ?? 0 }} /
               {{ cliente?.visitasEmergenciaAnualesRealizadas ?? 0 }}
             </span>
           </p>
