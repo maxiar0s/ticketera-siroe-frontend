@@ -3,6 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
 import { ApiService } from '../../services/api.service';
+import { SignalService } from '../../services/signal.service';
 import { UserPreferencesService, PreferenciasUsuario } from '../../services/user-preferences.service';
 import { Cuenta } from '../../interfaces/Cuenta.interface';
 
@@ -44,7 +45,7 @@ export class OpcionesComponent implements OnInit {
     },
     backups: {
       id: 'backups',
-      icono: '/assets/svg/database.svg',
+      icono: '/assets/svg/download.svg',
       titulo: 'Datos y respaldos',
       descripcion: 'Genera copias de seguridad y restaura configuraciones.',
       accion: 'Gestionar respaldos',
@@ -55,6 +56,7 @@ export class OpcionesComponent implements OnInit {
     private fb: FormBuilder,
     private authService: AuthService,
     private apiService: ApiService,
+    private signalService: SignalService,
     private preferenciasService: UserPreferencesService
   ) {
     this.preferenciasForm = this.fb.group({
@@ -66,6 +68,7 @@ export class OpcionesComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.signalService.updateData('Configuracion');
     this.esCliente = this.authService.esCliente();
     if (!this.esCliente) {
       this.seccionesDisponibles = ['general', 'backups'];

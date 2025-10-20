@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ApiService } from '../../services/api.service';
+import { SignalService } from '../../services/signal.service';
 import { Cuenta } from '../../interfaces/Cuenta.interface';
 import { obtenerIniciales, generarColorDesdeTexto } from '../../utils/avatar.util';
 
@@ -25,7 +26,8 @@ export class PerfilComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private apiService: ApiService
+    private apiService: ApiService,
+    private signalService: SignalService
   ) {
     this.perfilForm = this.fb.group({
       name: ['', [Validators.required, Validators.minLength(3)]],
@@ -41,6 +43,7 @@ export class PerfilComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.signalService.updateData('Perfil');
     this.cargarPerfil();
   }
 
