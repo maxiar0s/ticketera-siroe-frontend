@@ -141,6 +141,7 @@
   flex-direction: column;
   gap: 0.35rem;
   width: 100%;
+  padding:2px;
 }
 
 .badge-column {
