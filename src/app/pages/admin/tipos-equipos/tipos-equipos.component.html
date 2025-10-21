@@ -29,14 +29,25 @@
           El código es obligatorio (máx. 6 caracteres).
         </span>
       </div>
-      <div class="form-group">
-        <label for="nuevoCampos">Campos iniciales</label>
-        <select id="nuevoCampos" multiple formControlName="campoIds">
-          <option *ngFor="let campo of campos" [value]="campo.id">
-            {{ campo.label }}
-          </option>
-        </select>
-        <small class="ayuda-campos">Mantén presionada la tecla Ctrl (o Cmd) para seleccionar múltiples campos.</small>
+      <div class="form-group form-group--campos">
+        <label>Campos iniciales</label>
+        <div class="campos-iniciales-grid">
+          <label
+            class="campos-iniciales-grid__item"
+            *ngFor="let campo of campos"
+          >
+            <input
+              #campoInicial
+              type="checkbox"
+              [checked]="campoInicialSeleccionado(campo.id)"
+              (change)="toggleCampoInicial(campo.id, campoInicial.checked)"
+            />
+            <span>{{ campo.label }}</span>
+          </label>
+        </div>
+        <small class="ayuda-campos">
+          Selecciona los campos que estará visibles al crear equipos de este tipo.
+        </small>
       </div>
       <button type="submit" [disabled]="creandoTipo">
         {{ creandoTipo ? 'Creando…' : 'Crear tipo' }}

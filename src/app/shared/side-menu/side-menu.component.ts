@@ -9,22 +9,12 @@ import menu_tecnico from './menu-tecnico.json';
 import menu_cliente from './menu-cliente.json';
 import menu_config from './menu-config.json';
 
-/*{ Opcion tipo de equipo menu-administrador.json
-  "id": 3,
-  "nombre": "Tipo de equipo ",
-  "route": "/tipo-equipo",
-  "svg": "tipo-de-equipo",
-  "subItem": [
-  ],
-  "isOpen": false
-},*/
-
 @Component({
   selector: 'shared-side-menu',
   standalone: true,
   imports: [RouterModule, CommonModule],
   templateUrl: './side-menu.component.html',
-  styleUrl: './side-menu.component.css'
+  styleUrl: './side-menu.component.css',
 })
 export class SideMenuComponent {
   public currentGroup: string = '';
@@ -41,7 +31,14 @@ export class SideMenuComponent {
     private location: Location
   ) {}
 
-  ngOnInit():void {
+  private normalizeRoute(route: string | undefined | null): string {
+    if (!route) {
+      return '';
+    }
+    return route.replace(/^\//, '');
+  }
+
+  ngOnInit(): void {
     if (this.authService.esAdministrador()) {
       this.menu = menu_administrador;
       this.logoRoute = '/dashboard';
@@ -54,54 +51,77 @@ export class SideMenuComponent {
     }
 
     const path = this.location.path();
-    // Solo marcar como activo un route del menu principal, no de menuConfig
-    const mainRoutes = this.menu?.map((item: any) => item.route) || [];
-    if (path && mainRoutes.includes(path)) {
-      this.currentGroup = path;
-      this.currentSubGroup = path;
-    } else if (mainRoutes.length > 0) {
-      this.currentGroup = mainRoutes[0];
-      this.currentSubGroup = mainRoutes[0];
+    const normalizedPath = this.normalizeRoute(path);
+
+    let matchedRoute: string | null = null;
+
+    for (const item of this.menu ?? []) {
+      if (this.normalizeRoute(item.route) === normalizedPath) {
+        matchedRoute = item.route;
+        break;
+      }
+
+      if (Array.isArray(item.subItem) && item.subItem.length) {
+        const subMatch = item.subItem.find(
+          (sub: any) => this.normalizeRoute(sub.route) === normalizedPath
+        );
+
+        if (subMatch) {
+          matchedRoute = item.route;
+          item.isOpen = true;
+          this.currentSubGroup = subMatch.route;
+          break;
+        }
+      }
+    }
+
+    if (matchedRoute) {
+      this.currentGroup = matchedRoute;
+      if (!this.currentSubGroup) {
+        this.currentSubGroup = matchedRoute;
+      }
+    } else if (this.menu?.length) {
+      this.currentGroup = this.menu[0].route;
+      this.currentSubGroup = this.menu[0].route;
     }
   }
 
-  cerrarSesion():void {
+  cerrarSesion(): void {
     this.authService.eliminarToken();
   }
 
-  routeActive(event: MouseEvent, route: string):void {
-    const Element = event.currentTarget as HTMLAnchorElement;
+  routeActive(event: MouseEvent, route: string): void {
+    const element = event.currentTarget as HTMLAnchorElement;
 
-    if(this.currentGroup == route) {
-      if(Element.classList.contains('active')) {
-        this.renderer.removeClass(Element, "active");
+    if (this.currentGroup === route) {
+      if (element.classList.contains('active')) {
+        this.renderer.removeClass(element, 'active');
       } else {
-        this.renderer.addClass(Element, 'active');
+        this.renderer.addClass(element, 'active');
       }
     }
     this.currentGroup = route;
-  }
-
-  activeGroup(route: any):boolean {
-    return this.currentGroup == route;
-  }
-
-  activeSubGroup(route:string):void {
     this.currentSubGroup = route;
   }
 
+  activeGroup(route: any): boolean {
+    return this.normalizeRoute(this.currentGroup) === this.normalizeRoute(route);
+  }
 
+  activeSubGroup(route: string): void {
+    this.currentSubGroup = route;
+  }
 
   toggleSubItems(item: any): void {
     if (this.currentGroup === item.route) {
-      // Si el grupo ya está activo, ciérralo
       item.isOpen = false;
       this.currentGroup = '';
+      this.currentSubGroup = '';
     } else {
-      // Abre el nuevo grupo y cierra los demás
-      this.menu.forEach((i: { isOpen: boolean; }) => (i.isOpen = false));
+      this.menu.forEach((i: { isOpen: boolean }) => (i.isOpen = false));
       item.isOpen = true;
       this.currentGroup = item.route;
+      this.currentSubGroup = item.route;
     }
   }
 }

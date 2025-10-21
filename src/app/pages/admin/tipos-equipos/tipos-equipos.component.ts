@@ -41,6 +41,8 @@ export class TiposEquiposComponent implements OnInit {
   public mostrarModalCampos = false;
   public modalCargando = false;
 
+  public camposInicialesSeleccionados = new Set<number>();
+
   public mensajeCreacion = '';
   public errorCreacion = '';
   public mensajeTipo = '';
@@ -97,6 +99,11 @@ export class TiposEquiposComponent implements OnInit {
         next: ({ tipos, campos }) => {
           this.tipos = Array.isArray(tipos) ? tipos : [];
           this.campos = Array.isArray(campos) ? campos : [];
+          const inicialesValidos = Array.from(this.camposInicialesSeleccionados).filter((id) =>
+            this.campos.some((campo) => campo.id === id)
+          );
+          this.camposInicialesSeleccionados = new Set(inicialesValidos);
+          this.crearTipoForm.get('campoIds')?.setValue(inicialesValidos);
           if (this.tipos.length) {
             this.seleccionarTipo(this.tipos[0]);
           } else {
@@ -186,13 +193,12 @@ export class TiposEquiposComponent implements OnInit {
       return;
     }
 
-    const { name, dict, campoIds } = this.crearTipoForm.value;
+    const { name, dict } = this.crearTipoForm.value;
+    const campoIds = Array.from(this.camposInicialesSeleccionados);
     const payload = {
       name: name?.trim(),
       dict: dict?.trim(),
-      campoIds: Array.isArray(campoIds)
-        ? campoIds.map((id) => Number(id))
-        : [],
+      campoIds,
     };
 
     this.creandoTipo = true;
@@ -210,6 +216,7 @@ export class TiposEquiposComponent implements OnInit {
             dict: '',
             campoIds: [],
           });
+          this.camposInicialesSeleccionados.clear();
           this.mensajeCreacion = 'Tipo de equipo creado correctamente.';
           this.seleccionarTipo(tipo);
         },
@@ -340,6 +347,19 @@ export class TiposEquiposComponent implements OnInit {
     this.camposDirty = true;
     this.mensajeCampos = '';
     this.errorCampos = '';
+  }
+
+  toggleCampoInicial(campoId: number, checked: boolean): void {
+    if (checked) {
+      this.camposInicialesSeleccionados.add(campoId);
+    } else {
+      this.camposInicialesSeleccionados.delete(campoId);
+    }
+    this.crearTipoForm.get('campoIds')?.setValue(Array.from(this.camposInicialesSeleccionados));
+  }
+
+  campoInicialSeleccionado(id: number): boolean {
+    return this.camposInicialesSeleccionados.has(id);
   }
 
   guardarCamposTipo(): void {
