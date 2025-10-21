@@ -331,9 +331,11 @@ export class TiposEquiposComponent implements OnInit {
         },
         error: (error) => {
           console.error('Error al eliminar tipo de equipo:', error);
-          this.errorTipo =
+          const mensaje =
             error?.error?.error ??
             'No se pudo eliminar el tipo de equipo. Verifica que no tenga equipos asociados.';
+          this.errorTipo = mensaje;
+          window.alert(mensaje);
         },
       });
   }
@@ -511,9 +513,11 @@ export class TiposEquiposComponent implements OnInit {
         },
         error: (error) => {
           console.error('Error al eliminar el campo:', error);
-          this.errorCampo =
+          const mensaje =
             error?.error?.error ??
             'No se pudo eliminar el campo. Verifica que no esté asignado a un tipo.';
+          this.errorCampo = mensaje;
+          window.alert(mensaje);
         },
       });
   }

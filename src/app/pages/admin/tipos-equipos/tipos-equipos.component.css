@@ -201,7 +201,12 @@ button:not(:disabled):hover {
 }
 
 .btn-enlace.borrar {
+  padding: 0.5rem;
   color: var(--color-danger);
+}
+
+.btn-enlace:hover{
+  color:#ffffff;
 }
 
 .listado-tipos ul,
