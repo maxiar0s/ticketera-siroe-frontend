@@ -23,6 +23,7 @@ export class PerfilComponent implements OnInit {
   mensajeError = '';
   avatarIniciales = '?';
   avatarColor = '#b71653';
+  esCliente = false;
 
   constructor(
     private fb: FormBuilder,
@@ -56,12 +57,21 @@ export class PerfilComponent implements OnInit {
     const nuevoPassword = this.passwordForm.get('nuevoPassword')?.value?.trim();
     const confirmarPassword = this.passwordForm.get('confirmarPassword')?.value?.trim();
 
+    const passwordActual = this.passwordForm.get('passwordActual')?.value?.trim();
+    const estaCambiandoPassword =
+      !!nuevoPassword || !!confirmarPassword || !!passwordActual;
+
+    if (this.esCliente && !estaCambiandoPassword) {
+      this.mensajeError = 'Como cliente solo puedes actualizar tu contrasena.';
+      return;
+    }
+
     if (nuevoPassword || confirmarPassword) {
       if (nuevoPassword !== confirmarPassword) {
         this.mensajeError = 'La nueva contrasena y la confirmacion no coinciden.';
         return;
       }
-      if (!this.passwordForm.get('passwordActual')?.value) {
+      if (!passwordActual) {
         this.mensajeError = 'Debes ingresar la contrasena actual para realizar el cambio.';
         return;
       }
@@ -71,14 +81,28 @@ export class PerfilComponent implements OnInit {
     this.mensajeExito = '';
     this.mensajeError = '';
 
-    const payload: any = {
-      ...this.perfilForm.value,
-      telefono: Number(this.perfilForm.value.telefono),
-    };
+    const perfilValue = this.perfilForm.getRawValue();
+    const payload: any = {};
+
+    if (!this.esCliente) {
+      payload.name = perfilValue.name?.trim();
+      payload.email = perfilValue.email?.trim();
+      if (perfilValue.telefono !== undefined && perfilValue.telefono !== null && perfilValue.telefono !== '') {
+        payload.telefono = Number(perfilValue.telefono);
+      } else {
+        payload.telefono = null;
+      }
+    }
 
     if (nuevoPassword) {
-      payload.passwordActual = this.passwordForm.get('passwordActual')?.value;
+      payload.passwordActual = passwordActual;
       payload.nuevoPassword = nuevoPassword;
+    }
+
+    if (!Object.keys(payload).length) {
+      this.mensajeError = 'No hay cambios para guardar.';
+      this.guardando = false;
+      return;
     }
 
     this.apiService.actualizarPerfil(payload).subscribe({
@@ -109,11 +133,17 @@ export class PerfilComponent implements OnInit {
     this.apiService.perfilActual().subscribe({
       next: (perfil) => {
         this.usuario = perfil;
+        this.esCliente = perfil.tipoCuentaId === 4;
         this.perfilForm.patchValue({
           name: perfil.name,
           email: perfil.email,
           telefono: perfil.telefono?.toString() ?? '',
         });
+        if (this.esCliente) {
+          this.perfilForm.disable({ emitEvent: false });
+        } else {
+          this.perfilForm.enable({ emitEvent: false });
+        }
         this.actualizarAvatar(perfil);
         this.loading = false;
       },

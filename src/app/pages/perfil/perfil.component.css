@@ -70,6 +70,16 @@
   color: #69717a;
 }
 
+.perfil-restriccion {
+  margin-top: 0.75rem;
+  padding: 0.8rem;
+  border-radius: 12px;
+  background: rgba(250, 204, 21, 0.18);
+  color: #92400e;
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
 .perfil-formulario__grupo {
   display: flex;
   flex-direction: column;
@@ -177,4 +187,3 @@
     padding: 1.5rem;
   }
 }
-

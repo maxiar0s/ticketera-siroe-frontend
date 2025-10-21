@@ -17,6 +17,9 @@
         <header class="perfil-formulario__encabezado">
           <h2>Datos personales</h2>
           <p>Actualiza tu informacion de contacto y credenciales.</p>
+          <p class="perfil-restriccion" *ngIf="esCliente">
+            Como cliente solo puedes actualizar tu contrasena. Si necesitas modificar tus datos, contacta a un administrador.
+          </p>
         </header>
 
         <div class="perfil-formulario__grupo">
