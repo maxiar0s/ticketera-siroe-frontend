@@ -72,4 +72,12 @@ export const routes: Routes = [
     canActivate: [protegerRutaGuard, AdminGuard],
     loadComponent: () => import('./pages/admin/usuarios/usuarios.component').then( m => m.UsuariosComponent ),
   },
+  {
+    path: 'admin/tipos-equipos',
+    canActivate: [protegerRutaGuard, AdminGuard],
+    loadComponent: () =>
+      import('./pages/admin/tipos-equipos/tipos-equipos.component').then(
+        (m) => m.TiposEquiposComponent
+      ),
+  },
 ];

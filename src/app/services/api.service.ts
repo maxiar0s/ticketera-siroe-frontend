@@ -7,6 +7,8 @@ import { Equipo } from '../interfaces/equipo.interface';
 import { VisitaProgramada } from '../interfaces/visita-programada.interface';
 import { Tecnico } from '../interfaces/tecnico.interface';
 import { Cuenta } from '../interfaces/Cuenta.interface';
+import { TipoEquipo } from '../interfaces/TipoEquipo.interface';
+import { Campo } from '../interfaces/campo.interface';
 
 type ClienteEquiposDetalle = { cliente: Cliente | null; equipos: Equipo[] };
 
@@ -230,9 +232,79 @@ export class ApiService {
     return this.putInformation(payload, endpoint);
   }
 
-  typeEquipments(): Observable<any> {
+  typeEquipments(): Observable<TipoEquipo[]> {
     const endpoint = 'tipos-equipos';
     return this.getInformation(endpoint);
+  }
+
+  createEquipmentType(payload: {
+    name: string;
+    dict: string;
+    campoIds?: number[];
+  }): Observable<TipoEquipo> {
+    const endpoint = 'tipos-equipos';
+    return this.postInformation(payload, endpoint);
+  }
+
+  updateEquipmentType(
+    id: number,
+    payload: { name?: string; dict?: string; campoIds?: number[] }
+  ): Observable<TipoEquipo> {
+    const endpoint = `tipos-equipos/${id}`;
+    return this.putInformation(payload, endpoint);
+  }
+
+  deleteEquipmentType(id: number): Observable<any> {
+    const endpoint = `tipos-equipos/${id}`;
+    return this.deleteInformation(endpoint);
+  }
+
+  getEquipmentTypeFields(tipoEquipoId: number): Observable<Campo[]> {
+    const endpoint = `tipos-equipos/${tipoEquipoId}/campos`;
+    return this.getInformation(endpoint);
+  }
+
+  updateEquipmentTypeFields(
+    tipoEquipoId: number,
+    campoIds: number[]
+  ): Observable<Campo[]> {
+    const endpoint = `tipos-equipos/${tipoEquipoId}/campos`;
+    return this.putInformation({ campoIds }, endpoint);
+  }
+
+  getCamposCatalog(): Observable<Campo[]> {
+    const endpoint = 'campos';
+    return this.getInformation(endpoint);
+  }
+
+  createCampo(payload: {
+    name: string;
+    label: string;
+    type: string;
+    placeholder?: string | null;
+    required?: boolean;
+  }): Observable<Campo> {
+    const endpoint = 'campos';
+    return this.postInformation(payload, endpoint);
+  }
+
+  updateCampo(
+    id: number,
+    payload: Partial<{
+      name: string;
+      label: string;
+      type: string;
+      placeholder: string | null;
+      required: boolean;
+    }>
+  ): Observable<Campo> {
+    const endpoint = `campos/${id}`;
+    return this.putInformation(payload, endpoint);
+  }
+
+  deleteCampo(id: number): Observable<any> {
+    const endpoint = `campos/${id}`;
+    return this.deleteInformation(endpoint);
   }
 
   formEquipment(tipoEquipoId: string): Observable<any> {

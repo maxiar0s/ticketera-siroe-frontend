@@ -32,6 +32,14 @@
     "svg": "usuarios",
     "subItem": [],
     "isOpen": false
+  },
+  {
+    "id": 5,
+    "nombre": "Tipos de equipos",
+    "route": "admin/tipos-equipos",
+    "svg": "tipo-de-equipo",
+    "subItem": [],
+    "isOpen": false
   }
 ]
 

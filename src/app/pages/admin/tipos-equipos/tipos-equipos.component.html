@@ -1,0 +1,284 @@
+
+<section class="tipos-wrapper">
+  <div class="tipos-columna tipos-listado">
+    <form class="card formulario-tipo" [formGroup]="crearTipoForm" (ngSubmit)="crearTipo()">
+      <h2>Crear nuevo tipo</h2>
+      <div class="form-group">
+        <label for="nuevoNombre">Nombre</label>
+        <input
+        id="nuevoNombre"
+        type="text"
+        formControlName="name"
+        placeholder="Ej. Cámara de seguridad"
+        [class.input-error]="crearTipoForm.get('name')?.invalid && crearTipoForm.get('name')?.touched"
+        />
+        <span class="form-error" *ngIf="crearTipoForm.get('name')?.invalid && crearTipoForm.get('name')?.touched">
+          El nombre es obligatorio y debe tener al menos 3 caracteres.
+        </span>
+      </div>
+      <div class="form-group">
+        <label for="nuevoDict">Código</label>
+        <input
+        id="nuevoDict"
+        type="text"
+        formControlName="dict"
+        placeholder="Ej. CS"
+        [class.input-error]="crearTipoForm.get('dict')?.invalid && crearTipoForm.get('dict')?.touched"
+        />
+        <span class="form-error" *ngIf="crearTipoForm.get('dict')?.invalid && crearTipoForm.get('dict')?.touched">
+          El código es obligatorio (máx. 6 caracteres).
+        </span>
+      </div>
+      <div class="form-group">
+        <label for="nuevoCampos">Campos iniciales</label>
+        <select id="nuevoCampos" multiple formControlName="campoIds">
+          <option *ngFor="let campo of campos" [value]="campo.id">
+            {{ campo.label }}
+          </option>
+        </select>
+        <small class="ayuda-campos">Mantén presionada la tecla Ctrl (o Cmd) para seleccionar múltiples campos.</small>
+      </div>
+      <button type="submit" [disabled]="creandoTipo">
+        {{ creandoTipo ? 'Creando…' : 'Crear tipo' }}
+      </button>
+      <div class="mensaje exito" *ngIf="mensajeCreacion && !errorCreacion">{{ mensajeCreacion }}</div>
+      <div class="mensaje error" *ngIf="errorCreacion">{{ errorCreacion }}</div>
+    </form>
+
+    <section class="card listado-tipos">
+      <header>
+        <h2>Listado</h2>
+        <span>{{ tipos.length }} tipos registrados</span>
+      </header>
+      <ul>
+        <li
+          *ngFor="let tipo of tipos"
+          (click)="seleccionarTipo(tipo, true)"
+          [class.activo]="selectedTipo?.id === tipo.id"
+        >
+          <div class="tipo-info">
+            <h3>{{ tipo.name }}</h3>
+            <span class="tipo-codigo">{{ tipo.dict }}</span>
+        </div>
+        <button
+        type="button"
+        class="btn-enlace borrar"
+        (click)="eliminarTipo(tipo, $event)"
+        [disabled]="eliminandoTipo"
+        >
+        Eliminar
+      </button>
+    </li>
+    <li *ngIf="!tipos.length" class="tipo-vacio">
+      Aún no hay tipos registrados.
+    </li>
+  </ul>
+</section>
+</div>
+
+<div class="tipos-columna tipos-detalle">
+  <ng-container *ngIf="loaderService.loadingSection(); else detalleContenido">
+    <div class="estado-cargando">
+      <span>Cargando información…</span>
+    </div>
+  </ng-container>
+  <ng-template #detalleContenido>
+    <ng-container *ngIf="selectedTipo; else sinSeleccion">
+      <section class="card">
+        <header>
+          <h2>Editar tipo</h2>
+          <span>ID #{{ selectedTipo!.id }}</span>
+        </header>
+        <form [formGroup]="editarTipoForm" (ngSubmit)="actualizarTipo()">
+          <div class="form-group">
+            <label for="editarNombre">Nombre</label>
+            <input
+            id="editarNombre"
+            type="text"
+            formControlName="name"
+            [class.input-error]="editarTipoForm.get('name')?.invalid && editarTipoForm.get('name')?.touched"
+            />
+          </div>
+          <div class="form-group">
+            <label for="editarDict">Código</label>
+            <input
+            id="editarDict"
+            type="text"
+            formControlName="dict"
+            [class.input-error]="editarTipoForm.get('dict')?.invalid && editarTipoForm.get('dict')?.touched"
+            />
+          </div>
+          <button type="submit" [disabled]="actualizandoTipo">
+            {{ actualizandoTipo ? 'Guardando…' : 'Guardar cambios' }}
+          </button>
+          <div class="mensaje exito" *ngIf="mensajeTipo && !errorTipo">{{ mensajeTipo }}</div>
+          <div class="mensaje error" *ngIf="errorTipo">{{ errorTipo }}</div>
+        </form>
+      </section>
+</ng-container>
+<ng-template #sinSeleccion>
+  <div class="estado-vacio">
+    <h2>Selecciona un tipo</h2>
+    <p>Elige un tipo de la lista para ver sus campos y editar su información.</p>
+  </div>
+</ng-template>
+</ng-template>
+
+<section class="card gestion-campos">
+  <header>
+    <h2>{{ campoEnEdicion ? 'Editar campo' : 'Nuevo campo' }}</h2>
+    <p>Configura los campos disponibles para los distintos tipos de equipo.</p>
+  </header>
+  <form [formGroup]="campoForm" (ngSubmit)="enviarCampo()">
+    <div class="form-grid">
+      <div class="form-group">
+        <label for="campoNombre">Nombre interno</label>
+        <input
+        id="campoNombre"
+        type="text"
+        formControlName="name"
+        placeholder="Ej. numeroSerie"
+        [class.input-error]="campoForm.get('name')?.invalid && campoForm.get('name')?.touched"
+        />
+      </div>
+      <div class="form-group">
+        <label for="campoLabel">Etiqueta visible</label>
+        <input
+        id="campoLabel"
+        type="text"
+        formControlName="label"
+        placeholder="Ej. Número de serie"
+        [class.input-error]="campoForm.get('label')?.invalid && campoForm.get('label')?.touched"
+        />
+      </div>
+      <div class="form-group">
+        <label for="campoTipo">Tipo de dato</label>
+        <select id="campoTipo" formControlName="type">
+          <option value="text">Texto</option>
+          <option value="number">Número</option>
+          <option value="date">Fecha</option>
+          <option value="file">Archivo</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="campoPlaceholder">Placeholder</label>
+        <input
+        id="campoPlaceholder"
+        type="text"
+        formControlName="placeholder"
+        placeholder="Texto de ayuda opcional"
+        />
+      </div>
+    </div>
+    <div class="campo-required">
+      <label class="campo-required__label">
+        <input type="checkbox" formControlName="required" />
+        Campo obligatorio
+      </label>
+    </div>
+    <div class="acciones-campos">
+      <button type="submit" [disabled]="guardandoCampo">
+        {{ guardandoCampo ? 'Guardando…' : (campoEnEdicion ? 'Actualizar campo' : 'Crear campo') }}
+      </button>
+      <button type="button" class="btn-enlace" *ngIf="campoEnEdicion" (click)="cancelarEdicionCampo()">
+            Cancelar edición
+          </button>
+        </div>
+      </form>
+
+  <div class="mensaje exito" *ngIf="mensajeCampo && !errorCampo">{{ mensajeCampo }}</div>
+  <div class="mensaje error" *ngIf="errorCampo">{{ errorCampo }}</div>
+
+  <ul class="lista-campos">
+    <li *ngFor="let campo of campos">
+      <div>
+        <h3>{{ campo.label }}</h3>
+        <p>{{ campo.name }} · {{ campo.type }}</p>
+        <small *ngIf="campo.placeholder">{{ campo.placeholder }}</small>
+      </div>
+      <div class="acciones">
+        <button type="button" class="btn-enlace" (click)="editarCampo(campo)">Editar</button>
+        <button type="button" class="btn-enlace borrar" (click)="eliminarCampo(campo)">
+          Eliminar
+        </button>
+      </div>
+    </li>
+    <li *ngIf="!campos.length" class="tipo-vacio">
+      Aún no hay campos configurados.
+    </li>
+  </ul>
+</section>
+
+<div
+  class="modal-overlay"
+  *ngIf="mostrarModalCampos"
+  (click)="cerrarModalCampos()"
+>
+  <div class="modal" (click)="$event.stopPropagation()">
+    <header class="modal-header">
+      <div>
+        <p class="modal-etiqueta">Campos asociados</p>
+        <h3>{{ selectedTipo?.name }}</h3>
+      </div>
+      <button type="button" class="modal-close" (click)="cerrarModalCampos()">
+        Cerrar
+      </button>
+    </header>
+    <section class="modal-body" *ngIf="!modalCargando; else modalLoading">
+      <ng-container *ngIf="campos.length; else modalSinCampos">
+        <p class="modal-ayuda">
+          Selecciona los campos que estarán disponibles al registrar equipos de este tipo.
+        </p>
+        <div class="campos-grid modal-grid">
+          <label
+            *ngFor="let campo of campos"
+            [class.seleccionado]="campoSeleccionado(campo.id)"
+          >
+            <input
+              #modalCheckbox
+              type="checkbox"
+              [checked]="campoSeleccionado(campo.id)"
+              (change)="toggleCampo(campo.id, modalCheckbox.checked)"
+            />
+            <div class="campo-info">
+              <span class="campo-label">
+                {{ campo.label }}
+                <span class="badge" *ngIf="campo.required">Obligatorio</span>
+              </span>
+              <span class="campo-meta">{{ campo.name }} · {{ campo.type }}</span>
+            </div>
+          </label>
+        </div>
+        <div class="modal-actions">
+          <button
+            type="button"
+            (click)="guardarCamposTipo()"
+            [disabled]="!camposDirty || sincronizandoCampos"
+          >
+            {{ sincronizandoCampos ? 'Guardando…' : 'Guardar campos' }}
+          </button>
+          <button type="button" class="btn-enlace" (click)="cerrarModalCampos()">
+            Cancelar
+          </button>
+        </div>
+        <div class="modal-mensaje exito" *ngIf="mensajeCampos && !errorCampos">{{ mensajeCampos }}</div>
+        <div class="modal-mensaje error" *ngIf="errorCampos">{{ errorCampos }}</div>
+      </ng-container>
+    </section>
+  </div>
+</div>
+
+<ng-template #modalLoading>
+  <div class="modal-body modal-loading">
+    <span>Cargando campos…</span>
+  </div>
+</ng-template>
+
+<ng-template #modalSinCampos>
+  <div class="modal-empty">
+    <span>Aún no hay campos configurados. Crea campos para asociarlos a los tipos.</span>
+  </div>
+</ng-template>
+</div>
+<shared-navegation></shared-navegation>
+</section>
