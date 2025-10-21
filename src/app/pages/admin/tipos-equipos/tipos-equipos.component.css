@@ -244,6 +244,85 @@ button:not(:disabled):hover {
   border-color: rgba(183, 23, 82, 0.25);
 }
 
+.departamentos-card {
+  gap: 1.25rem;
+}
+
+.departamentos-formularios {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
+}
+
+.departamento-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 1rem;
+  border-radius: 12px;
+  border: 1px solid #e5e7eb;
+  background: #f9fafb;
+}
+
+.departamento-form h3 {
+  margin: 0;
+  font-size: 1rem;
+  color: #111827;
+}
+
+.departamento-form button {
+  align-self: flex-start;
+  margin: 0.25rem 0 0;
+}
+
+.departamento-acciones {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.departamentos-lista {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.departamentos-lista li {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.85rem 1rem;
+  border-radius: 12px;
+  border: 1px solid #e5e7eb;
+  background: #f9fafb;
+  align-items: center;
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+.departamentos-lista li.activo {
+  border-color: var(--color-primary);
+  background: var(--color-primary-soft);
+}
+
+.departamentos-lista li:hover {
+  border-color: rgba(183, 23, 82, 0.25);
+}
+
+.departamento-info span {
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.departamentos-lista .acciones {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
 .tipo-info h3 {
   margin: 0;
   color: #111827;

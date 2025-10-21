@@ -9,6 +9,7 @@ import { Tecnico } from '../interfaces/tecnico.interface';
 import { Cuenta } from '../interfaces/Cuenta.interface';
 import { TipoEquipo } from '../interfaces/TipoEquipo.interface';
 import { Campo } from '../interfaces/campo.interface';
+import { DepartamentoEquipo } from '../interfaces/departamento-equipo.interface';
 
 type ClienteEquiposDetalle = { cliente: Cliente | null; equipos: Equipo[] };
 
@@ -304,6 +305,29 @@ export class ApiService {
 
   deleteCampo(id: number): Observable<any> {
     const endpoint = `campos/${id}`;
+    return this.deleteInformation(endpoint);
+  }
+
+  getDepartamentosEquipo(): Observable<DepartamentoEquipo[]> {
+    const endpoint = 'departamentos-equipos';
+    return this.getInformation(endpoint);
+  }
+
+  createDepartamentoEquipo(payload: { name: string }): Observable<DepartamentoEquipo> {
+    const endpoint = 'departamentos-equipos';
+    return this.postInformation(payload, endpoint);
+  }
+
+  updateDepartamentoEquipo(
+    id: number,
+    payload: { name: string }
+  ): Observable<DepartamentoEquipo> {
+    const endpoint = `departamentos-equipos/${id}`;
+    return this.putInformation(payload, endpoint);
+  }
+
+  deleteDepartamentoEquipo(id: number): Observable<any> {
+    const endpoint = `departamentos-equipos/${id}`;
     return this.deleteInformation(endpoint);
   }
 

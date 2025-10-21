@@ -17,32 +17,31 @@
       <form [formGroup]="equipoForm" (ngSubmit)="onSubmit()">
         <input type="hidden" [value]="id" formControlName="sucursalId" />
         <div class="two-inputs">
-          <!-- Campo Departamento -->
+                    <!-- Campo Departamento -->
           <div class="form-group width-50">
-            <label for="departamento">Departamento de equipo</label>
+            <label for="departamentoId">Departamento de equipo</label>
             <select
-              id="departamento"
-              class="width-50"
+              id="departamentoId"
+              class="width-50 custom-select"
               (change)="changeSelectColor($event)"
-              formControlName="departamento"
+              formControlName="departamentoId"
             >
-              <option value="" disabled selected>Seleccionar</option>
-              <option value="Recursos Humanos">Recursos Humanos</option>
-              <option value="Informática">Informática</option>
-              <option value="Marketing y ventas">Marketing y ventas</option>
-              <option value="Finanzas">Finanzas</option>
-              <option value="Producción">Producción</option>
-              <option value="Investigación">Investigación</option>
-              <option value="Servicio al Cliente">Servicio al Cliente</option>
+              <option value="" disabled>Seleccionar</option>
+              @for(departamento of departamentos; track departamento) {
+              <option [value]="departamento.id">{{ departamento.name }}</option>
+              }
             </select>
             <div
               *ngIf="
-                equipoForm.get('departamento')?.invalid &&
-                equipoForm.get('departamento')?.touched
+                equipoForm.get('departamentoId')?.invalid &&
+                equipoForm.get('departamentoId')?.touched
               "
               class="error"
             >
               Seleccione un departamento
+            </div>
+            <div *ngIf="!departamentos.length" class="error">
+              Debes registrar departamentos antes de crear un equipo.
             </div>
           </div>
 
@@ -75,9 +74,10 @@
           <select
             (change)="changeSelectColor($event)"
             id="tipoEquipoId"
+            class="custom-select"
             formControlName="tipoEquipoId"
           >
-            <option value="" disabled selected>Seleccionar</option>
+            <option value="" disabled>Seleccionar</option>
             @for(equipo of TipoEquipos; track equipo) {
             <option [value]="equipo.id">{{ equipo.name }}</option>
             }
@@ -127,3 +127,4 @@
     </div>
   </div>
 </div>
+

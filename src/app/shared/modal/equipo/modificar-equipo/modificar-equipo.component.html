@@ -12,7 +12,34 @@
         <form *ngIf="formCharged" [formGroup]="equipoForm" (ngSubmit)="onSubmit()">
           <input type="hidden" [value]="this.idEquipo" formControlName="id">
           <div class="grid-form">
-            <!-- Campo Departamento -->
+            <div class="form-group">
+              <label for="departamentoId">Departamento del equipo</label>
+              <select
+                id="departamentoId"
+                class="inputs custom-select"
+                formControlName="departamentoId"
+              >
+                <option value="" disabled>Seleccionar</option>
+                <option
+                  *ngFor="let departamento of departamentos"
+                  [value]="departamento.id"
+                >
+                  {{ departamento.name }}
+                </option>
+              </select>
+              <div
+                *ngIf="
+                  equipoForm.get('departamentoId')?.invalid &&
+                  equipoForm.get('departamentoId')?.touched
+                "
+                class="error"
+              >
+                Selecciona un departamento
+              </div>
+              <div *ngIf="!departamentos.length" class="error">
+                No hay departamentos disponibles. Crea uno antes de editar.
+              </div>
+            </div>
             <div *ngFor="let campo of camposDinamicos; let i = index" class="form-group" style="min-width: 100%;">
 
               <label [for]="campo.name">{{ campo.label }}</label>
@@ -41,7 +68,7 @@
 
             <div class="form-group full-width">
               <label for="estado">Estado del Equipo</label>
-              <select class="inputs" id="estado" formControlName="estado">
+              <select class="inputs custom-select" id="estado" formControlName="estado">
                 <option *ngFor="let estado of estadosEquipo" [value]="estado.id">
                   {{ estado.name }}
                 </option>

@@ -6,10 +6,11 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { forkJoin } from 'rxjs';
-import { finalize } from 'rxjs/operators';
+import { forkJoin, of } from 'rxjs';
+import { finalize, catchError } from 'rxjs/operators';
 import { TipoEquipo } from '../../../interfaces/TipoEquipo.interface';
 import { Campo } from '../../../interfaces/campo.interface';
+import { DepartamentoEquipo } from '../../../interfaces/departamento-equipo.interface';
 import { ApiService } from '../../../services/api.service';
 import { LoaderService } from '../../../services/loader.service';
 import { SignalService } from '../../../services/signal.service';
@@ -25,18 +26,25 @@ import { NavegationComponent } from '../../../shared/navegation/navegation.compo
 export class TiposEquiposComponent implements OnInit {
   public tipos: TipoEquipo[] = [];
   public campos: Campo[] = [];
+  public departamentos: DepartamentoEquipo[] = [];
 
   public selectedTipo: TipoEquipo | null = null;
+  public departamentoSeleccionado: DepartamentoEquipo | null = null;
 
   public crearTipoForm: FormGroup;
   public editarTipoForm: FormGroup;
   public campoForm: FormGroup;
+  public crearDepartamentoForm: FormGroup;
+  public editarDepartamentoForm: FormGroup;
 
   public creandoTipo = false;
   public actualizandoTipo = false;
   public eliminandoTipo = false;
   public sincronizandoCampos = false;
   public guardandoCampo = false;
+  public creandoDepartamento = false;
+  public actualizandoDepartamento = false;
+  public eliminandoDepartamento = false;
 
   public mostrarModalCampos = false;
   public modalCargando = false;
@@ -51,6 +59,10 @@ export class TiposEquiposComponent implements OnInit {
   public errorCampos = '';
   public mensajeCampo = '';
   public errorCampo = '';
+  public mensajeDepartamento = '';
+  public errorDepartamento = '';
+  public mensajeDepartamentos = '';
+  public errorDepartamentos = '';
 
   private camposSeleccionados = new Set<number>();
   private camposSeleccionadosOriginal = new Set<number>();
@@ -81,6 +93,14 @@ export class TiposEquiposComponent implements OnInit {
       placeholder: [''],
       required: [false],
     });
+
+    this.crearDepartamentoForm = this.fb.group({
+      name: ['', [Validators.required, Validators.minLength(3)]],
+    });
+
+    this.editarDepartamentoForm = this.fb.group({
+      name: ['', [Validators.required, Validators.minLength(3)]],
+    });
   }
 
   ngOnInit(): void {
@@ -91,19 +111,64 @@ export class TiposEquiposComponent implements OnInit {
   cargarDatosIniciales(): void {
     this.loaderService.showSection();
     forkJoin({
-      tipos: this.apiService.typeEquipments(),
-      campos: this.apiService.getCamposCatalog(),
+      tipos: this.apiService.typeEquipments().pipe(
+        catchError((error) => {
+          console.error('Error al cargar los tipos de equipos:', error);
+          this.errorTipo =
+            error?.error?.error ??
+            'No se pudo cargar la informacion de tipos de equipos.';
+          return of([] as TipoEquipo[]);
+        })
+      ),
+      campos: this.apiService.getCamposCatalog().pipe(
+        catchError((error) => {
+          console.error('Error al cargar el catalogo de campos:', error);
+          this.errorCampos =
+            error?.error?.error ?? 'No se pudo cargar el catalogo de campos.';
+          return of([] as Campo[]);
+        })
+      ),
+      departamentos: this.apiService.getDepartamentosEquipo().pipe(
+        catchError((error) => {
+          console.error('Error al cargar los departamentos de equipo:', error);
+          this.errorDepartamentos =
+            error?.error?.error ??
+            'No se pudo cargar la informacion de departamentos.';
+          return of([] as DepartamentoEquipo[]);
+        })
+      ),
     })
       .pipe(finalize(() => this.loaderService.hideSection()))
       .subscribe({
-        next: ({ tipos, campos }) => {
+        next: ({ tipos, campos, departamentos }) => {
           this.tipos = Array.isArray(tipos) ? tipos : [];
           this.campos = Array.isArray(campos) ? campos : [];
+          this.departamentos = Array.isArray(departamentos)
+            ? this.ordenarDepartamentos(departamentos)
+            : [];
           const inicialesValidos = Array.from(this.camposInicialesSeleccionados).filter((id) =>
             this.campos.some((campo) => campo.id === id)
           );
           this.camposInicialesSeleccionados = new Set(inicialesValidos);
           this.crearTipoForm.get('campoIds')?.setValue(inicialesValidos);
+
+          if (this.departamentoSeleccionado) {
+            const existenteDepartamento = this.departamentos.find(
+              (departamento) =>
+                departamento.id === this.departamentoSeleccionado?.id
+            );
+
+            if (existenteDepartamento) {
+              this.departamentoSeleccionado = existenteDepartamento;
+              this.editarDepartamentoForm.patchValue({
+                name: existenteDepartamento.name,
+              });
+            } else {
+              this.departamentoSeleccionado = null;
+              this.editarDepartamentoForm.reset({ name: '' });
+            }
+          }
+
           if (this.selectedTipo) {
             const existente = this.tipos.find((tipo) => tipo.id === this.selectedTipo?.id);
             if (existente) {
@@ -136,6 +201,12 @@ export class TiposEquiposComponent implements OnInit {
     this.mensajeTipo = '';
     this.errorTipo = '';
     this.cargarCamposDelTipo(tipo.id, mostrarModalCampos);
+  }
+
+  private ordenarDepartamentos(
+    listado: DepartamentoEquipo[]
+  ): DepartamentoEquipo[] {
+    return [...listado].sort((a, b) => a.name.localeCompare(b.name));
   }
 
   private cargarCamposDelTipo(
@@ -335,6 +406,162 @@ export class TiposEquiposComponent implements OnInit {
             error?.error?.error ??
             'No se pudo eliminar el tipo de equipo. Verifica que no tenga equipos asociados.';
           this.errorTipo = mensaje;
+          window.alert(mensaje);
+        },
+      });
+  }
+
+  seleccionarDepartamento(departamento: DepartamentoEquipo): void {
+    if (!departamento) {
+      return;
+    }
+
+    this.departamentoSeleccionado = departamento;
+    this.editarDepartamentoForm.reset({
+      name: departamento.name,
+    });
+    this.mensajeDepartamento = '';
+    this.errorDepartamento = '';
+  }
+
+  cancelarEdicionDepartamento(): void {
+    this.departamentoSeleccionado = null;
+    this.editarDepartamentoForm.reset({ name: '' });
+    this.mensajeDepartamento = '';
+    this.errorDepartamento = '';
+  }
+
+  crearDepartamento(): void {
+    if (this.crearDepartamentoForm.invalid) {
+      this.crearDepartamentoForm.markAllAsTouched();
+      return;
+    }
+
+    const nombreCrudo = this.crearDepartamentoForm.get('name')?.value ?? '';
+    const nombre = `${nombreCrudo}`.trim();
+
+    if (!nombre) {
+      this.errorDepartamento = 'El nombre del departamento es obligatorio.';
+      return;
+    }
+
+    this.creandoDepartamento = true;
+    this.mensajeDepartamento = '';
+    this.errorDepartamento = '';
+    this.mensajeDepartamentos = '';
+
+    this.apiService
+      .createDepartamentoEquipo({ name: nombre })
+      .pipe(finalize(() => (this.creandoDepartamento = false)))
+      .subscribe({
+        next: (departamento) => {
+          this.departamentos = this.ordenarDepartamentos([
+            ...this.departamentos,
+            departamento,
+          ]);
+          this.crearDepartamentoForm.reset({ name: '' });
+          this.mensajeDepartamento = 'Departamento creado correctamente.';
+        },
+        error: (error) => {
+          console.error('Error al crear departamento:', error);
+          this.errorDepartamento =
+            error?.error?.error ??
+            'No se pudo crear el departamento. Intentalo nuevamente.';
+        },
+      });
+  }
+
+  actualizarDepartamento(): void {
+    if (!this.departamentoSeleccionado) {
+      return;
+    }
+
+    if (this.editarDepartamentoForm.invalid) {
+      this.editarDepartamentoForm.markAllAsTouched();
+      return;
+    }
+
+    const nombreCrudo = this.editarDepartamentoForm.get('name')?.value ?? '';
+    const nombre = `${nombreCrudo}`.trim();
+
+    if (!nombre) {
+      this.errorDepartamento = 'El nombre del departamento es obligatorio.';
+      return;
+    }
+
+    if (nombre === this.departamentoSeleccionado.name) {
+      this.mensajeDepartamento = 'No hay cambios para actualizar.';
+      return;
+    }
+
+    this.actualizandoDepartamento = true;
+    this.mensajeDepartamento = '';
+    this.errorDepartamento = '';
+
+    this.apiService
+      .updateDepartamentoEquipo(this.departamentoSeleccionado.id, { name: nombre })
+      .pipe(finalize(() => (this.actualizandoDepartamento = false)))
+      .subscribe({
+        next: (actualizado) => {
+          this.departamentos = this.ordenarDepartamentos(
+            this.departamentos.map((item) =>
+              item.id === actualizado.id ? actualizado : item
+            )
+          );
+          this.departamentoSeleccionado = actualizado;
+          this.editarDepartamentoForm.patchValue({ name: actualizado.name });
+          this.mensajeDepartamento = 'Departamento actualizado correctamente.';
+        },
+        error: (error) => {
+          console.error('Error al actualizar departamento:', error);
+          this.errorDepartamento =
+            error?.error?.error ??
+            'No se pudo actualizar el departamento. Intentalo nuevamente.';
+        },
+      });
+  }
+
+  eliminarDepartamento(
+    departamento: DepartamentoEquipo,
+    event?: Event
+  ): void {
+    event?.stopPropagation();
+
+    if (!departamento) {
+      return;
+    }
+
+    const confirmar = window.confirm(
+      `Deseas eliminar el departamento "${departamento.name}"?`
+    );
+
+    if (!confirmar) {
+      return;
+    }
+
+    this.eliminandoDepartamento = true;
+    this.mensajeDepartamentos = '';
+    this.errorDepartamentos = '';
+
+    this.apiService
+      .deleteDepartamentoEquipo(departamento.id)
+      .pipe(finalize(() => (this.eliminandoDepartamento = false)))
+      .subscribe({
+        next: () => {
+          this.departamentos = this.departamentos.filter(
+            (item) => item.id !== departamento.id
+          );
+          if (this.departamentoSeleccionado?.id === departamento.id) {
+            this.cancelarEdicionDepartamento();
+          }
+          this.mensajeDepartamentos = 'Departamento eliminado correctamente.';
+        },
+        error: (error) => {
+          console.error('Error al eliminar departamento:', error);
+          const mensaje =
+            error?.error?.error ??
+            'No se pudo eliminar el departamento. Verifica que no tenga equipos asociados.';
+          this.errorDepartamentos = mensaje;
           window.alert(mensaje);
         },
       });

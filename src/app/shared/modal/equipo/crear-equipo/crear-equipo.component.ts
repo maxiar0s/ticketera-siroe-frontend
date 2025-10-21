@@ -9,6 +9,7 @@ import {
 import { ActivatedRoute, ParamMap } from '@angular/router';
 import { ApiService } from '../../../../services/api.service';
 import { TipoEquipo } from '../../../../interfaces/TipoEquipo.interface';
+import { DepartamentoEquipo } from '../../../../interfaces/departamento-equipo.interface';
 import { FormatInputSoloNumerosDirective } from '../../../../directives/solo-numeros.directive';
 
 @Component({
@@ -23,6 +24,7 @@ export class CrearEquipoComponent {
   @Output() enviarFormulario = new EventEmitter<any>();
 
   public TipoEquipos: TipoEquipo[] = [];
+  public departamentos: DepartamentoEquipo[] = [];
 
   public isVisible: boolean = true;
   public creating!: boolean;
@@ -37,7 +39,7 @@ export class CrearEquipoComponent {
   ) {
     this.equipoForm = this.fb.group({
       sucursalId: ['', Validators.required],
-      departamento: ['', Validators.required],
+      departamentoId: ['', Validators.required],
       cantidad: ['', [Validators.required, Validators.min(1)]],
       tipoEquipoId: ['', Validators.required],
     });
@@ -54,6 +56,15 @@ export class CrearEquipoComponent {
     this.apiService.typeEquipments().subscribe({
       next: (respuesta) => {
         this.TipoEquipos = respuesta;
+      },
+    });
+
+    this.apiService.getDepartamentosEquipo().subscribe({
+      next: (departamentos) => {
+        this.departamentos = departamentos;
+      },
+      error: (error) => {
+        console.error('Error al cargar departamentos de equipo:', error);
       },
     });
   }
@@ -81,8 +92,8 @@ export class CrearEquipoComponent {
   }
 
   changeSelectColor(event: Event) {
-    const Element = event.currentTarget as HTMLAnchorElement;
+    const element = event.currentTarget as HTMLSelectElement;
 
-    Element.classList.add('colorSelect');
+    element.classList.add('colorSelect');
   }
 }

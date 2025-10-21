@@ -18,6 +18,7 @@ import { Equipo } from '../../../../interfaces/equipo.interface';
 import { EquipoFormField } from '../../../../interfaces/EquipoForm.interface';
 import { LoaderModalComponent } from '../../../loader-modal/loader-modal.component';
 import { EstadoEquipo } from '../../../../interfaces/estado-equipo.interface';
+import { DepartamentoEquipo } from '../../../../interfaces/departamento-equipo.interface';
 
 // ! #FIXME: Error al actualizar estado de equipo y actualizar el equipo
 
@@ -55,6 +56,7 @@ export class ModificarEquipoComponent {
   // Tipo del equipo
   public tipoEquipoActual: string = '';
   public camposDinamicos: EquipoFormField[] = [];
+  public departamentos: DepartamentoEquipo[] = [];
 
   // Estados de equipo
   public estadosEquipo: EstadoEquipo[] = [];
@@ -63,6 +65,7 @@ export class ModificarEquipoComponent {
   public errorMessage: string = '';
   public originalFormValues: any = {};
   public soloEstadoModificado: boolean = false;
+  private departamentoOriginal: string | null = null;
 
   constructor(
     private fb: FormBuilder,
@@ -75,6 +78,7 @@ export class ModificarEquipoComponent {
 
     // Cargar los estados de equipo
     this.cargarEstadosEquipo();
+    this.cargarDepartamentos();
 
     this.apiService.equiptment(this.idEquipo).subscribe({
       next: (respuesta) => {
@@ -82,6 +86,7 @@ export class ModificarEquipoComponent {
 
         this.headerCharged = true;
         this.tipoEquipoActual = respuesta.tipoEquipoId;
+        this.departamentoOriginal = respuesta.departamento ?? null;
 
         this.apiService.formEquipment(this.tipoEquipoActual).subscribe({
           next: (campos) => {
@@ -126,6 +131,18 @@ export class ModificarEquipoComponent {
     });
   }
 
+  cargarDepartamentos() {
+    this.apiService.getDepartamentosEquipo().subscribe({
+      next: (departamentos) => {
+        this.departamentos = departamentos;
+        this.establecerDepartamentoEnFormulario();
+      },
+      error: (error) => {
+        console.error('Error al cargar los departamentos de equipo:', error);
+      },
+    });
+  }
+
   eliminarDuplicados(array: any[], prop: string): any[] {
     return array.filter(
       (obj, index, self) =>
@@ -138,15 +155,21 @@ export class ModificarEquipoComponent {
     respuesta: any
   ): void {
     const controlesActuales = Object.keys(this.equipoForm.controls);
+    const controlesProtegidos = new Set(['id', 'estado', 'text', 'departamentoId']);
 
     controlesActuales.forEach((controlName) => {
+      if (controlesProtegidos.has(controlName)) {
+        return;
+      }
       if (!campos.find((campo) => campo.name === controlName)) {
         this.equipoForm.removeControl(controlName);
       }
     });
 
-    const control = new FormControl('', Validators.required);
-    this.equipoForm.addControl('id', control);
+    if (!this.equipoForm.contains('id')) {
+      const control = new FormControl('', Validators.required);
+      this.equipoForm.addControl('id', control);
+    }
     this.equipoForm.patchValue({
       id: this.idEquipo,
     });
@@ -157,6 +180,11 @@ export class ModificarEquipoComponent {
 
     const text = new FormControl('');
     this.equipoForm.addControl('text', text);
+
+    if (!this.equipoForm.contains('departamentoId')) {
+      const departamentoControl = new FormControl('', Validators.required);
+      this.equipoForm.addControl('departamentoId', departamentoControl);
+    }
 
     campos.forEach((campo) => {
       if (!this.equipoForm.contains(campo.name)) {
@@ -175,6 +203,44 @@ export class ModificarEquipoComponent {
         }
       }
     });
+
+    this.establecerDepartamentoEnFormulario();
+  }
+
+  private establecerDepartamentoEnFormulario(): void {
+    if (!this.equipoForm.contains('departamentoId')) {
+      return;
+    }
+
+    const control = this.equipoForm.get('departamentoId');
+    if (!control) {
+      return;
+    }
+
+    if (!this.departamentos.length) {
+      return;
+    }
+
+    if (!this.departamentoOriginal) {
+      control.setValue('');
+      return;
+    }
+
+    const normalizar = (valor: string) => valor.trim().toLowerCase();
+    const objetivo = normalizar(this.departamentoOriginal);
+
+    const coincidencia = this.departamentos.find(
+      (item) => normalizar(item.name) === objetivo
+    );
+
+    if (coincidencia) {
+      control.setValue(coincidencia.id.toString());
+      control.markAsPristine();
+      control.updateValueAndValidity({ emitEvent: false });
+    } else {
+      control.setValue('');
+      control.updateValueAndValidity({ emitEvent: false });
+    }
   }
 
   abrirModal() {
@@ -187,6 +253,7 @@ export class ModificarEquipoComponent {
     this.errorMessage = '';
     this.selectedFile = null;
     this.soloEstadoModificado = false;
+    this.departamentoOriginal = null;
     this.cerrarModal.emit();
   }
 

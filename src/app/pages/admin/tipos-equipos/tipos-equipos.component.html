@@ -85,6 +85,7 @@
     </li>
   </ul>
 </section>
+
 </div>
 
 <div class="tipos-columna tipos-detalle">
@@ -126,105 +127,233 @@
           <div class="mensaje error" *ngIf="errorTipo">{{ errorTipo }}</div>
         </form>
       </section>
-</ng-container>
-<ng-template #sinSeleccion>
-  <div class="estado-vacio">
-    <h2>Selecciona un tipo</h2>
-    <p>Elige un tipo de la lista para ver sus campos y editar su información.</p>
-  </div>
-</ng-template>
-</ng-template>
+    </ng-container>
+    <ng-template #sinSeleccion>
+      <div class="estado-vacio">
+        <h2>Selecciona un tipo</h2>
+        <p>Elige un tipo de la lista para ver sus campos y editar su información.</p>
+      </div>
+    </ng-template>
+  </ng-template>
 
-<section class="card gestion-campos">
-  <header>
-    <h2>{{ campoEnEdicion ? 'Editar campo' : 'Nuevo campo' }}</h2>
-    <p>Configura los campos disponibles para los distintos tipos de equipo.</p>
-  </header>
-  <form [formGroup]="campoForm" (ngSubmit)="enviarCampo()">
-    <div class="form-grid">
-      <div class="form-group">
-        <label for="campoNombre">Nombre interno</label>
-        <input
-        id="campoNombre"
-        type="text"
-        formControlName="name"
-        placeholder="Ej. numeroSerie"
-        [class.input-error]="campoForm.get('name')?.invalid && campoForm.get('name')?.touched"
-        />
+  <section class="card gestion-campos">
+    <header>
+      <h2>{{ campoEnEdicion ? 'Editar campo' : 'Nuevo campo' }}</h2>
+      <p>Configura los campos disponibles para los distintos tipos de equipo.</p>
+    </header>
+    <form [formGroup]="campoForm" (ngSubmit)="enviarCampo()">
+      <div class="form-grid">
+        <div class="form-group">
+          <label for="campoNombre">Nombre interno</label>
+          <input
+          id="campoNombre"
+          type="text"
+          formControlName="name"
+          placeholder="Ej. numeroSerie"
+          [class.input-error]="campoForm.get('name')?.invalid && campoForm.get('name')?.touched"
+          />
+        </div>
+        <div class="form-group">
+          <label for="campoLabel">Etiqueta visible</label>
+          <input
+          id="campoLabel"
+          type="text"
+          formControlName="label"
+          placeholder="Ej. Número de serie"
+          [class.input-error]="campoForm.get('label')?.invalid && campoForm.get('label')?.touched"
+          />
+        </div>
+        <div class="form-group">
+          <label for="campoTipo">Tipo de dato</label>
+          <select id="campoTipo" formControlName="type">
+            <option value="text">Texto</option>
+            <option value="number">Número</option>
+            <option value="date">Fecha</option>
+            <option value="file">Archivo</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="campoPlaceholder">Placeholder</label>
+          <input
+          id="campoPlaceholder"
+          type="text"
+          formControlName="placeholder"
+          placeholder="Texto de ayuda opcional"
+          />
+        </div>
       </div>
-      <div class="form-group">
-        <label for="campoLabel">Etiqueta visible</label>
-        <input
-        id="campoLabel"
-        type="text"
-        formControlName="label"
-        placeholder="Ej. Número de serie"
-        [class.input-error]="campoForm.get('label')?.invalid && campoForm.get('label')?.touched"
-        />
+      <div class="campo-required">
+        <label class="campo-required__label">
+          <input type="checkbox" formControlName="required" />
+          Campo obligatorio
+        </label>
       </div>
-      <div class="form-group">
-        <label for="campoTipo">Tipo de dato</label>
-        <select id="campoTipo" formControlName="type">
-          <option value="text">Texto</option>
-          <option value="number">Número</option>
-          <option value="date">Fecha</option>
-          <option value="file">Archivo</option>
-        </select>
+      <div class="acciones-campos">
+        <button type="submit" [disabled]="guardandoCampo">
+          {{ guardandoCampo ? 'Guardando…' : (campoEnEdicion ? 'Actualizar campo' : 'Crear campo') }}
+        </button>
+        <button type="button" class="btn-enlace" *ngIf="campoEnEdicion" (click)="cancelarEdicionCampo()">
+          Cancelar edición
+        </button>
       </div>
-      <div class="form-group">
-        <label for="campoPlaceholder">Placeholder</label>
-        <input
-        id="campoPlaceholder"
-        type="text"
-        formControlName="placeholder"
-        placeholder="Texto de ayuda opcional"
-        />
-      </div>
-    </div>
-    <div class="campo-required">
-      <label class="campo-required__label">
-        <input type="checkbox" formControlName="required" />
-        Campo obligatorio
-      </label>
-    </div>
-    <div class="acciones-campos">
-      <button type="submit" [disabled]="guardandoCampo">
-        {{ guardandoCampo ? 'Guardando…' : (campoEnEdicion ? 'Actualizar campo' : 'Crear campo') }}
-      </button>
-      <button type="button" class="btn-enlace" *ngIf="campoEnEdicion" (click)="cancelarEdicionCampo()">
-            Cancelar edición
+    </form>
+
+    <div class="mensaje exito" *ngIf="mensajeCampo && !errorCampo">{{ mensajeCampo }}</div>
+    <div class="mensaje error" *ngIf="errorCampo">{{ errorCampo }}</div>
+
+    <ul class="lista-campos">
+      <li *ngFor="let campo of campos">
+        <div>
+          <h3>{{ campo.label }}</h3>
+          <p>{{ campo.name }} · {{ campo.type }}</p>
+          <small *ngIf="campo.placeholder">{{ campo.placeholder }}</small>
+        </div>
+        <div class="acciones">
+          <button type="button" class="btn-enlace" (click)="editarCampo(campo)">Editar</button>
+          <button type="button" class="btn-enlace borrar" (click)="eliminarCampo(campo)">
+            Eliminar
+          </button>
+        </div>
+      </li>
+      <li *ngIf="!campos.length" class="tipo-vacio">
+        Aún no hay campos configurados.
+      </li>
+    </ul>
+  </section>
+  <section class="card departamentos-card">
+    <header>
+      <h2>Departamentos</h2>
+      <span>{{ departamentos.length }} registrados</span>
+    </header>
+
+    <div class="departamentos-formularios">
+      <form
+        class="departamento-form"
+        [formGroup]="crearDepartamentoForm"
+        (ngSubmit)="crearDepartamento()"
+      >
+        <h3>Crear departamento</h3>
+        <div class="form-group">
+          <label for="nuevoDepartamento">Nombre</label>
+          <input
+            id="nuevoDepartamento"
+            type="text"
+            formControlName="name"
+            placeholder="Ej. Informatica"
+            [class.input-error]="
+              crearDepartamentoForm.get('name')?.invalid &&
+              crearDepartamentoForm.get('name')?.touched
+            "
+          />
+          <span
+            class="form-error"
+            *ngIf="
+              crearDepartamentoForm.get('name')?.invalid &&
+              crearDepartamentoForm.get('name')?.touched
+            "
+          >
+            Ingresa un nombre valido (minimo 3 caracteres).
+          </span>
+        </div>
+        <button type="submit" [disabled]="creandoDepartamento">
+          {{ creandoDepartamento ? 'Guardando...' : 'Agregar' }}
+        </button>
+      </form>
+
+      <form
+        class="departamento-form"
+        *ngIf="departamentoSeleccionado"
+        [formGroup]="editarDepartamentoForm"
+        (ngSubmit)="actualizarDepartamento()"
+      >
+        <h3>Editar departamento</h3>
+        <div class="form-group">
+          <label for="editarDepartamento">Nombre</label>
+          <input
+            id="editarDepartamento"
+            type="text"
+            formControlName="name"
+            [class.input-error]="
+              editarDepartamentoForm.get('name')?.invalid &&
+              editarDepartamentoForm.get('name')?.touched
+            "
+          />
+          <span
+            class="form-error"
+            *ngIf="
+              editarDepartamentoForm.get('name')?.invalid &&
+              editarDepartamentoForm.get('name')?.touched
+            "
+          >
+            Ingresa un nombre valido (minimo 3 caracteres).
+          </span>
+        </div>
+        <div class="departamento-acciones">
+          <button type="submit" [disabled]="actualizandoDepartamento">
+            {{ actualizandoDepartamento ? 'Guardando...' : 'Actualizar' }}
+          </button>
+          <button
+            type="button"
+            class="btn-enlace"
+            (click)="cancelarEdicionDepartamento()"
+          >
+            Cancelar
           </button>
         </div>
       </form>
+    </div>
 
-  <div class="mensaje exito" *ngIf="mensajeCampo && !errorCampo">{{ mensajeCampo }}</div>
-  <div class="mensaje error" *ngIf="errorCampo">{{ errorCampo }}</div>
+    <div class="mensaje exito" *ngIf="mensajeDepartamento && !errorDepartamento">
+      {{ mensajeDepartamento }}
+    </div>
+    <div class="mensaje error" *ngIf="errorDepartamento">
+      {{ errorDepartamento }}
+    </div>
 
-  <ul class="lista-campos">
-    <li *ngFor="let campo of campos">
-      <div>
-        <h3>{{ campo.label }}</h3>
-        <p>{{ campo.name }} · {{ campo.type }}</p>
-        <small *ngIf="campo.placeholder">{{ campo.placeholder }}</small>
-      </div>
-      <div class="acciones">
-        <button type="button" class="btn-enlace" (click)="editarCampo(campo)">Editar</button>
-        <button type="button" class="btn-enlace borrar" (click)="eliminarCampo(campo)">
-          Eliminar
-        </button>
-      </div>
-    </li>
-    <li *ngIf="!campos.length" class="tipo-vacio">
-      Aún no hay campos configurados.
-    </li>
-  </ul>
-</section>
+    <ul class="departamentos-lista">
+      <li
+        *ngFor="let departamento of departamentos"
+        [class.activo]="departamentoSeleccionado?.id === departamento.id"
+      >
+        <div class="departamento-info">
+          <span>{{ departamento.name }}</span>
+        </div>
+        <div class="acciones">
+          <button
+            type="button"
+            class="btn-enlace"
+            (click)="seleccionarDepartamento(departamento)"
+          >
+            Editar
+          </button>
+          <button
+            type="button"
+            class="btn-enlace borrar"
+            (click)="eliminarDepartamento(departamento, $event)"
+            [disabled]="eliminandoDepartamento"
+          >
+            Eliminar
+          </button>
+        </div>
+      </li>
+      <li *ngIf="!departamentos.length" class="tipo-vacio">
+        Aun no hay departamentos registrados.
+      </li>
+    </ul>
 
-<div
+    <div class="mensaje exito" *ngIf="mensajeDepartamentos && !errorDepartamentos">
+      {{ mensajeDepartamentos }}
+    </div>
+    <div class="mensaje error" *ngIf="errorDepartamentos">
+      {{ errorDepartamentos }}
+    </div>
+  </section>
+
+  <div
   class="modal-overlay"
   *ngIf="mostrarModalCampos"
   (click)="cerrarModalCampos()"
->
+  >
   <div class="modal" (click)="$event.stopPropagation()">
     <header class="modal-header">
       <div>
