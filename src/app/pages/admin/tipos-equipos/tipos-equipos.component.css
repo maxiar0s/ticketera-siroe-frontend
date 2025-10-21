@@ -105,9 +105,10 @@
 }
 
 .campos-iniciales-grid__item {
-  display: flex;
+  display: grid;
+  grid-template-columns: auto 1fr;
   align-items: center;
-  gap: 0.6rem;
+  gap: 1rem;
   padding: 0.55rem 0.8rem;
   border-radius: 10px;
   border: 1px solid #e5e7eb;
@@ -134,6 +135,8 @@
 .campos-iniciales-grid__item span {
   flex: 1;
   line-height: 1.25;
+  font-size: 1.1rem;
+  padding: 0.5rem;
 }
 
 .campo-required {
@@ -412,7 +415,7 @@ button:not(:disabled):hover {
 .modal-ayuda {
   margin: 0;
   color: #6b7280;
-  font-size: 0.9rem;
+  font-size: 1rem;
 }
 
 .modal-actions {
@@ -423,7 +426,7 @@ button:not(:disabled):hover {
 }
 
 .modal-mensaje {
-  font-size: 0.9rem;
+  font-size: 1rem;
   border-radius: 10px;
   padding: 0.75rem 1rem;
 }
