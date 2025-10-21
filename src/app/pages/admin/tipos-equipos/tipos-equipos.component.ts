@@ -104,11 +104,14 @@ export class TiposEquiposComponent implements OnInit {
           );
           this.camposInicialesSeleccionados = new Set(inicialesValidos);
           this.crearTipoForm.get('campoIds')?.setValue(inicialesValidos);
-          if (this.tipos.length) {
-            this.seleccionarTipo(this.tipos[0]);
-          } else {
-            this.selectedTipo = null;
-            this.camposSeleccionados.clear();
+          if (this.selectedTipo) {
+            const existente = this.tipos.find((tipo) => tipo.id === this.selectedTipo?.id);
+            if (existente) {
+              this.seleccionarTipo(existente);
+            } else {
+              this.selectedTipo = null;
+              this.camposSeleccionados.clear();
+            }
           }
         },
         error: (error) => {
@@ -218,7 +221,6 @@ export class TiposEquiposComponent implements OnInit {
           });
           this.camposInicialesSeleccionados.clear();
           this.mensajeCreacion = 'Tipo de equipo creado correctamente.';
-          this.seleccionarTipo(tipo);
         },
         error: (error) => {
           console.error('Error al crear tipo de equipo:', error);
@@ -319,13 +321,11 @@ export class TiposEquiposComponent implements OnInit {
         next: () => {
           this.tipos = this.tipos.filter((item) => item.id !== tipo.id);
           if (this.selectedTipo?.id === tipo.id) {
-            this.selectedTipo = this.tipos[0] ?? null;
-            if (this.selectedTipo) {
-              this.seleccionarTipo(this.selectedTipo);
-            } else {
-              this.editarTipoForm.reset();
-              this.camposSeleccionados.clear();
-            }
+            this.selectedTipo = null;
+            this.editarTipoForm.reset();
+            this.camposSeleccionados.clear();
+            this.camposSeleccionadosOriginal.clear();
+            this.mostrarModalCampos = false;
           }
           this.mensajeTipo = 'Tipo de equipo eliminado correctamente.';
         },
