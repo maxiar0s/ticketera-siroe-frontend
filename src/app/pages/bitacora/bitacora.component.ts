@@ -13,6 +13,7 @@ import { ClienteResumen } from '../../interfaces/cliente-resumen.interface';
 import { Tecnico } from '../../interfaces/tecnico.interface';
 import { ApiService } from '../../services/api.service';
 import { AuthService } from '../../services/auth.service';
+import { SignalService } from '../../services/signal.service';
 
 interface SucursalOption {
   id: string;
@@ -65,7 +66,8 @@ export class BitacoraComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private apiService: ApiService,
-    private authService: AuthService
+    private authService: AuthService,
+    private signalService: SignalService
   ) {
     this.esAdmin = this.authService.esAdministrador();
     this.esTecnico = this.authService.esTecnico();
@@ -124,6 +126,7 @@ export class BitacoraComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.signalService.updateData('Bitacora de visitas');
     this.cargarClientes();
     this.cargarTecnicosDisponibles();
   }

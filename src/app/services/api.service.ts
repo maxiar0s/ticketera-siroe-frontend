@@ -21,8 +21,8 @@ export class ApiService {
   //private url = 'http://167.71.172.190:3000';
   //private url = 'https://167.71.172.190';
 
-  //private url = 'http://localhost:3000';
-  private url = 'https://api.soportesiroe.cl'
+  private url = 'http://localhost:3000';
+  //private url = 'https://api.soportesiroe.cl'
 
   private readonly equiposClienteCache = new Map<string, ClienteEquiposDetalle>();
 
