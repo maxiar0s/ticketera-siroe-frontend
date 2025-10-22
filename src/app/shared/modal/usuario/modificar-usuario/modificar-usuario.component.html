@@ -56,6 +56,16 @@
         </div>
 
         <div class="form-group full-width" *ngIf="esRolClienteSeleccionado">
+          <label class="checkbox-label">
+            <span>Este cliente tiene acceso a Tickets.</span>
+            <input type="checkbox" formControlName="haveTickets"/>
+          </label>
+          <p class="helper-text">
+            Habilita al cliente para usar el modulo de Tickets.
+          </p>
+        </div>
+
+        <div class="form-group full-width" *ngIf="esRolClienteSeleccionado">
           <label for="clientesAutorizados">Clientes autorizados</label>
           <div class="clientes-dropdown" (click)="$event.stopPropagation()">
             <button type="button" class="dropdown-button" (click)="toggleClientesDropdown($event)" [disabled]="clientesDisponibles.length === 0">

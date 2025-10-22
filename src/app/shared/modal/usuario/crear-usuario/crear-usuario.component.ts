@@ -41,6 +41,7 @@ export class CrearUsuarioComponent {
       password: ['', Validators.required],
       clientesAutorizados: [[]],
       esTecnico: [false],
+      haveTickets: [false],
     });
   }
 
@@ -64,7 +65,11 @@ export class CrearUsuarioComponent {
       if (!esAdmin) {
         this.cuentaForm.get('esTecnico')?.setValue(false);
       }
-      if (valor === '4' || valor === 4) {
+      const esCliente = valor === '4' || valor === 4;
+      if (!esCliente) {
+        this.cuentaForm.get('haveTickets')?.setValue(false);
+      }
+      if (esCliente) {
         return;
       }
       this.limpiarSelecciones();
@@ -104,7 +109,11 @@ export class CrearUsuarioComponent {
 
   cerrar(): void {
     this.isVisible = false;
-    this.cuentaForm.reset({ clientesAutorizados: [], esTecnico: false });
+    this.cuentaForm.reset({
+      clientesAutorizados: [],
+      esTecnico: false,
+      haveTickets: false,
+    });
     this.errorMessage = '';
     this.limpiarSelecciones();
     this.cerrarModal.emit();

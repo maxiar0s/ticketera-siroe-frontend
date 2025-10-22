@@ -12,5 +12,6 @@ export interface Cuenta {
   estadoCuentaId?: number;
   estadoCuenta?:   EstadoCuenta;
   esTecnico?:      boolean;
+  haveTickets?:    boolean;
   clientesAutorizados?: ClienteResumen[];
 }

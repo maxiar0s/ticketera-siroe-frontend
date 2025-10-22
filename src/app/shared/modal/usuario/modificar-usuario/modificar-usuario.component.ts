@@ -43,6 +43,7 @@ export class ModificarUsuarioComponent {
       estadoCuentaId: ['', Validators.required],
       clientesAutorizados: [[]],
       esTecnico: [false],
+      haveTickets: [false],
     });
   }
 
@@ -54,6 +55,7 @@ export class ModificarUsuarioComponent {
       telefono: this.usuario ? this.usuario.telefono : '',
       estadoCuentaId: this.usuario ? this.usuario.estadoCuentaId : '',
       esTecnico: this.usuario ? !!this.usuario.esTecnico : false,
+      haveTickets: this.usuario ? !!this.usuario.haveTickets : false,
     });
 
     this.clientesSeleccionados = this.usuario?.clientesAutorizados
@@ -68,7 +70,11 @@ export class ModificarUsuarioComponent {
       if (!esAdmin) {
         this.usuarioForm.get('esTecnico')?.setValue(false);
       }
-      if (valor === '4' || valor === 4) {
+      const esCliente = valor === '4' || valor === 4;
+      if (!esCliente) {
+        this.usuarioForm.get('haveTickets')?.setValue(false);
+      }
+      if (esCliente) {
         return;
       }
       this.limpiarSelecciones();
@@ -99,7 +105,11 @@ export class ModificarUsuarioComponent {
 
   cerrar(): void {
     this.isVisible = false;
-    this.usuarioForm.reset({ clientesAutorizados: [], esTecnico: false });
+    this.usuarioForm.reset({
+      clientesAutorizados: [],
+      esTecnico: false,
+      haveTickets: false,
+    });
     this.errorMessage = '';
     this.limpiarSelecciones();
     this.cerrarModal.emit();
