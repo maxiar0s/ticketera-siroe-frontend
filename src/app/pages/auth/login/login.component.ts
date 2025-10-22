@@ -31,16 +31,22 @@ export class LoginComponent {
 
   postLogin() {
     if(this.loginForm.invalid) return;
+    this.errorMessage = false;
     this.logging = true;
     this.apiService.login(this.loginForm.value).subscribe({
       next: (respuesta) => {
-        if(respuesta.token) {
-          this.authService.guardarToken(respuesta.token);
+        const token = respuesta?.token;
+        if(token) {
+          this.authService.guardarToken(token);
           const destino = this.authService.esCliente() ? '/dashboard-cliente' : '/dashboard';
           this.router.navigate([destino]);
         } else {
           this.errorMessage = true;
         }
+        this.logging = false;
+      },
+      error: () => {
+        this.errorMessage = true;
         this.logging = false;
       }
     })
