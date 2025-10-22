@@ -390,6 +390,9 @@ export class DashboardCalendarComponent implements OnInit {
       if (Number.isNaN(fecha.getTime())) {
         return;
       }
+      if (this.esFechaEnPasado(fecha)) {
+        return;
+      }
       const clave = this.formatearClave(fecha);
       agregarEvento(clave, { ...visita, tipo: 'programada' } as EventoCalendario);
     });
@@ -523,6 +526,17 @@ export class DashboardCalendarComponent implements OnInit {
     const datePart = clave.split('T')[0];
     const [year, month, day] = datePart.split('-').map((value) => Number(value));
     return new Date(year ?? 0, (month ?? 1) - 1, day ?? 1);
+  }
+
+  private esFechaEnPasado(fecha: Date): boolean {
+    if (Number.isNaN(fecha.getTime())) {
+      return false;
+    }
+    const inicioDelDia = new Date(fecha);
+    inicioDelDia.setHours(0, 0, 0, 0);
+    const inicioDeHoy = new Date();
+    inicioDeHoy.setHours(0, 0, 0, 0);
+    return inicioDelDia.getTime() < inicioDeHoy.getTime();
   }
 
   private combinarFechaHora(fecha: string, hora: string): string {
