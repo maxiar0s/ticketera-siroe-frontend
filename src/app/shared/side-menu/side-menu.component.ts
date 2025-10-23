@@ -1,7 +1,8 @@
 import { CommonModule, Location } from '@angular/common';
 import { Component, Renderer2 } from '@angular/core';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
+import { ApiService } from '../../services/api.service';
 
 // Menus
 import menu_administrador from './menu-administrador.json';
@@ -21,14 +22,16 @@ export class SideMenuComponent {
   public currentSubGroup: string = '';
 
   // Menus
-  public menu: any;
+  public menu: any[] = [];
   public menuConfig = menu_config;
   public logoRoute: string = '/dashboard';
 
   constructor(
     private authService: AuthService,
     private renderer: Renderer2,
-    private location: Location
+    private location: Location,
+    private apiService: ApiService,
+    private router: Router
   ) {}
 
   private normalizeRoute(route: string | undefined | null): string {
@@ -40,20 +43,50 @@ export class SideMenuComponent {
 
   ngOnInit(): void {
     if (this.authService.esAdministrador()) {
-      this.menu = menu_administrador;
+      this.menu = this.clonarMenu(menu_administrador);
       this.logoRoute = '/dashboard';
     } else if (this.authService.esCliente()) {
-      this.menu = menu_cliente;
+      this.menu = this.clonarMenu(menu_cliente);
       this.logoRoute = '/dashboard-cliente';
     } else {
-      this.menu = menu_tecnico;
+      this.menu = this.clonarMenu(menu_tecnico);
       this.logoRoute = '/dashboard';
     }
 
-    const path = this.location.path();
-    const normalizedPath = this.normalizeRoute(path);
+    this.sincronizarSeleccionConRuta(this.location.path());
 
+    this.apiService.perfilActual().subscribe({
+      next: (perfil) => {
+        const tieneTickets =
+          !!perfil?.haveTickets ||
+          this.authService.esAdministrador() ||
+          this.authService.esTecnico();
+        this.ajustarMenuPorTickets(tieneTickets, this.location.path());
+      },
+      error: () => {
+        const fallbackTickets =
+          this.authService.esAdministrador() || this.authService.esTecnico();
+        this.ajustarMenuPorTickets(fallbackTickets, this.location.path());
+      },
+    });
+  }
+
+  private clonarMenu(base: any[]): any[] {
+    return JSON.parse(JSON.stringify(base ?? []));
+  }
+
+  private sincronizarSeleccionConRuta(path: string): void {
+    const normalizedPath = this.normalizeRoute(path);
     let matchedRoute: string | null = null;
+
+    this.menu?.forEach((item) => {
+      if (typeof item.isOpen === 'boolean') {
+        item.isOpen = false;
+      }
+    });
+
+    this.currentGroup = '';
+    this.currentSubGroup = '';
 
     for (const item of this.menu ?? []) {
       if (this.normalizeRoute(item.route) === normalizedPath) {
@@ -83,6 +116,38 @@ export class SideMenuComponent {
     } else if (this.menu?.length) {
       this.currentGroup = this.menu[0].route;
       this.currentSubGroup = this.menu[0].route;
+    }
+  }
+
+  private ajustarMenuPorTickets(tieneTickets: boolean, currentPath: string): void {
+    const index = this.menu.findIndex(
+      (item) => this.normalizeRoute(item.route) === 'bitacora'
+    );
+
+    if (index === -1) {
+      return;
+    }
+
+    if (!tieneTickets && this.authService.esCliente()) {
+      this.menu.splice(index, 1);
+      const destino = this.logoRoute || '/dashboard';
+      const normalizedCurrent = this.normalizeRoute(currentPath);
+      if (normalizedCurrent === 'bitacora') {
+        this.router.navigate([destino]).finally(() => {
+          this.sincronizarSeleccionConRuta(this.location.path());
+        });
+      } else {
+        this.sincronizarSeleccionConRuta(this.location.path());
+      }
+      return;
+    }
+
+    if (tieneTickets) {
+      this.menu[index] = {
+        ...this.menu[index],
+        nombre: 'Bitacora / Tickets',
+      };
+      this.sincronizarSeleccionConRuta(this.location.path());
     }
   }
 

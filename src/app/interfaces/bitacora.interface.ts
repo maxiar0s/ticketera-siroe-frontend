@@ -4,8 +4,8 @@ export interface Bitacora {
   descripcion: string;
   tecnicos: string[];
   fechaVisita: string;
-  horaLlegada: string;
-  horaSalida: string;
+  horaLlegada: string | null;
+  horaSalida: string | null;
   casaMatrizId: string;
   sucursalId: string | null;
   creadoPorId: number;
@@ -34,6 +34,11 @@ export interface Bitacora {
     email: string;
   };
   adjuntos?: string[];
+  adjuntosTermino?: string[];
+  esTicket?: boolean;
+  estadoTicket?: 'ingresado' | 'terminado' | null;
+  fechaTermino?: string | null;
+  detalleTermino?: string | null;
 }
 
 export interface BitacoraListadoResponse {

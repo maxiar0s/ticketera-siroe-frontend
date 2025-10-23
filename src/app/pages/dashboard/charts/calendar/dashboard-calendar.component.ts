@@ -14,7 +14,7 @@ import { VisitaProgramada } from '../../../../interfaces/visita-programada.inter
 import { AuthService } from '../../../../services/auth.service';
 import { Tecnico } from '../../../../interfaces/tecnico.interface';
 
-type TipoEventoDia = 'programada' | 'completada' | 'emergencia';
+type TipoEventoDia = 'programada' | 'completada' | 'emergencia' | 'ticket';
 
 interface CalendarDay {
   date: Date;
@@ -26,6 +26,7 @@ interface CalendarDay {
   regularCompletedCount: number;
   scheduledCount: number;
   emergencyCount: number;
+  ticketCount: number;
   isToday: boolean;
   isSelected: boolean;
   tipos: TipoEventoDia[];
@@ -38,7 +39,7 @@ interface SucursalOption {
 }
 
 type EventoCalendario =
-  | (Bitacora & { tipo: 'completada' })
+  | (Bitacora & { tipo: 'completada' | 'ticket' })
   | (VisitaProgramada & { tipo: 'programada' });
 
 @Component({
@@ -91,6 +92,7 @@ export class DashboardCalendarComponent implements OnInit {
     programada: '#1f8f56',
     completada: '#b71653',
     emergencia: '#ff3b30',
+    ticket: '#1976d2',
   };
 
   private vista = {
@@ -378,7 +380,8 @@ export class DashboardCalendarComponent implements OnInit {
         return;
       }
       const clave = this.formatearClave(fecha);
-      agregarEvento(clave, { ...bitacora, tipo: 'completada' });
+      const tipoEvento: 'ticket' | 'completada' = bitacora.esTicket ? 'ticket' : 'completada';
+      agregarEvento(clave, { ...bitacora, tipo: tipoEvento });
     });
 
     this.visitasProgramadas.forEach((visita) => {
@@ -418,11 +421,15 @@ export class DashboardCalendarComponent implements OnInit {
       const eventosDia = this.eventosPorDia.get(clave) ?? [];
       const completadas = eventosDia.filter((evento) => evento.tipo === 'completada').length;
       const programadas = eventosDia.filter((evento) => evento.tipo === 'programada').length;
+      const tickets = eventosDia.filter((evento) => this.esEventoTicket(evento)).length;
       const emergencias = eventosDia.filter((evento) => this.esEventoEmergencia(evento)).length;
       const completadasRegulares = Math.max(completadas - emergencias, 0);
       const tipos: TipoEventoDia[] = [];
       if (emergencias > 0) {
         tipos.push('emergencia');
+      }
+      if (tickets > 0) {
+        tipos.push('ticket');
       }
       if (completadasRegulares > 0) {
         tipos.push('completada');
@@ -441,6 +448,7 @@ export class DashboardCalendarComponent implements OnInit {
         regularCompletedCount: completadasRegulares,
         scheduledCount: programadas,
         emergencyCount: emergencias,
+        ticketCount: tickets,
         tipos,
         isToday:
           fecha.getFullYear() === hoy.getFullYear() &&
@@ -566,6 +574,10 @@ export class DashboardCalendarComponent implements OnInit {
 
   esEventoProgramado(evento: EventoCalendario): boolean {
     return evento.tipo === 'programada';
+  }
+
+  esEventoTicket(evento: EventoCalendario): evento is Bitacora & { tipo: 'ticket' } {
+    return evento.tipo === 'ticket';
   }
 
   esEventoEmergencia(evento: EventoCalendario): evento is Bitacora & { tipo: 'completada' } {

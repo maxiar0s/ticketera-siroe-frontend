@@ -10,6 +10,7 @@ import {
 import { finalize } from 'rxjs';
 import { Bitacora } from '../../interfaces/bitacora.interface';
 import { ClienteResumen } from '../../interfaces/cliente-resumen.interface';
+import { Cuenta } from '../../interfaces/Cuenta.interface';
 import { Tecnico } from '../../interfaces/tecnico.interface';
 import { ApiService } from '../../services/api.service';
 import { AuthService } from '../../services/auth.service';
@@ -52,7 +53,8 @@ export class BitacoraComponent implements OnInit {
 
   formularioVisible = false;
   modoEdicion = false;
-  selectedFiles: File[] = [];
+  selectedIngresoFiles: File[] = [];
+  selectedEvidenceFiles: File[] = [];
   eliminandoBitacoraId: number | null = null;
   tecnicosDropdownAbierto = false;
 
@@ -62,6 +64,19 @@ export class BitacoraComponent implements OnInit {
   readonly esCliente: boolean;
   readonly puedeCrear: boolean;
   readonly soloLectura: boolean;
+  readonly opcionesFiltroTipo = [
+    { value: 'ambos', label: 'Ambos' },
+    { value: 'bitacora', label: 'Bitacora' },
+    { value: 'ticket', label: 'Ticket' },
+  ];
+  readonly estadosTicket = [
+    { value: 'ingresado', label: 'Ingresado' },
+    { value: 'terminado', label: 'Terminado' },
+  ] as const;
+
+  tieneAccesoTickets = true;
+  perfilTieneTickets = false;
+  tituloModulo = 'Bitacora de visitas';
 
   constructor(
     private fb: FormBuilder,
@@ -80,6 +95,7 @@ export class BitacoraComponent implements OnInit {
       clienteId: [''],
       sucursalId: [''],
       buscar: [''],
+      tipo: ['ambos'],
     });
 
     this.bitacoraForm = this.fb.group({
@@ -88,13 +104,79 @@ export class BitacoraComponent implements OnInit {
       clienteId: ['', Validators.required],
       sucursalId: [''],
       fechaVisita: ['', Validators.required],
-      horaLlegada: ['', Validators.required],
-      horaSalida: ['', Validators.required],
+      horaLlegada: [''],
+      horaSalida: [''],
       tecnicos: [[], Validators.required],
       isEmergencia: [false],
+      esTicket: [false],
+      ticketEstado: ['ingresado'],
+      ticketFechaTermino: [''],
+      ticketDetalleTermino: [''],
       descripcion: ['', [Validators.required, Validators.minLength(5)]],
     });
 
+    this.configurarValidacionesDinamicas();
+  }
+
+  private configurarValidacionesDinamicas(): void {
+    const esTicketCtrl = this.bitacoraForm.get('esTicket');
+    const estadoCtrl = this.bitacoraForm.get('ticketEstado');
+    const horaLlegadaCtrl = this.bitacoraForm.get('horaLlegada');
+    const horaSalidaCtrl = this.bitacoraForm.get('horaSalida');
+    const fechaTerminoCtrl = this.bitacoraForm.get('ticketFechaTermino');
+    const detalleTerminoCtrl = this.bitacoraForm.get('ticketDetalleTermino');
+
+    if (!esTicketCtrl || !estadoCtrl) {
+      return;
+    }
+
+    const aplicarValidaciones = () => {
+      const esTicket = !!esTicketCtrl.value;
+      const estado = (estadoCtrl.value ?? 'ingresado') as 'ingresado' | 'terminado';
+
+      if (esTicket) {
+        if (!estado) {
+          estadoCtrl.setValue('ingresado', { emitEvent: false });
+        }
+        horaLlegadaCtrl?.clearValidators();
+        horaSalidaCtrl?.clearValidators();
+
+        if (estado === 'terminado') {
+          fechaTerminoCtrl?.setValidators([Validators.required]);
+          detalleTerminoCtrl?.setValidators([Validators.required, Validators.minLength(5)]);
+        } else {
+          fechaTerminoCtrl?.setValue('', { emitEvent: false });
+          detalleTerminoCtrl?.setValue('', { emitEvent: false });
+          fechaTerminoCtrl?.clearValidators();
+          detalleTerminoCtrl?.clearValidators();
+          if (this.selectedEvidenceFiles.length) {
+            this.selectedEvidenceFiles = [];
+          }
+        }
+      } else {
+        if (estado !== 'ingresado') {
+          estadoCtrl.setValue('ingresado', { emitEvent: false });
+        }
+        horaLlegadaCtrl?.clearValidators();
+        horaSalidaCtrl?.clearValidators();
+        fechaTerminoCtrl?.setValue('', { emitEvent: false });
+        detalleTerminoCtrl?.setValue('', { emitEvent: false });
+        fechaTerminoCtrl?.clearValidators();
+        detalleTerminoCtrl?.clearValidators();
+        if (this.selectedEvidenceFiles.length) {
+          this.selectedEvidenceFiles = [];
+        }
+      }
+
+      horaLlegadaCtrl?.updateValueAndValidity({ emitEvent: false });
+      horaSalidaCtrl?.updateValueAndValidity({ emitEvent: false });
+      fechaTerminoCtrl?.updateValueAndValidity({ emitEvent: false });
+      detalleTerminoCtrl?.updateValueAndValidity({ emitEvent: false });
+    };
+
+    esTicketCtrl.valueChanges.subscribe(() => aplicarValidaciones());
+    estadoCtrl.valueChanges.subscribe(() => aplicarValidaciones());
+    aplicarValidaciones();
   }
 
   downloadAdjunto(fileName: string): void {
@@ -126,12 +208,56 @@ export class BitacoraComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.signalService.updateData('Bitacora de visitas');
-    this.cargarClientes();
-    this.cargarTecnicosDisponibles();
+    this.apiService.perfilActual().subscribe({
+      next: (perfil: Cuenta) => {
+        const rolTieneTickets = this.esAdmin || this.esTecnico;
+        const tieneTickets = rolTieneTickets || !!perfil?.haveTickets;
+        this.perfilTieneTickets = tieneTickets;
+        if (tieneTickets) {
+          this.tituloModulo = 'Bitacora / Tickets';
+        }
+
+        this.tieneAccesoTickets = !this.esCliente || tieneTickets;
+        this.signalService.updateData(this.tituloModulo);
+
+        if (this.tieneAccesoTickets) {
+          this.errorMensaje = '';
+          this.cargarClientes();
+          this.cargarTecnicosDisponibles();
+        } else {
+          this.bitacoras = [];
+          this.paginasTotales = 0;
+          this.errorMensaje = 'Tu cuenta no tiene acceso a Tickets.';
+        }
+      },
+      error: (error) => {
+        console.error('Error al cargar perfil para bitacora', error);
+        const rolTieneTickets = this.esAdmin || this.esTecnico;
+        this.perfilTieneTickets = rolTieneTickets;
+        if (rolTieneTickets) {
+          this.tituloModulo = 'Bitacora / Tickets';
+        }
+        this.tieneAccesoTickets = !this.esCliente || rolTieneTickets;
+        this.signalService.updateData(this.tituloModulo);
+
+        if (this.tieneAccesoTickets) {
+          this.cargarClientes();
+          this.cargarTecnicosDisponibles();
+        } else {
+          this.bitacoras = [];
+          this.paginasTotales = 0;
+          this.errorMensaje =
+            'No se pudo verificar el acceso a Tickets para esta cuenta.';
+        }
+      },
+    });
   }
 
   private cargarClientes(): void {
+    if (!this.tieneAccesoTickets) {
+      return;
+    }
+
     this.apiService.clientesBitacora().subscribe({
       next: (clientes) => {
         this.clientes = Array.isArray(clientes) ? clientes : [];
@@ -149,6 +275,14 @@ export class BitacoraComponent implements OnInit {
       },
       error: (error) => {
         console.error('Error al cargar clientes', error);
+        if (error?.status === 403) {
+          this.tieneAccesoTickets = false;
+          this.bitacoras = [];
+          this.paginasTotales = 0;
+          this.errorMensaje =
+            error?.error?.error ?? 'Tu cuenta no tiene acceso a Tickets.';
+          return;
+        }
         this.errorMensaje =
           'No fue posible obtener el listado de clientes disponibles.';
         this.cargarBitacoras();
@@ -183,9 +317,44 @@ export class BitacoraComponent implements OnInit {
     return `${seleccionados.length} tecnicos seleccionados`;
   }
 
+  get esTicketControl() {
+    return this.bitacoraForm.get('esTicket');
+  }
+
+  get mostrarCamposHorarios(): boolean {
+    return !this.esTicketSeleccionado || this.estadoTicketSeleccionado === 'terminado';
+  }
+
+  get esTicketSeleccionado(): boolean {
+    return !!this.esTicketControl?.value;
+  }
+
+  get estadoTicketSeleccionado(): 'ingresado' | 'terminado' {
+    const control = this.bitacoraForm.get('ticketEstado');
+    return this.normalizarEstadoTicket(control?.value);
+  }
+
+  get mostrarCamposTerminoTicket(): boolean {
+    return this.esTicketSeleccionado && this.estadoTicketSeleccionado === 'terminado';
+  }
+
+  get esTicketIngresado(): boolean {
+    return this.esTicketSeleccionado && this.estadoTicketSeleccionado === 'ingresado';
+  }
+
   toggleTecnicosDropdown(event: MouseEvent): void {
     event.stopPropagation();
     this.tecnicosDropdownAbierto = !this.tecnicosDropdownAbierto;
+  }
+
+  seleccionarTipoRegistro(valor: boolean): void {
+    const control = this.esTicketControl;
+    if (!control || control.disabled) {
+      return;
+    }
+    control.setValue(valor);
+    control.markAsDirty();
+    control.markAsTouched();
   }
 
   onToggleTecnico(tecnico: Tecnico, event?: MouseEvent): void {
@@ -227,6 +396,7 @@ export class BitacoraComponent implements OnInit {
       clienteId: this.esCliente && this.clientes.length === 1 ? this.clientes[0].id : '',
       sucursalId: '',
       buscar: '',
+      tipo: 'ambos',
     });
     const clienteId = this.filtroForm.value.clienteId;
     if (clienteId) {
@@ -244,6 +414,13 @@ export class BitacoraComponent implements OnInit {
     }
     this.errorMensaje = '';
 
+    if (!this.tieneAccesoTickets) {
+      this.cargando = false;
+      this.bitacoras = [];
+      this.paginasTotales = 0;
+      return;
+    }
+
     const filtros = this.filtroForm.getRawValue();
     const params: Record<string, any> = {
       pagina: this.paginaActual,
@@ -252,6 +429,9 @@ export class BitacoraComponent implements OnInit {
       sucursalId: filtros.sucursalId,
       buscar: filtros.buscar,
     };
+    if (filtros.tipo && filtros.tipo !== 'ambos') {
+      params['tipo'] = filtros.tipo;
+    }
 
     this.apiService
       .bitacoras(params)
@@ -271,6 +451,14 @@ export class BitacoraComponent implements OnInit {
         },
         error: (error) => {
           console.error('Error al cargar bitacoras', error);
+          if (error?.status === 403) {
+            this.tieneAccesoTickets = false;
+            this.bitacoras = [];
+            this.paginasTotales = 0;
+            this.errorMensaje =
+              error?.error?.error ?? 'Tu cuenta no tiene acceso a Tickets.';
+            return;
+          }
           this.errorMensaje =
             error?.error?.error ??
             'Ocurrio un error al intentar obtener las bitacoras.';
@@ -306,7 +494,8 @@ export class BitacoraComponent implements OnInit {
       this.filtroForm.value.clienteId ||
       (this.clientes.length === 1 ? this.clientes[0].id : '');
 
-    this.selectedFiles = [];
+    this.selectedIngresoFiles = [];
+    this.selectedEvidenceFiles = [];
     this.tecnicosDropdownAbierto = false;
     this.bitacoraForm.reset({
       id: null,
@@ -318,6 +507,10 @@ export class BitacoraComponent implements OnInit {
       horaSalida: '',
       tecnicos: [],
       isEmergencia: false,
+      esTicket: false,
+      ticketEstado: 'ingresado',
+      ticketFechaTermino: '',
+      ticketDetalleTermino: '',
       descripcion: '',
     });
 
@@ -340,7 +533,8 @@ export class BitacoraComponent implements OnInit {
     }
 
     this.habilitarTodosLosControles();
-    this.selectedFiles = [];
+    this.selectedIngresoFiles = [];
+    this.selectedEvidenceFiles = [];
     this.tecnicosDropdownAbierto = false;
     this.bitacoraForm.reset({
       id: bitacora.id,
@@ -352,6 +546,10 @@ export class BitacoraComponent implements OnInit {
       horaSalida: this.formatearParaInputFecha(bitacora.horaSalida),
       tecnicos: Array.isArray(bitacora.tecnicos) ? [...bitacora.tecnicos] : [],
       isEmergencia: !!bitacora.isEmergencia,
+      esTicket: !!bitacora.esTicket,
+      ticketEstado: this.normalizarEstadoTicket(bitacora.estadoTicket),
+      ticketFechaTermino: this.formatearParaInputSoloFecha(bitacora.fechaTermino),
+      ticketDetalleTermino: bitacora.detalleTermino ?? '',
       descripcion: bitacora.descripcion,
     });
 
@@ -376,9 +574,17 @@ export class BitacoraComponent implements OnInit {
     this.formularioVisible = false;
     this.modoEdicion = false;
     this.guardando = false;
-    this.bitacoraForm.reset({ isEmergencia: false, tecnicos: [] });
+    this.bitacoraForm.reset({
+      isEmergencia: false,
+      esTicket: false,
+      tecnicos: [],
+      ticketEstado: 'ingresado',
+      ticketFechaTermino: '',
+      ticketDetalleTermino: '',
+    });
     this.sucursalesFormulario = [];
-    this.selectedFiles = [];
+    this.selectedIngresoFiles = [];
+    this.selectedEvidenceFiles = [];
     this.tecnicosDropdownAbierto = false;
     this.habilitarTodosLosControles();
   }
@@ -421,12 +627,15 @@ export class BitacoraComponent implements OnInit {
     let solicitud$;
 
     // Si hay archivos seleccionados, enviamos FormData
-    if (this.selectedFiles?.length) {
+    if (this.selectedIngresoFiles.length || this.selectedEvidenceFiles.length) {
       const formData = new FormData();
       // adjuntamos payload como JSON en campo 'payload'
       formData.append('payload', JSON.stringify(payload));
-      this.selectedFiles.forEach((file, idx) => {
+      this.selectedIngresoFiles.forEach((file) => {
         formData.append('files', file, file.name);
+      });
+      this.selectedEvidenceFiles.forEach((file) => {
+        formData.append('evidenceFiles', file, file.name);
       });
 
       if (esEdicion) {
@@ -467,22 +676,26 @@ export class BitacoraComponent implements OnInit {
       });
   }
 
-  onFilesSelected(event: Event): void {
+  onFilesSelected(event: Event, tipo: 'ingreso' | 'evidencia'): void {
     const input = event.target as HTMLInputElement | null;
     const files = input?.files ? Array.from(input.files) : [];
     if (!files.length) {
       return;
     }
 
-    files.forEach((file) => this.selectedFiles.push(file));
+    const destino =
+      tipo === 'evidencia' ? this.selectedEvidenceFiles : this.selectedIngresoFiles;
+    files.forEach((file) => destino.push(file));
     if (input) {
       input.value = '';
     }
   }
 
-  removeSelectedFile(index: number): void {
-    if (index >= 0 && index < this.selectedFiles.length) {
-      this.selectedFiles.splice(index, 1);
+  removeSelectedFile(index: number, tipo: 'ingreso' | 'evidencia'): void {
+    const destino =
+      tipo === 'evidencia' ? this.selectedEvidenceFiles : this.selectedIngresoFiles;
+    if (index >= 0 && index < destino.length) {
+      destino.splice(index, 1);
     }
   }
 
@@ -570,7 +783,12 @@ export class BitacoraComponent implements OnInit {
       return null;
     }
 
-    return {
+    const esTicket = !!formValue.esTicket;
+    const estadoTicket = esTicket
+      ? this.normalizarEstadoTicket(formValue.ticketEstado)
+      : null;
+
+    const payload: any = {
       casaMatrizId: formValue.clienteId,
       sucursalId: formValue.sucursalId || null,
       fechaVisita: formValue.fechaVisita,
@@ -580,18 +798,43 @@ export class BitacoraComponent implements OnInit {
       descripcion: formValue.descripcion.trim(),
       titulo: formValue.titulo ? formValue.titulo.trim() : null,
       isEmergencia: !!formValue.isEmergencia,
+      esTicket,
+      estadoTicket,
+      fechaTermino: null,
+      detalleTermino: null,
     };
+
+    if (!esTicket) {
+      return payload;
+    }
+
+    // Para tickets permitimos dejar horas sin registrar
+    payload.horaLlegada = this.formatearAISO(formValue.horaLlegada) ?? null;
+    payload.horaSalida = this.formatearAISO(formValue.horaSalida) ?? null;
+
+    if (estadoTicket === 'terminado') {
+      payload.fechaTermino = formValue.ticketFechaTermino || null;
+      const detalle = formValue.ticketDetalleTermino
+        ? formValue.ticketDetalleTermino.trim()
+        : '';
+      payload.detalleTermino = detalle.length > 0 ? detalle : null;
+    }
+
+    return payload;
   }
 
-  private formatearAISO(value: string): string {
+  private formatearAISO(value: string | null | undefined): string | null {
     if (!value) {
-      return '';
+      return null;
     }
     const date = new Date(value);
+    if (Number.isNaN(date.getTime())) {
+      return null;
+    }
     return date.toISOString();
   }
 
-  private formatearParaInputFecha(value: string): string {
+  private formatearParaInputFecha(value: string | null | undefined): string {
     if (!value) {
       return '';
     }
@@ -602,6 +845,29 @@ export class BitacoraComponent implements OnInit {
     const offset = date.getTimezoneOffset();
     const local = new Date(date.getTime() - offset * 60000);
     return local.toISOString().slice(0, 16);
+  }
+
+  private formatearParaInputSoloFecha(value: string | null | undefined): string {
+    if (!value) {
+      return '';
+    }
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) {
+      return '';
+    }
+    return date.toISOString().slice(0, 10);
+  }
+
+  private normalizarEstadoTicket(
+    valor: unknown
+  ): 'ingresado' | 'terminado' {
+    if (typeof valor === 'string') {
+      const normalizado = valor.trim().toLowerCase();
+      if (normalizado === 'terminado') {
+        return 'terminado';
+      }
+    }
+    return 'ingresado';
   }
 
   private obtenerFechaActual(): string {
@@ -619,6 +885,10 @@ export class BitacoraComponent implements OnInit {
       'tecnicos',
       'titulo',
       'isEmergencia',
+      'esTicket',
+      'ticketEstado',
+      'ticketFechaTermino',
+      'ticketDetalleTermino',
     ];
     controles.forEach((control) =>
       this.bitacoraForm.get(control)?.disable({ emitEvent: false })

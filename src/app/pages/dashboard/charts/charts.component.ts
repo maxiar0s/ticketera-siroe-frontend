@@ -142,7 +142,11 @@ export class ChartsComponent implements OnInit {
           this.visitasPorMesData = this.calcularVisitasPorMes([]);
           this.actualizarMetricasVisitas([]);
           this.loadingBitacoras = false;
-          this.bitacorasError = 'No fue posible cargar las visitas registradas.';
+          if (error?.status === 403) {
+            this.bitacorasError = error?.error?.error ?? 'Tu cuenta no tiene acceso a Tickets.';
+          } else {
+            this.bitacorasError = 'No fue posible cargar las visitas registradas.';
+          }
         }
       });
   }

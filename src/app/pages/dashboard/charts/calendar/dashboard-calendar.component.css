@@ -178,6 +178,10 @@
   --badge-background: #1f8f56;
 }
 
+.badge-ticket {
+  --badge-background: #1976d2;
+}
+
 .sidebar {
   display: flex;
   flex-direction: column;
@@ -264,6 +268,14 @@
   border-left-color: #b71653;
 }
 
+.event-list li.evento-ticket {
+  border-left-color: #1976d2;
+}
+
+.event-list li.evento-ticket .evento-cliente {
+  color: #0f4f91;
+}
+
 .evento-cliente {
   display: flex;
   align-items: center;
@@ -310,6 +322,10 @@
   color: #b71653;
 }
 
+.evento-ticket .evento-etiqueta {
+  color: #1976d2;
+}
+
 .evento-detalle {
   display: flex;
   flex-wrap: wrap;
@@ -324,6 +340,10 @@
 
 .evento-completada .evento-detalle {
   color: #b71653;
+}
+
+.evento-ticket .evento-detalle {
+  color: #1976d2;
 }
 
 .event-list li.evento-emergencia {
