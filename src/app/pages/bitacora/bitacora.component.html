@@ -132,12 +132,21 @@
         >
           <td>{{ bitacora.fechaVisita | formatoFecha:'dd/MM/yyyy' }}</td>
           <td class="tipo">
-            <span
-              class="tipo-chip"
-              [ngClass]="bitacora.esTicket ? 'ticket' : 'bitacora'"
-            >
-              {{ bitacora.esTicket ? 'Ticket' : 'Bitacora' }}
-            </span>
+            <div class="tipo-wrapper">
+              <span
+                class="tipo-chip"
+                [ngClass]="bitacora.esTicket ? 'ticket' : 'bitacora'"
+              >
+                {{ bitacora.esTicket ? 'Ticket' : 'Bitacora' }}
+              </span>
+              <span
+                *ngIf="bitacora.esTicket"
+                class="tipo-chip ticket-estado-listado"
+                [ngClass]="bitacora.estadoTicket === 'terminado' ? 'resuelto' : 'ingresado'"
+              >
+                {{ bitacora.estadoTicket === 'terminado' ? 'Resuelto' : 'Ingresado' }}
+              </span>
+            </div>
           </td>
           <td>{{ bitacora.casaMatriz?.razonSocial || 'N/A' }}</td>
           <td>{{ bitacora.sucursal?.sucursal || 'General' }}</td>
