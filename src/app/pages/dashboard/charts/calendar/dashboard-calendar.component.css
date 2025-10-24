@@ -326,6 +326,30 @@
   color: #1976d2;
 }
 
+.evento-ticket-info {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0.25rem 0;
+}
+
+.ticket-chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.15rem 0.65rem;
+  border-radius: 999px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  background-color: #1976d2;
+  color: #ffffff;
+}
+
+.ticket-chip.terminado {
+  background-color: #1f8f56;
+}
 .evento-detalle {
   display: flex;
   flex-wrap: wrap;

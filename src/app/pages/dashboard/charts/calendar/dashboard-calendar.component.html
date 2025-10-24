@@ -38,7 +38,7 @@
             <span class="badge badge-completada" *ngIf="dia.regularCompletedCount > 0">
               {{ dia.regularCompletedCount }}
             </span>
-            <span class="badge badge-ticket" *ngIf="dia.ticketCount > 0">
+            <span class="badge badge-ticket" *ngIf="dia.ticketCount > 0" title="Tickets">
               {{ dia.ticketCount }}
             </span>
             <span class="badge badge-emergencia" *ngIf="dia.emergencyCount > 0">
@@ -95,7 +95,12 @@
             </button>
           </div>
           <span class="evento-etiqueta" *ngIf="esEventoProgramado(evento)">Visita programada</span>
-          <span class="evento-etiqueta" *ngIf="esEventoTicket(evento)">Ticket</span>
+          <div class="evento-ticket-info" *ngIf="esEventoTicket(evento)">
+            <span class="evento-etiqueta">Ticket</span>
+            <span class="ticket-chip" [ngClass]="obtenerClaseChipTicket(evento)">
+              {{ obtenerEtiquetaTicket(evento) }}
+            </span>
+          </div>
           <span class="evento-etiqueta" *ngIf="!esEventoProgramado(evento) && !esEventoTicket(evento)">
             {{ esEventoEmergencia(evento) ? 'Visita de emergencia completada' : 'Visita completada' }}
           </span>

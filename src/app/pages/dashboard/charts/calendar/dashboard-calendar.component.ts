@@ -421,7 +421,10 @@ export class DashboardCalendarComponent implements OnInit {
       const eventosDia = this.eventosPorDia.get(clave) ?? [];
       const completadas = eventosDia.filter((evento) => evento.tipo === 'completada').length;
       const programadas = eventosDia.filter((evento) => evento.tipo === 'programada').length;
-      const tickets = eventosDia.filter((evento) => this.esEventoTicket(evento)).length;
+      const ticketsEventos = eventosDia.filter((evento) => this.esEventoTicket(evento)) as Array<
+        Bitacora & { tipo: 'ticket' }
+      >;
+      const tickets = ticketsEventos.length;
       const emergencias = eventosDia.filter((evento) => this.esEventoEmergencia(evento)).length;
       const completadasRegulares = Math.max(completadas - emergencias, 0);
       const tipos: TipoEventoDia[] = [];
@@ -604,6 +607,14 @@ export class DashboardCalendarComponent implements OnInit {
     return estilos;
   }
 
+  obtenerEtiquetaTicket(evento: Bitacora & { tipo: 'ticket' }): string {
+    return this.obtenerEstadoTicket(evento) === 'terminado' ? 'Terminado' : 'Ingresado';
+  }
+
+  obtenerClaseChipTicket(evento: Bitacora & { tipo: 'ticket' }): string {
+    return this.obtenerEstadoTicket(evento) === 'terminado' ? 'terminado' : 'ingresado';
+  }
+
   private crearGradiente(
     tipos: TipoEventoDia[],
     orientacion: 'vertical' | 'horizontal',
@@ -648,6 +659,12 @@ export class DashboardCalendarComponent implements OnInit {
 
   private formatearPorcentaje(valor: number): string {
     return Number(valor.toFixed(2)).toString();
+  }
+
+  private obtenerEstadoTicket(evento: Bitacora & { tipo: 'ticket' }): 'ingresado' | 'terminado' {
+    const valor =
+      typeof evento.estadoTicket === 'string' ? evento.estadoTicket.trim().toLowerCase() : '';
+    return valor === 'terminado' ? 'terminado' : 'ingresado';
   }
 
   eliminarEvento(evento: EventoCalendario): void {
