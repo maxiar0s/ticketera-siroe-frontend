@@ -7,7 +7,7 @@
   align-items: center;
   gap: 0.5rem;
   padding: 0.65rem 1.5rem;
-  background: linear-gradient(135deg, #de2a7b, #c1229a);
+  background: #b71653;
   border: none;
   border-radius: 999px;
   cursor: pointer;
@@ -166,7 +166,7 @@
 }
 
 .filters__action-button--primary {
-  background: linear-gradient(135deg, #de2a7b, #c1229a);
+  background: #b71653;
   color: #ffffff;
   box-shadow: 0 8px 16px rgba(193, 34, 154, 0.25);
 }
