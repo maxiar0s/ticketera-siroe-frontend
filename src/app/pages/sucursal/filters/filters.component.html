@@ -2,7 +2,7 @@
   <button type="button" class="filters-toggle" (click)="isOpen = !isOpen">
     {{ isOpen ? 'Ocultar filtros' : 'Mostrar filtros' }}
   </button>
-  <form class="filters" [formGroup]="form" [class.filters--open]="isOpen" (ngSubmit)="aplicarFiltros()">
+  <form *ngIf="isOpen" class="filters filters--open" [formGroup]="form" (ngSubmit)="aplicarFiltros()">
   <div class="filters__row">
     <div class="filters__field">
       <label for="fecha-inicio">Fecha desde</label>
