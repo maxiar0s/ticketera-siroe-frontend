@@ -8,6 +8,8 @@
     [estado]="estado"
     [selectedDevices]="Devices"
     (crearEquiposForm)="crearEquipos($event)"
+    (borrarEquipos)="eliminarEquiposSeleccionados($event)"
+    (exportarEquipos)="exportarEquipos()"
     class="options-sucursal"
   ></sucursal-options>
   <shared-options (optionSelected)="selectedOption($event)"></shared-options>

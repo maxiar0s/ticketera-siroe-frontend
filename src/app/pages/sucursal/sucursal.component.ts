@@ -10,9 +10,11 @@ import { ButtonsComponent } from './options/options.component';
 import { OptionsComponent } from '../../shared/options/options.component';
 import { ImprimirEquipo } from '../../interfaces/ImprimirEquipo.interface';
 import { Equipo } from '../../interfaces/equipo.interface';
+import { EstadoEquipo } from '../../interfaces/estado-equipo.interface';
 import { LoaderService } from '../../services/loader.service';
 import { NavegationComponent } from '../../shared/navegation/navegation.component';
-import { concatMap, forkJoin, from } from 'rxjs';
+import { forkJoin, of } from 'rxjs';
+import * as XLSX from 'xlsx';
 
 @Component({
   selector: 'sucursal',
@@ -36,6 +38,7 @@ export class SucursalComponent {
   public cerrarModal!:        boolean;
 
   public Devices:       ImprimirEquipo[] = [];
+  private estadosEquipoCache: EstadoEquipo[] = [];
 
   constructor(
     private apiService:     ApiService,
@@ -49,14 +52,14 @@ export class SucursalComponent {
     this.cambiarSeleccion();
   }
 
-    // Método para obtener el ID de la sucursal actual de la ruta
-    getSucursalId(): string {
-      let id = '';
-      this.route.params.subscribe(params => {
-        id = params['id'];
-      });
-      return id;
-    }
+  // Metodo para obtener el ID de la sucursal actual de la ruta
+  getSucursalId(): string {
+    let id = '';
+    this.route.params.subscribe(params => {
+      id = params['id'];
+    });
+    return id;
+  }
 
   crearEquipos(datos: any) {
     this.cerrarModal = true;
@@ -69,7 +72,7 @@ export class SucursalComponent {
     forkJoin(solicitudes).subscribe({
       next: (respuestas) => {
         respuestas.forEach((respuesta, index) => {
-          if (respuesta.error) {
+          if (respuesta?.error) {
             console.error(`Error en el equipo ${index + 1}:`, respuesta.error);
           } else {
             console.log(`Equipo ${index + 1} creado exitosamente:`, respuesta);
@@ -80,7 +83,7 @@ export class SucursalComponent {
         console.error('Error general al crear equipos:', error);
       },
       complete: () => {
-        console.log('Proceso de creación de equipos completado.');
+        console.log('Proceso de creacion de equipos completado.');
         this.cerrarModal = false;
         this.cambiarSeleccion();
       }
@@ -100,11 +103,13 @@ export class SucursalComponent {
     this.loaderService.showSection();
     this.obtainedEquipments = false;
 
-    if(!this.Title) this.signalService.updateData('');;
+    if (!this.Title) {
+      this.signalService.updateData('');
+    }
 
     this.route.params.subscribe(params => {
-      const id = params['id']
-      const idCliente = params['idCliente']
+      const id = params['id'];
+      const idCliente = params['idCliente'];
       this.apiService.sucursal(id, this.paginaActual, this.option).subscribe({
         next: (respuesta) => {
           const { sucursal, paginas } = respuesta;
@@ -114,33 +119,29 @@ export class SucursalComponent {
             return;
           }
 
-          if(!this.Title) this.headerTitle(sucursal.casaMatriz.razonSocial);
+          if (!this.Title) {
+            this.headerTitle(sucursal.casaMatriz.razonSocial);
+          }
 
           this.sucursal = sucursal;
-
-          // Ordenar los equipos por los últimos 3 dígitos del codigoId en orden ascendente
-          if (sucursal.equipos && sucursal.equipos.length > 0) {
-            this.equipos = [...sucursal.equipos].sort((a, b) => {
-              const numA = parseInt(a.codigoId.slice(-3));
-              const numB = parseInt(b.codigoId.slice(-3));
-              return numA - numB;
-            });
-          } else {
-            this.equipos = sucursal.equipos;
-          }
+          this.equipos = this.ordenarEquiposPorCodigo(sucursal.equipos ?? []);
+          this.Devices = [];
 
           this.paginas = paginas;
 
           this.obtainedEquipments = true;
-          if(sucursal.estado != 3) this.estado = true;
+          if (sucursal.estado !== 3) {
+            this.estado = true;
+          }
 
           this.loaderService.hideSection();
         },
         error: (error) => {
           console.error('Error al obtener sucursales', error);
+          this.loaderService.hideSection();
         }
-      })
-    })
+      });
+    });
   }
 
   headerTitle(value: string) {
@@ -148,28 +149,187 @@ export class SucursalComponent {
     this.Title = true;
   }
 
-  cambiarPagina(pagina: number):void {
+  cambiarPagina(pagina: number): void {
     if (pagina >= 1 && pagina <= this.paginas) {
       this.paginaActual = pagina;
       this.cambiarSeleccion();
     }
   }
 
-  nextPage():void {
+  nextPage(): void {
     if (this.paginaActual < this.paginas) {
       this.paginaActual++;
       this.cambiarSeleccion();
     }
   }
 
-  prevPage():void {
+  prevPage(): void {
     if (this.paginaActual > 1) {
       this.paginaActual--;
       this.cambiarSeleccion();
     }
   }
 
-  selectedDevices(Devices: any) {
-    this.Devices = Devices;
+  selectedDevices(devices: ImprimirEquipo[]) {
+    this.Devices = [...devices];
+  }
+
+  eliminarEquiposSeleccionados(ids: number[]): void {
+    if (!ids || ids.length === 0) {
+      return;
+    }
+
+    const confirmar = window.confirm(`Deseas borrar ${ids.length} equipo(s) seleccionados?`);
+    if (!confirmar) {
+      return;
+    }
+
+    this.loaderService.showModal();
+
+    const eliminaciones$ = ids.map((id) => this.apiService.deleteEquipment(id));
+
+    forkJoin(eliminaciones$).subscribe({
+      next: () => {
+        this.Devices = [];
+        this.cambiarSeleccion();
+      },
+      error: (error) => {
+        console.error('Error al eliminar equipos seleccionados:', error);
+        this.loaderService.hideModal();
+      },
+      complete: () => {
+        this.loaderService.hideModal();
+      }
+    });
+  }
+
+  exportarEquipos(): void {
+    if (!this.sucursal?.id) {
+      return;
+    }
+
+    const totalPaginas = Math.max(this.paginas, 1);
+    const pageRequests = Array.from({ length: totalPaginas }, (_, index) =>
+      this.apiService.sucursal(this.sucursal!.id, index + 1, this.option ?? '')
+    );
+
+    const paginas$ = pageRequests.length > 0 ? forkJoin(pageRequests) : of([]);
+    const estados$ = this.estadosEquipoCache.length > 0
+      ? of(this.estadosEquipoCache)
+      : this.apiService.getEstadosEquipo();
+
+    this.loaderService.showModal();
+
+    forkJoin({ paginas: paginas$, estados: estados$ }).subscribe({
+      next: ({ paginas, estados }) => {
+        this.estadosEquipoCache = estados ?? [];
+
+        const equipos: Equipo[] = (paginas as any[])
+          .flatMap((respuesta: any) => respuesta?.sucursal?.equipos ?? [])
+          .map((equipo: Equipo) => equipo);
+
+        if (equipos.length === 0) {
+          console.warn('No hay equipos para exportar.');
+          return;
+        }
+
+        const ordenados = this.ordenarEquiposPorCodigo(equipos);
+        this.generarExcelEquipos(ordenados, this.estadosEquipoCache);
+      },
+      error: (error) => {
+        console.error('Error al exportar equipos:', error);
+        this.loaderService.hideModal();
+      },
+      complete: () => {
+        this.loaderService.hideModal();
+      }
+    });
+  }
+
+  private ordenarEquiposPorCodigo(equipos: Equipo[]): Equipo[] {
+    if (!equipos || equipos.length === 0) {
+      return [];
+    }
+    return [...equipos].sort((a, b) => {
+      const codigoA = a.codigoId ?? '';
+      const codigoB = b.codigoId ?? '';
+      const numA = parseInt(codigoA.slice(-3), 10);
+      const numB = parseInt(codigoB.slice(-3), 10);
+      if (Number.isNaN(numA) || Number.isNaN(numB)) {
+        return codigoA.localeCompare(codigoB);
+      }
+      return numA - numB;
+    });
+  }
+
+  private generarExcelEquipos(equipos: Equipo[], estados: EstadoEquipo[]): void {
+    const data = equipos.map((equipo, index) => ({
+      Numero: index + 1,
+      CodigoID: equipo.codigoId ?? '',
+      Estado: this.obtenerNombreEstado(estados, equipo.estado),
+      TipoEquipo: equipo.tipoEquipo?.name ?? '',
+      FechaIngreso: this.formatearFecha(equipo.fechaIngreso),
+      Departamento: equipo.departamento ?? '',
+      Usuario: equipo.usuario ?? '',
+      Marca: equipo.marca ?? '',
+      Modelo: equipo.modelo ?? '',
+      NumeroSerie: equipo.numeroSerie ?? '',
+      Procesador: equipo.procesador ?? '',
+      VelocidadProcesador: equipo.velocidadProcesador ?? '',
+      RAM: equipo.ram ?? '',
+      TipoAlmacenamiento: equipo.tipoAlmacenamiento ?? '',
+      CantidadAlmacenamiento: equipo.cantidadAlmacenamiento ?? '',
+      SistemaOperativo: equipo.sistemaOperativo ?? '',
+      Ofimatica: equipo.ofimatica ?? '',
+      Antivirus: equipo.antivirus ?? '',
+      Observaciones: this.unirObservaciones(equipo.observaciones ?? [])
+    }));
+
+    if (data.length === 0) {
+      return;
+    }
+
+    const worksheet = XLSX.utils.json_to_sheet(data);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Equipos');
+
+    const nombreSucursal = this.sucursal?.sucursal ?? 'sucursal';
+    const fileName = `${this.normalizarTexto(nombreSucursal)}-equipos.xlsx`;
+    XLSX.writeFile(workbook, fileName);
+  }
+
+  private obtenerNombreEstado(estados: EstadoEquipo[], estadoId: number): string {
+    const estado = estados.find((item) => item.id === estadoId);
+    return estado ? estado.name : 'Sin estado';
+  }
+
+  private formatearFecha(fecha: Date | string | undefined): string {
+    if (!fecha) {
+      return '';
+    }
+    const date = new Date(fecha);
+    if (Number.isNaN(date.getTime())) {
+      return '';
+    }
+    return date.toLocaleDateString('es-CL');
+  }
+
+  private unirObservaciones(observaciones: { text: string }[]): string {
+    if (!observaciones || observaciones.length === 0) {
+      return '';
+    }
+    return observaciones
+      .map((observacion) => observacion.text)
+      .filter((texto) => !!texto)
+      .join(' | ');
+  }
+
+  private normalizarTexto(valor: string): string {
+    return valor
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .replace(/[^a-zA-Z0-9]/g, '-')
+      .replace(/-+/g, '-')
+      .toLowerCase();
   }
 }

@@ -17,10 +17,9 @@
 
 .flex-buttons {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  grid-template-rows: 1fr;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
   justify-content: end;
-  gap: 2rem; /* Aumentado de 2rem a 2.5rem */
+  gap: 2rem;
 }
 
 .option-button {
@@ -38,16 +37,31 @@
   font-size: 1.3rem;
   gap: 1rem;
 }
-.option-button:hover {
+
+.option-button:not(:disabled):hover {
   cursor: pointer;
   background-color: #b71752;
   color: #f7f7f7;
   border-color: #b71752;
 }
 
+.option-button:disabled {
+  cursor: not-allowed;
+  color: #c2c2c2;
+  border-color: #c2c2c2;
+  background-color: transparent;
+}
+
+.option-button:disabled .svg {
+  filter: grayscale(1);
+  opacity: 0.5;
+}
+
 .imprimir,
 .importar,
-.agregar {
+.agregar,
+.borrar,
+.exportar {
   cursor: pointer;
   font-weight: 500; /* Aumentado de 400 a 500 */
 }
@@ -110,7 +124,6 @@
     padding: 0.6rem 1rem;
   }
 
-
   .equipment-list-header {
     padding: 1rem 1.3rem;
     font-size: 0.95rem;
@@ -124,7 +137,6 @@
 
 /* Tablets */
 @media (max-width: 768px) {
-
   .options-flex {
     grid-template-columns: 1fr;
     grid-template-rows: auto auto;
@@ -142,7 +154,6 @@
     gap: 1rem;
   }
 
-
   .svg {
     max-width: 2rem;
     width: 2rem;
@@ -150,17 +161,15 @@
 
   .equipment-list-header {
     padding: 0.9rem 1.2rem;
-
     grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
   }
 
   .equipment-list-item {
-
     grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
   }
 }
 
-/* Móviles grandes */
+/* Moviles grandes */
 @media (max-width: 600px) {
   .options-flex {
     padding: 0.5rem;
@@ -168,7 +177,7 @@
 
   .flex-buttons {
     grid-template-columns: 1fr;
-    grid-template-rows: repeat(3, auto);
+    grid-template-rows: repeat(5, auto);
     gap: 1rem;
   }
 
@@ -177,4 +186,3 @@
     width: 2rem;
   }
 }
-

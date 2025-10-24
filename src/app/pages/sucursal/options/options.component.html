@@ -6,14 +6,22 @@
       <img style="display: none;" src="/assets/svg/imprimir-etiquetas-hover.svg">
       <span>Imprimir etiqueta</span>
     </button>
+    <button id="borrar-equipos-button" class="option-button disabled-button" disabled (click)="borrarEquiposSeleccionados()">
+      <img id="borrar-equipos-image" src="/assets/svg/delete.svg" class="svg" alt="eliminar_equipos.svg">
+      <span>Borrar</span>
+    </button>
     <button class="option-button importar">
       <img src="/assets/svg/importar.svg" class="svg" alt="importar_svg">
       <span>Importar datos</span>
     </button>
+    <button id="exportar-equipos-button" class="option-button exportar" (click)="exportarEquiposListado()">
+      <img src="/assets/svg/download.svg" class="svg" alt="exportar_equipos.svg">
+      <span>Exportar</span>
+    </button>
     <button id="agregar-button" disabled (click)="abrirModalCrearEquipo()" class="option-button">
       <img id="agregar-image" src="/assets/svg/agregar-equipo-disabled.svg" class="svg" alt="agregar-equipo.svg">
       <img style="display: none;" src="/assets/svg/agregar-equipo-hover.svg">
-      <span>Añadir equipo</span>
+      <span>Anadir equipo</span>
     </button>
   </div>
 </div>

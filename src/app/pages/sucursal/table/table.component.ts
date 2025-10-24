@@ -80,6 +80,9 @@ export class TableComponent {
       this.checkboxesState = new Array(this.equipos.length).fill(false);
     }
 
+    this.selectedDevices = [];
+    this.enviarEquipos();
+
     this.obtainedEquipments = true;
   }
 
@@ -166,7 +169,6 @@ export class TableComponent {
     }
     this.seleccionarEquipo(
       this.equipoAccionesSeleccionado,
-      this.equipoAccionesSeleccionado.codigoId,
       this.indiceEquipoAcciones
     );
   }
@@ -265,7 +267,6 @@ export class TableComponent {
 
   seleccionarEquipo(
     equipo: Equipo,
-    codigoId: string,
     i: number,
     event?: Event
   ): void {
@@ -281,13 +282,14 @@ export class TableComponent {
     this.checkboxesState[i] = debeSeleccionar;
 
     const index = this.selectedDevices.findIndex(
-      (device) => device.codigoId === codigoId
+      (device) => device.id === equipo.id
     );
 
     if (!debeSeleccionar && index !== -1) {
       this.selectedDevices.splice(index, 1);
     } else if (debeSeleccionar && index === -1) {
       this.selectedDevices.push({
+        id: equipo.id,
         codigoId: equipo.codigoId,
         fechaIngreso: equipo.fechaIngreso,
         departamento: equipo.departamento,
@@ -332,6 +334,7 @@ export class TableComponent {
 
     if (seleccionado) {
       this.selectedDevices = this.equipos.map((equipo) => ({
+        id: equipo.id,
         codigoId: equipo.codigoId,
         fechaIngreso: equipo.fechaIngreso,
         departamento: equipo.departamento,
