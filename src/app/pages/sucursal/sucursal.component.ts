@@ -15,11 +15,21 @@ import { LoaderService } from '../../services/loader.service';
 import { NavegationComponent } from '../../shared/navegation/navegation.component';
 import { forkJoin, of } from 'rxjs';
 import * as XLSX from 'xlsx';
+import { EquiposFiltersComponent } from './filters/filters.component';
+import { EquipoFiltros } from '../../interfaces/equipo-filtros.interface';
 
 @Component({
   selector: 'sucursal',
   standalone: true,
-  imports: [HeaderComponent, TableComponent, CommonModule, ButtonsComponent, OptionsComponent, NavegationComponent],
+  imports: [
+    HeaderComponent,
+    TableComponent,
+    CommonModule,
+    ButtonsComponent,
+    OptionsComponent,
+    EquiposFiltersComponent,
+    NavegationComponent,
+  ],
   templateUrl: './sucursal.component.html',
   styleUrl: './sucursal.component.css'
 })
@@ -38,6 +48,7 @@ export class SucursalComponent {
   public cerrarModal!:        boolean;
 
   public Devices:       ImprimirEquipo[] = [];
+  public filtrosEquipos: EquipoFiltros = {};
   private estadosEquipoCache: EstadoEquipo[] = [];
 
   constructor(
@@ -98,6 +109,13 @@ export class SucursalComponent {
     this.cambiarSeleccion();
   }
 
+  onFiltrosChange(filtros: EquipoFiltros): void {
+    this.filtrosEquipos = { ...filtros };
+    this.paginaActual = 1;
+    this.paginas = 1;
+    this.cambiarSeleccion();
+  }
+
   cambiarSeleccion() {
     this.equipos = undefined;
     this.loaderService.showSection();
@@ -107,15 +125,25 @@ export class SucursalComponent {
       this.signalService.updateData('');
     }
 
-    this.route.params.subscribe(params => {
-      const id = params['id'];
-      const idCliente = params['idCliente'];
-      this.apiService.sucursal(id, this.paginaActual, this.option).subscribe({
+    const params = this.route.snapshot.params as { [key: string]: string };
+    const id = params['id'];
+    const idCliente = params['idCliente'];
+
+    if (!id) {
+      this.loaderService.hideSection();
+      return;
+    }
+
+    this.apiService
+      .sucursal(id, this.paginaActual, this.option ?? '', this.filtrosEquipos)
+      .subscribe({
         next: (respuesta) => {
           const { sucursal, paginas } = respuesta;
 
           if (!sucursal) {
-            this.router.navigate([`/clientes/${idCliente}`]);
+            if (idCliente) {
+              this.router.navigate([`/clientes/${idCliente}`]);
+            }
             return;
           }
 
@@ -139,9 +167,8 @@ export class SucursalComponent {
         error: (error) => {
           console.error('Error al obtener sucursales', error);
           this.loaderService.hideSection();
-        }
+        },
       });
-    });
   }
 
   headerTitle(value: string) {
@@ -210,7 +237,12 @@ export class SucursalComponent {
 
     const totalPaginas = Math.max(this.paginas, 1);
     const pageRequests = Array.from({ length: totalPaginas }, (_, index) =>
-      this.apiService.sucursal(this.sucursal!.id, index + 1, this.option ?? '')
+      this.apiService.sucursal(
+        this.sucursal!.id,
+        index + 1,
+        this.option ?? '',
+        this.filtrosEquipos
+      )
     );
 
     const paginas$ = pageRequests.length > 0 ? forkJoin(pageRequests) : of([]);

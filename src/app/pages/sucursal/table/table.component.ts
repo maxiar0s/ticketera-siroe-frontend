@@ -242,7 +242,7 @@ export class TableComponent {
 
   cerrarModalVerInfo() {
     this.isModalVerInfo = false;
-    this.actualizarTabla();
+    this.equipoActualizado.emit();
   }
 
 
@@ -288,7 +288,7 @@ export class TableComponent {
     if (!debeSeleccionar && index !== -1) {
       this.selectedDevices.splice(index, 1);
     } else if (debeSeleccionar && index === -1) {
-      this.selectedDevices.push({
+    this.selectedDevices.push({
         id: equipo.id,
         codigoId: equipo.codigoId,
         fechaIngreso: equipo.fechaIngreso,
@@ -296,26 +296,6 @@ export class TableComponent {
       });
     }
     this.enviarEquipos();
-  }
-
-  actualizarTabla() {
-    if (this.sucursalId) {
-      this.loaderService.showModal();
-      // Obtener los equipos actualizados de la sucursal
-      this.apiService.sucursal(this.sucursalId, this.paginaActual, '').subscribe({
-        next: (respuesta) => {
-          const updatedEquipos = respuesta?.sucursal?.equipos ?? [];
-          this.equipos = updatedEquipos;
-          this.obtainedEquipments = true;
-          this.checkboxesState = new Array(updatedEquipos.length).fill(false);
-          this.loaderService.hideModal();
-        },
-        error: (error) => {
-          console.error('Error al actualizar la tabla de equipos:', error);
-          this.loaderService.hideModal();
-        }
-      });
-    }
   }
 
   checkboxSeleccionado(): boolean {

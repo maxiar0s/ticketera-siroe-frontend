@@ -1,0 +1,210 @@
+.filters-wrapper {
+
+}
+
+.filters-toggle {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.65rem 1.5rem;
+  background: linear-gradient(135deg, #de2a7b, #c1229a);
+  border: none;
+  border-radius: 999px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: white;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 6px rgba(193, 34, 154, 0.2);
+}
+
+.filters-toggle:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 8px rgba(193, 34, 154, 0.25);
+}
+
+.filters-toggle .svg-icon {
+  width: 18px;
+  height: 18px;
+  filter: brightness(0) invert(1);
+}
+
+.filters {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  padding: 0 1.5rem;
+  border-radius: 16px;
+  background-color: #ffffff;
+  border: 1px solid #f1f1f5;
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.04);
+  margin-top: 1rem;
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  transition: all 0.3s ease-out;
+}
+
+.filters--open {
+  padding: 1.5rem;
+  max-height: 2000px;
+  opacity: 1;
+  margin-bottom: 1.5rem;
+  transition: all 0.5s ease-in;
+}
+
+.filters__row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1.25rem;
+}
+
+.filters__row--stack {
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+}
+
+.filters__field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.filters__label,
+.filters__field > label {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.filters__field input[type='date'],
+.filters__field input[type='number'],
+.filters__field select {
+  width: 100%;
+  padding: 0.55rem 0.75rem;
+  border-radius: 10px;
+  border: 1px solid #d1d5db;
+  font-size: 0.9rem;
+  color: #111827;
+  background-color: #f9fafb;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.filters__field input[type='date']:focus,
+.filters__field input[type='number']:focus,
+.filters__field select:focus {
+  outline: none;
+  border-color: #de2a7b;
+  box-shadow: 0 0 0 4px rgba(222, 42, 123, 0.15);
+  background-color: #ffffff;
+}
+
+.filters__checkbox-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  padding: 0.5rem;
+  border-radius: 12px;
+  background-color: #f8fafc;
+  border: 1px dashed #e2e8f0;
+  min-height: 46px;
+}
+
+.filters__checkbox {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background-color: #ffffff;
+  border-radius: 999px;
+  padding: 0.4rem 0.75rem;
+  border: 1px solid #e5e7eb;
+  cursor: pointer;
+  font-size: 0.85rem;
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.filters__checkbox input {
+  accent-color: #de2a7b;
+}
+
+.filters__checkbox:hover {
+  border-color: #de2a7b;
+  background-color: rgba(222, 42, 123, 0.08);
+}
+
+.filters__empty {
+  font-size: 0.85rem;
+  color: #6b7280;
+}
+
+.filters__field--range .filters__range {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.filters__range-separator {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #9ca3af;
+}
+
+.filters__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+}
+
+.filters__action-button {
+  border-radius: 999px;
+  padding: 0.65rem 1.5rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.filters__action-button--primary {
+  background: linear-gradient(135deg, #de2a7b, #c1229a);
+  color: #ffffff;
+  box-shadow: 0 8px 16px rgba(193, 34, 154, 0.25);
+}
+
+.filters__action-button--primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 18px rgba(193, 34, 154, 0.3);
+}
+
+.filters__action-button--secondary {
+  background-color: #f3f4f6;
+  color: #1f2937;
+}
+
+.filters__action-button--secondary:hover {
+  background-color: #e5e7eb;
+}
+
+@media (max-width: 900px) {
+  .filters {
+    padding: 1rem;
+  }
+
+  .filters__row {
+    gap: 1rem;
+  }
+
+  .filters__checkbox-group {
+    gap: 0.4rem;
+  }
+
+  .filters__actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .filters__action-button {
+    width: 100%;
+  }
+}
+

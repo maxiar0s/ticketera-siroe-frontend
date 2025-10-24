@@ -13,6 +13,10 @@
     class="options-sucursal"
   ></sucursal-options>
   <shared-options (optionSelected)="selectedOption($event)"></shared-options>
+  <sucursal-equipos-filters
+    class="filters-sucursal"
+    (filtersChange)="onFiltrosChange($event)"
+  ></sucursal-equipos-filters>
   <sucursal-table
     (Devices)="selectedDevices($event)"
     [equiposRecibidos]="equipos"

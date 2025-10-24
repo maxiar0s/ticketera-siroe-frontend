@@ -2,7 +2,11 @@
   display: grid;
   align-items: center;
   width: 100%;
-  margin-bottom: 1rem;
+
+}
+
+.filters-sucursal {
+  width: 100%;
 }
 
 /* Media queries para pantallas medianas */
@@ -10,38 +14,32 @@
   .section {
     padding: 1.5rem;
   }
-  
-  .options-sucursal {
-    margin-bottom: 0.8rem;
-  }
-  
+
+
+
   .navegation-section {
     margin-top: 1rem;
   }
 }
 
-/* Media queries para pantallas pequeñas */
+/* Media queries para pantallas pequenas */
 @media (max-width: 600px) {
   .section {
     padding: 1rem;
   }
-  
-  .options-sucursal {
+
+  .filters-sucursal {
     margin-bottom: 0.5rem;
   }
-  
 }
 
-/* Media queries para pantallas muy pequeñas */
+/* Media queries para pantallas muy pequenas */
 @media (max-width: 500px) {
   .section {
     padding: 0.5rem;
   }
-  
-  .options-sucursal {
-    margin-bottom: 0.3rem;
-  }
-  
+
+
   .navegation-section {
     margin-top: 0.5rem;
   }

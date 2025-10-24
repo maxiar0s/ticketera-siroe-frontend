@@ -10,6 +10,7 @@ import { Cuenta } from '../interfaces/Cuenta.interface';
 import { TipoEquipo } from '../interfaces/TipoEquipo.interface';
 import { Campo } from '../interfaces/campo.interface';
 import { DepartamentoEquipo } from '../interfaces/departamento-equipo.interface';
+import { EquipoFiltros } from '../interfaces/equipo-filtros.interface';
 
 type ClienteEquiposDetalle = { cliente: Cliente | null; equipos: Equipo[] };
 
@@ -199,13 +200,73 @@ export class ApiService {
   }
 
   // Sucursal
-  sucursal(id: string, pagina: number, option: string): Observable<any> {
-    let endpoint = `sucursal/` + id + `?pagina=${pagina}&sort=asc`;
+  sucursal(id: string, pagina: number, option: string, filtros?: EquipoFiltros): Observable<any> {
+    let params = new HttpParams()
+      .set('pagina', String(pagina))
+      .set('sort', 'asc');
+
     if (option) {
-      endpoint =
-        `sucursal/` + id + `?pagina=${pagina}&option=${option}&sort=asc`;
+      params = params.set('option', option);
     }
-    return this.getInformation(endpoint);
+
+    if (filtros) {
+      const {
+        fechaInicio,
+        fechaFin,
+        tipoEquipoIds,
+        departamentos,
+        ramMin,
+        ramMax,
+        almacenamientoMin,
+        almacenamientoMax,
+        conRegistroFotografico,
+      } = filtros;
+
+      if (fechaInicio) {
+        params = params.set('fechaInicio', fechaInicio);
+      }
+
+      if (fechaFin) {
+        params = params.set('fechaFin', fechaFin);
+      }
+
+      if (Array.isArray(tipoEquipoIds) && tipoEquipoIds.length > 0) {
+        params = params.set('tipoEquipoIds', tipoEquipoIds.join(','));
+      }
+
+      if (Array.isArray(departamentos) && departamentos.length > 0) {
+        params = params.set('departamentos', departamentos.join(','));
+      }
+
+      if (ramMin !== undefined && ramMin !== null) {
+        params = params.set('ramMin', String(ramMin));
+      }
+
+      if (ramMax !== undefined && ramMax !== null) {
+        params = params.set('ramMax', String(ramMax));
+      }
+
+      if (almacenamientoMin !== undefined && almacenamientoMin !== null) {
+        params = params.set('almacenamientoMin', String(almacenamientoMin));
+      }
+
+      if (almacenamientoMax !== undefined && almacenamientoMax !== null) {
+        params = params.set('almacenamientoMax', String(almacenamientoMax));
+      }
+
+      if (typeof conRegistroFotografico === 'boolean') {
+        params = params.set('conRegistroFotografico', String(conRegistroFotografico));
+      }
+    }
+
+    return this.http
+      .get<any>(`${this.url}/sucursal/${id}`, { params })
+      .pipe(
+        catchError((error: HttpErrorResponse) => {
+          console.error('Error en la solicitud GET:', error);
+          return throwError(() => error);
+        })
+      );
   }
 
   // Crear o modificar usuario

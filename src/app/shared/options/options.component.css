@@ -7,7 +7,7 @@
 .options button {
   font-weight: 500;
   font-size: 1.3rem;
-  padding: 1rem 4rem;
+  padding: 0.5rem 2rem;
   position: relative;
   white-space: nowrap; /* Prevent text wrapping */
 }
@@ -41,7 +41,6 @@
     justify-content: space-between;
   }
   .options button {
-    padding: 0.8rem 1.5rem;
     flex: 1;
     text-align: center;
     justify-content: center;
@@ -49,15 +48,10 @@
 }
 
 
-@media (max-width: 400px) {
-  .options button {
-    padding: 0.7rem 1rem;
-    font-size: 1.2rem;
-  }
-}
-@media (max-width: 350px) {
+@media (max-width: 450px) {
   .options button {
     padding: 0.5rem 0.8rem;
-
+    font-size: 1rem;
   }
 }
+

@@ -19,7 +19,7 @@
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
   justify-content: end;
-  gap: 2rem;
+  gap: 0.5rem;
 }
 
 .option-button {
@@ -35,7 +35,7 @@
   transition: 350ms;
   text-decoration: none;
   font-size: 1.3rem;
-  gap: 1rem;
+  gap: 0.5rem;
 }
 
 .option-button:not(:disabled):hover {
@@ -116,9 +116,6 @@
 
 /* Pantallas medianas */
 @media (max-width: 992px) {
-  .flex-buttons {
-    gap: 0.5rem;
-  }
 
   .option-button {
     padding: 0.6rem 1rem;
@@ -151,7 +148,7 @@
   .flex-buttons {
     grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
     justify-content: center;
-    gap: 1rem;
+    gap: 0.5rem;
   }
 
   .svg {
@@ -178,7 +175,7 @@
   .flex-buttons {
     grid-template-columns: 1fr;
     grid-template-rows: repeat(5, auto);
-    gap: 1rem;
+    gap: 0.5rem;
   }
 
   .svg {

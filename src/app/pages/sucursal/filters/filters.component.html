@@ -1,0 +1,110 @@
+<div class="filters-wrapper">
+  <button type="button" class="filters-toggle" (click)="isOpen = !isOpen">
+    {{ isOpen ? 'Ocultar filtros' : 'Mostrar filtros' }}
+  </button>
+  <form class="filters" [formGroup]="form" [class.filters--open]="isOpen" (ngSubmit)="aplicarFiltros()">
+  <div class="filters__row">
+    <div class="filters__field">
+      <label for="fecha-inicio">Fecha desde</label>
+      <input id="fecha-inicio" type="date" formControlName="fechaInicio" />
+    </div>
+    <div class="filters__field">
+      <label for="fecha-fin">Fecha hasta</label>
+      <input id="fecha-fin" type="date" formControlName="fechaFin" />
+    </div>
+    <div class="filters__field">
+      <label for="registro-fotografico">Registro fotográfico</label>
+      <select id="registro-fotografico" formControlName="conRegistroFotografico">
+        <option value="">Todos</option>
+        <option value="true">Con registro</option>
+        <option value="false">Sin registro</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="filters__row filters__row--stack">
+    <div class="filters__field">
+      <span class="filters__label">Tipo de equipo</span>
+      <div class="filters__checkbox-group">
+        <label
+          class="filters__checkbox"
+          *ngFor="let tipo of tiposEquipo"
+          [attr.data-empty]="tiposEquipo.length === 0"
+        >
+          <input
+            type="checkbox"
+            [checked]="tipoSeleccionado(tipo.id)"
+            (change)="toggleTipoEquipo(tipo.id, $any($event.target).checked)"
+          />
+          <span>{{ tipo.name }}</span>
+        </label>
+        <span class="filters__empty" *ngIf="tiposEquipo.length === 0">
+          No hay tipos de equipo disponibles.
+        </span>
+      </div>
+    </div>
+    <div class="filters__field">
+      <span class="filters__label">Departamento</span>
+      <div class="filters__checkbox-group">
+        <label
+          class="filters__checkbox"
+          *ngFor="let dept of departamentos"
+          [attr.data-empty]="departamentos.length === 0"
+        >
+          <input
+            type="checkbox"
+            [checked]="departamentoSeleccionado(dept.name)"
+            (change)="toggleDepartamento(dept.name, $any($event.target).checked)"
+          />
+          <span>{{ dept.name }}</span>
+        </label>
+        <span class="filters__empty" *ngIf="departamentos.length === 0">
+          No hay departamentos disponibles.
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="filters__row">
+    <div class="filters__field filters__field--range">
+      <label>RAM (GB)</label>
+      <div class="filters__range">
+        <input type="number" min="0" formControlName="ramMin" placeholder="Mín" />
+        <span class="filters__range-separator">-</span>
+        <input type="number" min="0" formControlName="ramMax" placeholder="Máx" />
+      </div>
+    </div>
+    <div class="filters__field filters__field--range">
+      <label>Almacenamiento (GB)</label>
+      <div class="filters__range">
+        <input
+          type="number"
+          min="0"
+          formControlName="almacenamientoMin"
+          placeholder="Mín"
+        />
+        <span class="filters__range-separator">-</span>
+        <input
+          type="number"
+          min="0"
+          formControlName="almacenamientoMax"
+          placeholder="Máx"
+        />
+      </div>
+    </div>
+  </div>
+
+  <div class="filters__actions">
+    <button type="submit" class="filters__action-button filters__action-button--primary">
+      Aplicar filtros
+    </button>
+    <button
+      type="button"
+      class="filters__action-button filters__action-button--secondary"
+      (click)="limpiarFiltros()"
+    >
+      Limpiar
+    </button>
+  </div>
+</form>
+</div>
