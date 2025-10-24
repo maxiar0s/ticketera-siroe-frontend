@@ -82,6 +82,10 @@
               <h3 class="device-component">Antivirus</h3>
               <p class="device-value">{{ Equipo.antivirus }}</p>
             </div>
+            <div *ngIf="Equipo.usuario">
+              <h3 class="device-component">Usuario</h3>
+              <p class="device-value">{{ Equipo.usuario }}</p>
+            </div>
           </div>
 
           <div class="comments-section">

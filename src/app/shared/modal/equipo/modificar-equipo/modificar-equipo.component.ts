@@ -91,7 +91,12 @@ export class ModificarEquipoComponent {
         this.apiService.formEquipment(this.tipoEquipoActual).subscribe({
           next: (campos) => {
             const camposSinDuplicados = this.eliminarDuplicados(campos, 'name');
-            this.camposDinamicos = camposSinDuplicados;
+
+            this.camposDinamicos = camposSinDuplicados.map((campo) =>
+              campo.name === 'cantidadAlmacenamiento'
+                ? { ...campo, label: 'Capacidad de Almacenamiento (GB)' }
+                : campo
+            );
 
             this.actualizarFormularioConCampos(campos, respuesta);
             this.loaderService.hideModal();
