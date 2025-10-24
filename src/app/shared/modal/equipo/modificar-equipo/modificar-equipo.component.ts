@@ -259,6 +259,7 @@ export class ModificarEquipoComponent {
     this.selectedFile = null;
     this.soloEstadoModificado = false;
     this.departamentoOriginal = null;
+    this.originalFormValues = {};
     this.cerrarModal.emit();
   }
 
@@ -269,72 +270,63 @@ export class ModificarEquipoComponent {
   }
 
   onSubmit() {
-    if (this.equipoForm.valid) {
-      const nuevoEstado = this.equipoForm.value.estado;
-      const comentario = (this.equipoForm.value.text || '').trim();
-
-      if (this.soloEstadoModificado) {
-        this.actualizarSoloEstado();
-      } else {
-        const formData = new FormData();
-
-        Object.keys(this.equipoForm.value).forEach((key) => {
-          if (key === 'estado' || key === 'imagen' || key === 'text') {
-            return;
-          }
-
-          const rawValue = this.equipoForm.value[key];
-          const normalizedValue = this.normalizarValorCampo(key, rawValue);
-
-          if (normalizedValue !== null) {
-            formData.append(key, normalizedValue);
-          }
-        });
-
-        const idControl = this.equipoForm.get('id')?.value;
-        if (idControl !== undefined && idControl !== null && idControl !== '') {
-          formData.append('id', idControl.toString());
-        }
-
-        if (this.selectedFile) {
-          formData.append('imagen', this.selectedFile);
-        }
-
-        this.enviarFormulario.emit(formData);
-
-        this.equipoActualizado.emit(true);
-
-        if (nuevoEstado) {
-          this.apiService.actualizarEstadoEquipo(this.idEquipo, nuevoEstado).subscribe({
-            next: () => {
-              console.log('Estado del equipo actualizado correctamente');
-            },
-            error: (error) => {
-              console.error('Error al actualizar el estado del equipo:', error);
-            }
-          });
-        }
-      }
-
-      if (comentario !== '') {
-        const observacion = {
-          equipoId: this.idEquipo,
-          text: comentario,
-        };
-        this.apiService.createComment(observacion).subscribe({
-          next: (respuesta) => {
-            console.log(respuesta);
-          },
-          error: (error) => {
-            console.error('Error al crear observacion', error);
-          },
-        });
-      }
-      this.cerrar();
-    } else {
+    if (!this.equipoForm.valid) {
       this.errorMessage =
         'Por favor, completa todos los campos requeridos correctamente.';
+      return;
     }
+
+    const valoresActuales = this.equipoForm.value;
+    const nuevoEstado = valoresActuales.estado;
+    const comentario = (valoresActuales.text || '').trim();
+    const estadoOriginal = this.originalFormValues.estado;
+
+    const hayArchivoNuevo = !!this.selectedFile;
+    const hayCambiosFormulario = this.existenCambiosEnCampos(valoresActuales);
+    let emitioActualizacion = false;
+
+    if (hayCambiosFormulario || hayArchivoNuevo) {
+      const formData = this.construirPayloadFormulario(valoresActuales);
+      this.enviarFormulario.emit(formData);
+      this.equipoActualizado.emit(true);
+      emitioActualizacion = true;
+    }
+
+    if (
+      nuevoEstado !== undefined &&
+      nuevoEstado !== null &&
+      nuevoEstado !== '' &&
+      nuevoEstado !== estadoOriginal
+    ) {
+      this.apiService.actualizarEstadoEquipo(this.idEquipo, nuevoEstado).subscribe({
+        next: () => {
+          console.log('Estado del equipo actualizado correctamente');
+          if (!emitioActualizacion) {
+            this.equipoActualizado.emit(true);
+          }
+        },
+        error: (error) => {
+          console.error('Error al actualizar el estado del equipo:', error);
+        }
+      });
+    }
+
+    if (comentario !== '') {
+      const observacion = {
+        equipoId: this.idEquipo,
+        text: comentario,
+      };
+      this.apiService.createComment(observacion).subscribe({
+        next: (respuesta) => {
+          console.log(respuesta);
+        },
+        error: (error) => {
+          console.error('Error al crear observacion', error);
+        },
+      });
+    }
+
+    this.cerrar();
   }
 
   private normalizarValorCampo(key: string, valor: any): string | null | Blob {
@@ -363,31 +355,65 @@ export class ModificarEquipoComponent {
 
     return valor;
   }
-  verificarSoloEstadoModificado() {
-    // Verificar si solo se ha modificado el estado y/o el campo de observaciones
-    const currentValues = this.equipoForm.value;
-    this.soloEstadoModificado = true;
 
-    // Comparar cada campo excepto estado y text (observaciones)
-    Object.keys(currentValues).forEach(key => {
-      if (key !== 'estado' && key !== 'text') {
-        // Si algún campo que no sea estado o text ha cambiado, no es solo modificación de estado
-        if (currentValues[key] !== this.originalFormValues[key]) {
-          this.soloEstadoModificado = false;
-        }
+  private construirPayloadFormulario(valoresActuales: any): FormData {
+    const formData = new FormData();
+
+    Object.keys(valoresActuales).forEach((key) => {
+      if (key === 'estado' || key === 'imagen' || key === 'text') {
+        return;
+      }
+
+      const rawValue = valoresActuales[key];
+      const normalizedValue = this.normalizarValorCampo(key, rawValue);
+
+      if (normalizedValue !== null) {
+        formData.append(key, normalizedValue);
       }
     });
 
-    // Verificar si el estado ha cambiado
-    if (currentValues.estado === this.originalFormValues.estado) {
-      // Si el estado no cambió pero solo se modificó el campo de observaciones,
-      // seguimos considerando que solo se modificó el estado
-      if (currentValues.text !== this.originalFormValues.text && currentValues.text !== '') {
-        this.soloEstadoModificado = true;
-      } else {
-        this.soloEstadoModificado = false;
-      }
+    const idControl = valoresActuales.id;
+    if (idControl !== undefined && idControl !== null && idControl !== '') {
+      formData.append('id', idControl.toString());
     }
+
+    if (this.selectedFile) {
+      formData.append('imagen', this.selectedFile);
+    }
+
+    return formData;
+  }
+
+  private existenCambiosEnCampos(valoresActuales: any): boolean {
+    return Object.keys(valoresActuales).some((key) => {
+      if (key === 'estado' || key === 'text') {
+        return false;
+      }
+
+      return valoresActuales[key] !== this.originalFormValues[key];
+    });
+  }
+
+  verificarSoloEstadoModificado() {
+    if (!this.originalFormValues || !Object.keys(this.originalFormValues).length) {
+      this.soloEstadoModificado = false;
+      return;
+    }
+
+    const currentValues = this.equipoForm.value;
+    const estadoOriginal = this.originalFormValues.estado;
+    const estadoActual = currentValues.estado;
+
+    const hayCambiosOtrosCampos = Object.keys(currentValues).some((key) => {
+      if (key === 'estado' || key === 'text') {
+        return false;
+      }
+
+      return currentValues[key] !== this.originalFormValues[key];
+    });
+
+    this.soloEstadoModificado =
+      estadoActual !== estadoOriginal && !hayCambiosOtrosCampos;
   }
 
   actualizarSoloEstado() {
