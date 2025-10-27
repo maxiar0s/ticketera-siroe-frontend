@@ -236,9 +236,6 @@ html, body { height: 100%; }
   font-size: 12px;
   display: block;
   font-weight: 400;
-  margin-bottom: 0.5rem;
-
-
 }
 /* @media (max-width: 1400px) {
   .form-group label {

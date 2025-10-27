@@ -191,3 +191,10 @@
   color: #474747;
   cursor: pointer;
 }
+
+.arriendo-checkbox__title {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+  color: #474747;
+}
