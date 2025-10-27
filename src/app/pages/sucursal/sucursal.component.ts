@@ -17,6 +17,7 @@ import { forkJoin, of } from 'rxjs';
 import * as XLSX from 'xlsx';
 import { EquiposFiltersComponent } from './filters/filters.component';
 import { EquipoFiltros } from '../../interfaces/equipo-filtros.interface';
+import { normalizarEsArriendo, normalizarServicios } from '../../utils/servicios.util';
 
 @Component({
   selector: 'sucursal',
@@ -46,6 +47,7 @@ export class SucursalComponent {
   public estado:              boolean = false;
   public Title:               boolean = false;
   public cerrarModal!:        boolean;
+  public clienteTieneArriendo: boolean = false;
 
   public Devices:       ImprimirEquipo[] = [];
   public filtrosEquipos: EquipoFiltros = {};
@@ -75,9 +77,13 @@ export class SucursalComponent {
   crearEquipos(datos: any) {
     this.cerrarModal = true;
     const { cantidad } = datos;
+    const payloadBase = {
+      ...datos,
+      esArriendo: this.clienteTieneArriendo ? !!datos?.esArriendo : false,
+    };
 
     const solicitudes = Array.from({ length: cantidad }, () =>
-      this.apiService.createEquiptment(datos)
+      this.apiService.createEquiptment(payloadBase)
     );
 
     forkJoin(solicitudes).subscribe({
@@ -120,6 +126,7 @@ export class SucursalComponent {
     this.equipos = undefined;
     this.loaderService.showSection();
     this.obtainedEquipments = false;
+    this.clienteTieneArriendo = false;
 
     if (!this.Title) {
       this.signalService.updateData('');
@@ -151,8 +158,24 @@ export class SucursalComponent {
             this.headerTitle(sucursal.casaMatriz.razonSocial);
           }
 
-          this.sucursal = sucursal;
-          this.equipos = this.ordenarEquiposPorCodigo(sucursal.equipos ?? []);
+          const serviciosCliente = normalizarServicios(sucursal.casaMatriz?.servicios);
+          const equiposNormalizados = this.ordenarEquiposPorCodigo(sucursal.equipos ?? []).map(
+            (equipo) => ({
+              ...equipo,
+              esArriendo: normalizarEsArriendo(equipo.esArriendo),
+            })
+          );
+
+          this.sucursal = {
+            ...sucursal,
+            casaMatriz: {
+              ...sucursal.casaMatriz,
+              servicios: serviciosCliente,
+            },
+            equipos: equiposNormalizados,
+          };
+          this.clienteTieneArriendo = this.incluyeArriendo(serviciosCliente);
+          this.equipos = equiposNormalizados;
           this.Devices = [];
 
           this.paginas = paginas;
@@ -258,7 +281,10 @@ export class SucursalComponent {
 
         const equipos: Equipo[] = (paginas as any[])
           .flatMap((respuesta: any) => respuesta?.sucursal?.equipos ?? [])
-          .map((equipo: Equipo) => equipo);
+          .map((equipo: Equipo) => ({
+            ...equipo,
+            esArriendo: normalizarEsArriendo(equipo.esArriendo),
+          }));
 
         if (equipos.length === 0) {
           console.warn('No hay equipos para exportar.');
@@ -364,4 +390,12 @@ export class SucursalComponent {
       .replace(/-+/g, '-')
       .toLowerCase();
   }
+
+  private incluyeArriendo(servicios: string[]): boolean {
+    return servicios.some(
+      (servicio) => servicio?.toLowerCase().trim() === 'arriendo'
+    );
+  }
 }
+
+

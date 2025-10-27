@@ -435,3 +435,41 @@ input[type="checkbox"] {
     padding: 1.25rem;
   }
 }
+
+.row-border.row-arriendo {
+  background-color: #f4f1ff;
+}
+
+.row-border.row-arriendo td {
+  background-color: transparent;
+}
+
+.row-border.row-arriendo .estado {
+  box-shadow: 0 0 0 3px rgba(94, 69, 255, 0.15);
+}
+
+.col-arriendo {
+  width: 140px;
+}
+
+.arriendo-cell {
+  text-align: center;
+}
+
+.chip-arriendo {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.35rem 0.85rem;
+  border-radius: 999px;
+  font-size: 1.2rem;
+  font-weight: 600;
+  background-color: #f4f1ff;
+  color: #5e45ff;
+}
+
+.chip-arriendo--empty {
+  background-color: #f3f4f6;
+  color: #6b7280;
+  font-weight: 500;
+}

@@ -40,6 +40,19 @@
                 No hay departamentos disponibles. Crea uno antes de editar.
               </div>
             </div>
+            <div class="form-group" *ngIf="permiteArriendo">
+              <div class="arriendo-checkbox">
+                <input
+                  id="editar-esArriendo"
+                  type="checkbox"
+                  class="arriendo-checkbox__input"
+                  formControlName="esArriendo"
+                />
+                <label class="arriendo-checkbox__text" for="editar-esArriendo">
+                  El equipo corresponde a un arriendo
+                </label>
+              </div>
+            </div>
             <div *ngFor="let campo of camposDinamicos; let i = index" class="form-group" style="min-width: 100%;">
 
               <label [for]="campo.name">{{ campo.label }}</label>

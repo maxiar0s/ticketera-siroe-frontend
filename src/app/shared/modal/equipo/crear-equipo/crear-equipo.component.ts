@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
@@ -19,9 +19,10 @@ import { FormatInputSoloNumerosDirective } from '../../../../directives/solo-num
   templateUrl: './crear-equipo.component.html',
   styleUrl: './crear-equipo.component.css',
 })
-export class CrearEquipoComponent {
+export class CrearEquipoComponent implements OnInit, OnChanges {
   @Output() cerrarModal = new EventEmitter<void>();
   @Output() enviarFormulario = new EventEmitter<any>();
+  @Input() habilitarArriendo: boolean = false;
 
   public TipoEquipos: TipoEquipo[] = [];
   public departamentos: DepartamentoEquipo[] = [];
@@ -42,6 +43,7 @@ export class CrearEquipoComponent {
       departamentoId: ['', Validators.required],
       cantidad: ['', [Validators.required, Validators.min(1)]],
       tipoEquipoId: ['', Validators.required],
+      esArriendo: [false],
     });
   }
 
@@ -67,6 +69,16 @@ export class CrearEquipoComponent {
         console.error('Error al cargar departamentos de equipo:', error);
       },
     });
+
+    if (!this.habilitarArriendo) {
+      this.equipoForm.get('esArriendo')?.setValue(false);
+    }
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['habilitarArriendo'] && !this.habilitarArriendo) {
+      this.equipoForm.get('esArriendo')?.setValue(false);
+    }
   }
 
   abrirModal() {

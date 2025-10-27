@@ -1,3 +1,4 @@
+import { normalizarServicios } from '../../utils/servicios.util';
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -133,19 +134,28 @@ export class PerfilComponent implements OnInit {
   private cargarPerfil(): void {
     this.apiService.perfilActual().subscribe({
       next: (perfil) => {
-        this.usuario = perfil;
-        this.esCliente = perfil.tipoCuentaId === 4;
+        const clientesAutorizados = (perfil.clientesAutorizados ?? []).map((cliente) => ({
+          ...cliente,
+          servicios: normalizarServicios(cliente.servicios),
+        }));
+        const perfilNormalizado: Cuenta = {
+          ...perfil,
+          clientesAutorizados,
+        };
+
+        this.usuario = perfilNormalizado;
+        this.esCliente = perfilNormalizado.tipoCuentaId === 4;
         this.perfilForm.patchValue({
-          name: perfil.name,
-          email: perfil.email,
-          telefono: perfil.telefono?.toString() ?? '',
+          name: perfilNormalizado.name,
+          email: perfilNormalizado.email,
+          telefono: perfilNormalizado.telefono?.toString() ?? '',
         });
         if (this.esCliente) {
           this.perfilForm.disable({ emitEvent: false });
         } else {
           this.perfilForm.enable({ emitEvent: false });
         }
-        this.actualizarAvatar(perfil);
+        this.actualizarAvatar(perfilNormalizado);
         this.loading = false;
       },
       error: () => {
@@ -156,10 +166,11 @@ export class PerfilComponent implements OnInit {
   }
 
   serviciosCliente(cliente: ClienteResumen | null | undefined): string {
-    if (!cliente?.servicios || cliente.servicios.length === 0) {
+    const servicios = normalizarServicios(cliente?.servicios);
+    if (!servicios.length) {
       return 'Sin servicios registrados';
     }
-    return cliente.servicios.join(', ');
+    return servicios.join(', ');
   }
 
   private actualizarAvatar(perfil: Cuenta | null): void {
@@ -168,4 +179,7 @@ export class PerfilComponent implements OnInit {
     this.avatarColor = generarColorDesdeTexto(referencia);
   }
 }
+
+
+
 

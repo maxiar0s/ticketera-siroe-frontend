@@ -46,6 +46,8 @@
 
           <th class="col-8">Usuario</th>
 
+          <th class="col-arriendo" *ngIf="permiteArriendo">Arriendo</th>
+
           <th class="col-9">Acciones</th>
 
         </tr>
@@ -58,7 +60,7 @@
 
         <tr>
 
-          <td [attr.colspan]="esCliente ? 8 : 9" class="height-spinner">
+          <td [attr.colspan]="totalColumnas" class="height-spinner">
 
             <div class="spinner-section spinner-size-section"></div>
 
@@ -73,11 +75,9 @@
       <tbody *ngIf="equipos && equipos.length > 0">
 
         <tr
-
           *ngFor="let equipo of equipos; let i = index"
-
           class="row-border"
-
+          [class.row-arriendo]="equipo.esArriendo"
         >
 
           <td class="information-checkbox information-value" *ngIf="!esCliente">
@@ -140,7 +140,12 @@
 
           </td>
 
-
+          <td class="information-value arriendo-cell" *ngIf="permiteArriendo">
+            <span *ngIf="equipo.esArriendo; else sinArriendo" class="chip-arriendo">Arriendo</span>
+            <ng-template #sinArriendo>
+              <span class="chip-arriendo chip-arriendo--empty">Sin arriendo</span>
+            </ng-template>
+          </td>
 
           <td class="information-value information-actions">
             <div class="desktop-actions">
@@ -212,7 +217,7 @@
 
         <tr>
 
-          <td [attr.colspan]="esCliente ? 8 : 9" class="no-equipos">No hay equipos registrados</td>
+          <td [attr.colspan]="totalColumnas" class="no-equipos">No hay equipos registrados</td>
 
         </tr>
 
@@ -227,19 +232,13 @@
 
 
 <shared-modificar-equipo
-
   class="form-crear-cliente"
-
   *ngIf="isModalVisible"
-
   [idEquipo]="selectedEquipoId"
-
   (enviarFormulario)="modificarEquipo($event)"
-
   (cerrarModal)="cerrarModal()"
-
   (equipoActualizado)="equipoActualizado.emit()"
-
+  [permiteArriendo]="permiteArriendo"
 ></shared-modificar-equipo>
 
 
@@ -354,6 +353,9 @@
     </div>
   </div>
 </div>
+
+
+
 
 
 

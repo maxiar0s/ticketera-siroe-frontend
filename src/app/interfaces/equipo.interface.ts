@@ -28,5 +28,6 @@ export interface Equipo {
   sucursalId:             string;
   tipoEquipoId:           number;
   tipoEquipo:             TipoEquipo;
+  esArriendo?:            boolean;
 }
 

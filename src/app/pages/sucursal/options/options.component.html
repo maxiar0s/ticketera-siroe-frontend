@@ -30,6 +30,7 @@
 *ngIf="isModalVisibleCrearEquipo"
 (cerrarModal)="cerrarModalCrearEquipo()"
 (enviarFormulario)="crearEquipos($event)"
+[habilitarArriendo]="clienteTieneArriendo"
 ></shared-crear-equipo>
 
 <shared-imprimir-etiqueta class="size-modal"

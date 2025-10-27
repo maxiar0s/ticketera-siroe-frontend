@@ -34,6 +34,7 @@ export class ModificarEquipoComponent {
   public selectedFile: File | null = null;
   public equipoForm: FormGroup = this.fb.group({
     id: ['', Validators.required],
+    esArriendo: [false],
   });
   // Espera para cargar el titulo del modal
   public headerCharged: boolean = false;
@@ -42,6 +43,7 @@ export class ModificarEquipoComponent {
 
   // Obtiene el ID del equipo
   @Input() idEquipo!: number;
+  @Input() permiteArriendo: boolean = false;
 
   // Control del modal
   @Output() cerrarModal = new EventEmitter<void>();
@@ -160,7 +162,7 @@ export class ModificarEquipoComponent {
     respuesta: any
   ): void {
     const controlesActuales = Object.keys(this.equipoForm.controls);
-    const controlesProtegidos = new Set(['id', 'estado', 'text', 'departamentoId']);
+    const controlesProtegidos = new Set(['id', 'estado', 'text', 'departamentoId', 'esArriendo']);
 
     controlesActuales.forEach((controlName) => {
       if (controlesProtegidos.has(controlName)) {
@@ -191,6 +193,11 @@ export class ModificarEquipoComponent {
       this.equipoForm.addControl('departamentoId', departamentoControl);
     }
 
+    if (!this.equipoForm.contains('esArriendo')) {
+      const arriendoControl = new FormControl(false);
+      this.equipoForm.addControl('esArriendo', arriendoControl);
+    }
+
     campos.forEach((campo) => {
       if (!this.equipoForm.contains(campo.name)) {
         const control = new FormControl('');
@@ -208,6 +215,11 @@ export class ModificarEquipoComponent {
         }
       }
     });
+
+    const arriendoControl = this.equipoForm.get('esArriendo');
+    if (arriendoControl) {
+      arriendoControl.setValue(this.permiteArriendo ? !!respuesta.esArriendo : false);
+    }
 
     this.establecerDepartamentoEnFormulario();
   }
@@ -255,6 +267,7 @@ export class ModificarEquipoComponent {
   cerrar() {
     this.isVisible = false;
     this.equipoForm.reset();
+    this.equipoForm.patchValue({ esArriendo: false });
     this.errorMessage = '';
     this.selectedFile = null;
     this.soloEstadoModificado = false;

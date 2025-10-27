@@ -219,3 +219,16 @@
     max-width: 250px;
   }
 }
+
+.badge-arriendo {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin-left: 0.75rem;
+  padding: 0.25rem 0.75rem;
+  border-radius: 999px;
+  background-color: #f4f1ff;
+  color: #5e45ff;
+  font-weight: 600;
+  font-size: 1.2rem;
+}

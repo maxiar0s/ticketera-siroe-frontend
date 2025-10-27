@@ -121,6 +121,10 @@
   background: #920d42;
 }
 
+#editar-esArriendo {
+  min-width: auto;
+}
+
 @media (max-width: 730px) {
   .grid-form {
     grid-template-columns: repeat(2, 1fr);
@@ -128,10 +132,10 @@
   .modal-content {
     width: 98%;
   }
-  
+
   .modal-body {
     max-height: calc(90vh - 70px); /* Ajustar según la altura del header */
-    position: relative; 
+    position: relative;
   }
 }
 
@@ -143,16 +147,16 @@
   .form-group.full-width {
     grid-column: 1;
   }
-  
+
   .modal-content {
     width: 95%;
     max-height: 85vh; /* Reduce un poco más la altura en pantallas muy pequeñas */
   }
-  
+
   .modal-body {
     padding: 1rem;
     max-height: calc(85vh - 70px); /* Ajustar según la altura del header */
-    position: relative; 
+    position: relative;
   }
 
   .equiptment-button {
@@ -165,4 +169,25 @@
     align-items: stretch;
     text-align: center;
   }
+}
+
+.arriendo-checkbox {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.arriendo-checkbox__input {
+  width: 16px;
+  height: 16px;
+  accent-color: #c2215f;
+  margin: 0;
+}
+
+.arriendo-checkbox__text {
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: #474747;
+  cursor: pointer;
 }

@@ -12,6 +12,7 @@ import { AuthService } from '../../services/auth.service';
 import { TelefonoPipe } from '../../pipes/telefono.pipe';
 import { RutPipe } from '../../pipes/rut.pipe';
 import { OpcionesClienteComponent } from '../../shared/modal/cliente/opciones-cliente/opciones-cliente.component';
+import { normalizarServicios } from '../../utils/servicios.util';
 
 @Component({
   selector: 'clientes',
@@ -171,7 +172,10 @@ export class ClientesComponent implements OnInit {
             const { paginas, clientes } = respuesta;
             this.loaderService.hideSection();
             this.obtainedClients = true;
-            this.casasMatricez = clientes;
+            this.casasMatricez = (clientes ?? []).map((cliente: Cliente & { servicios?: unknown }) => ({
+              ...cliente,
+              servicios: normalizarServicios(cliente.servicios),
+            }));
             this.paginas = paginas;
           } else {
             this.loaderService.hideSection();
@@ -211,10 +215,11 @@ export class ClientesComponent implements OnInit {
   }
 
   serviciosCliente(cliente?: Cliente | null): string {
-    if (!cliente?.servicios || cliente.servicios.length === 0) {
+    const servicios = normalizarServicios(cliente?.servicios);
+    if (!servicios.length) {
       return 'Sin servicios registrados';
     }
-    return cliente.servicios.join(', ');
+    return servicios.join(', ');
   }
 
   obtenerClaseVisitas(asignadas?: number | null, realizadas?: number | null): string {
@@ -232,4 +237,5 @@ export class ClientesComponent implements OnInit {
     return '';
   }
 }
+
 

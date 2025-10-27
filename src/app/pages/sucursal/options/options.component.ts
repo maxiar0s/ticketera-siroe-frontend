@@ -21,6 +21,7 @@ export class ButtonsComponent {
 
   // Equipos para imprimir
   @Input() devices: ImprimirEquipo[] = [];
+  @Input() clienteTieneArriendo: boolean = false;
 
   public isModalVisibleCrearEquipo: boolean = false;
   public isModalVisibleImprimirEtiqueta: boolean = false;

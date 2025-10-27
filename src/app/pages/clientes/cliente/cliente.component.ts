@@ -12,6 +12,7 @@ import { Cliente } from '../../../interfaces/cliente.interface';
 import { NavegationComponent } from "../../../shared/navegation/navegation.component";
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../../services/auth.service';
+import { normalizarServicios } from '../../../utils/servicios.util';
 
 @Component({
   selector: 'cliente',
@@ -128,8 +129,9 @@ export class ClienteComponent {
             visitasEmergenciaAnuales = 0,
             visitasMensualesRealizadas = 0,
             visitasEmergenciaAnualesRealizadas = 0,
-            servicios = [],
+            servicios: serviciosRespuesta = [],
           } = cliente;
+          const servicios = normalizarServicios(serviciosRespuesta);
           this.cliente = {
             ...(this.cliente ?? {}),
             id,

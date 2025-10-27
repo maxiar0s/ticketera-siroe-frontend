@@ -93,6 +93,20 @@
           </div>
         </div>
 
+        <div class="form-group" *ngIf="habilitarArriendo">
+          <div class="arriendo-checkbox">
+            <input
+              id="esArriendo"
+              type="checkbox"
+              class="arriendo-checkbox__input"
+              formControlName="esArriendo"
+            />
+            <label class="arriendo-checkbox__text" for="esArriendo">
+              El equipo corresponde a un arriendo
+            </label>
+          </div>
+        </div>
+
         <!-- Mensaje de Error -->
         <div *ngIf="errorMessage" class="error-message">
           {{ errorMessage }}

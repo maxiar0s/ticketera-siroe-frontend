@@ -31,6 +31,7 @@ export class TableComponent {
   @Input() paginaActual!: number;
   //?
   @Input() sucursalId?: string;
+  @Input() permiteArriendo: boolean = false;
 
   // Modal de edicion de equipo
   public selectedEquipoId!: number;
@@ -326,6 +327,11 @@ export class TableComponent {
     this.enviarEquipos();
   }
 
+  get totalColumnas(): number {
+    const base = this.esCliente ? 8 : 9;
+    return this.permiteArriendo ? base + 1 : base;
+  }
+
   enviarEquipos(): void {
     if (this.esCliente) {
       this.Devices.emit([]);
@@ -338,6 +344,7 @@ export class TableComponent {
     return parseInt(value);
   }
 }
+
 
 
 

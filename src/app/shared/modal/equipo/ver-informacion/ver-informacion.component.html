@@ -4,6 +4,7 @@
       <h2 class="header-form">
         Añadir datos:
         <span>{{ Equipo.tipoEquipo.name }} {{ Equipo.codigoId }}</span>
+        <span *ngIf="Equipo.esArriendo" class="badge-arriendo">Arriendo</span>
       </h2>
       <img
         src="/assets/svg/exit-button.svg"
