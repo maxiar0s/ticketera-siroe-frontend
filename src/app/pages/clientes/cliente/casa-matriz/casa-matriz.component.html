@@ -27,6 +27,18 @@
           <p>Telefono: <span>{{ cliente?.telefonoEncargado }}</span></p>
         </div>
 
+        <div class="information info-servicios">
+          <p>
+            Servicios:
+            <span *ngIf="cliente?.servicios?.length; else sinServicios">
+              {{ cliente?.servicios?.join(', ') }}
+            </span>
+          </p>
+          <ng-template #sinServicios>
+            <span>Sin servicios registrados</span>
+          </ng-template>
+        </div>
+
         <div class="information info-id">
           <p>ID Cliente: <span>{{ cliente?.id}}</span></p>
         </div>

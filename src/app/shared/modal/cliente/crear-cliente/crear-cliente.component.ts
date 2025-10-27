@@ -29,7 +29,6 @@ export class CrearClienteComponent implements OnChanges {
 
   public creating!: boolean;
   public selectedFile: File | null = null;
-  private formData = new FormData();
   private readonly initialFormValues = {
     rut: '',
     razonSocial: '',
@@ -38,8 +37,17 @@ export class CrearClienteComponent implements OnChanges {
     correo: '',
     telefonoEncargado: '',
     visitasMensuales: 0,
-    visitasEmergenciaAnuales: 0
+    visitasEmergenciaAnuales: 0,
+    servicios: [] as string[],
   };
+  public readonly serviciosDisponibles: string[] = [
+    'Soporte TI',
+    'Web',
+    'Arriendo',
+    'Camaras',
+    'Redes Sociales',
+    'Otros',
+  ];
 
   isVisible: boolean = true;
   clientForm: FormGroup;
@@ -55,7 +63,8 @@ export class CrearClienteComponent implements OnChanges {
       correo: [this.initialFormValues.correo, [Validators.required, Validators.email]],
       telefonoEncargado: [this.initialFormValues.telefonoEncargado, [Validators.required, Validators.pattern('^[\\s\\S]{11,12}$')]],
       visitasMensuales: [this.initialFormValues.visitasMensuales, [Validators.required, Validators.min(0)]],
-      visitasEmergenciaAnuales: [this.initialFormValues.visitasEmergenciaAnuales, [Validators.required, Validators.min(0)]]
+      visitasEmergenciaAnuales: [this.initialFormValues.visitasEmergenciaAnuales, [Validators.required, Validators.min(0)]],
+      servicios: [this.initialFormValues.servicios, [Validators.required]],
     });
   }
 
@@ -88,7 +97,8 @@ export class CrearClienteComponent implements OnChanges {
         correo: this.cliente.correo,
         telefonoEncargado: telefonoFormateado,
         visitasMensuales: this.cliente.visitasMensuales ?? 0,
-        visitasEmergenciaAnuales: this.cliente.visitasEmergenciaAnuales ?? 0
+        visitasEmergenciaAnuales: this.cliente.visitasEmergenciaAnuales ?? 0,
+        servicios: this.cliente.servicios ?? [],
       });
       // Resetear el estado dirty al cargar datos
       this.clientForm.markAsPristine();
@@ -120,6 +130,9 @@ export class CrearClienteComponent implements OnChanges {
 
       // Crear un nuevo FormData para evitar duplicados
       const formData = new FormData();
+      const serviciosSeleccionados: string[] = Array.isArray(this.clientForm.value['servicios'])
+        ? [...this.clientForm.value['servicios']]
+        : [];
 
       // Limpiar el teléfono antes de enviarlo (solo números, 9 dígitos)
       let telefono = this.clientForm.value['telefonoEncargado'] || '';
@@ -128,6 +141,9 @@ export class CrearClienteComponent implements OnChanges {
       // Agregar todos los campos del formulario al FormData
       Object.keys(this.clientForm.value).forEach(key => {
         let value = this.clientForm.value[key];
+        if (key === 'servicios') {
+          return;
+        }
         if (key === 'telefonoEncargado') {
           value = telefono;
         }
@@ -141,6 +157,8 @@ export class CrearClienteComponent implements OnChanges {
           formData.append(key, value.toString());
         }
       });
+
+      formData.append('servicios', JSON.stringify(serviciosSeleccionados));
 
       // Manejar el archivo de imagen
       if (this.selectedFile) {
@@ -179,5 +197,28 @@ export class CrearClienteComponent implements OnChanges {
       return `${soloDigitos.slice(0, 1)} ${soloDigitos.slice(1)}`;
     }
     return `${soloDigitos.slice(0, 1)} ${soloDigitos.slice(1, 5)} ${soloDigitos.slice(5)}`;
+  }
+
+  toggleServicio(servicio: string): void {
+    const control = this.clientForm.get('servicios');
+    if (!control) {
+      return;
+    }
+    const seleccionados = Array.isArray(control.value) ? [...control.value] : [];
+    const index = seleccionados.indexOf(servicio);
+    if (index >= 0) {
+      seleccionados.splice(index, 1);
+    } else {
+      seleccionados.push(servicio);
+    }
+    control.setValue(seleccionados);
+    control.markAsDirty();
+    control.markAsTouched();
+  }
+
+  estaServicioSeleccionado(servicio: string): boolean {
+    const control = this.clientForm.get('servicios');
+    const seleccionados = Array.isArray(control?.value) ? control?.value : [];
+    return seleccionados.includes(servicio);
   }
 }

@@ -210,6 +210,13 @@ export class ClientesComponent implements OnInit {
     }
   }
 
+  serviciosCliente(cliente?: Cliente | null): string {
+    if (!cliente?.servicios || cliente.servicios.length === 0) {
+      return 'Sin servicios registrados';
+    }
+    return cliente.servicios.join(', ');
+  }
+
   obtenerClaseVisitas(asignadas?: number | null, realizadas?: number | null): string {
     const totalAsignadas = Number(asignadas ?? 0);
     const totalRealizadas = Number(realizadas ?? 0);

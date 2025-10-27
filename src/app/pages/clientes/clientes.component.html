@@ -72,22 +72,28 @@
                 <p>
                   Visitas mensuales:
                   <span
-                    [ngClass]="obtenerClaseVisitas(casaMatriz.visitasMensuales, casaMatriz.visitasMensualesRealizadas)"
+                  [ngClass]="obtenerClaseVisitas(casaMatriz.visitasMensuales, casaMatriz.visitasMensualesRealizadas)"
                   >
-                    {{ casaMatriz.visitasMensuales ?? 0 }} /
-                    {{ casaMatriz.visitasMensualesRealizadas ?? 0 }}
-                  </span>
-                </p>
-                <p>
-                  Visitas emergencia anuales:
-                  <span
-                    [ngClass]="obtenerClaseVisitas(casaMatriz.visitasEmergenciaAnuales, casaMatriz.visitasEmergenciaAnualesRealizadas)"
-                  >
-                    {{ casaMatriz.visitasEmergenciaAnuales ?? 0 }} /
-                    {{ casaMatriz.visitasEmergenciaAnualesRealizadas ?? 0 }}
-                  </span>
-                </p>
-              </div>
+                  {{ casaMatriz.visitasMensuales ?? 0 }} /
+                  {{ casaMatriz.visitasMensualesRealizadas ?? 0 }}
+                </span>
+              </p>
+              <p>
+                Visitas emergencia anuales:
+                <span
+                [ngClass]="obtenerClaseVisitas(casaMatriz.visitasEmergenciaAnuales, casaMatriz.visitasEmergenciaAnualesRealizadas)"
+                >
+                {{ casaMatriz.visitasEmergenciaAnuales ?? 0 }} /
+                {{ casaMatriz.visitasEmergenciaAnualesRealizadas ?? 0 }}
+              </span>
+            </p>
+            <p>
+              Servicios:
+              <span>
+                {{ serviciosCliente(casaMatriz) }}
+              </span>
+            </p>
+          </div>
             </div>
             <div class="client-button-container">
               <div class="button-container">

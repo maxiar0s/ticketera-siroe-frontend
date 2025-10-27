@@ -4,6 +4,7 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { ApiService } from '../../services/api.service';
 import { SignalService } from '../../services/signal.service';
 import { Cuenta } from '../../interfaces/Cuenta.interface';
+import { ClienteResumen } from '../../interfaces/cliente-resumen.interface';
 import { obtenerIniciales, generarColorDesdeTexto } from '../../utils/avatar.util';
 
 @Component({
@@ -152,6 +153,13 @@ export class PerfilComponent implements OnInit {
         this.loading = false;
       },
     });
+  }
+
+  serviciosCliente(cliente: ClienteResumen | null | undefined): string {
+    if (!cliente?.servicios || cliente.servicios.length === 0) {
+      return 'Sin servicios registrados';
+    }
+    return cliente.servicios.join(', ');
   }
 
   private actualizarAvatar(perfil: Cuenta | null): void {

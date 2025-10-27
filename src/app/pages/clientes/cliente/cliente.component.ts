@@ -128,6 +128,7 @@ export class ClienteComponent {
             visitasEmergenciaAnuales = 0,
             visitasMensualesRealizadas = 0,
             visitasEmergenciaAnualesRealizadas = 0,
+            servicios = [],
           } = cliente;
           this.cliente = {
             ...(this.cliente ?? {}),
@@ -143,6 +144,7 @@ export class ClienteComponent {
             visitasEmergenciaAnuales,
             visitasMensualesRealizadas,
             visitasEmergenciaAnualesRealizadas,
+            servicios,
           };
           this.paginas = paginas;
           this.sucursales = cliente.sucursales;

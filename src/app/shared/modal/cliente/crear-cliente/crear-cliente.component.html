@@ -78,14 +78,45 @@
             </div>
             <div *ngIf="clientForm.get('telefonoEncargado')?.hasError('pattern') && clientForm.get('telefonoEncargado')?.touched && clientForm.get('telefonoEncargado')?.invalid" class="error">
               El teléfono debe contener 9 números
-            </div>
-          </div>
         </div>
+      </div>
+    </div>
 
-        <div class="two-inputs">
-          <!-- Campo Visitas Mensuales -->
-          <div class="form-group width-50">
-            <label for="visitasMensuales">Visitas mensuales (bitacoras)</label>
+    <div class="form-group servicios-group">
+      <label>Servicios</label>
+      <div class="servicios-options">
+        <label
+          class="servicio-option"
+          *ngFor="let servicio of serviciosDisponibles"
+          [class.servicio-option--selected]="estaServicioSeleccionado(servicio)"
+        >
+          <input
+            type="checkbox"
+            class="checkbox-servicio"
+            [checked]="estaServicioSeleccionado(servicio)"
+            (change)="toggleServicio(servicio)"
+          />
+          <span class="servicio-option__icon" aria-hidden="true">
+            <span class="servicio-option__icon-mark"></span>
+          </span>
+          <span class="servicio-option__label">{{ servicio }}</span>
+        </label>
+      </div>
+      <div
+        *ngIf="
+          clientForm.get('servicios')?.hasError('required') &&
+          clientForm.get('servicios')?.touched
+        "
+        class="error"
+      >
+        Selecciona al menos un servicio.
+      </div>
+    </div>
+
+    <div class="two-inputs">
+      <!-- Campo Visitas Mensuales -->
+      <div class="form-group width-50">
+        <label for="visitasMensuales">Visitas mensuales (bitacoras)</label>
             <input id="visitasMensuales" formControlName="visitasMensuales" type="number" min="0" placeholder="Ingresa la cantidad mensual" (input)="clientForm.markAsDirty()"/>
             <div *ngIf="clientForm.get('visitasMensuales')?.hasError('required') && clientForm.get('visitasMensuales')?.touched" class="error">
               Ingresa una cantidad de visitas mensuales.

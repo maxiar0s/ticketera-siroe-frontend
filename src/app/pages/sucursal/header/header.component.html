@@ -65,6 +65,18 @@
           Correo: <span>{{ sucursal?.casaMatriz?.correo }}</span>
         </p>
       </div>
+      <div class="flex" id="serviciosCasaMatriz">
+        <p class="information-title">
+          Servicios:
+          <span>
+            {{
+              sucursal?.casaMatriz?.servicios?.length
+                ? sucursal?.casaMatriz?.servicios?.join(', ')
+                : 'Sin servicios registrados'
+            }}
+          </span>
+        </p>
+      </div>
       <div class="flex" id="correoSucursal">
         <p class="information-title">
           Correo Sucursal: <span>{{ sucursal?.correoSucursal }}</span>

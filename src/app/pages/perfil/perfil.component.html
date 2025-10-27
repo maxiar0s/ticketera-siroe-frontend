@@ -12,6 +12,34 @@
       </div>
     </section>
 
+    <section class="perfil-clientes" *ngIf="esCliente">
+      <h2>Mis clientes asignados</h2>
+      <p class="perfil-clientes__ayuda">
+        Revisa los servicios activos para cada cliente autorizado en tu cuenta.
+      </p>
+      <ng-container *ngIf="user.clientesAutorizados?.length; else sinClientesAsignados">
+        <div class="perfil-clientes__lista">
+          <article
+            class="perfil-clientes__item"
+            *ngFor="let cliente of user.clientesAutorizados"
+          >
+            <h3>{{ cliente.razonSocial }}</h3>
+            <p *ngIf="cliente.rut" class="perfil-clientes__rut">
+              RUT: {{ cliente.rut }}
+            </p>
+            <p class="perfil-clientes__servicios">
+              {{ serviciosCliente(cliente) }}
+            </p>
+          </article>
+        </div>
+      </ng-container>
+      <ng-template #sinClientesAsignados>
+        <p class="perfil-clientes__mensaje">
+          No tienes clientes asignados por el momento.
+        </p>
+      </ng-template>
+    </section>
+
     <section class="perfil-contenido">
       <form class="perfil-formulario" [formGroup]="perfilForm" (ngSubmit)="guardarPerfil()">
         <header class="perfil-formulario__encabezado">

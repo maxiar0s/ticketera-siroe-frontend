@@ -6,6 +6,7 @@ export interface Cliente {
   razonSocial:       string;
   encargadoGeneral:  string;
   correo:            string;
+  servicios?:        string[];
   telefonoEncargado: number;
   fechaIngreso:      Date;
   visitasMensuales:  number | null;

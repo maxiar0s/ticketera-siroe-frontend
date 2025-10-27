@@ -103,22 +103,106 @@
 .form-actions {
   padding-bottom: 1rem;}
 
+.servicios-group {
+  margin-top: 1rem;
+}
+
+.servicios-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+}
+
+.servicio-option {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.55rem 0.95rem;
+  border: 1px solid #e4e8ef;
+  border-radius: 1.5rem;
+  background-color: #fffefe;
+  cursor: pointer;
+  user-select: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+}
+
+.servicio-option:focus-within {
+  border-color: #c2215f;
+  box-shadow: 0 0 0 3px rgba(194, 33, 95, 0.15);
+}
+
+.servicio-option--selected {
+  border-color: #c2215f;
+  background-color: rgba(194, 33, 95, 0.08);
+}
+
+.servicio-option input {
+  position: absolute;
+  opacity: 0;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  border: 0;
+  padding: 0;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  overflow: hidden;
+}
+
+.servicio-option__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border: 2px solid #c2215f;
+  border-radius: 6px;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+  flex-shrink: 0;
+  box-sizing: border-box;
+}
+
+.servicio-option__icon-mark {
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+  background-color: transparent;
+  transition: background-color 0.2s ease;
+}
+
+.servicio-option--selected .servicio-option__icon {
+  background-color: #c2215f;
+  border-color: #c2215f;
+}
+
+.servicio-option--selected .servicio-option__icon-mark {
+  background-color: #ffffff;
+}
+
+.servicio-option__label {
+  font-size: 1.3rem;
+  color: #474747;
+  font-weight: 500;
+}
+
 /* Media queries para pantallas medianas */
 @media (max-width: 730px) {
   .two-inputs {
     flex-direction: column;
     gap: 10px;
   }
-  
+
   .width-50 {
     width: 100%;
     max-width: 100%;
   }
-  
+
   .modal-content {
     width: 98%;
   }
-  
+
   .modal-body {
     max-height: calc(90vh - 70px); /* Ajustar según la altura del header */
   }
@@ -133,7 +217,7 @@
     align-items: center;
     text-align: center;
   }
-  
+
   .btn.form-size {
     width: 100%;
     max-width: 100%;

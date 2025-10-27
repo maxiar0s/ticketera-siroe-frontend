@@ -15,6 +15,58 @@
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
 }
 
+.perfil-clientes {
+  background-color: #ffffff;
+  border-radius: 12px;
+  padding: 1.5rem 2rem;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.06);
+  display: grid;
+  gap: 1rem;
+}
+
+.perfil-clientes h2 {
+  margin: 0;
+  font-size: 1.8rem;
+}
+
+.perfil-clientes__ayuda {
+  margin: 0;
+  color: #69717a;
+}
+
+.perfil-clientes__lista {
+  display: grid;
+  gap: 1rem;
+}
+
+.perfil-clientes__item {
+  border: 1px solid #e4e8ef;
+  border-radius: 10px;
+  padding: 1rem 1.2rem;
+  background-color: #f9fafc;
+}
+
+.perfil-clientes__item h3 {
+  margin: 0;
+  font-size: 1.4rem;
+}
+
+.perfil-clientes__rut {
+  margin: 0.2rem 0;
+  color: #4f4f4f;
+}
+
+.perfil-clientes__servicios {
+  margin: 0.2rem 0 0;
+  color: #1f1f1f;
+  font-weight: 500;
+}
+
+.perfil-clientes__mensaje {
+  margin: 0;
+  color: #6c7684;
+}
+
 .perfil-avatar {
   width: 6rem;
   height: 6rem;
