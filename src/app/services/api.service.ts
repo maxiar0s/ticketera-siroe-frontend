@@ -22,8 +22,8 @@ export class ApiService {
   //private url = 'http://167.71.172.190:3000';
   //private url = 'https://167.71.172.190';
 
-  //private url = 'http://localhost:3000';
-  private url = 'https://api.soportesiroe.cl'
+  private url = 'http://localhost:3000';
+  //private url = 'https://api.soportesiroe.cl'
 
   private readonly equiposClienteCache = new Map<string, ClienteEquiposDetalle>();
 
@@ -634,6 +634,72 @@ export class ApiService {
   actualizarBitacora(id: number, payload: any): Observable<any> {
     const endpoint = `bitacoras/${id}`;
     return this.putInformation(payload, endpoint);
+  }
+
+  getProyectos(params: { pagina?: number; limite?: number; buscar?: string } = {}): Observable<any> {
+    let httpParams = new HttpParams();
+    if (params.pagina) {
+      httpParams = httpParams.set('pagina', params.pagina.toString());
+    }
+    if (params.limite) {
+      httpParams = httpParams.set('limite', params.limite.toString());
+    }
+    if (params.buscar && params.buscar.trim().length) {
+      httpParams = httpParams.set('buscar', params.buscar.trim());
+    }
+
+    return this.http
+      .get<any>(`${this.url}/proyectos`, { params: httpParams })
+      .pipe(
+        catchError((error: HttpErrorResponse) => {
+          console.error('Error al obtener proyectos:', error);
+          return throwError(() => error);
+        })
+      );
+  }
+
+  getProyecto(id: number): Observable<any> {
+    return this.http.get<any>(`${this.url}/proyectos/${id}`).pipe(
+      catchError((error: HttpErrorResponse) => {
+        console.error('Error al obtener el proyecto:', error);
+        return throwError(() => error);
+      })
+    );
+  }
+
+  crearProyecto(payload: any): Observable<any> {
+    const endpoint = 'proyectos';
+    return this.postInformation(payload, endpoint);
+  }
+
+  actualizarProyecto(id: number, payload: any): Observable<any> {
+    const endpoint = `proyectos/${id}`;
+    return this.putInformation(payload, endpoint);
+  }
+
+  eliminarProyecto(id: number): Observable<any> {
+    const endpoint = `proyectos/${id}`;
+    return this.deleteInformation(endpoint);
+  }
+
+  agregarAdjuntosProyecto(id: number, payload: any): Observable<any> {
+    const endpoint = `proyectos/${id}/adjuntos`;
+    return this.postInformation(payload, endpoint);
+  }
+
+  asignarBitacorasAProyecto(id: number, payload: any): Observable<any> {
+    const endpoint = `proyectos/${id}/bitacoras`;
+    return this.postInformation(payload, endpoint);
+  }
+
+  removerBitacoraDeProyecto(id: number, bitacoraId: number): Observable<any> {
+    const endpoint = `proyectos/${id}/bitacoras/${bitacoraId}`;
+    return this.deleteInformation(endpoint);
+  }
+
+  eliminarProyectoAdjunto(id: number, adjuntoId: number): Observable<any> {
+    const endpoint = `proyectos/${id}/adjuntos/${adjuntoId}`;
+    return this.deleteInformation(endpoint);
   }
 
   // Obtener equipo por ID

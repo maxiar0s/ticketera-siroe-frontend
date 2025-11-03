@@ -39,6 +39,12 @@ export interface Bitacora {
   estadoTicket?: 'ingresado' | 'terminado' | null;
   fechaTermino?: string | null;
   detalleTermino?: string | null;
+  proyectoId?: number | null;
+  proyecto?: {
+    id: number;
+    nombre: string;
+    fotoPortada?: string | null;
+  } | null;
 }
 
 export interface BitacoraListadoResponse {

@@ -98,7 +98,6 @@ export class BitacoraComponent implements OnInit {
       sucursalId: [''],
       buscar: [''],
       tipo: ['ambos'],
-      proyectoId: [''],
     });
 
     this.bitacoraForm = this.fb.group({
@@ -418,7 +417,6 @@ export class BitacoraComponent implements OnInit {
       sucursalId: '',
       buscar: '',
       tipo: 'ambos',
-      proyectoId: '',
     });
     const clienteId = this.filtroForm.value.clienteId;
     if (clienteId) {
@@ -453,13 +451,6 @@ export class BitacoraComponent implements OnInit {
     };
     if (filtros.tipo && filtros.tipo !== 'ambos') {
       params['tipo'] = filtros.tipo;
-    }
-    if (filtros.proyectoId) {
-      if (filtros.proyectoId === 'sin-proyecto') {
-        params['sinProyecto'] = 'true';
-      } else {
-        params['proyectoId'] = filtros.proyectoId;
-      }
     }
 
     this.apiService
@@ -541,7 +532,6 @@ export class BitacoraComponent implements OnInit {
       ticketFechaTermino: '',
       ticketDetalleTermino: '',
       descripcion: '',
-      proyectoId: null,
     });
 
     this.formularioVisible = true;
@@ -612,7 +602,6 @@ export class BitacoraComponent implements OnInit {
       ticketEstado: 'ingresado',
       ticketFechaTermino: '',
       ticketDetalleTermino: '',
-      proyectoId: null,
     });
     this.sucursalesFormulario = [];
     this.selectedIngresoFiles = [];

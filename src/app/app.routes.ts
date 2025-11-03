@@ -54,6 +54,11 @@ export const routes: Routes = [
     canActivate: [protegerRutaGuard],
     loadComponent: () => import('./pages/bitacora/bitacora.component').then( m => m.BitacoraComponent ),
   },
+  {
+    path: 'proyectos',
+    canActivate: [protegerRutaGuard],
+    loadComponent: () => import('./pages/proyectos/proyectos.component').then( m => m.ProyectosComponent ),
+  },
 
   // Config
   {

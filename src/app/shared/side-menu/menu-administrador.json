@@ -12,8 +12,7 @@
     "nombre": "Clientes",
     "route": "/clientes",
     "svg": "clientes",
-    "subItem": [
-    ],
+    "subItem": [],
     "isOpen": false
   },
   {
@@ -24,7 +23,14 @@
     "subItem": [],
     "isOpen": false
   },
-
+  {
+    "id": 6,
+    "nombre": "Proyectos",
+    "route": "/proyectos",
+    "svg": "download",
+    "subItem": [],
+    "isOpen": false
+  },
   {
     "id": 4,
     "nombre": "Usuarios",
@@ -42,4 +48,3 @@
     "isOpen": false
   }
 ]
-

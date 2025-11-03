@@ -1,0 +1,308 @@
+<div class="proyectos-layout">
+  <aside class="proyectos-sidebar">
+    <div class="sidebar-header">
+      <h2>Proyectos</h2>
+      <button class="primary-button small" type="button" (click)="nuevoProyecto()">
+        Nuevo proyecto
+      </button>
+    </div>
+
+    <form class="sidebar-search" (ngSubmit)="buscarProyectos()">
+      <input
+        type="text"
+        [(ngModel)]="proyectosBuscar"
+        name="buscar"
+        placeholder="Buscar proyecto..."
+      />
+      <button class="ghost-button small" type="submit">Buscar</button>
+    </form>
+
+    <div class="proyectos-list">
+      <p *ngIf="proyectosCargando" class="estado">Cargando proyectos...</p>
+      <p *ngIf="!proyectosCargando && proyectos.length === 0" class="estado">
+        No se encontraron proyectos.
+      </p>
+      <ul *ngIf="!proyectosCargando && proyectos.length > 0">
+        <li
+          *ngFor="let proyecto of proyectos"
+          [class.activo]="selectedProyecto?.id === proyecto.id"
+          (click)="seleccionarProyecto(proyecto)"
+        >
+          <div class="proyecto-nombre">
+            {{ proyecto.nombre }}
+          </div>
+          <div class="proyecto-meta">
+            <span>{{ proyecto.totalBitacoras || 0 }} bitacoras</span>
+            <span>{{ proyecto.totalTickets || 0 }} tickets</span>
+          </div>
+        </li>
+      </ul>
+    </div>
+
+    <div class="sidebar-pagination" *ngIf="proyectosPaginasTotales > 1">
+      <button
+        type="button"
+        class="ghost-button small"
+        (click)="cambiarPaginaProyectos(proyectosPagina - 1)"
+        [disabled]="proyectosPagina <= 1"
+      >
+        Anterior
+      </button>
+      <span>Pagina {{ proyectosPagina }} / {{ proyectosPaginasTotales }}</span>
+      <button
+        type="button"
+        class="ghost-button small"
+        (click)="cambiarPaginaProyectos(proyectosPagina + 1)"
+        [disabled]="
+          proyectosPaginasTotales === 0 ||
+          proyectosPagina >= proyectosPaginasTotales
+        "
+      >
+        Siguiente
+      </button>
+    </div>
+  </aside>
+
+  <section class="proyectos-contenido">
+    <form
+      class="proyecto-formulario"
+      [formGroup]="proyectoForm"
+      (ngSubmit)="guardarProyecto()"
+    >
+      <div class="form-header">
+        <h2>
+          {{ proyectoForm.value.id ? 'Editar proyecto' : 'Nuevo proyecto' }}
+        </h2>
+        <button class="primary-button" type="submit" [disabled]="guardandoProyecto">
+          {{ guardandoProyecto ? 'Guardando...' : 'Guardar' }}
+        </button>
+      </div>
+
+      <div class="form-grid">
+        <label>
+          <span class="label">Nombre</span>
+          <input type="text" formControlName="nombre" required />
+          <span class="error" *ngIf="proyectoForm.get('nombre')?.invalid && proyectoForm.get('nombre')?.touched">
+            El nombre es obligatorio.
+          </span>
+        </label>
+
+        <label>
+          <span class="label">Descripcion</span>
+          <textarea rows="3" formControlName="descripcion"></textarea>
+        </label>
+
+        <label>
+          <span class="label">Encargados</span>
+          <select formControlName="encargadoIds" multiple>
+            <option *ngFor="let tecnico of tecnicos" [ngValue]="tecnico.id">
+              {{ tecnico.name }} ({{ tecnico.email }})
+            </option>
+          </select>
+          <small class="help">Mantenga presionada la tecla Ctrl o Cmd para seleccionar varios.</small>
+        </label>
+
+        <label>
+          <span class="label">Fecha de inicio</span>
+          <input type="date" formControlName="fechaInicio" />
+        </label>
+
+        <label>
+          <span class="label">Fecha de termino</span>
+          <input type="date" formControlName="fechaTermino" />
+        </label>
+
+        <label class="archivo">
+          <span class="label">Foto de portada</span>
+          <input type="file" accept="image/*" (change)="onFotoPortadaSeleccionada($event)" />
+          <small class="help">Opcional. Selecciona una imagen para el proyecto.</small>
+        </label>
+
+        <label class="checkbox" *ngIf="proyectoSeleccionadoTieneFoto && !fotoPortadaFile">
+          <input type="checkbox" formControlName="eliminarFoto" />
+          <span>Eliminar foto actual</span>
+        </label>
+      </div>
+    </form>
+
+    <ng-container *ngIf="selectedProyecto as proyecto; else sinSeleccion">
+      <div class="proyecto-detalle">
+        <h3>Detalle del proyecto</h3>
+        <div class="detalle-grid">
+          <div>
+            <span class="label">Nombre</span>
+            <span class="value">{{ proyecto.nombre }}</span>
+          </div>
+          <div>
+            <span class="label">Encargados</span>
+            <span class="value">{{ obtenerEncargadosResumen(proyecto) }}</span>
+          </div>
+          <div>
+            <span class="label">Periodo</span>
+            <span class="value">
+              {{
+                proyecto.fechaInicio
+                  ? (proyecto.fechaInicio | formatoFecha : 'fullDate')
+                  : 'Sin inicio'
+              }}
+              -
+              {{
+                proyecto.fechaTermino
+                  ? (proyecto.fechaTermino | formatoFecha : 'fullDate')
+                  : 'Sin termino'
+              }}
+            </span>
+          </div>
+          <div>
+            <span class="label">Resumen</span>
+            <span class="value">
+              {{ proyecto.totalBitacoras || 0 }} bitacoras /
+              {{ proyecto.totalTickets || 0 }} tickets
+            </span>
+          </div>
+        </div>
+
+        <div class="descripcion" *ngIf="proyecto.descripcion">
+          <h4>Descripcion</h4>
+          <p>{{ proyecto.descripcion }}</p>
+        </div>
+
+        <div class="portada" *ngIf="proyecto.fotoPortada && !proyectoForm.value.eliminarFoto">
+          <h4>Foto de portada</h4>
+          <button
+            class="ghost-button small"
+            type="button"
+            (click)="abrirFotoPortada()"
+          >
+            Ver foto
+          </button>
+        </div>
+
+        <section class="adjuntos">
+          <div class="section-header">
+            <h4>Documentos e imagenes</h4>
+            <label class="ghost-button small">
+              Subir archivos
+              <input
+                type="file"
+                multiple
+                (change)="subirAdjuntos($event)"
+                hidden
+              />
+            </label>
+          </div>
+          <p *ngIf="proyecto.adjuntos.length === 0">Sin archivos adjuntos.</p>
+          <ul *ngIf="proyecto.adjuntos.length > 0">
+            <li *ngFor="let adjunto of proyecto.adjuntos">
+              <span>
+                {{ adjunto.nombreArchivo || adjunto.archivo }}
+                <small>
+                  - {{ adjunto.createdAt | formatoFecha : 'short' }}
+                  <ng-container *ngIf="adjunto.subidoPor?.name">
+                    - {{ adjunto.subidoPor?.name }}
+                  </ng-container>
+                </small>
+              </span>
+              <div class="acciones">
+                <button
+                  class="ghost-button small"
+                  type="button"
+                  (click)="abrirAdjunto(adjunto)"
+                >
+                  Ver
+                </button>
+                <button
+                  class="ghost-button small danger"
+                  type="button"
+                  (click)="eliminarAdjunto(adjunto)"
+                >
+                  Eliminar
+                </button>
+              </div>
+            </li>
+          </ul>
+        </section>
+
+        <section class="bitacoras">
+          <div class="section-header">
+            <h4>Bitacoras y tickets asignados</h4>
+          </div>
+          <p *ngIf="!proyecto.bitacoras || proyecto.bitacoras.length === 0">
+            Sin registros asignados.
+          </p>
+          <ul *ngIf="proyecto.bitacoras && proyecto.bitacoras.length > 0">
+            <li *ngFor="let bitacora of proyecto.bitacoras">
+              <div>
+                <strong>{{ bitacora.titulo || 'Sin titulo' }}</strong>
+                <small>
+                  {{ bitacora.esTicket ? 'Ticket' : 'Bitacora' }} -
+                  {{ bitacora.fechaVisita | formatoFecha : 'fullDate' }}
+                </small>
+              </div>
+              <button
+                class="ghost-button small danger"
+                type="button"
+                (click)="removerBitacora(bitacora)"
+              >
+                Remover
+              </button>
+            </li>
+          </ul>
+        </section>
+
+        <section class="bitacoras-disponibles">
+          <div class="section-header">
+            <h4>Agregar bitacoras / tickets</h4>
+          </div>
+          <form class="buscar-bitacoras" (ngSubmit)="buscarBitacorasDisponibles(1)">
+            <input
+              type="text"
+              [(ngModel)]="bitacorasBusqueda"
+              name="bitacorasBusqueda"
+              placeholder="Buscar por titulo o nota"
+            />
+            <button class="ghost-button small" type="submit">
+              Buscar
+            </button>
+          </form>
+          <p *ngIf="buscandoBitacoras" class="estado">
+            Buscando bitacoras disponibles...
+          </p>
+          <p
+            *ngIf="!buscandoBitacoras && bitacorasDisponibles.length === 0"
+            class="estado"
+          >
+            No hay bitacoras disponibles para asignar.
+          </p>
+          <ul *ngIf="!buscandoBitacoras && bitacorasDisponibles.length > 0">
+            <li *ngFor="let bitacora of bitacorasDisponibles">
+              <div>
+                <strong>{{ bitacora.titulo || 'Sin titulo' }}</strong>
+                <small>
+                  {{ bitacora.esTicket ? 'Ticket' : 'Bitacora' }} -
+                  {{ bitacora.fechaVisita | formatoFecha : 'fullDate' }}
+                </small>
+              </div>
+              <button
+                class="ghost-button small"
+                type="button"
+                (click)="asignarBitacora(bitacora)"
+              >
+                Asignar
+              </button>
+            </li>
+          </ul>
+        </section>
+      </div>
+    </ng-container>
+
+    <ng-template #sinSeleccion>
+      <div class="proyecto-placeholder">
+        <h3>Selecciona un proyecto</h3>
+        <p>
+          Elige un proyecto de la lista para ver su detalle o crea uno nuevo usando el formulario.
+        </p>
+      </div>
+    </ng-template>
+  </section>
+</div>

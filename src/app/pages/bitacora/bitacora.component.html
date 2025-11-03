@@ -73,6 +73,20 @@
         </select>
       </label>
 
+      <label class="filter-field">
+        <span class="label">Proyecto</span>
+        <select formControlName="proyectoId">
+          <option value="">Todos</option>
+          <option value="sin-proyecto">Sin proyecto</option>
+          <option
+            *ngFor="let proyecto of proyectos"
+            [value]="proyecto.id"
+          >
+            {{ proyecto.nombre }}
+          </option>
+        </select>
+      </label>
+
       <label class="filter-field grow">
         <span class="label">Buscar</span>
         <input
@@ -287,6 +301,12 @@
         </span>
       </div>
       <div>
+        <span class="label">Proyecto</span>
+        <span class="value">
+          {{ bitacoraSeleccionada.proyecto?.nombre || 'Sin proyecto' }}
+        </span>
+      </div>
+      <div>
         <span class="label">Tipo</span>
         <span class="value">
           {{ bitacoraSeleccionada.esTicket ? 'Ticket' : 'Bitacora' }}
@@ -493,6 +513,19 @@
               [value]="estado.value"
             >
               {{ estado.label }}
+            </option>
+          </select>
+        </label>
+
+        <label>
+          <span class="label">Proyecto</span>
+          <select formControlName="proyectoId">
+            <option [ngValue]="null">Sin proyecto</option>
+            <option
+              *ngFor="let proyecto of proyectos"
+              [ngValue]="proyecto.id"
+            >
+              {{ proyecto.nombre }}
             </option>
           </select>
         </label>
