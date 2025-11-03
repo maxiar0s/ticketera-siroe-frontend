@@ -28,12 +28,42 @@
           [class.activo]="selectedProyecto?.id === proyecto.id"
           (click)="seleccionarProyecto(proyecto)"
         >
-          <div class="proyecto-nombre">
-            {{ proyecto.nombre }}
-          </div>
-          <div class="proyecto-meta">
-            <span>{{ proyecto.totalBitacoras || 0 }} bitacoras</span>
-            <span>{{ proyecto.totalTickets || 0 }} tickets</span>
+          <div class="proyecto-resumen">
+            <div class="proyecto-cover">
+              <ng-container *ngIf="proyecto.fotoPortada; else portadaPlaceholder">
+                <ng-container
+                  *ngIf="
+                    proyecto.fotoPortada | signedUrl | async as portadaUrl;
+                    else portadaPlaceholder
+                  "
+                >
+                  <img
+                    [src]="portadaUrl"
+                    [alt]="proyecto.nombre"
+                    loading="lazy"
+                  />
+                </ng-container>
+              </ng-container>
+              <ng-template #portadaPlaceholder>
+                <span>{{ proyecto.nombre.charAt(0) || '?' }}</span>
+              </ng-template>
+            </div>
+            <div class="proyecto-texto">
+              <div class="proyecto-nombre">
+                {{ proyecto.nombre }}
+              </div>
+              <div class="proyecto-meta">
+                <span>
+                  {{ proyecto.totalBitacoras || 0 }}
+                  {{ 'bitacoras' | titlecase }}
+                </span>
+                <span class="separador">|</span>
+                <span>
+                  {{ proyecto.totalTickets || 0 }}
+                  {{ 'tickets' | titlecase }}
+                </span>
+              </div>
+            </div>
           </div>
         </li>
       </ul>
@@ -79,7 +109,7 @@
       </div>
 
       <div class="form-grid">
-        <label>
+        <label class="campo campo-nombre">
           <span class="label">Nombre</span>
           <input type="text" formControlName="nombre" required />
           <span class="error" *ngIf="proyectoForm.get('nombre')?.invalid && proyectoForm.get('nombre')?.touched">
@@ -87,20 +117,32 @@
           </span>
         </label>
 
-        <label>
+        <label class="campo campo-descripcion">
           <span class="label">Descripcion</span>
           <textarea rows="3" formControlName="descripcion"></textarea>
         </label>
 
-        <label>
+        <div class="campo campo-encargados">
           <span class="label">Encargados</span>
-          <select formControlName="encargadoIds" multiple>
-            <option *ngFor="let tecnico of tecnicos" [ngValue]="tecnico.id">
-              {{ tecnico.name }} ({{ tecnico.email }})
-            </option>
-          </select>
-          <small class="help">Mantenga presionada la tecla Ctrl o Cmd para seleccionar varios.</small>
-        </label>
+          <div class="encargados-checklist">
+            <label class="encargado-item" *ngFor="let tecnico of tecnicos">
+              <input
+                #encargadoCheckbox
+                type="checkbox"
+                [checked]="estaEncargadoSeleccionado(tecnico.id)"
+                (change)="toggleEncargado(tecnico.id, encargadoCheckbox.checked)"
+              />
+              <span class="encargado-texto">
+                <span class="encargado-nombre">{{ tecnico.name }}</span>
+                <small>{{ tecnico.email }}</small>
+              </span>
+            </label>
+            <p *ngIf="tecnicos.length === 0" class="sin-tecnicos">
+              No hay tecnicos disponibles.
+            </p>
+          </div>
+          <small class="help">Selecciona uno o varios encargados para el proyecto.</small>
+        </div>
 
         <label>
           <span class="label">Fecha de inicio</span>
@@ -118,10 +160,12 @@
           <small class="help">Opcional. Selecciona una imagen para el proyecto.</small>
         </label>
 
-        <label class="checkbox" *ngIf="proyectoSeleccionadoTieneFoto && !fotoPortadaFile">
-          <input type="checkbox" formControlName="eliminarFoto" />
-          <span>Eliminar foto actual</span>
-        </label>
+        <div class="campo eliminar-foto" *ngIf="proyectoSeleccionadoTieneFoto && !fotoPortadaFile">
+          <label class="checkbox-control">
+            <input type="checkbox" formControlName="eliminarFoto" />
+            <span>Eliminar foto actual</span>
+          </label>
+        </div>
       </div>
     </form>
 
@@ -129,15 +173,22 @@
       <div class="proyecto-detalle">
         <h3>Detalle del proyecto</h3>
         <div class="detalle-grid">
-          <div>
+          <div class="detalle-item">
             <span class="label">Nombre</span>
             <span class="value">{{ proyecto.nombre }}</span>
           </div>
-          <div>
+          <div class="detalle-item">
             <span class="label">Encargados</span>
-            <span class="value">{{ obtenerEncargadosResumen(proyecto) }}</span>
+            <div class="value encargados-detalle">
+              <span class="chip" *ngFor="let encargado of proyecto.encargados">
+                {{ encargado.name }}
+              </span>
+              <span *ngIf="!proyecto.encargados?.length" class="sin-encargados">
+                Sin encargados asignados
+              </span>
+            </div>
           </div>
-          <div>
+          <div class="detalle-item">
             <span class="label">Periodo</span>
             <span class="value">
               {{
@@ -153,11 +204,14 @@
               }}
             </span>
           </div>
-          <div>
+          <div class="detalle-item">
             <span class="label">Resumen</span>
             <span class="value">
-              {{ proyecto.totalBitacoras || 0 }} bitacoras /
-              {{ proyecto.totalTickets || 0 }} tickets
+              {{ proyecto.totalBitacoras || 0 }}
+              {{ 'bitacoras' | titlecase }}
+              |
+              {{ proyecto.totalTickets || 0 }}
+              {{ 'tickets' | titlecase }}
             </span>
           </div>
         </div>
@@ -181,13 +235,12 @@
         <section class="adjuntos">
           <div class="section-header">
             <h4>Documentos e imagenes</h4>
-            <label class="ghost-button small">
+            <label class="accion-boton upload-button">
               Subir archivos
               <input
                 type="file"
                 multiple
                 (change)="subirAdjuntos($event)"
-                hidden
               />
             </label>
           </div>
@@ -230,17 +283,36 @@
           <p *ngIf="!proyecto.bitacoras || proyecto.bitacoras.length === 0">
             Sin registros asignados.
           </p>
-          <ul *ngIf="proyecto.bitacoras && proyecto.bitacoras.length > 0">
-            <li *ngFor="let bitacora of proyecto.bitacoras">
-              <div>
-                <strong>{{ bitacora.titulo || 'Sin titulo' }}</strong>
-                <small>
-                  {{ bitacora.esTicket ? 'Ticket' : 'Bitacora' }} -
-                  {{ bitacora.fechaVisita | formatoFecha : 'fullDate' }}
-                </small>
+          <ul
+            *ngIf="proyecto.bitacoras && proyecto.bitacoras.length > 0"
+            class="registros-list"
+          >
+            <li
+              *ngFor="let bitacora of proyecto.bitacoras"
+              class="registro-item"
+              [ngClass]="bitacora.esTicket ? 'ticket' : 'bitacora'"
+            >
+              <div class="registro-info">
+                <div class="registro-header">
+                  <span
+                    class="tipo-chip"
+                    [ngClass]="bitacora.esTicket ? 'ticket' : 'bitacora'"
+                  >
+                    {{ bitacora.esTicket ? 'Ticket' : 'Bitacora' }}
+                  </span>
+                  <span class="registro-fecha">
+                    {{ bitacora.fechaVisita | formatoFecha : 'fullDate' }}
+                  </span>
+                </div>
+                <strong class="registro-titulo">
+                  {{ bitacora.titulo || 'Sin titulo' }}
+                </strong>
+                <p class="registro-descripcion" *ngIf="bitacora.descripcion">
+                  {{ bitacora.descripcion }}
+                </p>
               </div>
               <button
-                class="ghost-button small danger"
+                class="registro-accion remover"
                 type="button"
                 (click)="removerBitacora(bitacora)"
               >
@@ -261,7 +333,7 @@
               name="bitacorasBusqueda"
               placeholder="Buscar por titulo o nota"
             />
-            <button class="ghost-button small" type="submit">
+            <button class="accion-boton buscar-boton" type="submit">
               Buscar
             </button>
           </form>
@@ -274,17 +346,36 @@
           >
             No hay bitacoras disponibles para asignar.
           </p>
-          <ul *ngIf="!buscandoBitacoras && bitacorasDisponibles.length > 0">
-            <li *ngFor="let bitacora of bitacorasDisponibles">
-              <div>
-                <strong>{{ bitacora.titulo || 'Sin titulo' }}</strong>
-                <small>
-                  {{ bitacora.esTicket ? 'Ticket' : 'Bitacora' }} -
-                  {{ bitacora.fechaVisita | formatoFecha : 'fullDate' }}
-                </small>
+          <ul
+            *ngIf="!buscandoBitacoras && bitacorasDisponibles.length > 0"
+            class="registros-list disponibles"
+          >
+            <li
+              *ngFor="let bitacora of bitacorasDisponibles"
+              class="registro-item"
+              [ngClass]="bitacora.esTicket ? 'ticket' : 'bitacora'"
+            >
+              <div class="registro-info">
+                <div class="registro-header">
+                  <span
+                    class="tipo-chip"
+                    [ngClass]="bitacora.esTicket ? 'ticket' : 'bitacora'"
+                  >
+                    {{ bitacora.esTicket ? 'Ticket' : 'Bitacora' }}
+                  </span>
+                  <span class="registro-fecha">
+                    {{ bitacora.fechaVisita | formatoFecha : 'fullDate' }}
+                  </span>
+                </div>
+                <strong class="registro-titulo">
+                  {{ bitacora.titulo || 'Sin titulo' }}
+                </strong>
+                <p class="registro-descripcion" *ngIf="bitacora.descripcion">
+                  {{ bitacora.descripcion }}
+                </p>
               </div>
               <button
-                class="ghost-button small"
+                class="registro-accion asignar"
                 type="button"
                 (click)="asignarBitacora(bitacora)"
               >

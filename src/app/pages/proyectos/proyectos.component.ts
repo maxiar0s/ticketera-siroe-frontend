@@ -10,6 +10,7 @@ import {
 } from '@angular/forms';
 import { finalize } from 'rxjs';
 import { FormatoFechaPipe } from '../../pipes/formato-fecha.pipe';
+import { SignedUrlPipe } from '../../pipes/generar-url.pipe';
 import { ApiService } from '../../services/api.service';
 import { Proyecto, ProyectoAdjunto } from '../../interfaces/proyecto.interface';
 import { Tecnico } from '../../interfaces/tecnico.interface';
@@ -28,7 +29,13 @@ interface ProyectoFormulario {
 @Component({
   selector: 'app-proyectos',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, FormsModule, FormatoFechaPipe],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    FormsModule,
+    FormatoFechaPipe,
+    SignedUrlPipe,
+  ],
   templateUrl: './proyectos.component.html',
   styleUrl: './proyectos.component.css',
 })
@@ -81,6 +88,29 @@ export class ProyectosComponent implements OnInit {
   get encargadosSeleccionados(): number[] {
     const value = this.proyectoForm.get('encargadoIds')?.value;
     return Array.isArray(value) ? value : [];
+  }
+
+  estaEncargadoSeleccionado(encargadoId: number): boolean {
+    return this.encargadosSeleccionados.includes(encargadoId);
+  }
+
+  toggleEncargado(encargadoId: number, checked: boolean): void {
+    const control = this.proyectoForm.get('encargadoIds');
+    if (!control) {
+      return;
+    }
+
+    const seleccionados = new Set(this.encargadosSeleccionados);
+    if (checked) {
+      seleccionados.add(encargadoId);
+    } else {
+      seleccionados.delete(encargadoId);
+    }
+
+    control.setValue(Array.from(seleccionados));
+    control.markAsDirty();
+    control.markAsTouched();
+    control.updateValueAndValidity();
   }
 
   cargarProyectos(pagina: number = 1): void {
@@ -407,14 +437,6 @@ export class ProyectosComponent implements OnInit {
         console.error('Error al cargar detalle del proyecto', error);
       },
     });
-  }
-
-  obtenerEncargadosResumen(proyecto: Proyecto | null | undefined): string {
-    if (!proyecto?.encargados?.length) {
-      return 'Sin encargados asignados';
-    }
-
-    return proyecto.encargados.map((encargado) => encargado.name).join(', ');
   }
 
   abrirAdjunto(adjunto: ProyectoAdjunto): void {
