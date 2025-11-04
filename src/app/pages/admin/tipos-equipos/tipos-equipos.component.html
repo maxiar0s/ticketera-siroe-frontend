@@ -184,6 +184,167 @@
           Campo obligatorio
         </label>
       </div>
+      <div class="fieldset" formArrayName="presetOptions">
+        <div class="fieldset__header">
+          <div>
+            <h3>Opciones preestablecidas</h3>
+            <p>Valores sugeridos que aparecerán como atajos al registrar equipos.</p>
+          </div>
+          <button type="button" class="btn-enlace" (click)="agregarOpcionPreset()">
+            Añadir opción
+          </button>
+        </div>
+        <div
+          class="fieldset__empty"
+          *ngIf="!presetOptionsArray.length"
+        >
+          Aún no hay opciones configuradas.
+        </div>
+        <div
+          class="fieldset-row"
+          *ngFor="let opcion of presetOptionsArray.controls; let i = index"
+          [formGroupName]="i"
+        >
+          <label class="sr-only" [for]="'opcion-label-' + i">Etiqueta visible</label>
+          <input
+            class="fieldset-input"
+            [id]="'opcion-label-' + i"
+            placeholder="Etiqueta visible"
+            formControlName="label"
+          />
+          <label class="sr-only" [for]="'opcion-value-' + i">Valor almacenado</label>
+          <input
+            class="fieldset-input"
+            [id]="'opcion-value-' + i"
+            placeholder="Valor almacenado"
+            formControlName="value"
+          />
+          <label class="sr-only" [for]="'opcion-color-' + i">Color</label>
+          <select
+            class="fieldset-select"
+            [id]="'opcion-color-' + i"
+            formControlName="color"
+          >
+            <option *ngFor="let color of coloresDisponibles" [value]="color.value">
+              {{ color.label }}
+            </option>
+          </select>
+          <button
+            type="button"
+            class="btn-icon"
+            title="Eliminar opción"
+            (click)="eliminarOpcionPreset(i)"
+          >
+            ×
+          </button>
+        </div>
+      </div>
+
+      <div class="fieldset" formArrayName="standards">
+        <div class="fieldset__header">
+          <div>
+            <h3>Estandares del campo</h3>
+            <p>Define umbrales para identificar valores recomendados, mínimos u obsoletos.</p>
+          </div>
+          <button type="button" class="btn-enlace" (click)="agregarEstandar()">
+            Añadir estándar
+          </button>
+        </div>
+        <div
+          class="fieldset__empty"
+          *ngIf="!standardsArray.length"
+        >
+          No hay estandares definidos para este campo.
+        </div>
+        <div
+          class="fieldset-standard"
+          *ngFor="let standard of standardsArray.controls; let j = index"
+          [formGroupName]="j"
+        >
+          <div class="standard-grid">
+            <div class="form-group">
+              <label class="sr-only" [for]="'standard-label-' + j">Etiqueta</label>
+              <input
+                class="fieldset-input"
+                [id]="'standard-label-' + j"
+                placeholder="Ej. Recomendado: RAM ≥ 16 GB"
+                formControlName="label"
+              />
+            </div>
+            <div class="form-group">
+              <label class="sr-only" [for]="'standard-color-' + j">Color</label>
+              <select
+                class="fieldset-select"
+                [id]="'standard-color-' + j"
+                formControlName="color"
+              >
+                <option *ngFor="let color of coloresDisponibles" [value]="color.value">
+                  {{ color.label }}
+                </option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="sr-only" [for]="'standard-operator-' + j">Operador</label>
+              <select
+                class="fieldset-select"
+                [id]="'standard-operator-' + j"
+                formControlName="operator"
+              >
+                <option *ngFor="let operador of operadoresDisponibles" [value]="operador.value">
+                  {{ operador.label }}
+                </option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="sr-only" [for]="'standard-value-' + j">Valor</label>
+              <input
+                class="fieldset-input"
+                [id]="'standard-value-' + j"
+                placeholder="Valor"
+                formControlName="value"
+              />
+            </div>
+            <div class="form-group">
+              <label class="sr-only" [for]="'standard-secondary-' + j">Valor adicional</label>
+              <input
+                class="fieldset-input"
+                [id]="'standard-secondary-' + j"
+                placeholder="Valor adicional"
+                formControlName="secondaryValue"
+              />
+            </div>
+            <div class="form-group">
+              <label class="sr-only" [for]="'standard-unit-' + j">Unidad</label>
+              <input
+                class="fieldset-input"
+                [id]="'standard-unit-' + j"
+                placeholder="Unidad"
+                formControlName="unit"
+              />
+            </div>
+            <div class="form-group standard-notes">
+              <label class="sr-only" [for]="'standard-description-' + j">Notas</label>
+              <textarea
+                class="fieldset-textarea"
+                [id]="'standard-description-' + j"
+                rows="2"
+                placeholder="Notas adicionales"
+                formControlName="description"
+              ></textarea>
+            </div>
+            <div class="form-group standard-remove">
+              <button
+                type="button"
+                class="btn-icon"
+                title="Eliminar estándar"
+                (click)="eliminarEstandar(j)"
+              >
+                ×
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
       <div class="acciones-campos">
         <button type="submit" [disabled]="guardandoCampo">
           {{ guardandoCampo ? 'Guardando…' : (campoEnEdicion ? 'Actualizar campo' : 'Crear campo') }}
@@ -203,6 +364,17 @@
           <h3>{{ campo.label }}</h3>
           <p>{{ campo.name }} · {{ campo.type }}</p>
           <small *ngIf="campo.placeholder">{{ campo.placeholder }}</small>
+          <div
+            class="campo-metadata"
+            *ngIf="(campo.presetOptions?.length ?? 0) || (campo.standards?.length ?? 0)"
+          >
+            <span *ngIf="campo.presetOptions?.length">
+              {{ campo.presetOptions?.length }} opciones
+            </span>
+            <span *ngIf="campo.standards?.length">
+              {{ campo.standards?.length }} estándares
+            </span>
+          </div>
         </div>
         <div class="acciones">
           <button type="button" class="btn-enlace" (click)="editarCampo(campo)">Editar</button>

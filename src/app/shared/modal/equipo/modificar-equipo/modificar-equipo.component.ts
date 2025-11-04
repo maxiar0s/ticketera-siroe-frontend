@@ -16,6 +16,7 @@ import { LoaderService } from '../../../../services/loader.service';
 import { ApiService } from '../../../../services/api.service';
 import { Equipo } from '../../../../interfaces/equipo.interface';
 import { EquipoFormField } from '../../../../interfaces/EquipoForm.interface';
+import { CampoStandard } from '../../../../interfaces/campo.interface';
 import { LoaderModalComponent } from '../../../loader-modal/loader-modal.component';
 import { EstadoEquipo } from '../../../../interfaces/estado-equipo.interface';
 import { DepartamentoEquipo } from '../../../../interfaces/departamento-equipo.interface';
@@ -59,6 +60,13 @@ export class ModificarEquipoComponent {
   public tipoEquipoActual: string = '';
   public camposDinamicos: EquipoFormField[] = [];
   public departamentos: DepartamentoEquipo[] = [];
+  public readonly observacionesPredefinidas: string[] = [
+    'Ruidos extranos',
+    'Olor a quemado',
+    'Apagados repentinos',
+    'Pantallazos azules frecuentes',
+    'Muy lento',
+  ];
 
   // Estados de equipo
   public estadosEquipo: EstadoEquipo[] = [];
@@ -94,11 +102,13 @@ export class ModificarEquipoComponent {
           next: (campos) => {
             const camposSinDuplicados = this.eliminarDuplicados(campos, 'name');
 
-            this.camposDinamicos = camposSinDuplicados.map((campo) =>
-              campo.name === 'cantidadAlmacenamiento'
-                ? { ...campo, label: 'Capacidad de Almacenamiento (GB)' }
-                : campo
-            );
+            this.camposDinamicos = camposSinDuplicados.map((campo) => {
+              const base =
+                campo.name === 'cantidadAlmacenamiento'
+                  ? { ...campo, label: 'Capacidad de Almacenamiento (GB)' }
+                  : campo;
+              return this.normalizarCampoDinamico(base);
+            });
 
             this.actualizarFormularioConCampos(campos, respuesta);
             this.loaderService.hideModal();
@@ -111,8 +121,6 @@ export class ModificarEquipoComponent {
             this.equipoForm.valueChanges.subscribe(() => {
               this.verificarSoloEstadoModificado();
             });
-
-            console.log(this.camposDinamicos);
           },
           error: (error) => {
             console.error('Error al obtener los campos', error);
@@ -155,6 +163,17 @@ export class ModificarEquipoComponent {
       (obj, index, self) =>
         index === self.findIndex((o) => o[prop] === obj[prop])
     );
+  }
+
+  private normalizarCampoDinamico(campo: EquipoFormField): EquipoFormField {
+    return {
+      ...campo,
+      placeholder: campo.placeholder ?? '',
+      presetOptions: Array.isArray(campo.presetOptions)
+        ? campo.presetOptions
+        : [],
+      standards: Array.isArray(campo.standards) ? campo.standards : [],
+    };
   }
 
   actualizarFormularioConCampos(
@@ -280,6 +299,88 @@ export class ModificarEquipoComponent {
     const input = event.target as HTMLInputElement;
 
     this.selectedFile = input!.files![0];
+  }
+
+  aplicarOpcionPreset(nombreCampo: string, valor: string): void {
+    const control = this.equipoForm.get(nombreCampo);
+    if (!control) {
+      return;
+    }
+
+    control.setValue(valor);
+    control.markAsDirty();
+    control.markAsTouched();
+  }
+
+  condicionRegla(standard: CampoStandard): string | null {
+    const operator = standard.operator?.toLowerCase();
+    const principal = this.formatearValorRegla(standard.value);
+    const secundario = this.formatearValorRegla(standard.secondaryValue);
+    const unidad = standard.unit ? ` ${standard.unit}` : '';
+
+    if (!operator || !principal) {
+      return null;
+    }
+
+    switch (operator) {
+      case 'gte':
+        return `≥ ${principal}${unidad}`;
+      case 'gt':
+        return `> ${principal}${unidad}`;
+      case 'lte':
+        return `≤ ${principal}${unidad}`;
+      case 'lt':
+        return `< ${principal}${unidad}`;
+      case 'eq':
+        return `= ${principal}${unidad}`;
+      case 'between':
+        if (!secundario) {
+          return null;
+        }
+        return `entre ${principal}${unidad} y ${secundario}${unidad}`;
+      case 'contains':
+        return `contiene "${principal}"`;
+      case 'regex':
+        return `coincide con /${principal}/`;
+      default:
+        return null;
+    }
+  }
+
+  private formatearValorRegla(valor: unknown): string | null {
+    if (valor === null || valor === undefined) {
+      return null;
+    }
+
+    if (typeof valor === 'number') {
+      return Number.isInteger(valor) ? valor.toString() : valor.toFixed(2);
+    }
+
+    if (typeof valor === 'boolean') {
+      return valor ? 'Si' : 'No';
+    }
+
+    const texto = `${valor}`.trim();
+    return texto.length ? texto : null;
+  }
+
+  agregarObservacionPredefinida(texto: string): void {
+    const control = this.equipoForm.get('text');
+    if (!control) {
+      return;
+    }
+
+    const actual = `${control.value ?? ''}`;
+    const existe = actual.toLowerCase().includes(texto.toLowerCase());
+    if (existe) {
+      return;
+    }
+
+    const separador = actual.trim().length ? '\n' : '';
+    const nuevoValor = `${actual}${separador}- ${texto}`;
+    control.setValue(nuevoValor);
+    control.markAsDirty();
+    control.markAsTouched();
   }
 
   onSubmit() {

@@ -157,6 +157,122 @@
   cursor: pointer;
 }
 
+.fieldset {
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 1rem;
+  background: #f9fafb;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.fieldset__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.fieldset__header h3 {
+  margin: 0;
+  font-size: 1.05rem;
+  color: #111827;
+}
+
+.fieldset__header p {
+  margin: 0.15rem 0 0;
+  font-size: 0.9rem;
+  color: #6b7280;
+}
+
+.fieldset__empty {
+  font-size: 0.9rem;
+  color: #6b7280;
+}
+
+.fieldset-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)) 40px;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.fieldset-input,
+.fieldset-select,
+.fieldset-textarea {
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  padding: 0.6rem 0.75rem;
+  font-size: 0.95rem;
+  background: #ffffff;
+}
+
+.fieldset-input:focus,
+.fieldset-select:focus,
+.fieldset-textarea:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px var(--color-primary-soft-strong);
+}
+
+.fieldset-textarea {
+  resize: vertical;
+  min-height: 70px;
+}
+
+.fieldset-standard {
+  border: 1px dashed #d1d5db;
+  border-radius: 10px;
+  padding: 0.75rem;
+  background: #ffffff;
+}
+
+.standard-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 0.75rem;
+  align-items: start;
+}
+
+.standard-notes {
+  grid-column: 1 / -1;
+}
+
+.standard-remove {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-icon {
+  border: none;
+  background: none;
+  color: var(--color-danger);
+  font-size: 1.25rem;
+  cursor: pointer;
+  padding: 0.25rem 0.4rem;
+  transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.btn-icon:hover {
+  color: var(--color-primary);
+  transform: scale(1.05);
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
+  white-space: nowrap;
+}
+
 .input-error {
   border-color: var(--color-danger);
 }
@@ -364,6 +480,22 @@ button:not(:disabled):hover {
 .lista-campos small {
   color: #6b7280;
   font-size: 1rem;
+}
+
+.campo-metadata {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.35rem;
+}
+
+.campo-metadata span {
+  background: #eef2ff;
+  color: #4338ca;
+  padding: 0.2rem 0.65rem;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-weight: 500;
 }
 
 .lista-campos .acciones {

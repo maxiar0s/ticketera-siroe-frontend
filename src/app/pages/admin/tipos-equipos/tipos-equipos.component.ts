@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import {
+  FormArray,
   FormBuilder,
   FormGroup,
   ReactiveFormsModule,
@@ -9,7 +10,7 @@ import {
 import { forkJoin, of } from 'rxjs';
 import { finalize, catchError } from 'rxjs/operators';
 import { TipoEquipo } from '../../../interfaces/TipoEquipo.interface';
-import { Campo } from '../../../interfaces/campo.interface';
+import { Campo, CampoPresetOption, CampoStandard, CampoColor } from '../../../interfaces/campo.interface';
 import { DepartamentoEquipo } from '../../../interfaces/departamento-equipo.interface';
 import { ApiService } from '../../../services/api.service';
 import { LoaderService } from '../../../services/loader.service';
@@ -69,6 +70,23 @@ export class TiposEquiposComponent implements OnInit {
   public camposDirty = false;
   public campoEnEdicion: Campo | null = null;
 
+  public readonly coloresDisponibles = [
+    { value: 'rojo' as CampoColor, label: 'Rojo · Obsoleto' },
+    { value: 'amarillo' as CampoColor, label: 'Amarillo · Mínimo' },
+    { value: 'verde' as CampoColor, label: 'Verde · Recomendado' },
+  ];
+
+  public readonly operadoresDisponibles = [
+    { value: '', label: 'Referencia libre' },
+    { value: 'eq', label: 'Igual (=)' },
+    { value: 'gte', label: 'Mayor o igual (≥)' },
+    { value: 'gt', label: 'Mayor que (>)' },
+    { value: 'lte', label: 'Menor o igual (≤)' },
+    { value: 'lt', label: 'Menor que (<)' },
+    { value: 'contains', label: 'Contiene' },
+    { value: 'regex', label: 'Coincide con expresión' },
+  ];
+
   constructor(
     private readonly apiService: ApiService,
     private readonly fb: FormBuilder,
@@ -92,6 +110,8 @@ export class TiposEquiposComponent implements OnInit {
       type: ['text', [Validators.required]],
       placeholder: [''],
       required: [false],
+      presetOptions: this.fb.array([]),
+      standards: this.fb.array([]),
     });
 
     this.crearDepartamentoForm = this.fb.group({
@@ -101,6 +121,188 @@ export class TiposEquiposComponent implements OnInit {
     this.editarDepartamentoForm = this.fb.group({
       name: ['', [Validators.required, Validators.minLength(3)]],
     });
+  }
+
+  get presetOptionsArray(): FormArray {
+    return this.campoForm.get('presetOptions') as FormArray;
+  }
+
+  get standardsArray(): FormArray {
+    return this.campoForm.get('standards') as FormArray;
+  }
+
+  agregarOpcionPreset(data?: CampoPresetOption): void {
+    this.presetOptionsArray.push(
+      this.fb.group({
+        label: [data?.label ?? '', [Validators.required, Validators.minLength(1)]],
+        value: [data?.value ?? '', [Validators.required, Validators.minLength(1)]],
+        color: [data?.color ?? 'amarillo'],
+      })
+    );
+  }
+
+  eliminarOpcionPreset(index: number): void {
+    if (index < 0 || index >= this.presetOptionsArray.length) {
+      return;
+    }
+    this.presetOptionsArray.removeAt(index);
+  }
+
+  agregarEstandar(data?: CampoStandard): void {
+    this.standardsArray.push(
+      this.fb.group({
+        label: [data?.label ?? '', [Validators.required, Validators.minLength(1)]],
+        description: [data?.description ?? ''],
+        color: [data?.color ?? 'verde'],
+        operator: [data?.operator ?? ''],
+        value: [this.valorAControl(data?.value)],
+        secondaryValue: [this.valorAControl(data?.secondaryValue)],
+        unit: [data?.unit ?? ''],
+      })
+    );
+  }
+
+  eliminarEstandar(index: number): void {
+    if (index < 0 || index >= this.standardsArray.length) {
+      return;
+    }
+    this.standardsArray.removeAt(index);
+  }
+
+  private limpiarFormArray(array: FormArray): void {
+    while (array.length) {
+      array.removeAt(array.length - 1);
+    }
+  }
+
+  private limpiarColeccionesCampo(): void {
+    this.limpiarFormArray(this.presetOptionsArray);
+    this.limpiarFormArray(this.standardsArray);
+  }
+
+  private normalizarColorCriticidad(color: string | null | undefined): CampoColor {
+    const valor = `${color ?? ''}`.trim().toLowerCase();
+    if (valor === 'rojo' || valor === 'verde' || valor === 'amarillo') {
+      return valor as CampoColor;
+    }
+    return 'amarillo';
+  }
+
+  private valorAControl(valor: unknown): string {
+    if (valor === null || valor === undefined) {
+      return '';
+    }
+
+    if (typeof valor === 'number' && Number.isFinite(valor)) {
+      return valor.toString();
+    }
+
+    if (typeof valor === 'boolean') {
+      return valor ? 'true' : 'false';
+    }
+
+    return `${valor}`.trim();
+  }
+
+  private normalizarValorComparacion(valor: any): string | number | boolean | null {
+    if (valor === null || valor === undefined) {
+      return null;
+    }
+
+    if (typeof valor === 'number') {
+      return Number.isFinite(valor) ? valor : null;
+    }
+
+    if (typeof valor === 'boolean') {
+      return valor;
+    }
+
+    const texto = `${valor}`.trim();
+
+    if (!texto.length) {
+      return null;
+    }
+
+    const numero = Number(texto);
+    return Number.isNaN(numero) ? texto : numero;
+  }
+
+  private obtenerOpcionesDesdeForm(): CampoPresetOption[] {
+    return this.presetOptionsArray.controls
+      .map((control) => {
+        const label = `${control.get('label')?.value ?? ''}`.trim();
+        const value = `${control.get('value')?.value ?? ''}`.trim();
+
+        if (!label || !value) {
+          return null;
+        }
+
+        const color = this.normalizarColorCriticidad(control.get('color')?.value);
+
+        return {
+          label,
+          value,
+          color,
+        };
+      })
+      .filter((item): item is CampoPresetOption => item !== null);
+  }
+
+  private obtenerStandardsDesdeForm(): CampoStandard[] {
+    return this.standardsArray.controls
+      .map((control) => {
+        const label = `${control.get('label')?.value ?? ''}`.trim();
+        const description = `${control.get('description')?.value ?? ''}`.trim();
+
+        if (!label && !description) {
+          return null;
+        }
+
+        const color = this.normalizarColorCriticidad(control.get('color')?.value ?? 'amarillo');
+        const operator = `${control.get('operator')?.value ?? ''}`.trim();
+        const value = this.normalizarValorComparacion(control.get('value')?.value);
+        const secondaryValue = this.normalizarValorComparacion(control.get('secondaryValue')?.value);
+        const unit = `${control.get('unit')?.value ?? ''}`.trim();
+
+        const standard: CampoStandard = {
+          color,
+          label: label || description,
+        };
+
+        if (description) {
+          standard.description = description;
+        }
+
+        if (operator) {
+          standard.operator = operator;
+        }
+
+        if (value !== null) {
+          standard.value = value;
+        }
+
+        if (secondaryValue !== null) {
+          standard.secondaryValue = secondaryValue;
+        }
+
+        if (unit) {
+          standard.unit = unit;
+        }
+
+        return standard;
+      })
+      .filter((item): item is CampoStandard => item !== null);
+  }
+
+  private normalizarCampoMetadata(campo: Campo): Campo {
+    return {
+      ...campo,
+      placeholder: campo.placeholder ?? null,
+      presetOptions: Array.isArray(campo.presetOptions)
+        ? campo.presetOptions
+        : [],
+      standards: Array.isArray(campo.standards) ? campo.standards : [],
+    };
   }
 
   ngOnInit(): void {
@@ -142,7 +344,9 @@ export class TiposEquiposComponent implements OnInit {
       .subscribe({
         next: ({ tipos, campos, departamentos }) => {
           this.tipos = Array.isArray(tipos) ? tipos : [];
-          this.campos = Array.isArray(campos) ? campos : [];
+          this.campos = Array.isArray(campos)
+            ? campos.map((campo) => this.normalizarCampoMetadata(campo))
+            : [];
           this.departamentos = Array.isArray(departamentos)
             ? this.ordenarDepartamentos(departamentos)
             : [];
@@ -633,6 +837,13 @@ export class TiposEquiposComponent implements OnInit {
       placeholder: campo.placeholder ?? '',
       required: campo.required,
     });
+    this.limpiarColeccionesCampo();
+    (campo.presetOptions ?? []).forEach((opcion) =>
+      this.agregarOpcionPreset(opcion)
+    );
+    (campo.standards ?? []).forEach((regla) =>
+      this.agregarEstandar(regla)
+    );
     this.mensajeCampo = '';
     this.errorCampo = '';
   }
@@ -646,6 +857,7 @@ export class TiposEquiposComponent implements OnInit {
       placeholder: '',
       required: false,
     });
+    this.limpiarColeccionesCampo();
     this.mensajeCampo = '';
     this.errorCampo = '';
   }
@@ -656,15 +868,20 @@ export class TiposEquiposComponent implements OnInit {
       return;
     }
 
-    const { name, label, type, placeholder, required } =
-      this.campoForm.value;
+    const { name, label, type, placeholder, required } = this.campoForm.value;
+    const presetOptions = this.obtenerOpcionesDesdeForm();
+    const standards = this.obtenerStandardsDesdeForm();
+    const placeholderValue =
+      typeof placeholder === 'string' ? placeholder.trim() : '';
 
     const payload = {
       name: name?.trim(),
       label: label?.trim(),
       type: type?.trim(),
-      placeholder: placeholder?.trim() || null,
+      placeholder: placeholderValue || null,
       required: !!required,
+      presetOptions,
+      standards,
     };
 
     this.guardandoCampo = true;
@@ -679,19 +896,21 @@ export class TiposEquiposComponent implements OnInit {
       .pipe(finalize(() => (this.guardandoCampo = false)))
       .subscribe({
         next: (campo) => {
+          const campoNormalizado = this.normalizarCampoMetadata(campo);
           if (this.campoEnEdicion) {
             this.campos = this.campos.map((item) =>
-              item.id === campo.id ? campo : item
+              item.id === campoNormalizado.id ? campoNormalizado : item
             );
-            if (this.camposSeleccionados.has(campo.id)) {
+            if (this.camposSeleccionados.has(campoNormalizado.id)) {
               this.camposDirty = true;
             }
             this.mensajeCampo = 'Campo actualizado correctamente.';
           } else {
-            this.campos = [...this.campos, campo];
+            this.campos = [...this.campos, campoNormalizado];
             this.mensajeCampo = 'Campo creado correctamente.';
           }
 
+          this.limpiarColeccionesCampo();
           this.campoEnEdicion = null;
           this.campoForm.reset({
             name: '',

@@ -78,6 +78,32 @@
 
               <!-- Input tipo textarea -->
               <textarea class="comments" *ngIf="campo.type === 'textarea'" [placeholder]="campo.placeholder" [id]="campo.name" [formControlName]="campo.name"></textarea>
+
+              <div class="preset-options" *ngIf="campo.presetOptions?.length">
+                <button
+                  type="button"
+                  class="preset-chip preset-chip--{{ opcion.color }}"
+                  *ngFor="let opcion of campo.presetOptions"
+                  (click)="aplicarOpcionPreset(campo.name, opcion.value)"
+                >
+                  {{ opcion.label }}
+                </button>
+              </div>
+
+              <div class="campo-standards" *ngIf="campo.standards?.length">
+                <div
+                  class="standard-chip standard-chip--{{ standard.color }}"
+                  *ngFor="let standard of campo.standards"
+                >
+                  <span class="standard-chip__label">{{ standard.label }}</span>
+                  <span class="standard-chip__condition" *ngIf="condicionRegla(standard)">
+                    {{ condicionRegla(standard) }}
+                  </span>
+                  <span class="standard-chip__note" *ngIf="standard.description">
+                    {{ standard.description }}
+                  </span>
+                </div>
+              </div>
             </div>
 
             <div class="form-group">
@@ -92,6 +118,19 @@
             <div class="form-group full-width">
               <label for="text">Observaciones</label>
               <textarea class="comments" placeholder="Añade cualquier detalle adicional relevante" id="text" formControlName="text"></textarea>
+              <div class="observaciones-sugerencias">
+                <span class="observaciones-sugerencias__title">Reportes frecuentes</span>
+                <div class="observaciones-sugerencias__chips">
+                  <button
+                    type="button"
+                    class="preset-chip preset-chip--rojo"
+                    *ngFor="let opcion of observacionesPredefinidas"
+                    (click)="agregarObservacionPredefinida(opcion)"
+                  >
+                    {{ opcion }}
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
 

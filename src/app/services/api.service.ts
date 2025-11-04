@@ -8,7 +8,7 @@ import { VisitaProgramada } from '../interfaces/visita-programada.interface';
 import { Tecnico } from '../interfaces/tecnico.interface';
 import { Cuenta } from '../interfaces/Cuenta.interface';
 import { TipoEquipo } from '../interfaces/TipoEquipo.interface';
-import { Campo } from '../interfaces/campo.interface';
+import { Campo, CampoPresetOption, CampoStandard } from '../interfaces/campo.interface';
 import { DepartamentoEquipo } from '../interfaces/departamento-equipo.interface';
 import { EquipoFiltros } from '../interfaces/equipo-filtros.interface';
 
@@ -345,6 +345,8 @@ export class ApiService {
     type: string;
     placeholder?: string | null;
     required?: boolean;
+    presetOptions?: CampoPresetOption[];
+    standards?: CampoStandard[];
   }): Observable<Campo> {
     const endpoint = 'campos';
     return this.postInformation(payload, endpoint);
@@ -358,6 +360,8 @@ export class ApiService {
       type: string;
       placeholder: string | null;
       required: boolean;
+      presetOptions: CampoPresetOption[];
+      standards: CampoStandard[];
     }>
   ): Observable<Campo> {
     const endpoint = `campos/${id}`;
