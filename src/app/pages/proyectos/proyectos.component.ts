@@ -13,6 +13,8 @@ import { FormatoFechaPipe } from '../../pipes/formato-fecha.pipe';
 import { SignedUrlPipe } from '../../pipes/generar-url.pipe';
 import { ApiService } from '../../services/api.service';
 import { Proyecto, ProyectoAdjunto } from '../../interfaces/proyecto.interface';
+import { Cuenta } from '../../interfaces/Cuenta.interface';
+import { ClienteResumen } from '../../interfaces/cliente-resumen.interface';
 import { Tecnico } from '../../interfaces/tecnico.interface';
 import { Bitacora } from '../../interfaces/bitacora.interface';
 
@@ -24,6 +26,12 @@ interface ProyectoFormulario {
   fechaInicio: FormControl<string>;
   fechaTermino: FormControl<string>;
   eliminarFoto: FormControl<boolean>;
+}
+
+interface SucursalOption {
+  id: string;
+  sucursal: string;
+  estado?: number;
 }
 
 @Component({
@@ -57,9 +65,19 @@ export class ProyectosComponent implements OnInit {
 
   bitacorasDisponibles: Bitacora[] = [];
   buscandoBitacoras = false;
-  bitacorasBusqueda = '';
   bitacorasPagina = 1;
   bitacorasLimite = 20;
+  bitacoraFiltroForm: FormGroup;
+  clientesFiltro: ClienteResumen[] = [];
+  sucursalesFiltro: SucursalOption[] = [];
+  filtroTipoOpciones = [
+    { value: 'ambos', label: 'Ambos' },
+    { value: 'bitacora', label: 'Bitacora' },
+    { value: 'ticket', label: 'Ticket' },
+  ] as const;
+  bitacorasFiltroAplicado = false;
+  proyectosFiltro: Proyecto[] = [];
+  private sucursalesFiltroCache = new Map<string, SucursalOption[]>();
 
   constructor(private fb: FormBuilder, private apiService: ApiService) {
     this.proyectoForm = this.fb.group({
@@ -73,12 +91,21 @@ export class ProyectosComponent implements OnInit {
       fechaTermino: this.fb.nonNullable.control(''),
       eliminarFoto: this.fb.nonNullable.control(false),
     });
+
+    this.bitacoraFiltroForm = this.fb.group({
+      clienteId: [''],
+      sucursalId: [''],
+      tipo: ['ambos'],
+      proyectoId: [''],
+      buscar: [''],
+    });
   }
 
   ngOnInit(): void {
     this.cargarTecnicos();
     this.cargarProyectos();
-    this.buscarBitacorasDisponibles();
+    this.cargarClientesFiltro();
+    this.cargarProyectosFiltroOpciones();
   }
 
   get proyectoSeleccionadoTieneFoto(): boolean {
@@ -88,6 +115,71 @@ export class ProyectosComponent implements OnInit {
   get encargadosSeleccionados(): number[] {
     const value = this.proyectoForm.get('encargadoIds')?.value;
     return Array.isArray(value) ? value : [];
+  }
+
+  private cargarClientesFiltro(): void {
+    this.apiService.clientesBitacora().subscribe({
+      next: (clientes) => {
+        this.clientesFiltro = Array.isArray(clientes) ? clientes : [];
+        const clienteActual = this.bitacoraFiltroForm.get('clienteId')?.value;
+        if (clienteActual) {
+          this.cargarSucursalesFiltro(clienteActual);
+        } else if (this.clientesFiltro.length === 1) {
+          const unico = this.clientesFiltro[0];
+          this.bitacoraFiltroForm.patchValue({ clienteId: unico.id }, { emitEvent: false });
+          this.cargarSucursalesFiltro(unico.id);
+        }
+      },
+      error: (error) => {
+        console.error('Error al cargar clientes para filtros de proyectos', error);
+        this.clientesFiltro = [];
+      },
+    });
+  }
+
+  private cargarProyectosFiltroOpciones(): void {
+    this.apiService
+      .getProyectos({ pagina: 1, limite: 100 })
+      .subscribe({
+        next: (respuesta) => {
+          const lista = Array.isArray(respuesta?.data) ? respuesta.data : [];
+          this.proyectosFiltro = lista;
+        },
+        error: (error) => {
+          console.error('Error al cargar proyectos para filtro', error);
+          this.proyectosFiltro = [];
+        },
+      });
+  }
+
+  private cargarSucursalesFiltro(clienteId: string): void {
+    if (!clienteId) {
+      this.sucursalesFiltro = [];
+      return;
+    }
+
+    if (this.sucursalesFiltroCache.has(clienteId)) {
+      this.sucursalesFiltro = this.sucursalesFiltroCache.get(clienteId) ?? [];
+      return;
+    }
+
+    this.apiService.sucursalesPorCliente(clienteId).subscribe({
+      next: (sucursales) => {
+        const opciones =
+          (sucursales ?? []).map((item: any) => ({
+            id: item.id,
+            sucursal: item.sucursal,
+            estado: item.estado,
+          })) ?? [];
+        this.sucursalesFiltroCache.set(clienteId, opciones);
+        this.sucursalesFiltro = opciones;
+      },
+      error: (error) => {
+        console.error('Error al cargar sucursales para filtros', error);
+        this.sucursalesFiltroCache.delete(clienteId);
+        this.sucursalesFiltro = [];
+      },
+    });
   }
 
   estaEncargadoSeleccionado(encargadoId: number): boolean {
@@ -111,6 +203,37 @@ export class ProyectosComponent implements OnInit {
     control.markAsDirty();
     control.markAsTouched();
     control.updateValueAndValidity();
+  }
+
+  aplicarFiltrosBitacoras(pagina: number = 1): void {
+    this.bitacorasFiltroAplicado = true;
+    this.bitacorasPagina = pagina;
+    this.buscarBitacorasDisponibles(pagina);
+  }
+
+  mostrarTodasBitacoras(): void {
+    this.bitacorasFiltroAplicado = true;
+    this.bitacorasPagina = 1;
+    this.buscarBitacorasDisponibles(1);
+  }
+
+  limpiarFiltrosBitacoras(): void {
+    this.bitacoraFiltroForm.reset({
+      clienteId: '',
+      sucursalId: '',
+      tipo: 'ambos',
+      proyectoId: '',
+      buscar: '',
+    });
+    this.sucursalesFiltro = [];
+    this.bitacorasFiltroAplicado = false;
+    this.bitacorasDisponibles = [];
+    this.bitacorasPagina = 1;
+  }
+
+  onFiltroClienteChange(clienteId: string): void {
+    this.bitacoraFiltroForm.patchValue({ sucursalId: '' }, { emitEvent: false });
+    this.cargarSucursalesFiltro(clienteId);
   }
 
   cargarProyectos(pagina: number = 1): void {
@@ -153,15 +276,82 @@ export class ProyectosComponent implements OnInit {
   }
 
   private cargarTecnicos(): void {
-    this.apiService.tecnicosDisponibles().subscribe({
-      next: (tecnicos) => {
-        this.tecnicos = Array.isArray(tecnicos) ? tecnicos : [];
-      },
-      error: (error) => {
-        console.error('Error al obtener tecnicos', error);
-        this.tecnicos = [];
-      },
-    });
+    const rolesPermitidos = new Set(['administrador', 'tecnico de soporte', 'mesa de ayuda']);
+    const normalizar = (valor: string | undefined): string =>
+      (valor ?? '')
+        .toLowerCase()
+        .replace(/á/g, 'a')
+        .replace(/é/g, 'e')
+        .replace(/í/g, 'i')
+        .replace(/ó/g, 'o')
+        .replace(/ú/g, 'u');
+
+    const recolectados: Cuenta[] = [];
+
+    const cargarSoloTecnicos = (): void => {
+      this.apiService.tecnicosDisponibles().subscribe({
+        next: (tecnicos) => {
+          this.tecnicos = Array.isArray(tecnicos) ? tecnicos : [];
+        },
+        error: (errorTec) => {
+          console.error('Error al obtener tecnicos', errorTec);
+          this.tecnicos = [];
+        },
+      });
+    };
+
+    const obtenerPagina = (pagina: number): void => {
+      this.apiService.users(pagina, 'Todos los ingresos').subscribe({
+        next: (respuesta) => {
+          const cuentas = Array.isArray(respuesta?.cuentas)
+            ? (respuesta.cuentas as Cuenta[])
+            : [];
+          recolectados.push(...cuentas);
+
+          const paginasTotales =
+            typeof respuesta?.paginas === 'number' && respuesta.paginas > 0
+              ? respuesta.paginas
+              : pagina;
+
+          if (pagina < paginasTotales) {
+            obtenerPagina(pagina + 1);
+            return;
+          }
+
+          const mapa = new Map<number, Tecnico>();
+          recolectados.forEach((cuenta) => {
+            if (!cuenta || typeof cuenta.id !== 'number') {
+              return;
+            }
+            const rolNormalizado = normalizar(cuenta?.tipoCuenta?.name);
+            if (!rolesPermitidos.has(rolNormalizado)) {
+              return;
+            }
+            mapa.set(cuenta.id, {
+              id: cuenta.id,
+              name: cuenta.name ?? '',
+              email: cuenta.email ?? '',
+              tipoCuentaId: cuenta.tipoCuentaId ?? 0,
+              esTecnico: rolNormalizado === 'tecnico de soporte',
+            });
+          });
+
+          this.tecnicos = Array.from(mapa.values()).sort((a, b) =>
+            a.name.localeCompare(b.name)
+          );
+
+          if (this.tecnicos.length === 0) {
+            cargarSoloTecnicos();
+          }
+        },
+        error: (error) => {
+          console.error('Error al obtener usuarios para encargados', error);
+          cargarSoloTecnicos();
+        },
+      });
+    };
+
+    obtenerPagina(1);
   }
 
   seleccionarProyecto(proyecto: Proyecto, cargarDetalle: boolean = true): void {
@@ -346,14 +536,13 @@ export class ProyectosComponent implements OnInit {
   }
 
   buscarBitacorasDisponibles(pagina: number = 1): void {
+    if (!this.bitacorasFiltroAplicado) {
+      return;
+    }
+    const params = this.construirParametrosBitacoras(pagina);
     this.buscandoBitacoras = true;
     this.apiService
-      .bitacoras({
-        pagina,
-        limite: this.bitacorasLimite,
-        buscar: this.bitacorasBusqueda,
-        sinProyecto: 'true',
-      })
+      .bitacoras(params)
       .pipe(finalize(() => (this.buscandoBitacoras = false)))
       .subscribe({
         next: (respuesta) => {
@@ -369,6 +558,50 @@ export class ProyectosComponent implements OnInit {
       });
   }
 
+  private construirParametrosBitacoras(pagina: number): Record<string, any> {
+    const { clienteId, sucursalId, tipo, proyectoId, buscar } =
+      this.bitacoraFiltroForm.value;
+
+    const params: Record<string, any> = {
+      pagina,
+      limite: this.bitacorasLimite,
+    };
+
+    if (buscar && `${buscar}`.trim() !== '') {
+      params['buscar'] = `${buscar}`.trim();
+    }
+
+    if (clienteId) {
+      params['clienteId'] = clienteId;
+    }
+
+    if (sucursalId) {
+      params['sucursalId'] = sucursalId;
+    }
+
+    if (tipo && tipo !== 'ambos') {
+      params['tipo'] = tipo;
+    } else {
+      params['tipo'] = 'ambos';
+    }
+
+    let aplicarSinProyecto = true;
+    if (proyectoId) {
+      if (proyectoId === 'sin-proyecto') {
+        params['sinProyecto'] = 'true';
+      } else {
+        params['proyectoId'] = proyectoId;
+        aplicarSinProyecto = false;
+      }
+    }
+
+    if (aplicarSinProyecto && !params['sinProyecto']) {
+      params['sinProyecto'] = 'true';
+    }
+
+    return params;
+  }
+
   asignarBitacora(bitacora: Bitacora): void {
     if (!this.selectedProyecto?.id || !bitacora?.id) {
       return;
@@ -380,7 +613,9 @@ export class ProyectosComponent implements OnInit {
       .subscribe({
         next: () => {
           this.cargarDetalleProyecto(this.selectedProyecto!.id);
-          this.buscarBitacorasDisponibles(this.bitacorasPagina);
+          if (this.bitacorasFiltroAplicado) {
+            this.buscarBitacorasDisponibles(this.bitacorasPagina);
+          }
         },
         error: (error) => {
           console.error('Error al asignar bitacora', error);
@@ -403,7 +638,9 @@ export class ProyectosComponent implements OnInit {
       .subscribe({
         next: () => {
           this.cargarDetalleProyecto(this.selectedProyecto!.id);
-          this.buscarBitacorasDisponibles(this.bitacorasPagina);
+          if (this.bitacorasFiltroAplicado) {
+            this.buscarBitacorasDisponibles(this.bitacorasPagina);
+          }
         },
         error: (error) => {
           console.error('Error al remover bitacora', error);

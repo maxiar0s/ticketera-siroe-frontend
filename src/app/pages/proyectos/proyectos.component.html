@@ -103,7 +103,7 @@
         <h2>
           {{ proyectoForm.value.id ? 'Editar proyecto' : 'Nuevo proyecto' }}
         </h2>
-        <button class="primary-button" type="submit" [disabled]="guardandoProyecto">
+        <button class="primary-button form-save-button" type="submit" [disabled]="guardandoProyecto">
           {{ guardandoProyecto ? 'Guardando...' : 'Guardar' }}
         </button>
       </div>
@@ -144,15 +144,17 @@
           <small class="help">Selecciona uno o varios encargados para el proyecto.</small>
         </div>
 
-        <label>
-          <span class="label">Fecha de inicio</span>
-          <input type="date" formControlName="fechaInicio" />
-        </label>
+        <div class="campo campo-fechas">
+          <label class="fecha">
+            <span class="label">Fecha de inicio</span>
+            <input type="date" formControlName="fechaInicio" />
+          </label>
 
-        <label>
-          <span class="label">Fecha de termino</span>
-          <input type="date" formControlName="fechaTermino" />
-        </label>
+          <label class="fecha">
+            <span class="label">Fecha de termino</span>
+            <input type="date" formControlName="fechaTermino" />
+          </label>
+        </div>
 
         <label class="archivo">
           <span class="label">Foto de portada</span>
@@ -170,219 +172,311 @@
     </form>
 
     <ng-container *ngIf="selectedProyecto as proyecto; else sinSeleccion">
-      <div class="proyecto-detalle">
-        <h3>Detalle del proyecto</h3>
-        <div class="detalle-grid">
-          <div class="detalle-item">
-            <span class="label">Nombre</span>
-            <span class="value">{{ proyecto.nombre }}</span>
-          </div>
-          <div class="detalle-item">
-            <span class="label">Encargados</span>
-            <div class="value encargados-detalle">
-              <span class="chip" *ngFor="let encargado of proyecto.encargados">
-                {{ encargado.name }}
+      <div class="proyecto-vista">
+        <div class="proyecto-detalle">
+          <h3>Detalle del proyecto</h3>
+          <div class="detalle-grid">
+            <div class="detalle-item">
+              <span class="label">Nombre</span>
+              <span class="value">{{ proyecto.nombre }}</span>
+            </div>
+            <div class="detalle-item">
+              <span class="label">Encargados</span>
+              <div class="value encargados-detalle">
+                <span class="chip" *ngFor="let encargado of proyecto.encargados">
+                  {{ encargado.name }}
+                </span>
+                <span *ngIf="!proyecto.encargados?.length" class="sin-encargados">
+                  Sin encargados asignados
+                </span>
+              </div>
+            </div>
+            <div class="detalle-item">
+              <span class="label">Periodo</span>
+              <span class="value">
+                {{
+                  proyecto.fechaInicio
+                    ? (proyecto.fechaInicio | formatoFecha : 'fullDate')
+                    : 'Sin inicio'
+                }}
+                -
+                {{
+                  proyecto.fechaTermino
+                    ? (proyecto.fechaTermino | formatoFecha : 'fullDate')
+                    : 'Sin termino'
+                }}
               </span>
-              <span *ngIf="!proyecto.encargados?.length" class="sin-encargados">
-                Sin encargados asignados
+            </div>
+            <div class="detalle-item">
+              <span class="label">Resumen</span>
+              <span class="value">
+                {{ proyecto.totalBitacoras || 0 }}
+                {{ 'bitacoras' | titlecase }}
+                |
+                {{ proyecto.totalTickets || 0 }}
+                {{ 'tickets' | titlecase }}
               </span>
             </div>
           </div>
-          <div class="detalle-item">
-            <span class="label">Periodo</span>
-            <span class="value">
-              {{
-                proyecto.fechaInicio
-                  ? (proyecto.fechaInicio | formatoFecha : 'fullDate')
-                  : 'Sin inicio'
-              }}
-              -
-              {{
-                proyecto.fechaTermino
-                  ? (proyecto.fechaTermino | formatoFecha : 'fullDate')
-                  : 'Sin termino'
-              }}
-            </span>
-          </div>
-          <div class="detalle-item">
-            <span class="label">Resumen</span>
-            <span class="value">
-              {{ proyecto.totalBitacoras || 0 }}
-              {{ 'bitacoras' | titlecase }}
-              |
-              {{ proyecto.totalTickets || 0 }}
-              {{ 'tickets' | titlecase }}
-            </span>
-          </div>
-        </div>
 
-        <div class="descripcion" *ngIf="proyecto.descripcion">
-          <h4>Descripcion</h4>
-          <p>{{ proyecto.descripcion }}</p>
-        </div>
-
-        <div class="portada" *ngIf="proyecto.fotoPortada && !proyectoForm.value.eliminarFoto">
-          <h4>Foto de portada</h4>
-          <button
-            class="ghost-button small"
-            type="button"
-            (click)="abrirFotoPortada()"
-          >
-            Ver foto
-          </button>
-        </div>
-
-        <section class="adjuntos">
-          <div class="section-header">
-            <h4>Documentos e imagenes</h4>
-            <label class="accion-boton upload-button">
-              Subir archivos
-              <input
-                type="file"
-                multiple
-                (change)="subirAdjuntos($event)"
-              />
-            </label>
+          <div class="descripcion" *ngIf="proyecto.descripcion">
+            <h4>Descripcion</h4>
+            <p>{{ proyecto.descripcion }}</p>
           </div>
-          <p *ngIf="proyecto.adjuntos.length === 0">Sin archivos adjuntos.</p>
-          <ul *ngIf="proyecto.adjuntos.length > 0">
-            <li *ngFor="let adjunto of proyecto.adjuntos">
-              <span>
-                {{ adjunto.nombreArchivo || adjunto.archivo }}
-                <small>
-                  - {{ adjunto.createdAt | formatoFecha : 'short' }}
-                  <ng-container *ngIf="adjunto.subidoPor?.name">
-                    - {{ adjunto.subidoPor?.name }}
-                  </ng-container>
-                </small>
-              </span>
-              <div class="acciones">
-                <button
-                  class="ghost-button small"
-                  type="button"
-                  (click)="abrirAdjunto(adjunto)"
-                >
-                  Ver
-                </button>
-                <button
-                  class="ghost-button small danger"
-                  type="button"
-                  (click)="eliminarAdjunto(adjunto)"
-                >
-                  Eliminar
-                </button>
-              </div>
-            </li>
-          </ul>
-        </section>
 
-        <section class="bitacoras">
-          <div class="section-header">
-            <h4>Bitacoras y tickets asignados</h4>
-          </div>
-          <p *ngIf="!proyecto.bitacoras || proyecto.bitacoras.length === 0">
-            Sin registros asignados.
-          </p>
-          <ul
-            *ngIf="proyecto.bitacoras && proyecto.bitacoras.length > 0"
-            class="registros-list"
-          >
-            <li
-              *ngFor="let bitacora of proyecto.bitacoras"
-              class="registro-item"
-              [ngClass]="bitacora.esTicket ? 'ticket' : 'bitacora'"
+          <div class="portada" *ngIf="proyecto.fotoPortada && !proyectoForm.value.eliminarFoto">
+            <h4>Foto de portada</h4>
+            <button
+              class="ghost-button small ver-foto-button"
+              type="button"
+              (click)="abrirFotoPortada()"
             >
-              <div class="registro-info">
-                <div class="registro-header">
-                  <span
-                    class="tipo-chip"
-                    [ngClass]="bitacora.esTicket ? 'ticket' : 'bitacora'"
-                  >
-                    {{ bitacora.esTicket ? 'Ticket' : 'Bitacora' }}
-                  </span>
-                  <span class="registro-fecha">
-                    {{ bitacora.fechaVisita | formatoFecha : 'fullDate' }}
-                  </span>
-                </div>
-                <strong class="registro-titulo">
-                  {{ bitacora.titulo || 'Sin titulo' }}
-                </strong>
-                <p class="registro-descripcion" *ngIf="bitacora.descripcion">
-                  {{ bitacora.descripcion }}
-                </p>
-              </div>
-              <button
-                class="registro-accion remover"
-                type="button"
-                (click)="removerBitacora(bitacora)"
-              >
-                Remover
-              </button>
-            </li>
-          </ul>
-        </section>
-
-        <section class="bitacoras-disponibles">
-          <div class="section-header">
-            <h4>Agregar bitacoras / tickets</h4>
-          </div>
-          <form class="buscar-bitacoras" (ngSubmit)="buscarBitacorasDisponibles(1)">
-            <input
-              type="text"
-              [(ngModel)]="bitacorasBusqueda"
-              name="bitacorasBusqueda"
-              placeholder="Buscar por titulo o nota"
-            />
-            <button class="accion-boton buscar-boton" type="submit">
-              Buscar
+              Ver foto
             </button>
-          </form>
-          <p *ngIf="buscandoBitacoras" class="estado">
-            Buscando bitacoras disponibles...
-          </p>
-          <p
-            *ngIf="!buscandoBitacoras && bitacorasDisponibles.length === 0"
-            class="estado"
-          >
-            No hay bitacoras disponibles para asignar.
-          </p>
-          <ul
-            *ngIf="!buscandoBitacoras && bitacorasDisponibles.length > 0"
-            class="registros-list disponibles"
-          >
-            <li
-              *ngFor="let bitacora of bitacorasDisponibles"
-              class="registro-item"
-              [ngClass]="bitacora.esTicket ? 'ticket' : 'bitacora'"
-            >
-              <div class="registro-info">
-                <div class="registro-header">
-                  <span
-                    class="tipo-chip"
-                    [ngClass]="bitacora.esTicket ? 'ticket' : 'bitacora'"
+          </div>
+
+          <section class="adjuntos">
+            <div class="section-header">
+              <h4>Documentos e imagenes</h4>
+              <label class="accion-boton upload-button">
+                Subir archivos
+                <input
+                  type="file"
+                  multiple
+                  (change)="subirAdjuntos($event)"
+                />
+              </label>
+            </div>
+            <p *ngIf="proyecto.adjuntos.length === 0">Sin archivos adjuntos.</p>
+            <ul *ngIf="proyecto.adjuntos.length > 0">
+              <li *ngFor="let adjunto of proyecto.adjuntos">
+                <span>
+                  {{ adjunto.nombreArchivo || adjunto.archivo }}
+                  <small>
+                    - {{ adjunto.createdAt | formatoFecha : 'short' }}
+                    <ng-container *ngIf="adjunto.subidoPor?.name">
+                      - {{ adjunto.subidoPor?.name }}
+                    </ng-container>
+                  </small>
+                </span>
+                <div class="acciones">
+                  <button
+                    class="ghost-button small"
+                    type="button"
+                    (click)="abrirAdjunto(adjunto)"
                   >
-                    {{ bitacora.esTicket ? 'Ticket' : 'Bitacora' }}
-                  </span>
-                  <span class="registro-fecha">
-                    {{ bitacora.fechaVisita | formatoFecha : 'fullDate' }}
-                  </span>
+                    Ver
+                  </button>
+                  <button
+                    class="ghost-button small danger"
+                    type="button"
+                    (click)="eliminarAdjunto(adjunto)"
+                  >
+                    Eliminar
+                  </button>
                 </div>
-                <strong class="registro-titulo">
-                  {{ bitacora.titulo || 'Sin titulo' }}
-                </strong>
-                <p class="registro-descripcion" *ngIf="bitacora.descripcion">
-                  {{ bitacora.descripcion }}
-                </p>
-              </div>
-              <button
-                class="registro-accion asignar"
-                type="button"
-                (click)="asignarBitacora(bitacora)"
+              </li>
+            </ul>
+          </section>
+
+          <section class="bitacoras">
+            <div class="section-header">
+              <h4>Bitacoras y tickets asignados</h4>
+            </div>
+            <p *ngIf="!proyecto.bitacoras || proyecto.bitacoras.length === 0">
+              Sin registros asignados.
+            </p>
+            <ul
+              *ngIf="proyecto.bitacoras && proyecto.bitacoras.length > 0"
+              class="registros-list"
+            >
+              <li
+                *ngFor="let bitacora of proyecto.bitacoras"
+                class="registro-item"
+                [ngClass]="bitacora.esTicket ? 'ticket' : 'bitacora'"
               >
-                Asignar
+                <div class="registro-info">
+                  <div class="registro-header">
+                    <span
+                      class="tipo-chip"
+                      [ngClass]="bitacora.esTicket ? 'ticket' : 'bitacora'"
+                    >
+                      {{ bitacora.esTicket ? 'Ticket' : 'Bitacora' }}
+                    </span>
+                    <span class="registro-fecha">
+                      {{ bitacora.fechaVisita | formatoFecha : 'fullDate' }}
+                    </span>
+                  </div>
+                  <strong class="registro-titulo">
+                    {{ bitacora.titulo || 'Sin titulo' }}
+                  </strong>
+                  <p class="registro-descripcion" *ngIf="bitacora.descripcion">
+                    {{ bitacora.descripcion }}
+                  </p>
+                </div>
+                <button
+                  class="registro-accion remover"
+                  type="button"
+                  (click)="removerBitacora(bitacora)"
+                >
+                  Remover
+                </button>
+              </li>
+            </ul>
+          </section>
+        </div>
+
+        <section class="bitacoras-disponibles-card">
+          <h3>Agregar bitacoras / tickets</h3>
+          <form
+            class="filtros-bitacoras"
+            [formGroup]="bitacoraFiltroForm"
+            (ngSubmit)="aplicarFiltrosBitacoras()"
+          >
+            <div class="filtros-grid">
+              <label class="filtro-campo">
+                <span class="label">Cliente</span>
+                <select
+                  #clienteFiltroSelect
+                  formControlName="clienteId"
+                  (change)="onFiltroClienteChange(clienteFiltroSelect.value)"
+                >
+                  <option value="">Todos los clientes</option>
+                  <option
+                    *ngFor="let cliente of clientesFiltro"
+                    [value]="cliente.id"
+                  >
+                    {{ cliente.razonSocial }}
+                  </option>
+                </select>
+              </label>
+
+              <label class="filtro-campo">
+                <span class="label">Sucursal</span>
+                <select
+                  formControlName="sucursalId"
+                  [disabled]="sucursalesFiltro.length === 0"
+                >
+                  <option value="">Todas</option>
+                  <option
+                    *ngFor="let sucursal of sucursalesFiltro"
+                    [value]="sucursal.id"
+                  >
+                    {{ sucursal.sucursal }}
+                  </option>
+                </select>
+              </label>
+
+              <label class="filtro-campo">
+                <span class="label">Tipo</span>
+                <select formControlName="tipo">
+                  <option
+                    *ngFor="let opcion of filtroTipoOpciones"
+                    [value]="opcion.value"
+                  >
+                    {{ opcion.label }}
+                  </option>
+                </select>
+              </label>
+
+              <label class="filtro-campo">
+                <span class="label">Proyecto</span>
+                <select formControlName="proyectoId">
+                  <option value="">Todos</option>
+                  <option value="sin-proyecto">Sin proyecto</option>
+                  <option
+                    *ngFor="let opcion of proyectosFiltro"
+                    [value]="opcion.id"
+                  >
+                    {{ opcion.nombre }}
+                  </option>
+                </select>
+              </label>
+
+              <label class="filtro-campo filtro-buscar">
+                <span class="label">Buscar</span>
+                <input
+                  type="text"
+                  formControlName="buscar"
+                  placeholder="Buscar por titulo o nota"
+                />
+              </label>
+            </div>
+
+            <div class="filtro-acciones">
+              <button class="accion-boton buscar-boton" type="submit">
+                Buscar
               </button>
-            </li>
-          </ul>
+              <button
+                type="button"
+                class="ghost-button small outline-button"
+                (click)="limpiarFiltrosBitacoras()"
+              >
+                Limpiar
+              </button>
+              <button
+                type="button"
+                class="ghost-button small outline-button accent"
+                (click)="mostrarTodasBitacoras()"
+              >
+                Mostrar todo
+              </button>
+            </div>
+          </form>
+
+          <ng-container *ngIf="bitacorasFiltroAplicado; else filtrosPendientes">
+            <p *ngIf="buscandoBitacoras" class="estado">
+              Buscando bitacoras disponibles...
+            </p>
+            <p
+              *ngIf="!buscandoBitacoras && bitacorasDisponibles.length === 0"
+              class="estado"
+            >
+              No hay bitacoras disponibles para asignar.
+            </p>
+            <ul
+              *ngIf="!buscandoBitacoras && bitacorasDisponibles.length > 0"
+              class="registros-list disponibles"
+            >
+              <li
+                *ngFor="let bitacora of bitacorasDisponibles"
+                class="registro-item"
+                [ngClass]="bitacora.esTicket ? 'ticket' : 'bitacora'"
+              >
+                <div class="registro-info">
+                  <div class="registro-header">
+                    <span
+                      class="tipo-chip"
+                      [ngClass]="bitacora.esTicket ? 'ticket' : 'bitacora'"
+                    >
+                      {{ bitacora.esTicket ? 'Ticket' : 'Bitacora' }}
+                    </span>
+                    <span class="registro-fecha">
+                      {{ bitacora.fechaVisita | formatoFecha : 'fullDate' }}
+                    </span>
+                  </div>
+                  <strong class="registro-titulo">
+                    {{ bitacora.titulo || 'Sin titulo' }}
+                  </strong>
+                  <p class="registro-descripcion" *ngIf="bitacora.descripcion">
+                    {{ bitacora.descripcion }}
+                  </p>
+                </div>
+                <button
+                  class="registro-accion asignar"
+                  type="button"
+                  (click)="asignarBitacora(bitacora)"
+                >
+                  Asignar
+                </button>
+              </li>
+            </ul>
+          </ng-container>
+          <ng-template #filtrosPendientes>
+            <p class="estado indicacion">
+              Aplica un filtro, realiza una busqueda o usa "Mostrar todo" para ver registros.
+            </p>
+          </ng-template>
         </section>
       </div>
     </ng-container>

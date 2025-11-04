@@ -79,6 +79,7 @@
   flex-direction: column;
   gap: 1rem;
   min-height: 220px;
+  overflow: hidden;
 }
 
 .proyectos-list ul {
@@ -88,7 +89,7 @@
   display: flex;
   flex-direction: column;
   gap: 0.8rem;
-  max-height: 420px;
+  max-height: min(520px, calc(100vh - 280px));
   overflow-y: auto;
   padding-right: 0.4rem;
 }
@@ -255,7 +256,30 @@
 
 .campo-nombre,
 .campo-descripcion {
-  grid-column: span 2;
+  grid-column: 1 / -1;
+}
+
+.campo-fechas {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  align-items: flex-start;
+}
+
+.campo-fechas .fecha {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  color: #273758;
+  font-size: 1.12rem;
+  font-weight: 600;
+  width: 100%;
+  max-width: 340px;
+}
+
+.campo-fechas .fecha input {
+  max-width: 100%;
 }
 
 .form-grid input,
@@ -290,6 +314,58 @@
 
 .form-grid .archivo {
   grid-column: span 2;
+}
+
+.form-grid .archivo input[type='file'] {
+  border-radius: 999px;
+  border: 1px dashed rgba(183, 22, 83, 0.4);
+  background: rgba(183, 22, 83, 0.05);
+  padding: 0.55rem 1rem;
+  font-size: 1.05rem;
+  color: #202e4f;
+  cursor: pointer;
+  transition: border-color 0.18s ease, background-color 0.18s ease,
+    box-shadow 0.18s ease;
+}
+
+.form-grid .archivo input[type='file']::file-selector-button {
+  border: none;
+  border-radius: 999px;
+  padding: 0.5rem 1.2rem;
+  background: linear-gradient(135deg, #b71653, #d1286d);
+  color: #ffffff;
+  font-weight: 600;
+  cursor: pointer;
+  margin-right: 0.8rem;
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+
+.form-grid .archivo input[type='file']::-webkit-file-upload-button {
+  border: none;
+  border-radius: 999px;
+  padding: 0.5rem 1.2rem;
+  background: linear-gradient(135deg, #b71653, #d1286d);
+  color: #ffffff;
+  font-weight: 600;
+  cursor: pointer;
+  margin-right: 0.8rem;
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+
+.form-grid .archivo input[type='file']:hover {
+  border-color: rgba(183, 22, 83, 0.7);
+  background: rgba(183, 22, 83, 0.1);
+  box-shadow: 0 10px 26px rgba(183, 22, 83, 0.16);
+}
+
+.form-grid .archivo input[type='file']::file-selector-button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 12px 26px rgba(183, 22, 83, 0.24);
+}
+
+.form-grid .archivo input[type='file']::-webkit-file-upload-button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 12px 26px rgba(183, 22, 83, 0.24);
 }
 
 .campo.eliminar-foto {
@@ -385,6 +461,13 @@
   color: #d83a66;
 }
 
+.proyecto-vista {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  width: 100%;
+}
+
 .proyecto-detalle {
   display: flex;
   flex-direction: column;
@@ -394,6 +477,7 @@
   padding: 2rem 2rem 2.2rem;
   border: 1px solid rgba(226, 230, 241, 0.7);
   box-shadow: 0 18px 44px rgba(22, 29, 57, 0.08);
+  width: 100%;
 }
 
 .detalle-grid {
@@ -451,6 +535,151 @@
   color: rgba(39, 55, 88, 0.6);
 }
 
+.bitacoras-disponibles-card {
+  display: flex;
+  flex-direction: column;
+  gap: 1.6rem;
+  background: #ffffff;
+  border-radius: 24px;
+  padding: 2rem 2rem 2.2rem;
+  border: 1px solid rgba(226, 230, 241, 0.7);
+  box-shadow: 0 18px 44px rgba(22, 29, 57, 0.08);
+}
+
+.bitacoras-disponibles-card h3 {
+  margin: 0;
+  font-size: 1.7rem;
+  font-weight: 700;
+  color: #202e4f;
+}
+
+.form-save-button {
+  background: linear-gradient(135deg, #b71653 0%, #d84779 100%);
+  color: #ffffff;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  border: none;
+  border-radius: 999px;
+  padding: 0.75rem 1.9rem;
+  box-shadow: 0 14px 32px rgba(183, 22, 83, 0.28);
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+
+.form-save-button:hover:not(:disabled),
+.form-save-button:focus-visible {
+  transform: translateY(-2px);
+  box-shadow: 0 18px 38px rgba(183, 22, 83, 0.35);
+  outline: none;
+}
+
+.form-save-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+  box-shadow: none;
+}
+
+.ver-foto-button {
+  border-radius: 999px;
+  padding: 0.5rem 1.3rem;
+  background: rgba(25, 118, 210, 0.12);
+  border: 1px solid rgba(25, 118, 210, 0.28);
+  color: #145ea7;
+  font-weight: 600;
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+
+.ver-foto-button:hover,
+.ver-foto-button:focus-visible {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 22px rgba(25, 118, 210, 0.2);
+  outline: none;
+}
+
+.outline-button {
+  border-radius: 999px;
+  padding: 0.55rem 1.4rem;
+  border: 1px solid rgba(39, 55, 88, 0.3);
+  background: rgba(39, 55, 88, 0.06);
+  color: #273758;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.18s ease, box-shadow 0.18s ease,
+    border-color 0.18s ease;
+}
+
+.outline-button.accent {
+  border-color: rgba(25, 118, 210, 0.42);
+  background: rgba(25, 118, 210, 0.12);
+  color: #145ea7;
+}
+
+.outline-button:hover,
+.outline-button:focus-visible {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 24px rgba(39, 55, 88, 0.16);
+  outline: none;
+}
+
+.outline-button.accent:hover,
+.outline-button.accent:focus-visible {
+  box-shadow: 0 12px 28px rgba(25, 118, 210, 0.2);
+}
+
+.filtros-bitacoras {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+.filtros-grid {
+  display: grid;
+  gap: 1.1rem;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+}
+
+.filtro-campo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  color: #273758;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.filtro-campo select,
+.filtro-campo input {
+  border-radius: 14px;
+  border: 1px solid rgba(226, 230, 241, 0.9);
+  background: #fbfcff;
+  padding: 0.65rem 0.95rem;
+  font-size: 1.05rem;
+  color: #202e4f;
+  transition: border-color 0.18s ease, box-shadow 0.18s ease;
+}
+
+.filtro-campo select:focus,
+.filtro-campo input:focus {
+  border-color: rgba(183, 22, 83, 0.55);
+  box-shadow: 0 0 0 4px rgba(183, 22, 83, 0.12);
+  outline: none;
+}
+
+.filtro-buscar {
+  grid-column: span 2;
+}
+
+.filtro-acciones {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.indicacion {
+  font-size: 1.05rem;
+  color: rgba(39, 55, 88, 0.6);
+}
+
 .accion-boton {
   border: none;
   border-radius: 999px;
@@ -486,10 +715,6 @@
   cursor: pointer;
 }
 
-.buscar-bitacoras .accion-boton {
-  flex-shrink: 0;
-}
-
 .tipo-chip {
   display: inline-flex;
   align-items: center;
@@ -514,7 +739,7 @@
 
 .registros-list {
   list-style: none;
-  margin: 0;
+  margin: 1rem 0;
   padding: 0;
   display: flex;
   flex-direction: column;
@@ -708,30 +933,6 @@
   gap: 0.7rem;
 }
 
-.buscar-bitacoras {
-  display: flex;
-  gap: 0.65rem;
-  margin-bottom: 1rem;
-}
-
-.buscar-bitacoras input {
-  flex: 1;
-  border-radius: 14px;
-  border: 1px solid rgba(226, 230, 241, 0.9);
-  background: #fbfcff;
-  padding: 0.8rem 1rem;
-  font-size: 1.2rem;
-  font-weight: 500;
-  color: #202e4f;
-  transition: border-color 0.18s ease, box-shadow 0.18s ease;
-}
-
-.buscar-bitacoras input:focus {
-  border-color: rgba(183, 22, 83, 0.5);
-  box-shadow: 0 0 0 4px rgba(183, 22, 83, 0.12);
-  outline: none;
-}
-
 .estado {
   text-align: center;
   font-size: 1.2rem;
@@ -810,6 +1011,27 @@
   .campo-descripcion,
   .campo.eliminar-foto {
     grid-column: span 1;
+  }
+
+  .campo-fechas {
+    grid-column: span 1;
+  }
+
+  .campo-fechas .fecha {
+    max-width: 100%;
+  }
+
+  .filtros-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .filtro-buscar {
+    grid-column: span 1;
+  }
+
+  .filtro-acciones {
+    flex-direction: column;
+    align-items: stretch;
   }
 
   .card-list-item {
