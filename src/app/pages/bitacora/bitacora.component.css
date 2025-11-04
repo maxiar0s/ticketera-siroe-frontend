@@ -321,6 +321,12 @@ textarea {
   color: #0f4f91;
 }
 
+.tipo-chip.emergencia {
+  background-color: rgba(216, 27, 96, 0.14);
+  color: #a10f59;
+  border: 1px solid rgba(216, 27, 96, 0.3);
+}
+
 .bitacora-table tbody tr.ticket {
   border-left-color: #1976d2;
 }
@@ -331,6 +337,30 @@ textarea {
 
 .bitacora-table tbody tr.ticket.selected {
   background-color: rgba(25, 118, 210, 0.16);
+}
+
+.bitacora-table tbody tr.emergencia {
+  border-left-color: #d81b60;
+}
+
+.bitacora-table tbody tr.emergencia:hover {
+  background-color: rgba(216, 27, 96, 0.08);
+}
+
+.bitacora-table tbody tr.emergencia.selected {
+  background-color: rgba(216, 27, 96, 0.16);
+}
+
+.bitacora-table tbody tr.ticket.emergencia {
+  border-left-color: #ae1b90;
+}
+
+.bitacora-table tbody tr.ticket.emergencia:hover {
+  background-color: rgba(174, 27, 144, 0.1);
+}
+
+.bitacora-table tbody tr.ticket.emergencia.selected {
+  background-color: rgba(174, 27, 144, 0.18);
 }
 
 .bitacora-table td.tipo {
@@ -430,9 +460,19 @@ textarea {
   gap: 1.2rem;
 }
 
+.bitacora-detail.emergencia {
+  border-left: 6px solid #d81b60;
+  box-shadow: 0 18px 45px rgba(216, 27, 96, 0.15);
+}
+
 .bitacora-detail.ticket {
   border-left: 6px solid #1976d2;
   box-shadow: 0 18px 45px rgba(25, 118, 210, 0.15);
+}
+
+.bitacora-detail.ticket.emergencia {
+  border-left-color: #ae1b90;
+  box-shadow: 0 18px 45px rgba(174, 27, 144, 0.18);
 }
 
 
@@ -486,6 +526,21 @@ textarea {
 .type-badge.ticket {
   background-color: rgba(25, 118, 210, 0.18);
   color: #0f4f91;
+}
+
+.emergency-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.35rem 0.85rem;
+  border-radius: 999px;
+  background-color: rgba(216, 27, 96, 0.15);
+  color: #a10f59;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  border: 1px solid rgba(216, 27, 96, 0.35);
 }
 
 .type-badge.bitacora {

@@ -160,6 +160,12 @@
               >
                 {{ bitacora.estadoTicket === 'terminado' ? 'Resuelto' : 'Ingresado' }}
               </span>
+              <span
+                *ngIf="bitacora.isEmergencia"
+                class="tipo-chip emergencia"
+              >
+                Emergencia
+              </span>
             </div>
           </td>
           <td>{{ bitacora.casaMatriz?.razonSocial || 'N/A' }}</td>

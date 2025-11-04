@@ -61,9 +61,10 @@
 }
 
 .comments {
-  resize: none;
+  resize: vertical;
   grid-column: 1 / 2;
   box-sizing: border-box;
+  min-height: 140px;
 }
 .comments::placeholder {
   color: #d9d9d9;
@@ -136,8 +137,8 @@
 .preset-chip {
   border: none;
   border-radius: 999px;
-  padding: 0.35rem 0.9rem;
-  font-size: 0.85rem;
+  padding: 0.45rem 1.05rem;
+  font-size: 0.95rem;
   font-weight: 600;
   cursor: pointer;
   transition: transform 0.15s ease, box-shadow 0.15s ease;
@@ -172,13 +173,13 @@
 
 .standard-chip {
   border-radius: 12px;
-  padding: 0.6rem 0.75rem;
+  padding: 0.75rem 0.9rem;
   background: #f3f4f6;
   border-left: 4px solid #9ca3af;
   display: flex;
   flex-direction: column;
-  gap: 0.25rem;
-  font-size: 0.85rem;
+  gap: 0.35rem;
+  font-size: 0.95rem;
 }
 
 .standard-chip--verde {
@@ -201,14 +202,16 @@
 
 .standard-chip__label {
   font-weight: 600;
+  font-size: 1rem;
 }
 
 .standard-chip__condition {
   font-style: italic;
+  font-size: 0.9rem;
 }
 
 .standard-chip__note {
-  font-size: 0.78rem;
+  font-size: 0.84rem;
   opacity: 0.85;
 }
 
