@@ -19,17 +19,20 @@
     "@angular/platform-browser": "^17.3.0",
     "@angular/platform-browser-dynamic": "^17.3.0",
     "@angular/router": "^17.3.0",
+    "exceljs": "^4.4.0",
+    "file-saver": "^2.0.5",
     "jwt-decode": "^4.0.0",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
-    "zone.js": "~0.14.3",
-    "xlsx": "^0.18.5"
+    "xlsx": "^0.18.5",
+    "zone.js": "~0.14.3"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "^17.3.10",
     "@angular/cli": "^17.3.10",
     "@angular/compiler-cli": "^17.3.0",
     "@angular/language-service": "^17.3.12",
+    "@types/file-saver": "^2.0.7",
     "@types/jasmine": "~5.1.0",
     "jasmine-core": "~5.1.0",
     "karma": "~6.4.0",

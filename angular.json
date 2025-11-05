@@ -27,7 +27,11 @@
             "styles": [
               "src/styles.css"
             ],
-            "scripts": []
+            "scripts": [],
+            "allowedCommonJsDependencies": [
+              "exceljs",
+              "file-saver"
+            ]
           },
           "configurations": {
             "production": {
@@ -87,7 +91,11 @@
               "@angular/material/prebuilt-themes/indigo-pink.css",
               "src/styles.css"
             ],
-            "scripts": []
+            "scripts": [],
+            "allowedCommonJsDependencies": [
+              "exceljs",
+              "file-saver"
+            ]
           }
         }
       }

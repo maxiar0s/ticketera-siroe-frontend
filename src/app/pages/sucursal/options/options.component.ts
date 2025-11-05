@@ -18,6 +18,7 @@ export class ButtonsComponent {
   @Output() crearEquiposForm = new EventEmitter<any>();
   @Output() borrarEquipos = new EventEmitter<number[]>();
   @Output() exportarEquipos = new EventEmitter<void>();
+  @Output() generarInforme = new EventEmitter<void>();
 
   // Equipos para imprimir
   @Input() devices: ImprimirEquipo[] = [];
@@ -147,6 +148,13 @@ export class ButtonsComponent {
       return;
     }
     this.exportarEquipos.emit();
+  }
+
+  generarInformeEquiposListado(): void {
+    if (this.esCliente) {
+      return;
+    }
+    this.generarInforme.emit();
   }
 
   @Input()
