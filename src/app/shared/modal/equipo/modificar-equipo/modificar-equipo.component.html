@@ -88,39 +88,30 @@
                 >
                   {{ opcion.label }}
                 </button>
-              </div>
-
-              <div class="campo-standards" *ngIf="campo.standards?.length">
-                <div class="standard-chip-list">
+                <div class="preset-info" *ngIf="campo.standards?.length">
                   <span
-                    class="standard-chip standard-chip--{{ standard.color }}"
-                    *ngFor="let standard of campo.standards"
-                  >
-                    {{ standard.label }}
-                  </span>
-                  <span
-                    class="standard-info__icon"
+                    class="preset-info__icon"
                     tabindex="0"
                     role="button"
                     [attr.aria-label]="'Ver referencias sugeridas para ' + campo.label"
                   >
                     ?
                   </span>
-                  <div class="standard-info__tooltip">
+                  <div class="preset-info__tooltip">
                     <div
-                      class="standard-info__item standard-info__item--{{ standard.color }}"
+                      class="preset-info__item preset-info__item--{{ standard.color }}"
                       *ngFor="let standard of campo.standards"
                     >
-                      <span class="standard-info__label">{{ standard.label }}</span>
+                      <span class="preset-info__label">{{ standard.label }}</span>
                       <span
                         *ngIf="condicionRegla(standard)"
-                        class="standard-info__condition"
+                        class="preset-info__condition"
                       >
                         {{ condicionRegla(standard) }}
                       </span>
                       <span
                         *ngIf="standard.description"
-                        class="standard-info__note"
+                        class="preset-info__note"
                       >
                         {{ standard.description }}
                       </span>
