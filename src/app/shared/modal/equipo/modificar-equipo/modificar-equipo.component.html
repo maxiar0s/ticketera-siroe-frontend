@@ -91,17 +91,41 @@
               </div>
 
               <div class="campo-standards" *ngIf="campo.standards?.length">
-                <div
-                  class="standard-chip standard-chip--{{ standard.color }}"
-                  *ngFor="let standard of campo.standards"
-                >
-                  <span class="standard-chip__label">{{ standard.label }}</span>
-                  <span class="standard-chip__condition" *ngIf="condicionRegla(standard)">
-                    {{ condicionRegla(standard) }}
+                <div class="standard-chip-list">
+                  <span
+                    class="standard-chip standard-chip--{{ standard.color }}"
+                    *ngFor="let standard of campo.standards"
+                  >
+                    {{ standard.label }}
                   </span>
-                  <span class="standard-chip__note" *ngIf="standard.description">
-                    {{ standard.description }}
+                  <span
+                    class="standard-info__icon"
+                    tabindex="0"
+                    role="button"
+                    [attr.aria-label]="'Ver referencias sugeridas para ' + campo.label"
+                  >
+                    ?
                   </span>
+                  <div class="standard-info__tooltip">
+                    <div
+                      class="standard-info__item standard-info__item--{{ standard.color }}"
+                      *ngFor="let standard of campo.standards"
+                    >
+                      <span class="standard-info__label">{{ standard.label }}</span>
+                      <span
+                        *ngIf="condicionRegla(standard)"
+                        class="standard-info__condition"
+                      >
+                        {{ condicionRegla(standard) }}
+                      </span>
+                      <span
+                        *ngIf="standard.description"
+                        class="standard-info__note"
+                      >
+                        {{ standard.description }}
+                      </span>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
