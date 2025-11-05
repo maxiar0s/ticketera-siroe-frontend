@@ -458,11 +458,12 @@
           />
         </label>
 
-        <label>
+        <label [class.invalid]="campoInvalido('clienteId')">
           <span class="label">Cliente</span>
           <select
             formControlName="clienteId"
             (change)="onClienteFormChange($any($event.target).value)"
+            [attr.aria-invalid]="campoInvalido('clienteId')"
           >
             <option value="" disabled>Selecciona un cliente</option>
             <option
@@ -472,6 +473,9 @@
               {{ cliente.razonSocial }}
             </option>
           </select>
+          <div class="field-error" *ngIf="mensajeError('clienteId') as error">
+            {{ error }}
+          </div>
         </label>
 
         <label *ngIf="!esTicketSeleccionado">
@@ -536,11 +540,18 @@
           </select>
         </label>
 
-        <label>
+        <label [class.invalid]="campoInvalido('fechaVisita')">
           <span class="label">
             {{ esTicketSeleccionado ? 'Fecha de ingreso' : 'Fecha de la visita' }}
           </span>
-          <input type="date" formControlName="fechaVisita" />
+          <input
+            type="date"
+            formControlName="fechaVisita"
+            [attr.aria-invalid]="campoInvalido('fechaVisita')"
+          />
+          <div class="field-error" *ngIf="mensajeError('fechaVisita') as error">
+            {{ error }}
+          </div>
         </label>
 
         <ng-container *ngIf="mostrarCamposHorarios">
@@ -556,40 +567,33 @@
         </ng-container>
 
         <div class="termino-ticket-fields" *ngIf="mostrarCamposTerminoTicket">
-          <label>
+          <label [class.invalid]="campoInvalido('ticketFechaTermino')">
             <span class="label">Fecha de termino</span>
-            <input type="date" formControlName="ticketFechaTermino" />
-            <div
-              class="error"
-              *ngIf="
-                bitacoraForm.get('ticketFechaTermino')?.invalid &&
-                bitacoraForm.get('ticketFechaTermino')?.touched
-              "
-            >
-              Ingresa la fecha en la que se cerro el ticket.
+            <input
+              type="date"
+              formControlName="ticketFechaTermino"
+              [attr.aria-invalid]="campoInvalido('ticketFechaTermino')"
+            />
+            <div class="field-error" *ngIf="mensajeError('ticketFechaTermino') as error">
+              {{ error }}
             </div>
           </label>
 
-          <label class="full">
+          <label class="full" [class.invalid]="campoInvalido('ticketDetalleTermino')">
             <span class="label">Detalle de lo realizado</span>
             <textarea
               formControlName="ticketDetalleTermino"
               rows="4"
               placeholder="Describe el trabajo realizado para cerrar el ticket."
+              [attr.aria-invalid]="campoInvalido('ticketDetalleTermino')"
             ></textarea>
-            <div
-              class="error"
-              *ngIf="
-                bitacoraForm.get('ticketDetalleTermino')?.invalid &&
-                bitacoraForm.get('ticketDetalleTermino')?.touched
-              "
-            >
-              Detalla lo realizado para el cierre del ticket.
+            <div class="field-error" *ngIf="mensajeError('ticketDetalleTermino') as error">
+              {{ error }}
             </div>
           </label>
         </div>
 
-        <label class="full">
+        <label class="full" [class.invalid]="campoInvalido('tecnicos')">
           <span class="label">Tecnicos</span>
           <div class="clientes-dropdown" (click)="$event.stopPropagation()">
             <button
@@ -597,6 +601,8 @@
             class="dropdown-button"
             (click)="toggleTecnicosDropdown($event)"
             [disabled]="tecnicosDisponibles.length === 0 || bitacoraForm.get('tecnicos')?.disabled"
+            [class.invalid]="campoInvalido('tecnicos')"
+            [attr.aria-expanded]="tecnicosDropdownAbierto"
           >
               {{ resumenTecnicosSeleccionados }}
               <img src="/assets/svg/side-menu-arrow-down.svg" alt="toggle" class="dropdown-arrow" />
@@ -620,18 +626,22 @@
           <div class="helper-text" *ngIf="tecnicosDisponibles.length === 0">
             No hay tecnicos disponibles para seleccionar.
           </div>
-          <div *ngIf="bitacoraForm.get('tecnicos')?.invalid && bitacoraForm.get('tecnicos')?.touched" class="error">
-            Selecciona al menos un tecnico.
+          <div class="field-error" *ngIf="mensajeError('tecnicos') as error">
+            {{ error }}
           </div>
         </label>
 
-        <label class="full">
+        <label class="full" [class.invalid]="campoInvalido('descripcion')">
           <span class="label">Detalle</span>
           <textarea
             formControlName="descripcion"
             rows="4"
             placeholder="Describe las actividades realizadas, hallazgos y compromisos."
+            [attr.aria-invalid]="campoInvalido('descripcion')"
           ></textarea>
+          <div class="field-error" *ngIf="mensajeError('descripcion') as error">
+            {{ error }}
+          </div>
         </label>
 
         <label class="full checkbox-field" *ngIf="!esTicketSeleccionado">

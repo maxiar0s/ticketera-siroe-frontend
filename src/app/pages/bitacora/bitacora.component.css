@@ -202,6 +202,32 @@ textarea {
   resize: vertical;
 }
 
+.modal-grid label.invalid .label {
+  color: #d12b40;
+}
+
+.modal-grid label.invalid select,
+.modal-grid label.invalid input,
+.modal-grid label.invalid textarea {
+  border-color: #d12b40;
+  background-color: #fff7f8;
+  box-shadow: 0 0 0 2px rgba(209, 43, 64, 0.08);
+}
+
+.modal-grid label.invalid .dropdown-button,
+.dropdown-button.invalid {
+  border-color: #d12b40;
+  color: #d12b40;
+  background-color: #fff7f8;
+  box-shadow: 0 0 0 2px rgba(209, 43, 64, 0.08);
+}
+
+.field-error {
+  font-size: 0.82rem;
+  color: #d12b40;
+  line-height: 1.3;
+}
+
 .filter-actions {
   display: flex;
   justify-content: flex-end;

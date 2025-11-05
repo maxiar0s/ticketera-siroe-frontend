@@ -363,6 +363,59 @@ export class BitacoraComponent implements OnInit {
     return this.esTicketSeleccionado && this.estadoTicketSeleccionado === 'ingresado';
   }
 
+  campoInvalido(controlName: string): boolean {
+    const control = this.bitacoraForm.get(controlName);
+    return !!(
+      control &&
+      control.invalid &&
+      (control.dirty || control.touched)
+    );
+  }
+
+  mensajeError(controlName: string): string | null {
+    if (!this.campoInvalido(controlName)) {
+      return null;
+    }
+
+    const control = this.bitacoraForm.get(controlName);
+    const errors = control?.errors ?? {};
+
+    if (errors['required']) {
+      switch (controlName) {
+        case 'clienteId':
+          return 'Selecciona un cliente.';
+        case 'fechaVisita':
+          return this.esTicketSeleccionado
+            ? 'Indica la fecha de ingreso del ticket.'
+            : 'Selecciona la fecha de la visita.';
+        case 'tecnicos':
+          return 'Selecciona al menos un tecnico.';
+        case 'ticketFechaTermino':
+          return 'Ingresa la fecha en la que se cerro el ticket.';
+        case 'ticketDetalleTermino':
+          return 'Detalla lo realizado para cerrar el ticket.';
+        case 'descripcion':
+          return 'Describe las actividades realizadas.';
+        default:
+          return 'Este campo es obligatorio.';
+      }
+    }
+
+    if (errors['minlength']) {
+      const requerido = errors['minlength'].requiredLength;
+      switch (controlName) {
+        case 'ticketDetalleTermino':
+          return `Detalla lo realizado con al menos ${requerido} caracteres.`;
+        case 'descripcion':
+          return `El detalle debe tener al menos ${requerido} caracteres.`;
+        default:
+          return `Debes ingresar al menos ${requerido} caracteres.`;
+      }
+    }
+
+    return 'Revisa los datos ingresados.';
+  }
+
   toggleTecnicosDropdown(event: MouseEvent): void {
     event.stopPropagation();
     this.tecnicosDropdownAbierto = !this.tecnicosDropdownAbierto;
