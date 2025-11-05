@@ -26,6 +26,31 @@
   height: 90px;
 }
 
+.div-table {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.div-table::-webkit-scrollbar {
+  height: 6px;
+}
+
+.div-table::-webkit-scrollbar-thumb {
+  background: rgba(183, 22, 83, 0.35);
+  border-radius: 999px;
+}
+
+.div-table::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: 999px;
+}
+
 .actions {
   all: unset;
 }
@@ -150,7 +175,7 @@ input[type="checkbox"] {
 
 /* Columnas de la tabla */
 .col-1 {
-  width: 50px;
+  width: 40px;
   padding: 0 0.5rem;
 }
 .col-2 {
@@ -186,10 +211,16 @@ input[type="checkbox"] {
     padding: 0 0.5rem;
 }
 
+@media (max-width: 650px) {
+  .table {
+    min-width: 960px;
+  }
+}
+
 /* Media queries para diferentes tamaños de pantalla */
 @media (max-width: 1200px) {
   .col-1 {
-    width: 40px;
+    width: 35px;
   }
   .col-2 {
     width: 35px;
@@ -219,7 +250,7 @@ input[type="checkbox"] {
 
 @media (max-width: 992px) {
   .col-1 {
-    width: 35px;
+    width: 30px;
   }
   .col-2 {
     width: 30px;
@@ -251,6 +282,10 @@ input[type="checkbox"] {
   .col-departamento {
     display: none;
   }
+  .col-1, .col-2 {
+    width: 20px;
+  }
+
 }
 
 @media (max-width: 600px) {
