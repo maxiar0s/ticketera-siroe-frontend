@@ -296,7 +296,7 @@
   .card-information{
     grid-template-columns: 1fr;
     grid-template-rows: repeat(2, 2fr) 1fr;
-    gap:1rem;
+    gap:0rem;
     padding: 0 2rem;
     place-content: start;
   }

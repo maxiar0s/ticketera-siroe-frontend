@@ -213,7 +213,44 @@ input[type="checkbox"] {
 
 @media (max-width: 650px) {
   .table {
-    min-width: 960px;
+    min-width: 720px;
+  }
+
+  .table th,
+  .table td {
+    padding: 0.65rem 0.5rem;
+  }
+
+  .col-1 {
+    width: 36px;
+  }
+
+  .col-2 {
+    width: 36px;
+  }
+
+  .col-3 {
+    width: 80px;
+  }
+
+  .col-4 {
+    width: 140px;
+  }
+
+  .col-5 {
+    width: 150px;
+  }
+
+  .col-6 {
+    width: 140px;
+  }
+
+  .col-8 {
+    width: 110px;
+  }
+
+  .col-9 {
+    width: 120px;
   }
 }
 
