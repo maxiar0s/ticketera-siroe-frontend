@@ -40,9 +40,9 @@
 
           <th class="col-5">Tipo equipo</th>
 
-          <th class="col-6">Fecha de ingreso</th>
+          <th class="col-6">Fecha ingreso</th>
 
-          <th class="col-7">Departamento</th>
+          <th class="col-7 col-departamento">Departamento</th>
 
           <th class="col-8">Usuario</th>
 
@@ -127,12 +127,14 @@
           <td class="information-value">{{ equipo.tipoEquipo.name }}</td>
 
           <td class="information-value">
-
-            {{ equipo.fechaIngreso.toString() | formatoFecha }}
-
+            {{
+              equipo.fechaIngreso.toString()
+                | formatoFecha :
+                  (usarFormatoFechaCorta ? 'dd/MM/yyyy' : "d 'de' MMMM 'de' y")
+            }}
           </td>
 
-          <td class="information-value">{{ equipo.departamento }}</td>
+          <td class="information-value col-departamento">{{ equipo.departamento }}</td>
 
           <td class="information-value">
 

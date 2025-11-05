@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, HostListener, Input, Output } from '@angular/core';
 import { ApiService } from '../../../services/api.service';
 import { AuthService } from '../../../services/auth.service';
 import { Equipo } from '../../../interfaces/equipo.interface';
@@ -32,6 +32,8 @@ export class TableComponent {
   //?
   @Input() sucursalId?: string;
   @Input() permiteArriendo: boolean = false;
+  private readonly fechaBreakpointPx = 1000;
+  public usarFormatoFechaCorta = false;
 
   // Modal de edicion de equipo
   public selectedEquipoId!: number;
@@ -66,8 +68,22 @@ export class TableComponent {
     private authService: AuthService
   ) {
     this.esCliente = this.authService.esCliente();
+    this.actualizarFormatoFecha();
     // Cargar los estados de equipos al inicializar el componente
     this.cargarEstadosEquipo();
+  }
+
+  @HostListener('window:resize')
+  onWindowResize(): void {
+    this.actualizarFormatoFecha();
+  }
+
+  private actualizarFormatoFecha(): void {
+    if (typeof window === 'undefined') {
+      this.usarFormatoFechaCorta = false;
+      return;
+    }
+    this.usarFormatoFechaCorta = window.innerWidth < this.fechaBreakpointPx;
   }
 
   @Input()

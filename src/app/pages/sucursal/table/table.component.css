@@ -151,30 +151,39 @@ input[type="checkbox"] {
 /* Columnas de la tabla */
 .col-1 {
   width: 50px;
+  padding: 0 0.5rem;
 }
 .col-2 {
   width: 40px;
+    padding: 0 0.5rem;
 }
 .col-3 {
   width: 100px;
+    padding: 0 0.5rem;
 }
 .col-4 {
   width: 200px;
+    padding: 0 0.5rem;
 }
 .col-5 {
   width: 330px;
+    padding: 0 0.5rem;
 }
 .col-6 {
   width: 250px;
+    padding: 0 0.5rem;
 }
 .col-7 {
   width: 270px;
+    padding: 0 0.5rem;
 }
 .col-8 {
   width: 110px;
+    padding: 0 0.5rem;
 }
 .col-9 {
   width: 295px;
+    padding: 0 0.5rem;
 }
 
 /* Media queries para diferentes tamaños de pantalla */
@@ -216,7 +225,7 @@ input[type="checkbox"] {
     width: 30px;
   }
   .col-3 {
-    width: 60px;
+    width: 40px;
   }
   .col-4 {
     width: 120px;
@@ -239,11 +248,7 @@ input[type="checkbox"] {
 }
 
 @media (max-width: 768px) {
-  .col-8 {
-    display: none;
-  }
-
-  .row-border :nth-child(8) {
+  .col-departamento {
     display: none;
   }
 }

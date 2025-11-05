@@ -409,7 +409,6 @@ input[type=number] {
 .information-value {
   padding: 1rem 0;
   overflow: hidden;
-  white-space: nowrap;
   text-overflow: ellipsis;
 }
 /* @media (max-width: 1400px) {
