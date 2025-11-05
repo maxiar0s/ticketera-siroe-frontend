@@ -122,7 +122,6 @@ export class ButtonsComponent {
       deleteButton?.removeAttribute('disabled');
       deleteButton?.classList.remove('disabled-button');
       deleteButton?.classList.add('borrar', 'borrar-equipos');
-      deleteImg?.setAttribute('src', '/assets/svg/delete-hover.svg');
     } else {
       button?.setAttribute('disabled', 'true');
       button?.classList.remove('imprimir', 'imprimir-equipo');

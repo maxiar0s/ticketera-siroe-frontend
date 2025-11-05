@@ -72,6 +72,20 @@
   justify-self: center;
 }
 
+.svg-hover {
+  display: none;
+}
+
+.option-button:not(:disabled):hover .svg-hover,
+.option-button:not(:disabled):focus-visible .svg-hover {
+  display: inline-block;
+}
+
+.option-button:not(:disabled):hover .svg-default,
+.option-button:not(:disabled):focus-visible .svg-default {
+  display: none;
+}
+
 .size-modal {
   min-width: 100%;
   min-height: 100%;
