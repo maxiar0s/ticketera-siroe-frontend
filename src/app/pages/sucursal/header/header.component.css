@@ -17,6 +17,10 @@
   padding: 0;
 }
 
+.flex {
+  padding: 1rem;
+}
+
 .title {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -49,7 +53,8 @@
   grid-template-areas:
     "foto razonSocial rut encargadoSucursal"
     "foto encargadoGeneral telefonoCasaMatriz telefonoSucursal"
-    "foto correoCasaMatriz id correoSucursal";
+    "foto correoCasaMatriz id correoSucursal"
+    "foto serviciosCasaMatriz serviciosCasaMatriz serviciosCasaMatriz";
   align-items: center;
   gap: 0rem 2rem;
   padding: 0 1rem 0 2rem;
@@ -88,6 +93,10 @@
   grid-area: id;
 }
 
+#serviciosCasaMatriz {
+  grid-area: serviciosCasaMatriz;
+}
+
 .logo {
 
   margin: auto;
@@ -116,35 +125,39 @@
     .grid-body {
       display: grid;
       grid-template-columns: 0.7fr 1fr 1fr;
-      grid-template-rows: repeat(4, 1fr);
+      grid-template-rows: repeat(5, 1fr);
       grid-template-areas:
         "foto razonSocial rut"
         "foto encargadoGeneral encargadoSucursal"
         "foto correoCasaMatriz correoSucursal"
-        "id telefonoCasaMatriz telefonoSucursal";
+        "foto telefonoCasaMatriz telefonoSucursal"
+        "id serviciosCasaMatriz serviciosCasaMatriz";
       align-items: center;
       gap: 0rem 1rem;
-      padding: 0 1rem;
-      justify-items: center;
+      padding: 1rem;
     }
 
 }
 
 @media (max-width: 1000px) {
+  .flex {
+    padding: 0.5rem;
+  }
   .grid-body {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    grid-template-rows: repeat(6, 1fr);
+    grid-template-rows: repeat(7, 1fr);
     grid-template-areas:
       "foto razonSocial"
       "foto encargadoGeneral"
       "foto correoCasaMatriz"
       "encargadoSucursal telefonoCasaMatriz "
       "correoSucursal rut"
-      "telefonoSucursal id";
+      "telefonoSucursal id"
+      "serviciosCasaMatriz serviciosCasaMatriz";
     align-items: center;
     gap: 0rem 1rem;
-    padding: 0 1rem;
+    padding: 1rem;
   }
   .logo {
     max-height: 15rem;
@@ -166,7 +179,7 @@
   .grid-body {
     display: grid;
     grid-template-columns: 1fr;
-    grid-template-rows: 5fr repeat(9, 1fr);
+    grid-template-rows: 5fr repeat(10, 1fr);
     grid-template-areas:
       "foto"
       "razonSocial"
@@ -177,9 +190,10 @@
       "correoSucursal"
       "telefonoSucursal"
       "rut"
-      "id";
+      "id"
+      "serviciosCasaMatriz";
     gap: 0rem 1rem;
-    padding: 0 1rem;
+    padding: 1rem;
 
   }
   .logo {
