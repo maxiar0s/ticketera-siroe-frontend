@@ -521,6 +521,7 @@
             <option
               *ngFor="let estado of estadosTicket"
               [value]="estado.value"
+              [disabled]="esTecnico && !esAdmin && estado.value === 'terminado'"
             >
               {{ estado.label }}
             </option>

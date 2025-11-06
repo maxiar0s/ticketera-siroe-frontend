@@ -27,7 +27,7 @@
     "id": 4,
     "nombre": "Proyectos",
     "route": "/proyectos",
-    "svg": "download",
+    "svg": "openfolder",
     "subItem": [],
     "isOpen": false
   },

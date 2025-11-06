@@ -746,6 +746,16 @@ export class BitacoraComponent implements OnInit {
         payload = {
           descripcion: formValue.descripcion.trim(),
         };
+
+        if (formValue.esTicket) {
+          const estadoTicket = this.normalizarEstadoTicket(formValue.ticketEstado);
+          if (estadoTicket === 'ingresado') {
+            payload.esTicket = true;
+            payload.estadoTicket = estadoTicket;
+            payload.fechaTermino = null;
+            payload.detalleTermino = null;
+          }
+        }
       } else {
         payload = this.construirPayloadCompleto(formValue);
       }
@@ -1065,6 +1075,15 @@ export class BitacoraComponent implements OnInit {
       this.bitacoraForm.get(control)?.disable({ emitEvent: false })
     );
     this.bitacoraForm.get('descripcion')?.enable({ emitEvent: false });
+
+    const ticketEstadoCtrl = this.bitacoraForm.get('ticketEstado');
+    const esTicketCtrl = this.bitacoraForm.get('esTicket');
+    if (ticketEstadoCtrl && esTicketCtrl?.value) {
+      const estadoActual = this.normalizarEstadoTicket(ticketEstadoCtrl.value);
+      if (estadoActual === 'terminado') {
+        ticketEstadoCtrl.enable({ emitEvent: false });
+      }
+    }
   }
 
   private habilitarTodosLosControles(): void {
