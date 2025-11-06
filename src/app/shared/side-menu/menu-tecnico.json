@@ -35,7 +35,7 @@
     "id": 5,
     "nombre": "Vehículos",
     "route": "/vehiculos",
-    "svg": "download",
+    "svg": "vehiculo",
     "subItem": [],
     "isOpen": false
   }
