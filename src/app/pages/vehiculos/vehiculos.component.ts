@@ -19,6 +19,7 @@ import {
 import { Tecnico } from '../../interfaces/tecnico.interface';
 import { SignedUrlPipe } from '../../pipes/generar-url.pipe';
 import { FormatoFechaPipe } from '../../pipes/formato-fecha.pipe';
+import { SignalService } from '../../services/signal.service';
 
 interface VehiculoFormulario {
   id: FormControl<number | null>;
@@ -92,7 +93,11 @@ export class VehiculosComponent implements OnInit {
     'Copec Empresas',
   ];
 
-  constructor(private fb: FormBuilder, private apiService: ApiService) {
+  constructor(
+    private fb: FormBuilder,
+    private apiService: ApiService,
+    private signalService: SignalService
+  ) {
     this.vehiculoForm = this.fb.group({
       id: this.fb.control<number | null>(null),
       patente: this.fb.nonNullable.control('', {
@@ -139,6 +144,7 @@ export class VehiculosComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.signalService.updateData('Vehículos');
     this.cargarTecnicos();
     this.cargarVehiculos();
   }

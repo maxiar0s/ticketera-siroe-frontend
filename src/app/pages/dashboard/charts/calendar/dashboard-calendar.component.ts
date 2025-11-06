@@ -612,11 +612,11 @@ export class DashboardCalendarComponent implements OnInit {
   }
 
   obtenerEtiquetaTicket(evento: Bitacora & { tipo: 'ticket' }): string {
-    return this.obtenerEstadoTicket(evento) === 'terminado' ? 'Terminado' : 'Ingresado';
+    return this.obtenerEstadoTicket(evento) === 'terminado' ? 'Cerrado' : 'Abierto';
   }
 
   obtenerClaseChipTicket(evento: Bitacora & { tipo: 'ticket' }): string {
-    return this.obtenerEstadoTicket(evento) === 'terminado' ? 'terminado' : 'ingresado';
+    return this.obtenerEstadoTicket(evento) === 'terminado' ? 'cerrado' : 'abierto';
   }
 
   private crearGradiente(

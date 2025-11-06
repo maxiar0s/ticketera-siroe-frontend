@@ -74,8 +74,8 @@ export class BitacoraComponent implements OnInit {
     { value: 'ticket', label: 'Ticket' },
   ];
   readonly estadosTicket = [
-    { value: 'ingresado', label: 'Ingresado' },
-    { value: 'terminado', label: 'Terminado' },
+    { value: 'ingresado', label: 'Abierto' },
+    { value: 'terminado', label: 'Cerrado' },
   ] as const;
 
   tieneAccesoTickets = true;
