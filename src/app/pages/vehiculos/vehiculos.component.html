@@ -222,7 +222,7 @@
       </div>
 
       <div class="salidas-header">
-        <h4>Salidas registradas</h4>
+        <h3>Salidas registradas</h3>
         <button type="button" class="primary-button" (click)="abrirFormularioSalida()">
           + Nueva salida
         </button>
@@ -372,10 +372,11 @@
           </label>
         </div>
 
-        <div class="form-field">
-          <label class="checkbox">
+        <div class="form-field combustible-field">
+          <label class="checkbox-square">
             <input type="checkbox" formControlName="cargaCombustible" />
-            ¿Se realizó carga de combustible?
+            <span class="checkbox-square__box"></span>
+            <span class="checkbox-square__label">¿Se realizó carga de combustible?</span>
           </label>
         </div>
 
@@ -383,14 +384,15 @@
           <label>
             Método de pago
             <div class="metodos-pago">
-              <label *ngFor="let metodo of metodosPagoCombustible" class="radio">
+              <label *ngFor="let metodo of metodosPagoCombustible" class="radio-button">
                 <input
                   type="radio"
                   [value]="metodo"
                   formControlName="metodoPago"
                   name="metodoPago"
                 />
-                {{ metodo }}
+                <span class="radio-visual"></span>
+                <span>{{ metodo }}</span>
               </label>
             </div>
           </label>
@@ -398,6 +400,20 @@
             Valor de la carga
             <input type="number" formControlName="valorCarga" step="0.01" min="0" />
           </label>
+          <div class="form-field" *ngIf="salidaForm.value.cargaCombustible">
+          <label class="file-label">
+            Comprobante (boleta o factura)
+            <input
+              type="file"
+              multiple
+              (change)="onSalidaComprobantesChange($event)"
+              accept="image/*,application/pdf"
+            />
+          </label>
+          <div class="nota" *ngIf="salidaComprobantes.length">
+            {{ salidaComprobantes.length }} archivo(s) seleccionados.
+          </div>
+        </div>
         </div>
 
         <div class="form-field">
@@ -414,15 +430,39 @@
         <div class="form-field">
           <label>
             Técnicos asignados
-            <select formControlName="tecnicoIds" multiple>
-              <option
-                *ngFor="let tecnico of tecnicos"
-                [disabled]="tecnicosCargando"
-                [value]="tecnico.id"
+            <div class="multi-select" [class.open]="mostrarTecnicosDropdown">
+              <button
+                type="button"
+                class="multi-select__trigger"
+                (click)="toggleTecnicosDropdown()"
               >
-                {{ tecnico.name }} ({{ tecnico.email }})
-              </option>
-            </select>
+                <span class="multi-select__text">{{ tecnicosSeleccionadosTexto }}</span>
+                <span class="multi-select__caret" [class.open]="mostrarTecnicosDropdown"></span>
+              </button>
+              <div class="multi-select__panel" *ngIf="mostrarTecnicosDropdown">
+                <div class="multi-select__options">
+                  <label
+                    class="checkbox-square multi-select__option"
+                    *ngFor="let tecnico of tecnicos"
+                  >
+                    <input
+                      type="checkbox"
+                      [value]="tecnico.id"
+                      [checked]="salidaForm.value.tecnicoIds?.includes(tecnico.id)"
+                      (change)="onToggleTecnico(tecnico.id, $event)"
+                    />
+                    <span class="checkbox-square__box"></span>
+                    <span class="checkbox-square__label">
+                      {{ tecnico.name }} ({{ tecnico.email }})
+                    </span>
+                  </label>
+                </div>
+                <div class="multi-select__actions">
+                  <button type="button" class="ghost-button small" (click)="limpiarTecnicos()">Limpiar</button>
+                  <button type="button" class="primary-button small" (click)="toggleTecnicosDropdown()">Listo</button>
+                </div>
+              </div>
+            </div>
           </label>
         </div>
 
@@ -438,21 +478,6 @@
           </label>
           <div class="nota" *ngIf="salidaAdjuntos.length">
             {{ salidaAdjuntos.length }} archivo(s) seleccionados.
-          </div>
-        </div>
-
-        <div class="form-field">
-          <label class="file-label">
-            Comprobante (boleta o factura)
-            <input
-              type="file"
-              multiple
-              (change)="onSalidaComprobantesChange($event)"
-              accept="image/*,application/pdf"
-            />
-          </label>
-          <div class="nota" *ngIf="salidaComprobantes.length">
-            {{ salidaComprobantes.length }} archivo(s) seleccionados.
           </div>
         </div>
 

@@ -83,6 +83,7 @@ export class VehiculosComponent implements OnInit {
   adjuntosAEliminar = new Set<number>();
   salidaAdjuntos: File[] = [];
   salidaComprobantes: File[] = [];
+  mostrarTecnicosDropdown = false;
 
   readonly metodosPagoCombustible: MetodoPagoCombustible[] = [
     'Efectivo',
@@ -457,6 +458,65 @@ export class VehiculosComponent implements OnInit {
   onAdjuntoEliminarChange(adjuntoId: number, event: Event): void {
     const input = event.target as HTMLInputElement | null;
     this.toggleAdjuntoEliminar(adjuntoId, !!input?.checked);
+  }
+
+  onToggleTecnico(tecnicoId: number, event: Event): void {
+    event.stopPropagation();
+    const input = event.target as HTMLInputElement | null;
+    const checked = !!input?.checked;
+    const control = this.salidaForm.get('tecnicoIds');
+    if (!control) {
+      return;
+    }
+
+    const actuales = Array.isArray(control.value) ? [...control.value] : [];
+    if (checked) {
+      if (!actuales.includes(tecnicoId)) {
+        actuales.push(tecnicoId);
+      }
+    } else {
+      const index = actuales.indexOf(tecnicoId);
+      if (index >= 0) {
+        actuales.splice(index, 1);
+      }
+    }
+
+    control.setValue(actuales);
+  }
+
+  toggleTecnicosDropdown(): void {
+    this.mostrarTecnicosDropdown = !this.mostrarTecnicosDropdown;
+  }
+
+  limpiarTecnicos(): void {
+    this.salidaForm.get('tecnicoIds')?.setValue([]);
+  }
+
+  get tecnicosSeleccionadosTexto(): string {
+    const ids = Array.isArray(this.salidaForm.value.tecnicoIds)
+      ? this.salidaForm.value.tecnicoIds
+      : [];
+    if (ids.length === 0) {
+      return 'Selecciona técnicos';
+    }
+
+    const nombres = this.tecnicos
+      .filter((tecnico) => ids.includes(tecnico.id))
+      .map((tecnico) => tecnico.name);
+
+    if (nombres.length === 0) {
+      return `${ids.length} seleccionado(s)`;
+    }
+
+    if (nombres.length === 1) {
+      return nombres[0];
+    }
+
+    if (nombres.length === 2) {
+      return nombres.join(', ');
+    }
+
+    return `${nombres.slice(0, 2).join(', ')} +${nombres.length - 2}`;
   }
 
   guardarSalida(): void {
