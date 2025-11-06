@@ -32,6 +32,14 @@
     "isOpen": false
   },
   {
+    "id": 7,
+    "nombre": "Vehículos",
+    "route": "/vehiculos",
+    "svg": "download",
+    "subItem": [],
+    "isOpen": false
+  },
+  {
     "id": 4,
     "nombre": "Usuarios",
     "route": "admin/usuarios",

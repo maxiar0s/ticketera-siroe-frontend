@@ -59,6 +59,14 @@ export const routes: Routes = [
     canActivate: [protegerRutaGuard],
     loadComponent: () => import('./pages/proyectos/proyectos.component').then( m => m.ProyectosComponent ),
   },
+  {
+    path: 'vehiculos',
+    canActivate: [protegerRutaGuard, NoClienteGuard],
+    loadComponent: () =>
+      import('./pages/vehiculos/vehiculos.component').then(
+        (m) => m.VehiculosComponent
+      ),
+  },
 
   // Config
   {

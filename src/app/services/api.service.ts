@@ -11,6 +11,11 @@ import { TipoEquipo } from '../interfaces/TipoEquipo.interface';
 import { Campo, CampoPresetOption, CampoStandard } from '../interfaces/campo.interface';
 import { DepartamentoEquipo } from '../interfaces/departamento-equipo.interface';
 import { EquipoFiltros } from '../interfaces/equipo-filtros.interface';
+import {
+  Vehiculo,
+  VehiculoListadoResponse,
+} from '../interfaces/vehiculo.interface';
+import { VehiculoSalida } from '../interfaces/vehiculo-salida.interface';
 
 type ClienteEquiposDetalle = { cliente: Cliente | null; equipos: Equipo[] };
 
@@ -704,6 +709,125 @@ export class ApiService {
   eliminarProyectoAdjunto(id: number, adjuntoId: number): Observable<any> {
     const endpoint = `proyectos/${id}/adjuntos/${adjuntoId}`;
     return this.deleteInformation(endpoint);
+  }
+
+  // Vehículos
+  getVehiculos(params: { pagina?: number; limite?: number; buscar?: string } = {}): Observable<VehiculoListadoResponse> {
+    let httpParams = new HttpParams();
+    if (params.pagina) {
+      httpParams = httpParams.set('pagina', params.pagina.toString());
+    }
+    if (params.limite) {
+      httpParams = httpParams.set('limite', params.limite.toString());
+    }
+    if (params.buscar && params.buscar.trim().length) {
+      httpParams = httpParams.set('buscar', params.buscar.trim());
+    }
+
+    return this.http
+      .get<VehiculoListadoResponse>(`${this.url}/vehiculos`, { params: httpParams })
+      .pipe(
+        catchError((error: HttpErrorResponse) => {
+          console.error('Error al obtener vehículos:', error);
+          return throwError(() => error);
+        })
+      );
+  }
+
+  getVehiculo(id: number): Observable<Vehiculo> {
+    return this.http.get<Vehiculo>(`${this.url}/vehiculos/${id}`).pipe(
+      catchError((error: HttpErrorResponse) => {
+        console.error('Error al obtener el vehículo:', error);
+        return throwError(() => error);
+      })
+    );
+  }
+
+  crearVehiculo(payload: FormData | any): Observable<Vehiculo> {
+    return this.http.post<Vehiculo>(`${this.url}/vehiculos`, payload).pipe(
+      catchError((error: HttpErrorResponse) => {
+        console.error('Error al crear vehículo:', error);
+        return throwError(() => error);
+      })
+    );
+  }
+
+  actualizarVehiculo(id: number, payload: FormData | any): Observable<Vehiculo> {
+    return this.http.put<Vehiculo>(`${this.url}/vehiculos/${id}`, payload).pipe(
+      catchError((error: HttpErrorResponse) => {
+        console.error('Error al actualizar vehículo:', error);
+        return throwError(() => error);
+      })
+    );
+  }
+
+  eliminarVehiculo(id: number): Observable<any> {
+    return this.http.delete<any>(`${this.url}/vehiculos/${id}`).pipe(
+      catchError((error: HttpErrorResponse) => {
+        console.error('Error al eliminar vehículo:', error);
+        return throwError(() => error);
+      })
+    );
+  }
+
+  crearVehiculoSalida(
+    vehiculoId: number,
+    payload: FormData | any
+  ): Observable<VehiculoSalida> {
+    return this.http
+      .post<VehiculoSalida>(`${this.url}/vehiculos/${vehiculoId}/salidas`, payload)
+      .pipe(
+        catchError((error: HttpErrorResponse) => {
+          console.error('Error al registrar salida:', error);
+          return throwError(() => error);
+        })
+      );
+  }
+
+  actualizarVehiculoSalida(
+    vehiculoId: number,
+    salidaId: number,
+    payload: FormData | any
+  ): Observable<VehiculoSalida> {
+    return this.http
+      .put<VehiculoSalida>(
+        `${this.url}/vehiculos/${vehiculoId}/salidas/${salidaId}`,
+        payload
+      )
+      .pipe(
+        catchError((error: HttpErrorResponse) => {
+          console.error('Error al actualizar salida:', error);
+          return throwError(() => error);
+        })
+      );
+  }
+
+  eliminarVehiculoSalida(vehiculoId: number, salidaId: number): Observable<any> {
+    return this.http
+      .delete<any>(`${this.url}/vehiculos/${vehiculoId}/salidas/${salidaId}`)
+      .pipe(
+        catchError((error: HttpErrorResponse) => {
+          console.error('Error al eliminar salida:', error);
+          return throwError(() => error);
+        })
+      );
+  }
+
+  eliminarVehiculoSalidaAdjunto(
+    vehiculoId: number,
+    salidaId: number,
+    adjuntoId: number
+  ): Observable<any> {
+    return this.http
+      .delete<any>(
+        `${this.url}/vehiculos/${vehiculoId}/salidas/${salidaId}/adjuntos/${adjuntoId}`
+      )
+      .pipe(
+        catchError((error: HttpErrorResponse) => {
+          console.error('Error al eliminar adjunto de salida:', error);
+          return throwError(() => error);
+        })
+      );
   }
 
   // Obtener equipo por ID

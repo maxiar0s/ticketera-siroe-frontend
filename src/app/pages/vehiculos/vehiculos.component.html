@@ -1,0 +1,506 @@
+<div class="vehiculos-layout">
+  <aside class="vehiculos-sidebar">
+    <div class="sidebar-header">
+      <h2>Vehículos</h2>
+      <button type="button" class="primary-button" (click)="abrirFormularioVehiculo()">
+        + Nuevo
+      </button>
+    </div>
+
+    <form class="sidebar-search" (ngSubmit)="buscarVehiculos()">
+      <input
+        type="text"
+        placeholder="Buscar por patente o responsable"
+        name="buscarVehiculos"
+        [(ngModel)]="vehiculosBuscar"
+      />
+      <button type="submit" class="ghost-button">Buscar</button>
+    </form>
+
+    <div class="sidebar-list">
+      <p *ngIf="vehiculosCargando" class="estado">Cargando vehículos...</p>
+      <p *ngIf="!vehiculosCargando && vehiculos.length === 0" class="estado">
+        No hay vehículos registrados.
+      </p>
+      <ul *ngIf="!vehiculosCargando && vehiculos.length > 0">
+        <li
+          *ngFor="let vehiculo of vehiculos"
+          (click)="seleccionarVehiculo(vehiculo)"
+          [class.activo]="vehiculoSeleccionado?.id === vehiculo.id"
+        >
+          <div class="vehiculo-item">
+            <div class="vehiculo-thumb" [class.sin-imagen]="!vehiculo.imagen">
+              <ng-container
+                *ngIf="vehiculo.imagen && (vehiculo.imagen | signedUrl | async) as thumbUrl; else thumbFallback"
+              >
+                <img [src]="thumbUrl" [alt]="vehiculo.patente" loading="lazy" />
+              </ng-container>
+              <ng-template #thumbFallback>
+                <span>{{ vehiculo.patente.slice(0, 2) || '?' }}</span>
+              </ng-template>
+            </div>
+            <div class="vehiculo-info-text">
+              <div class="vehiculo-etiqueta">{{ vehiculo.patente }}</div>
+              <div class="vehiculo-subtitulo">{{ vehiculo.responsable }}</div>
+            </div>
+          </div>
+        </li>
+      </ul>
+    </div>
+
+    <div class="sidebar-pagination" *ngIf="vehiculosPaginasTotales > 1">
+      <button
+        type="button"
+        class="ghost-button small"
+        (click)="cambiarPaginaVehiculos(vehiculosPagina - 1)"
+        [disabled]="vehiculosPagina <= 1"
+      >
+        Anterior
+      </button>
+      <span>Pagina {{ vehiculosPagina }} / {{ vehiculosPaginasTotales }}</span>
+      <button
+        type="button"
+        class="ghost-button small"
+        (click)="cambiarPaginaVehiculos(vehiculosPagina + 1)"
+        [disabled]="
+          vehiculosPaginasTotales === 0 ||
+          vehiculosPagina >= vehiculosPaginasTotales
+        "
+      >
+        Siguiente
+      </button>
+    </div>
+  </aside>
+
+  <section class="vehiculos-contenido">
+    <div *ngIf="mostrarVehiculoForm" class="panel formulario-vehiculo">
+      <div class="panel-header">
+        <h3>{{ vehiculoEnEdicion ? 'Editar vehículo' : 'Nuevo vehículo' }}</h3>
+        <button type="button" class="icon-button" (click)="cerrarFormularioVehiculo()">
+          ✕
+        </button>
+      </div>
+
+      <form [formGroup]="vehiculoForm" (ngSubmit)="guardarVehiculo()">
+        <div class="form-grid form-grid--vehiculo">
+          <label>
+            Patente
+            <input
+              type="text"
+              formControlName="patente"
+              placeholder="Ej: AB-CD-12"
+              maxlength="30"
+            />
+          </label>
+          <label>
+            Dueño o encargado
+            <input
+              type="text"
+              formControlName="responsable"
+              placeholder="Nombre responsable"
+              maxlength="255"
+            />
+          </label>
+          <div class="mantenciones-column">
+            <label>
+              Fecha última mantención
+              <input type="date" formControlName="fechaUltimaMantencion" />
+            </label>
+            <label>
+              Próxima mantención
+              <input type="date" formControlName="fechaSiguienteMantencion" />
+            </label>
+          </div>
+        </div>
+
+        <div class="form-field">
+          <label class="file-label">
+            Imagen del vehículo (opcional)
+            <input type="file" accept="image/*" (change)="onVehiculoImagenChange($event)" />
+          </label>
+          <label class="checkbox" *ngIf="vehiculoEnEdicion?.imagen">
+            <input
+              type="checkbox"
+              [checked]="vehiculoForm.value.eliminarImagen"
+              (change)="onEliminarImagenChange($event)"
+            />
+            Eliminar imagen actual
+          </label>
+        </div>
+
+        <div class="form-actions">
+          <button
+            type="submit"
+            class="primary-button"
+            [disabled]="guardandoVehiculo"
+          >
+            {{ guardandoVehiculo ? 'Guardando...' : 'Guardar vehículo' }}
+          </button>
+          <button type="button" class="ghost-button" (click)="cerrarFormularioVehiculo()">
+            Cancelar
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <div
+      *ngIf="vehiculoSeleccionado && !mostrarVehiculoForm"
+      class="panel vehiculo-detalle"
+    >
+      <div class="panel-header">
+        <div>
+          <h3>{{ vehiculoSeleccionado.patente }}</h3>
+          <p class="resumen">
+            Responsable: <strong>{{ vehiculoSeleccionado.responsable }}</strong>
+          </p>
+        </div>
+        <div class="panel-actions">
+          <button
+            type="button"
+            class="ghost-button"
+            (click)="abrirFormularioVehiculo(vehiculoSeleccionado)"
+          >
+            Editar
+          </button>
+          <button
+            type="button"
+            class="ghost-button peligro"
+            (click)="eliminarVehiculo(vehiculoSeleccionado)"
+          >
+            Eliminar
+          </button>
+        </div>
+      </div>
+
+      <div *ngIf="detalleVehiculoCargando" class="estado">
+        Cargando detalle del vehículo...
+      </div>
+
+      <div *ngIf="!detalleVehiculoCargando" class="vehiculo-info">
+        <div class="vehiculo-imagen" *ngIf="vehiculoSeleccionado.imagen as imagenKey">
+          <ng-container
+            *ngIf="
+              imagenKey | signedUrl | async as imagenUrl;
+              else sinImagen
+            "
+          >
+            <img
+              [src]="imagenUrl"
+              [alt]="vehiculoSeleccionado.patente"
+              loading="lazy"
+            />
+          </ng-container>
+        </div>
+        <ng-template #sinImagen>
+          <div class="vehiculo-imagen placeholder">
+            <span>{{ vehiculoSeleccionado.patente.slice(0, 2) || '?' }}</span>
+          </div>
+        </ng-template>
+
+        <div class="vehiculo-mantenciones">
+          <div>
+            <span class="etiqueta">Última mantención</span>
+            <span class="valor">
+              {{
+                vehiculoSeleccionado.fechaUltimaMantencion
+                  ? (vehiculoSeleccionado.fechaUltimaMantencion | formatoFecha)
+                  : 'Sin registrar'
+              }}
+            </span>
+          </div>
+          <div>
+            <span class="etiqueta">Próxima mantención</span>
+            <span class="valor">
+              {{
+                vehiculoSeleccionado.fechaSiguienteMantencion
+                  ? (vehiculoSeleccionado.fechaSiguienteMantencion | formatoFecha)
+                  : 'Sin registrar'
+              }}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <div class="salidas-header">
+        <h4>Salidas registradas</h4>
+        <button type="button" class="primary-button" (click)="abrirFormularioSalida()">
+          + Nueva salida
+        </button>
+      </div>
+
+      <p *ngIf="vehiculoSeleccionado.salidas?.length === 0" class="estado">
+        Aún no se registran salidas para este vehículo.
+      </p>
+
+      <div
+        class="salida-card"
+        *ngFor="let salida of vehiculoSeleccionado.salidas"
+      >
+        <div class="salida-header">
+          <div>
+            <h5>
+              {{ salida.fechaHoraSalida | formatoFecha : 'dd/MM/yyyy HH:mm' }}
+            </h5>
+            <p>
+              Retorno:
+              {{
+                salida.fechaHoraLlegada
+                  ? (salida.fechaHoraLlegada | formatoFecha : 'dd/MM/yyyy HH:mm')
+                  : 'En curso'
+              }}
+            </p>
+          </div>
+          <div class="salida-actions">
+            <button
+              type="button"
+              class="ghost-button small"
+              (click)="abrirFormularioSalida(salida)"
+            >
+              Editar
+            </button>
+            <button
+              type="button"
+              class="ghost-button small peligro"
+              (click)="eliminarSalida(salida)"
+            >
+              Eliminar
+            </button>
+          </div>
+        </div>
+
+        <div class="salida-detalle">
+          <div>
+            <span class="etiqueta">Odómetro salida</span>
+            <span class="valor">
+              {{
+                salida.odometroSalida != null
+                  ? salida.odometroSalida + ' km'
+                  : '-'
+              }}
+            </span>
+          </div>
+          <div>
+            <span class="etiqueta">Odómetro llegada</span>
+            <span class="valor">
+              {{ salida.odometroLlegada != null ? salida.odometroLlegada + ' km' : 'Sin registrar' }}
+            </span>
+          </div>
+          <div>
+            <span class="etiqueta">Carga de combustible</span>
+            <span class="valor">
+              {{ salida.cargaCombustible ? 'Sí' : 'No' }}
+            </span>
+          </div>
+          <div *ngIf="salida.cargaCombustible">
+            <span class="etiqueta">Método de pago</span>
+            <span class="valor">{{ salida.metodoPago || 'Sin información' }}</span>
+          </div>
+          <div *ngIf="salida.cargaCombustible">
+            <span class="etiqueta">Valor carga</span>
+            <span class="valor">
+              {{ salida.valorCarga != null ? ('$' + salida.valorCarga) : 'Sin registrar' }}
+            </span>
+          </div>
+        </div>
+
+        <div *ngIf="salida.tecnicos?.length" class="salida-tecnicos">
+          <span class="etiqueta">Técnicos asignados</span>
+          <ul>
+            <li *ngFor="let tecnico of salida.tecnicos">
+              {{ tecnico.name }} ({{ tecnico.email }})
+            </li>
+          </ul>
+        </div>
+
+        <div *ngIf="salida.comentarios" class="salida-comentarios">
+          <span class="etiqueta">Comentarios</span>
+          <p>{{ salida.comentarios }}</p>
+        </div>
+
+        <div *ngIf="salida.adjuntos?.length" class="salida-adjuntos">
+          <span class="etiqueta">Adjuntos</span>
+          <ul>
+            <li *ngFor="let adjunto of salida.adjuntos">
+              <ng-container
+                *ngIf="
+                  adjunto.archivo | signedUrl | async as adjuntoUrl
+                "
+              >
+                <a [href]="adjuntoUrl" target="_blank" rel="noopener">
+                  {{ adjunto.nombreArchivo || adjunto.archivo }}
+                  <span class="badge" *ngIf="adjunto.tipo === 'comprobante'">
+                    Comprobante
+                  </span>
+                </a>
+              </ng-container>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div
+      *ngIf="vehiculoSeleccionado && mostrarSalidaForm"
+      class="panel formulario-salida"
+    >
+      <div class="panel-header">
+        <h3>
+          {{ salidaEnEdicion ? 'Editar salida' : 'Registrar salida' }}
+        </h3>
+        <button type="button" class="icon-button" (click)="cerrarFormularioSalida()">
+          ✕
+        </button>
+      </div>
+
+      <form [formGroup]="salidaForm" (ngSubmit)="guardarSalida()">
+        <div class="form-grid">
+          <label>
+            Fecha y hora de salida
+            <input type="datetime-local" formControlName="fechaHoraSalida" />
+          </label>
+          <label>
+            Fecha y hora de llegada
+            <input type="datetime-local" formControlName="fechaHoraLlegada" />
+          </label>
+          <label>
+            Odómetro salida (km)
+            <input type="number" formControlName="odometroSalida" step="0.01" min="0" />
+          </label>
+          <label>
+            Odómetro llegada (km)
+            <input type="number" formControlName="odometroLlegada" step="0.01" min="0" />
+          </label>
+        </div>
+
+        <div class="form-field">
+          <label class="checkbox">
+            <input type="checkbox" formControlName="cargaCombustible" />
+            ¿Se realizó carga de combustible?
+          </label>
+        </div>
+
+        <div class="form-grid" *ngIf="salidaForm.value.cargaCombustible">
+          <label>
+            Método de pago
+            <div class="metodos-pago">
+              <label *ngFor="let metodo of metodosPagoCombustible" class="radio">
+                <input
+                  type="radio"
+                  [value]="metodo"
+                  formControlName="metodoPago"
+                  name="metodoPago"
+                />
+                {{ metodo }}
+              </label>
+            </div>
+          </label>
+          <label>
+            Valor de la carga
+            <input type="number" formControlName="valorCarga" step="0.01" min="0" />
+          </label>
+        </div>
+
+        <div class="form-field">
+          <label>
+            Comentarios
+            <textarea
+              formControlName="comentarios"
+              rows="3"
+              placeholder="Observaciones del desplazamiento"
+            ></textarea>
+          </label>
+        </div>
+
+        <div class="form-field">
+          <label>
+            Técnicos asignados
+            <select formControlName="tecnicoIds" multiple>
+              <option
+                *ngFor="let tecnico of tecnicos"
+                [disabled]="tecnicosCargando"
+                [value]="tecnico.id"
+              >
+                {{ tecnico.name }} ({{ tecnico.email }})
+              </option>
+            </select>
+          </label>
+        </div>
+
+        <div class="form-field">
+          <label class="file-label">
+            Adjuntar imágenes o documentos
+            <input
+              type="file"
+              multiple
+              (change)="onSalidaAdjuntosChange($event)"
+              accept="image/*,application/pdf"
+            />
+          </label>
+          <div class="nota" *ngIf="salidaAdjuntos.length">
+            {{ salidaAdjuntos.length }} archivo(s) seleccionados.
+          </div>
+        </div>
+
+        <div class="form-field">
+          <label class="file-label">
+            Comprobante (boleta o factura)
+            <input
+              type="file"
+              multiple
+              (change)="onSalidaComprobantesChange($event)"
+              accept="image/*,application/pdf"
+            />
+          </label>
+          <div class="nota" *ngIf="salidaComprobantes.length">
+            {{ salidaComprobantes.length }} archivo(s) seleccionados.
+          </div>
+        </div>
+
+        <div
+          class="adjuntos-previos"
+          *ngIf="adjuntosPrevios.length && salidaEnEdicion"
+        >
+          <span class="etiqueta">Adjuntos existentes</span>
+          <ul>
+            <li *ngFor="let adjunto of adjuntosPrevios">
+              <label class="checkbox">
+                <input
+                  type="checkbox"
+                  (change)="onAdjuntoEliminarChange(adjunto.id, $event)"
+                />
+                Eliminar
+              </label>
+              <ng-container
+                *ngIf="adjunto.archivo | signedUrl | async as adjuntoUrl"
+              >
+                <a [href]="adjuntoUrl" target="_blank" rel="noopener">
+                  {{ adjunto.nombreArchivo || adjunto.archivo }}
+                </a>
+              </ng-container>
+              <span class="badge" *ngIf="adjunto.tipo === 'comprobante'">
+                Comprobante
+              </span>
+            </li>
+          </ul>
+        </div>
+
+        <div class="form-actions">
+          <button
+            type="submit"
+            class="primary-button"
+            [disabled]="salidaGuardando"
+          >
+            {{ salidaGuardando ? 'Guardando...' : 'Guardar salida' }}
+          </button>
+          <button type="button" class="ghost-button" (click)="cerrarFormularioSalida()">
+            Cancelar
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <div *ngIf="!vehiculoSeleccionado && !mostrarVehiculoForm" class="panel vacio">
+      <p>Selecciona un vehículo para ver los detalles o crea uno nuevo.</p>
+    </div>
+  </section>
+</div>
