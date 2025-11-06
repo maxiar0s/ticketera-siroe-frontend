@@ -5,13 +5,18 @@ import {
   AfterViewInit,
   HostListener,
   OnInit,
+  OnDestroy,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { SignalService } from '../../services/signal.service';
 import { ApiService } from '../../services/api.service';
 import { AuthService } from '../../services/auth.service';
 import { obtenerIniciales, generarColorDesdeTexto } from '../../utils/avatar.util';
+import { NotificationService } from '../../services/notification.service';
+import { Notificacion } from '../../interfaces/notificacion.interface';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'shared-top-bar',
@@ -20,7 +25,7 @@ import { obtenerIniciales, generarColorDesdeTexto } from '../../utils/avatar.uti
   templateUrl: './top-bar.component.html',
   styleUrl: './top-bar.component.css',
 })
-export class TopBarComponent implements AfterViewInit, OnInit {
+export class TopBarComponent implements AfterViewInit, OnInit, OnDestroy {
   @ViewChild('searchBar') searchBar!: ElementRef<HTMLElement>;
   @ViewChild('searchInput') searchInput!: ElementRef<HTMLInputElement>;
   @ViewChild('searchLabel') searchLabel!: ElementRef<HTMLLabelElement>;
@@ -29,15 +34,44 @@ export class TopBarComponent implements AfterViewInit, OnInit {
   public isExpanded = false;
   public avatarIniciales = '?';
   public avatarColor = '#b71653';
+  public unreadCount = 0;
+  public popupVisible = false;
+  public notificaciones: Notificacion[] = [];
+  public loadingNotificaciones = false;
+
+  private readonly destroyed$ = new Subject<void>();
 
   constructor(
     private signalService: SignalService,
     private apiService: ApiService,
-    private authService: AuthService
+    private authService: AuthService,
+    private notificationService: NotificationService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
     this.cargarPerfil();
+    this.notificationService.cargarNotificaciones();
+    this.notificationService.notificaciones$
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe((lista) => {
+        this.notificaciones = lista;
+      });
+    this.notificationService.unreadCount$
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe((total) => {
+        this.unreadCount = total;
+      });
+    this.notificationService.popupVisible$
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe((visible) => {
+        this.popupVisible = visible;
+      });
+    this.notificationService.loading$
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe((loading) => {
+        this.loadingNotificaciones = loading;
+      });
   }
 
   ngAfterViewInit(): void {
@@ -83,6 +117,11 @@ export class TopBarComponent implements AfterViewInit, OnInit {
     }
   }
 
+  ngOnDestroy(): void {
+    this.destroyed$.next();
+    this.destroyed$.complete();
+  }
+
   private cargarPerfil(): void {
     const tokenValido = !this.authService.estaTokenExpirado();
     if (!tokenValido) {
@@ -99,5 +138,55 @@ export class TopBarComponent implements AfterViewInit, OnInit {
         this.avatarColor = '#b71653';
       },
     });
+  }
+
+  toggleNotifications(): void {
+    if (!this.popupVisible) {
+      this.notificationService.refrescar();
+    }
+    this.notificationService.togglePopup();
+  }
+
+  closeNotifications(): void {
+    this.notificationService.cerrarPopup();
+  }
+
+  markAllRead(): void {
+    this.notificationService.marcarTodasComoLeidas();
+  }
+
+  onNotificationClick(notificacion: Notificacion): void {
+    if (!notificacion) {
+      return;
+    }
+
+    if (!notificacion.leida) {
+      this.notificationService.marcarComoLeidas([notificacion.id]);
+    }
+
+    const esBitacora =
+      notificacion.referenciaTipo === 'ticket' ||
+      notificacion.referenciaTipo === 'bitacora';
+    if (esBitacora && notificacion.referenciaId) {
+      this.router.navigate(['/bitacora'], {
+        queryParams: { bitacoraId: notificacion.referenciaId },
+        state: {
+          notificacionId: notificacion.id,
+        },
+      });
+      this.notificationService.cerrarPopup();
+    }
+  }
+
+  obtenerDetalleNotificacion(notificacion: Notificacion): string {
+    const cliente = notificacion.metadata?.cliente;
+    const titulo = notificacion.metadata?.titulo ?? null;
+    if (cliente && titulo) {
+      return `${cliente} · ${titulo}`;
+    }
+    if (cliente) {
+      return cliente;
+    }
+    return notificacion.mensaje;
   }
 }

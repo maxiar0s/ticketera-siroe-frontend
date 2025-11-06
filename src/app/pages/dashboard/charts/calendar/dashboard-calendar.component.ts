@@ -13,6 +13,7 @@ import { ApiService } from '../../../../services/api.service';
 import { VisitaProgramada } from '../../../../interfaces/visita-programada.interface';
 import { AuthService } from '../../../../services/auth.service';
 import { Tecnico } from '../../../../interfaces/tecnico.interface';
+import { Router } from '@angular/router';
 
 type TipoEventoDia = 'programada' | 'completada' | 'emergencia' | 'ticket';
 
@@ -86,6 +87,7 @@ export class DashboardCalendarComponent implements OnInit {
   private _bitacoras: Bitacora[] = [];
   esAdmin = false;
   puedeAgendarVisitas = true;
+  puedeEditarTickets = false;
   eliminandoId: number | null = null;
   tecnicosDropdownAbierto = false;
   private readonly coloresEvento: Record<TipoEventoDia, string> = {
@@ -103,7 +105,8 @@ export class DashboardCalendarComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private apiService: ApiService,
-    private authService: AuthService
+    private authService: AuthService,
+    private router: Router
   ) {
     this.agendaForm = this.fb.group({
       clienteId: ['', Validators.required],
@@ -117,6 +120,7 @@ export class DashboardCalendarComponent implements OnInit {
     });
     this.esAdmin = this.authService.esAdministrador();
     this.puedeAgendarVisitas = !this.authService.esTecnico();
+    this.puedeEditarTickets = this.esAdmin || this.authService.esTecnico();
   }
 
   ngOnInit(): void {
@@ -665,6 +669,29 @@ export class DashboardCalendarComponent implements OnInit {
     const valor =
       typeof evento.estadoTicket === 'string' ? evento.estadoTicket.trim().toLowerCase() : '';
     return valor === 'terminado' ? 'terminado' : 'ingresado';
+  }
+
+  puedeEditarEvento(evento: EventoCalendario): boolean {
+    return this.puedeEditarTickets && this.esEventoTicket(evento);
+  }
+
+  editarEvento(evento: EventoCalendario): void {
+    if (!this.puedeEditarEvento(evento)) {
+      return;
+    }
+
+    const bitacora = evento as Bitacora & { tipo: 'ticket' };
+    const destinoId = Number.isInteger(bitacora.id)
+      ? bitacora.id
+      : Number.parseInt(`${bitacora.id ?? ''}`, 10);
+    if (!Number.isInteger(destinoId)) {
+      return;
+    }
+
+    this.router.navigate(['/bitacora'], {
+      queryParams: { bitacoraId: destinoId },
+      state: { bitacoraId: destinoId },
+    });
   }
 
   eliminarEvento(evento: EventoCalendario): void {

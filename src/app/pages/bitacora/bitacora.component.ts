@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { FormatoFechaPipe } from '../../pipes/formato-fecha.pipe';
 import { Component, HostListener, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import {
   FormBuilder,
   FormGroup,
@@ -36,6 +37,7 @@ export class BitacoraComponent implements OnInit {
 
   bitacoras: Bitacora[] = [];
   bitacoraSeleccionada?: Bitacora;
+  private bitacoraDestinoId: number | null = null;
 
   clientes: ClienteResumen[] = [];
   sucursalesFiltro: SucursalOption[] = [];
@@ -84,7 +86,9 @@ export class BitacoraComponent implements OnInit {
     private fb: FormBuilder,
     private apiService: ApiService,
     private authService: AuthService,
-    private signalService: SignalService
+    private signalService: SignalService,
+    private route: ActivatedRoute,
+    private router: Router
   ) {
     this.esAdmin = this.authService.esAdministrador();
     this.esTecnico = this.authService.esTecnico();
@@ -120,6 +124,15 @@ export class BitacoraComponent implements OnInit {
     });
 
     this.configurarValidacionesDinamicas();
+
+    const navigation = this.router.getCurrentNavigation();
+    const objetivo = navigation?.extras?.state
+      ? (navigation.extras.state as Record<string, unknown>)['bitacoraId']
+      : null;
+    const parsed = Number.parseInt(`${objetivo ?? ''}`, 10);
+    if (!Number.isNaN(parsed)) {
+      this.bitacoraDestinoId = parsed;
+    }
   }
 
   private configurarValidacionesDinamicas(): void {
@@ -212,6 +225,17 @@ export class BitacoraComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.route.queryParamMap.subscribe((params) => {
+      const idParam = params.get('bitacoraId');
+      if (!idParam) {
+        return;
+      }
+      const parsed = Number.parseInt(idParam, 10);
+      if (!Number.isNaN(parsed)) {
+        this.bitacoraDestinoId = parsed;
+      }
+    });
+
     this.apiService.perfilActual().subscribe({
       next: (perfil: Cuenta) => {
         const rolTieneTickets = this.esAdmin || this.esTecnico;
@@ -530,6 +554,7 @@ export class BitacoraComponent implements OnInit {
             );
             this.bitacoraSeleccionada = actualizada;
           }
+          this.procesarBitacoraDestino();
         },
         error: (error) => {
           console.error('Error al cargar bitacoras', error);
@@ -556,6 +581,34 @@ export class BitacoraComponent implements OnInit {
     }
     this.paginaActual = pagina;
     this.cargarBitacoras();
+  }
+
+  private procesarBitacoraDestino(): void {
+    if (!this.bitacoraDestinoId) {
+      return;
+    }
+    const objetivo = this.bitacoras.find(
+      (item: Bitacora) => item.id === this.bitacoraDestinoId
+    );
+    if (!objetivo) {
+      return;
+    }
+    this.bitacoraSeleccionada = objetivo;
+    if (this.puedeEditarBitacora(objetivo)) {
+      this.abrirFormularioEditar(objetivo);
+    } else {
+      this.seleccionarBitacora(objetivo);
+    }
+    this.bitacoraDestinoId = null;
+    this.limpiarParametrosDestino();
+  }
+
+  private limpiarParametrosDestino(): void {
+    this.router.navigate([], {
+      queryParams: { bitacoraId: null },
+      queryParamsHandling: 'merge',
+      replaceUrl: true,
+    });
   }
 
   seleccionarBitacora(bitacora: Bitacora): void {
@@ -900,6 +953,7 @@ export class BitacoraComponent implements OnInit {
       fechaTermino: null,
       detalleTermino: null,
     };
+    payload.tecnicosIds = this.obtenerIdsTecnicosSeleccionados(tecnicos);
 
     if (!esTicket) {
       return payload;
@@ -918,6 +972,26 @@ export class BitacoraComponent implements OnInit {
     }
 
     return payload;
+  }
+
+  private obtenerIdsTecnicosSeleccionados(nombres: string[]): number[] {
+    if (!Array.isArray(nombres) || nombres.length === 0) {
+      return [];
+    }
+
+    const mapa = new Map<string, number>();
+    this.tecnicosDisponibles.forEach((tecnico) => {
+      const clave = (tecnico.name ?? '').trim().toLowerCase();
+      if (clave) {
+        mapa.set(clave, tecnico.id);
+      }
+    });
+
+    const ids = nombres
+      .map((nombre) => mapa.get(nombre.trim().toLowerCase()))
+      .filter((id): id is number => typeof id === 'number' && Number.isInteger(id));
+
+    return Array.from(new Set(ids));
   }
 
   private formatearAISO(value: string | null | undefined): string | null {

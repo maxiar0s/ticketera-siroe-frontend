@@ -3,7 +3,7 @@
   <div class="flex-search">
     <div class="search-bar" #searchBar>
       <label for="search" #searchLabel>
-        <img src="/assets/svg/search.svg" alt="search_SVG" class="svg" />
+        <img src="/assets/svg/search.svg" alt="search" class="svg" />
       </label>
       <input
         type="text"
@@ -14,6 +14,17 @@
         #searchInput
       />
     </div>
+    <button
+      type="button"
+      class="notifications-button"
+      (click)="toggleNotifications()"
+      [attr.aria-label]="unreadCount > 0 ? unreadCount + ' notificaciones sin leer' : 'Notificaciones'"
+    >
+      <img src="/assets/svg/notifications.svg" alt="notificaciones" />
+      <span *ngIf="unreadCount > 0" class="notifications-badge">
+        {{ unreadCount }}
+      </span>
+    </button>
     <div class="avatar-wrapper">
       <a [routerLink]="['/perfil']" routerLinkActive="router-link-active">
         <div class="user-avatar" [ngStyle]="{ 'background-color': avatarColor }">
@@ -21,5 +32,54 @@
         </div>
       </a>
     </div>
+  </div>
+</div>
+<div
+  class="notifications-backdrop"
+  *ngIf="popupVisible"
+  (click)="closeNotifications()"
+></div>
+<div class="notifications-modal" *ngIf="popupVisible">
+  <div class="notifications-header">
+    <h3>Notificaciones</h3>
+    <button
+      type="button"
+      class="close-button"
+      aria-label="Cerrar"
+      (click)="closeNotifications()"
+    >
+      ×
+    </button>
+  </div>
+  <div class="notifications-body">
+    <div *ngIf="loadingNotificaciones" class="notifications-loading">
+      Cargando notificaciones...
+    </div>
+    <div
+      *ngIf="!loadingNotificaciones && notificaciones.length === 0"
+      class="notifications-empty"
+    >
+      No tienes notificaciones pendientes.
+    </div>
+    <ul
+      *ngIf="!loadingNotificaciones && notificaciones.length > 0"
+      class="notifications-list"
+    >
+      <li
+        *ngFor="let notificacion of notificaciones"
+        [class.no-leida]="!notificacion.leida"
+      >
+        <button type="button" (click)="onNotificationClick(notificacion)">
+          <span class="titulo">{{ notificacion.titulo }}</span>
+          <span class="detalle">{{ obtenerDetalleNotificacion(notificacion) }}</span>
+          <span class="fecha">{{ notificacion.createdAt | date: 'dd/MM/yyyy HH:mm' }}</span>
+        </button>
+      </li>
+    </ul>
+  </div>
+  <div class="notifications-footer" *ngIf="unreadCount > 0">
+    <button type="button" class="mark-all-button" (click)="markAllRead()">
+      Marcar todas como leidas
+    </button>
   </div>
 </div>

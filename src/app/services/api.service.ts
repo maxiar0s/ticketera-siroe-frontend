@@ -16,6 +16,7 @@ import {
   VehiculoListadoResponse,
 } from '../interfaces/vehiculo.interface';
 import { VehiculoSalida } from '../interfaces/vehiculo-salida.interface';
+import { NotificacionListadoRespuesta } from '../interfaces/notificacion.interface';
 
 type ClienteEquiposDetalle = { cliente: Cliente | null; equipos: Equipo[] };
 
@@ -643,6 +644,48 @@ export class ApiService {
   actualizarBitacora(id: number, payload: any): Observable<any> {
     const endpoint = `bitacoras/${id}`;
     return this.putInformation(payload, endpoint);
+  }
+
+  notificacionesListado(params: { soloNoLeidas?: boolean; limite?: number } = {}): Observable<NotificacionListadoRespuesta> {
+    let httpParams = new HttpParams();
+    if (params.soloNoLeidas) {
+      httpParams = httpParams.set('soloNoLeidas', 'true');
+    }
+    if (params.limite && params.limite > 0) {
+      httpParams = httpParams.set('limite', params.limite.toString());
+    }
+
+    return this.http
+      .get<NotificacionListadoRespuesta>(`${this.url}/notificaciones`, { params: httpParams })
+      .pipe(
+        catchError((error: HttpErrorResponse) => {
+          console.error('Error al obtener notificaciones:', error);
+          return throwError(() => error);
+        })
+      );
+  }
+
+  marcarNotificacionesLeidas(ids: number[]): Observable<{ actualizadas: number }> {
+    const payload = Array.isArray(ids) && ids.length ? { ids } : { ids: [] };
+    return this.http
+      .patch<{ actualizadas: number }>(`${this.url}/notificaciones/leidas`, payload)
+      .pipe(
+        catchError((error: HttpErrorResponse) => {
+          console.error('Error al marcar notificaciones como leidas:', error);
+          return throwError(() => error);
+        })
+      );
+  }
+
+  marcarTodasNotificaciones(): Observable<{ actualizadas: number }> {
+    return this.http
+      .patch<{ actualizadas: number }>(`${this.url}/notificaciones/leidas`, { marcarTodas: true })
+      .pipe(
+        catchError((error: HttpErrorResponse) => {
+          console.error('Error al marcar todas las notificaciones como leidas:', error);
+          return throwError(() => error);
+        })
+      );
   }
 
   getProyectos(params: { pagina?: number; limite?: number; buscar?: string } = {}): Observable<any> {

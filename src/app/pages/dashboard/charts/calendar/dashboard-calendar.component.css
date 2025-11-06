@@ -285,6 +285,28 @@
   font-size: 1rem;
 }
 
+.evento-acciones {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.evento-editar {
+  border: 1px solid #1976d2;
+  background-color: transparent;
+  color: #1976d2;
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding: 0.2rem 0.9rem;
+  border-radius: 9999px;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.evento-editar:hover {
+  background-color: rgba(25, 118, 210, 0.1);
+}
+
 .evento-eliminar {
   border: none;
   background-color: transparent;

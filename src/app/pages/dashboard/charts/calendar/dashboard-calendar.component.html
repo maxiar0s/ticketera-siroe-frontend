@@ -79,20 +79,30 @@
             'evento-programado': esEventoProgramado(evento),
             'evento-completada': !esEventoProgramado(evento) && !esEventoTicket(evento),
             'evento-ticket': esEventoTicket(evento),
-            'evento-emergencia': esEventoEmergencia(evento)
+          'evento-emergencia': esEventoEmergencia(evento)
           }"
         >
           <div class="evento-cliente">
             <span>{{ evento.casaMatriz?.razonSocial || 'Cliente sin nombre' }}</span>
-            <button
-              *ngIf="esAdmin"
-              type="button"
-              class="evento-eliminar"
-              [disabled]="eliminandoId === evento.id"
-              (click)="eliminarEvento(evento)"
-            >
-              {{ eliminandoId === evento.id ? 'Eliminando...' : 'Eliminar' }}
-            </button>
+            <div class="evento-acciones">
+              <button
+                *ngIf="puedeEditarEvento(evento)"
+                type="button"
+                class="evento-editar"
+                (click)="editarEvento(evento)"
+              >
+                Editar
+              </button>
+              <button
+                *ngIf="esAdmin"
+                type="button"
+                class="evento-eliminar"
+                [disabled]="eliminandoId === evento.id"
+                (click)="eliminarEvento(evento)"
+              >
+                {{ eliminandoId === evento.id ? 'Eliminando...' : 'Eliminar' }}
+              </button>
+            </div>
           </div>
           <span class="evento-etiqueta" *ngIf="esEventoProgramado(evento)">Visita programada</span>
           <div class="evento-ticket-info" *ngIf="esEventoTicket(evento)">
