@@ -749,23 +749,7 @@ export class BitacoraComponent implements OnInit {
     let payload: any | null = null;
 
     if (esEdicion) {
-      if (this.esTecnico && !this.esAdmin) {
-        payload = {
-          descripcion: formValue.descripcion.trim(),
-        };
-
-        if (formValue.esTicket) {
-          const estadoTicket = this.normalizarEstadoTicket(formValue.ticketEstado);
-          if (estadoTicket === 'ingresado') {
-            payload.esTicket = true;
-            payload.estadoTicket = estadoTicket;
-            payload.fechaTermino = null;
-            payload.detalleTermino = null;
-          }
-        }
-      } else {
-        payload = this.construirPayloadCompleto(formValue);
-      }
+      payload = this.construirPayloadCompleto(formValue);
     } else {
       payload = this.construirPayloadCompleto(formValue);
     }
@@ -814,16 +798,12 @@ export class BitacoraComponent implements OnInit {
           this.cerrarFormulario();
           if (esEdicion) {
             this.cargarBitacoras(false);
-            if (respuesta) {
-              this.bitacoraSeleccionada = respuesta;
-              this.detalleVisible = true;
-            }
+            this.refrescarBitacora(formValue.id);
           } else {
             this.paginaActual = 1;
             this.cargarBitacoras();
-            if (respuesta) {
-              this.bitacoraSeleccionada = respuesta;
-              this.detalleVisible = true;
+            if (respuesta?.id) {
+              this.refrescarBitacora(respuesta.id);
             }
           }
         },
@@ -985,11 +965,21 @@ export class BitacoraComponent implements OnInit {
     payload.horaSalida = this.formatearAISO(formValue.horaSalida) ?? null;
 
     if (estadoTicket === 'terminado') {
-      payload.fechaTermino = formValue.ticketFechaTermino || null;
+      const fechaTerminoValor =
+        formValue.ticketFechaTermino && `${formValue.ticketFechaTermino}`.trim().length
+          ? `${formValue.ticketFechaTermino}`.trim()
+          : this.obtenerFechaActual();
+      payload.fechaTermino = fechaTerminoValor;
+
       const detalle = formValue.ticketDetalleTermino
         ? formValue.ticketDetalleTermino.trim()
         : '';
-      payload.detalleTermino = detalle.length > 0 ? detalle : null;
+      payload.detalleTermino =
+        detalle.length > 0
+          ? detalle
+          : payload.descripcion && payload.descripcion.length >= 5
+          ? payload.descripcion
+          : 'Ticket cerrado por el técnico.';
     }
 
     return payload;
@@ -1110,5 +1100,34 @@ export class BitacoraComponent implements OnInit {
             'No fue posible eliminar la bitacora. Intenta nuevamente.';
         },
       });
+  }
+
+  private refrescarBitacora(id: number): void {
+    if (!id) {
+      return;
+    }
+    this.apiService.bitacora(id).subscribe({
+      next: (detalle) => {
+        if (!detalle) {
+          return;
+        }
+
+        this.detalleVisible = true;
+        this.bitacoraSeleccionada = detalle;
+        this.actualizarBitacoraEnListado(detalle);
+      },
+      error: (error) => {
+        console.error('Error al refrescar bitacora', error);
+      },
+    });
+  }
+
+  private actualizarBitacoraEnListado(detalle: Bitacora): void {
+    if (!detalle?.id) {
+      return;
+    }
+    this.bitacoras = this.bitacoras.map((item) =>
+      item.id === detalle.id ? { ...item, ...detalle } : item
+    );
   }
 }

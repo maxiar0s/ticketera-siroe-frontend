@@ -392,7 +392,10 @@
         </div>
       </div>
 
-      <article class="detail-note">
+      <article
+        class="detail-note"
+        [class.ticket-detail]="bitacoraSeleccionada.esTicket"
+      >
         <h3>{{ bitacoraSeleccionada.esTicket ? 'Detalle del ticket' : 'Detalle de la visita' }}</h3>
         <p>
           {{ bitacoraSeleccionada.descripcion }}
@@ -538,7 +541,6 @@
             <option
               *ngFor="let estado of estadosTicket"
               [value]="estado.value"
-              [disabled]="esTecnico && !esAdmin && estado.value === 'terminado'"
             >
               {{ estado.label }}
             </option>

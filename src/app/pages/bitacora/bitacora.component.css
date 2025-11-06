@@ -15,8 +15,13 @@
 }
 
 .adjuntos.ticket-ingreso {
-  background-color: #e8f3ff;
-  border-color: rgba(25, 118, 210, 0.2);
+  background-color: #fff7d6;
+  border-color: rgba(255, 193, 7, 0.4);
+}
+
+.adjuntos.ticket-evidencias {
+  background-color: #e6f8f0;
+  border-color: rgba(15, 122, 99, 0.2);
 }
 
 .adjuntos h4 {
@@ -555,6 +560,7 @@ textarea {
   justify-content: space-between;
   align-items: center;
   gap: 1rem;
+  padding-right: 3.25rem;
 }
 
 
@@ -563,6 +569,7 @@ textarea {
   display: flex;
   align-items: center;
   gap: 0.75rem;
+  margin-left: auto;
 }
 
 .detail-close-button {
@@ -660,6 +667,15 @@ textarea {
   background-color: #faf6fb;
   border-radius: 1rem;
   padding: 1.25rem;
+}
+
+.detail-note.ticket-detail {
+  background-color: #e8f3ff;
+  border: 1px solid rgba(25, 118, 210, 0.2);
+}
+
+.detail-note.ticket-detail h3 {
+  color: #1976d2;
 }
 
 
@@ -769,13 +785,13 @@ textarea {
 }
 
 .file-upload-field.ticket-ingreso {
-  background-color: #e8f3ff;
-  border-color: #b9d8ff;
+  background-color: #fff7d6;
+  border-color: #ffe190;
 }
 
 .file-upload-field.ticket-evidencias {
-  background-color: #fff7db;
-  border-color: #ffe08a;
+  background-color: #e6f8f0;
+  border-color: #b6ead3;
 }
 
 .file-picker {

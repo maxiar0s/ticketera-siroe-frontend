@@ -583,6 +583,12 @@ export class DashboardCalendarComponent implements OnInit {
     return evento.tipo === 'programada';
   }
 
+  private esEventoBitacora(
+    evento: EventoCalendario
+  ): evento is Bitacora & { tipo: 'ticket' | 'completada' } {
+    return evento.tipo === 'ticket' || evento.tipo === 'completada';
+  }
+
   esEventoTicket(evento: EventoCalendario): evento is Bitacora & { tipo: 'ticket' } {
     return evento.tipo === 'ticket';
   }
@@ -672,7 +678,7 @@ export class DashboardCalendarComponent implements OnInit {
   }
 
   puedeEditarEvento(evento: EventoCalendario): boolean {
-    return this.puedeEditarTickets && this.esEventoTicket(evento);
+    return this.puedeEditarTickets && this.esEventoBitacora(evento);
   }
 
   editarEvento(evento: EventoCalendario): void {
@@ -680,10 +686,10 @@ export class DashboardCalendarComponent implements OnInit {
       return;
     }
 
-    const bitacora = evento as Bitacora & { tipo: 'ticket' };
-    const destinoId = Number.isInteger(bitacora.id)
-      ? bitacora.id
-      : Number.parseInt(`${bitacora.id ?? ''}`, 10);
+    const destinoId =
+      typeof evento.id === 'number'
+        ? evento.id
+        : Number.parseInt(`${evento.id ?? ''}`, 10);
     if (!Number.isInteger(destinoId)) {
       return;
     }
