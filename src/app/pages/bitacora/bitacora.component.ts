@@ -61,6 +61,7 @@ export class BitacoraComponent implements OnInit {
   selectedEvidenceFiles: File[] = [];
   eliminandoBitacoraId: number | null = null;
   tecnicosDropdownAbierto = false;
+  detalleVisible = false;
 
   readonly esAdmin: boolean;
   readonly esTecnico: boolean;
@@ -613,6 +614,12 @@ export class BitacoraComponent implements OnInit {
 
   seleccionarBitacora(bitacora: Bitacora): void {
     this.bitacoraSeleccionada = bitacora;
+    this.detalleVisible = true;
+  }
+
+  cerrarDetalle(): void {
+    this.detalleVisible = false;
+    this.bitacoraSeleccionada = undefined;
   }
 
   puedeEditarBitacora(_bitacora: Bitacora): boolean {
@@ -624,6 +631,8 @@ export class BitacoraComponent implements OnInit {
       return;
     }
 
+    this.detalleVisible = false;
+    this.bitacoraSeleccionada = undefined;
     this.habilitarTodosLosControles();
     const clienteId =
       this.filtroForm.value.clienteId ||
@@ -668,6 +677,7 @@ export class BitacoraComponent implements OnInit {
       return;
     }
 
+    this.detalleVisible = false;
     this.habilitarTodosLosControles();
     this.selectedIngresoFiles = [];
     this.selectedEvidenceFiles = [];
@@ -702,9 +712,6 @@ export class BitacoraComponent implements OnInit {
       });
     });
 
-    if (this.esTecnico && !this.esAdmin) {
-      this.desactivarCamposParaTecnico();
-    }
   }
 
   cerrarFormulario(): void {
@@ -809,11 +816,15 @@ export class BitacoraComponent implements OnInit {
             this.cargarBitacoras(false);
             if (respuesta) {
               this.bitacoraSeleccionada = respuesta;
+              this.detalleVisible = true;
             }
           } else {
             this.paginaActual = 1;
             this.cargarBitacoras();
-            this.bitacoraSeleccionada = respuesta;
+            if (respuesta) {
+              this.bitacoraSeleccionada = respuesta;
+              this.detalleVisible = true;
+            }
           }
         },
         error: (error) => {
@@ -1054,36 +1065,6 @@ export class BitacoraComponent implements OnInit {
   private obtenerFechaActual(): string {
     const hoy = new Date();
     return hoy.toISOString().slice(0, 10);
-  }
-
-  private desactivarCamposParaTecnico(): void {
-    const controles = [
-      'clienteId',
-      'sucursalId',
-      'fechaVisita',
-      'horaLlegada',
-      'horaSalida',
-      'tecnicos',
-      'titulo',
-      'isEmergencia',
-      'esTicket',
-      'ticketEstado',
-      'ticketFechaTermino',
-      'ticketDetalleTermino',
-    ];
-    controles.forEach((control) =>
-      this.bitacoraForm.get(control)?.disable({ emitEvent: false })
-    );
-    this.bitacoraForm.get('descripcion')?.enable({ emitEvent: false });
-
-    const ticketEstadoCtrl = this.bitacoraForm.get('ticketEstado');
-    const esTicketCtrl = this.bitacoraForm.get('esTicket');
-    if (ticketEstadoCtrl && esTicketCtrl?.value) {
-      const estadoActual = this.normalizarEstadoTicket(ticketEstadoCtrl.value);
-      if (estadoActual === 'terminado') {
-        ticketEstadoCtrl.enable({ emitEvent: false });
-      }
-    }
   }
 
   private habilitarTodosLosControles(): void {

@@ -233,193 +233,178 @@
     </button>
   </div>
 
-  <section
-    class="bitacora-detail"
-    [class.emergencia]="bitacoraSeleccionada.isEmergencia"
-    [class.ticket]="bitacoraSeleccionada.esTicket"
-    *ngIf="bitacoraSeleccionada"
+  <div
+    class="bitacora-detail-backdrop"
+    *ngIf="bitacoraSeleccionada && detalleVisible"
+    (click)="cerrarDetalle()"
   >
-    <header>
-      <div class="detail-heading">
-        <h2>
-          {{
-            bitacoraSeleccionada.titulo ||
-              (bitacoraSeleccionada.esTicket ? 'Detalle del ticket' : 'Detalle de la visita')
-          }}
-        </h2>
-        <span
-          class="type-badge"
-          [ngClass]="bitacoraSeleccionada.esTicket ? 'ticket' : 'bitacora'"
-        >
-          {{ bitacoraSeleccionada.esTicket ? 'Ticket' : 'Bitacora' }}
-        </span>
-        <span
-          *ngIf="bitacoraSeleccionada.esTicket"
-          class="ticket-state-pill"
-          [class.ticket-state-terminado]="bitacoraSeleccionada.estadoTicket === 'terminado'"
-          [class.ticket-state-ingresado]="bitacoraSeleccionada.estadoTicket !== 'terminado'"
-        >
-          {{ bitacoraSeleccionada.estadoTicket === 'terminado' ? 'Cerrado' : 'Abierto' }}
-        </span>
-        <span
-          *ngIf="bitacoraSeleccionada.isEmergencia"
-          class="emergency-badge"
-        >
-          Visita de emergencia
-        </span>
-      </div>
-      <div class="detail-actions">
-        <button
-          type="button"
-          class="link-button"
-          *ngIf="puedeEditarBitacora(bitacoraSeleccionada)"
-          (click)="abrirFormularioEditar(bitacoraSeleccionada)"
-        >
-          Editar
-        </button>
-        <button
-          type="button"
-          class="link-button danger"
-          *ngIf="esAdmin"
-          [disabled]="eliminandoBitacoraId === bitacoraSeleccionada.id"
-          (click)="eliminarBitacora($event, bitacoraSeleccionada)"
-        >
-          {{
-            eliminandoBitacoraId === bitacoraSeleccionada.id
-              ? 'Eliminando...'
-              : 'Eliminar'
-          }}
-        </button>
-      </div>
-    </header>
-
-    <div class="detail-grid">
-      <div>
-        <span class="label">Cliente</span>
-        <span class="value">
-          {{ bitacoraSeleccionada.casaMatriz?.razonSocial || 'N/A' }}
-        </span>
-      </div>
-      <div>
-        <span class="label">Sucursal</span>
-        <span class="value">
-          {{ bitacoraSeleccionada.sucursal?.sucursal || 'General' }}
-        </span>
-      </div>
-      <div>
-        <span class="label">Proyecto</span>
-        <span class="value">
-          {{ bitacoraSeleccionada.proyecto?.nombre || 'Sin proyecto' }}
-        </span>
-      </div>
-      <div>
-        <span class="label">Tipo</span>
-        <span class="value">
-          {{ bitacoraSeleccionada.esTicket ? 'Ticket' : 'Bitacora' }}
-        </span>
-      </div>
-      <div>
-        <span class="label">{{ bitacoraSeleccionada.esTicket ? 'Fecha de ingreso' : 'Fecha visita' }}</span>
-        <span class="value">
-          {{ bitacoraSeleccionada.fechaVisita | formatoFecha:'fullDate' }}
-        </span>
-      </div>
-      <div *ngIf="bitacoraSeleccionada.esTicket">
-        <span class="label">Estado</span>
-        <span class="value">
-          {{ bitacoraSeleccionada.estadoTicket === 'terminado' ? 'Cerrado' : 'Abierto' }}
-        </span>
-      </div>
-      <div *ngIf="bitacoraSeleccionada.esTicket && bitacoraSeleccionada.estadoTicket === 'terminado'">
-        <span class="label">Fecha de termino</span>
-        <span class="value">
-          {{
-            bitacoraSeleccionada.fechaTermino
-              ? (bitacoraSeleccionada.fechaTermino | formatoFecha:'fullDate')
-              : 'Sin registrar'
-          }}
-        </span>
-      </div>
-      <div *ngIf="bitacoraSeleccionada.horaLlegada">
-        <span class="label">Hora llegada</span>
-        <span class="value">
-          {{ bitacoraSeleccionada.horaLlegada | formatoFecha:'short' }}
-        </span>
-      </div>
-      <div *ngIf="bitacoraSeleccionada.horaSalida">
-        <span class="label">Hora salida</span>
-        <span class="value">
-          {{ bitacoraSeleccionada.horaSalida | formatoFecha:'short' }}
-        </span>
-      </div>
-      <div>
-        <span class="label">Técnicos</span>
-        <span class="value">
-          {{
-            bitacoraSeleccionada.tecnicos.length
-              ? bitacoraSeleccionada.tecnicos.join(', ')
-              : 'Sin registrar'
-          }}
-        </span>
-      </div>
-      <div>
-        <span class="label">Creado por</span>
-        <span class="value">
-          {{ bitacoraSeleccionada.creadoPor?.name || 'N/A' }}
-        </span>
-      </div>
-      <div>
-        <span class="label">Última actualización</span>
-        <span class="value">
-          {{ bitacoraSeleccionada.updatedAt | formatoFecha:'short' }}
-        </span>
-      </div>
-    </div>
-
-    <article class="detail-note">
-      <h3>{{ bitacoraSeleccionada.esTicket ? 'Detalle del ticket' : 'Detalle de la visita' }}</h3>
-      <p>
-        {{ bitacoraSeleccionada.descripcion }}
-      </p>
-      <div
-        class="adjuntos"
-        [class.ticket-ingreso]="bitacoraSeleccionada.esTicket"
-        *ngIf="bitacoraSeleccionada.adjuntos && bitacoraSeleccionada.adjuntos.length > 0"
-      >
-        <h4>Archivos adjuntos</h4>
-        <ul class="adjuntos-list">
-          <li *ngFor="let a of bitacoraSeleccionada.adjuntos">
-            <button type="button" class="link-button" (click)="downloadAdjunto(a)">
-              <i class="fas fa-download"></i>
-              {{ a.split('/').pop() }}
-            </button>
-          </li>
-        </ul>
-      </div>
-    </article>
-
     <section
-      class="ticket-completion"
-      *ngIf="
-        bitacoraSeleccionada.esTicket &&
-        bitacoraSeleccionada.estadoTicket === 'terminado'
-      "
+      class="bitacora-detail"
+      [class.emergencia]="bitacoraSeleccionada.isEmergencia"
+      [class.ticket]="bitacoraSeleccionada.esTicket"
+      (click)="$event.stopPropagation()"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="bitacoraDetalleTitulo"
     >
-      <article class="detail-note ticket-terminado">
-        <h3>Detalle de lo realizado</h3>
+      <button
+        type="button"
+        class="detail-close-button"
+        aria-label="Cerrar detalle"
+        (click)="cerrarDetalle()"
+      >
+        &times;
+      </button>
+      <header>
+        <div class="detail-heading">
+          <h2 id="bitacoraDetalleTitulo">
+            {{
+              bitacoraSeleccionada.titulo ||
+                (bitacoraSeleccionada.esTicket ? 'Detalle del ticket' : 'Detalle de la visita')
+            }}
+          </h2>
+          <span
+            class="type-badge"
+            [ngClass]="bitacoraSeleccionada.esTicket ? 'ticket' : 'bitacora'"
+          >
+            {{ bitacoraSeleccionada.esTicket ? 'Ticket' : 'Bitacora' }}
+          </span>
+          <span
+            *ngIf="bitacoraSeleccionada.esTicket"
+            class="ticket-state-pill"
+            [class.ticket-state-terminado]="bitacoraSeleccionada.estadoTicket === 'terminado'"
+            [class.ticket-state-ingresado]="bitacoraSeleccionada.estadoTicket !== 'terminado'"
+          >
+            {{ bitacoraSeleccionada.estadoTicket === 'terminado' ? 'Cerrado' : 'Abierto' }}
+          </span>
+          <span
+            *ngIf="bitacoraSeleccionada.isEmergencia"
+            class="emergency-badge"
+          >
+            Visita de emergencia
+          </span>
+        </div>
+        <div class="detail-actions">
+          <button
+            type="button"
+            class="ghost-button small"
+            *ngIf="puedeEditarBitacora(bitacoraSeleccionada)"
+            (click)="abrirFormularioEditar(bitacoraSeleccionada)"
+          >
+            Editar
+          </button>
+          <button
+            type="button"
+            class="ghost-button small danger"
+            *ngIf="esAdmin"
+            [disabled]="eliminandoBitacoraId === bitacoraSeleccionada.id"
+            (click)="eliminarBitacora($event, bitacoraSeleccionada)"
+          >
+            {{
+              eliminandoBitacoraId === bitacoraSeleccionada.id
+                ? 'Eliminando...'
+                : 'Eliminar'
+            }}
+          </button>
+        </div>
+      </header>
+
+      <div class="detail-grid">
+        <div>
+          <span class="label">Cliente</span>
+          <span class="value">
+            {{ bitacoraSeleccionada.casaMatriz?.razonSocial || 'N/A' }}
+          </span>
+        </div>
+        <div>
+          <span class="label">Sucursal</span>
+          <span class="value">
+            {{ bitacoraSeleccionada.sucursal?.sucursal || 'General' }}
+          </span>
+        </div>
+        <div>
+          <span class="label">Proyecto</span>
+          <span class="value">
+            {{ bitacoraSeleccionada.proyecto?.nombre || 'Sin proyecto' }}
+          </span>
+        </div>
+        <div>
+          <span class="label">Tipo</span>
+          <span class="value">
+            {{ bitacoraSeleccionada.esTicket ? 'Ticket' : 'Bitacora' }}
+          </span>
+        </div>
+        <div>
+          <span class="label">{{ bitacoraSeleccionada.esTicket ? 'Fecha de ingreso' : 'Fecha visita' }}</span>
+          <span class="value">
+            {{ bitacoraSeleccionada.fechaVisita | formatoFecha:'fullDate' }}
+          </span>
+        </div>
+        <div *ngIf="bitacoraSeleccionada.esTicket">
+          <span class="label">Estado</span>
+          <span class="value">
+            {{ bitacoraSeleccionada.estadoTicket === 'terminado' ? 'Cerrado' : 'Abierto' }}
+          </span>
+        </div>
+        <div *ngIf="bitacoraSeleccionada.esTicket && bitacoraSeleccionada.estadoTicket === 'terminado'">
+          <span class="label">Fecha de termino</span>
+          <span class="value">
+            {{
+              bitacoraSeleccionada.fechaTermino
+                ? (bitacoraSeleccionada.fechaTermino | formatoFecha:'fullDate')
+                : 'Sin registrar'
+            }}
+          </span>
+        </div>
+        <div *ngIf="bitacoraSeleccionada.horaLlegada">
+          <span class="label">Hora llegada</span>
+          <span class="value">
+            {{ bitacoraSeleccionada.horaLlegada | formatoFecha:'short' }}
+          </span>
+        </div>
+        <div *ngIf="bitacoraSeleccionada.horaSalida">
+          <span class="label">Hora salida</span>
+          <span class="value">
+            {{ bitacoraSeleccionada.horaSalida | formatoFecha:'short' }}
+          </span>
+        </div>
+        <div>
+          <span class="label">Técnicos</span>
+          <span class="value">
+            {{
+              bitacoraSeleccionada.tecnicos.length
+                ? bitacoraSeleccionada.tecnicos.join(', ')
+                : 'Sin registrar'
+            }}
+          </span>
+        </div>
+        <div>
+          <span class="label">Creado por</span>
+          <span class="value">
+            {{ bitacoraSeleccionada.creadoPor?.name || 'N/A' }}
+          </span>
+        </div>
+        <div>
+          <span class="label">Última actualización</span>
+          <span class="value">
+            {{ bitacoraSeleccionada.updatedAt | formatoFecha:'short' }}
+          </span>
+        </div>
+      </div>
+
+      <article class="detail-note">
+        <h3>{{ bitacoraSeleccionada.esTicket ? 'Detalle del ticket' : 'Detalle de la visita' }}</h3>
         <p>
-          {{ bitacoraSeleccionada.detalleTermino || 'Sin detalle registrado.' }}
+          {{ bitacoraSeleccionada.descripcion }}
         </p>
         <div
-          class="adjuntos ticket-evidencias"
-          *ngIf="
-            bitacoraSeleccionada.adjuntosTermino &&
-            bitacoraSeleccionada.adjuntosTermino.length > 0
-          "
+          class="adjuntos"
+          [class.ticket-ingreso]="bitacoraSeleccionada.esTicket"
+          *ngIf="bitacoraSeleccionada.adjuntos && bitacoraSeleccionada.adjuntos.length > 0"
         >
-          <h4>Evidencias</h4>
+          <h4>Archivos adjuntos</h4>
           <ul class="adjuntos-list">
-            <li *ngFor="let a of bitacoraSeleccionada.adjuntosTermino">
+            <li *ngFor="let a of bitacoraSeleccionada.adjuntos">
               <button type="button" class="link-button" (click)="downloadAdjunto(a)">
                 <i class="fas fa-download"></i>
                 {{ a.split('/').pop() }}
@@ -428,8 +413,40 @@
           </ul>
         </div>
       </article>
+
+      <section
+        class="ticket-completion"
+        *ngIf="
+          bitacoraSeleccionada.esTicket &&
+          bitacoraSeleccionada.estadoTicket === 'terminado'
+        "
+      >
+        <article class="detail-note ticket-terminado">
+          <h3>Detalle de lo realizado</h3>
+          <p>
+            {{ bitacoraSeleccionada.detalleTermino || 'Sin detalle registrado.' }}
+          </p>
+          <div
+            class="adjuntos ticket-evidencias"
+            *ngIf="
+              bitacoraSeleccionada.adjuntosTermino &&
+              bitacoraSeleccionada.adjuntosTermino.length > 0
+            "
+          >
+            <h4>Evidencias</h4>
+            <ul class="adjuntos-list">
+              <li *ngFor="let a of bitacoraSeleccionada.adjuntosTermino">
+                <button type="button" class="link-button" (click)="downloadAdjunto(a)">
+                  <i class="fas fa-download"></i>
+                  {{ a.split('/').pop() }}
+                </button>
+              </li>
+            </ul>
+          </div>
+        </article>
+      </section>
     </section>
-  </section>
+  </div>
 </ng-container>
 </div>
 
@@ -680,7 +697,11 @@
           />
 
           <div class="file-picker">
-            <button type="button" class="file-button" (click)="fileIngresoInput.click()">
+            <button
+              type="button"
+              class="file-button"
+              (click)="fileIngresoInput.click()"
+            >
               Elegir archivo
             </button>
             <span class="file-status">
@@ -701,7 +722,13 @@
             <ul>
               <li *ngFor="let f of selectedIngresoFiles; let i = index">
                 <span class="file-name">{{ f.name }}</span>
-                <button type="button" class="link-button" (click)="removeSelectedFile(i, 'ingreso')">Quitar</button>
+                <button
+                  type="button"
+                  class="link-button"
+                  (click)="removeSelectedFile(i, 'ingreso')"
+                >
+                  Quitar
+                </button>
               </li>
             </ul>
           </div>
@@ -722,7 +749,11 @@
           />
 
           <div class="file-picker">
-            <button type="button" class="file-button" (click)="fileEvidenciaInput.click()">
+            <button
+              type="button"
+              class="file-button"
+              (click)="fileEvidenciaInput.click()"
+            >
               Elegir archivo
             </button>
             <span class="file-status">
@@ -743,7 +774,13 @@
             <ul>
               <li *ngFor="let f of selectedEvidenceFiles; let i = index">
                 <span class="file-name">{{ f.name }}</span>
-                <button type="button" class="link-button" (click)="removeSelectedFile(i, 'evidencia')">Quitar</button>
+                <button
+                  type="button"
+                  class="link-button"
+                  (click)="removeSelectedFile(i, 'evidencia')"
+                >
+                  Quitar
+                </button>
               </li>
             </ul>
           </div>
