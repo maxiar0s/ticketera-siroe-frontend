@@ -21,7 +21,11 @@
       >
       <span>Borrar</span>
     </button>
-    <button class="option-button importar">
+    <button
+      class="option-button importar"
+      [class.disabled-button]="esComercial"
+      [attr.disabled]="esComercial ? true : null"
+    >
       <img src="/assets/svg/arrowdown.svg" class="svg" alt="importar_svg">
       <span>Importar datos</span>
     </button>

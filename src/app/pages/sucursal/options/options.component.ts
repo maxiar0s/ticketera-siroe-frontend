@@ -30,16 +30,20 @@ export class ButtonsComponent {
   public errorMessage: string = '';
 
   public readonly esCliente: boolean;
+  public readonly esComercial: boolean;
+  private readonly restringeGestion: boolean;
   private selectedIds: number[] = [];
 
   constructor(
     private authService: AuthService
   ) {
     this.esCliente = this.authService.esCliente();
+    this.esComercial = this.authService.esComercial();
+    this.restringeGestion = this.esCliente || this.esComercial;
   }
 
   abrirModalCrearEquipo() {
-    if (this.esCliente) {
+    if (this.restringeGestion) {
       return;
     }
     this.isModalVisibleCrearEquipo = true;
@@ -66,7 +70,7 @@ export class ButtonsComponent {
 
   @Input()
   set estado(value: boolean) {
-    if (this.esCliente) {
+    if (this.restringeGestion) {
       this.status = false;
       return;
     }
@@ -96,7 +100,7 @@ export class ButtonsComponent {
     this.devices = devices;
     this.selectedIds = devices.map((device) => device.id);
 
-    if (this.esCliente) {
+    if (this.restringeGestion) {
       return;
     }
 
@@ -119,9 +123,11 @@ export class ButtonsComponent {
       button?.classList.add('imprimir', 'imprimir-equipo');
       img?.setAttribute('src', '/assets/svg/imprimir-etiquetas.svg');
 
-      deleteButton?.removeAttribute('disabled');
-      deleteButton?.classList.remove('disabled-button');
-      deleteButton?.classList.add('borrar', 'borrar-equipos');
+      if (!this.esComercial) {
+        deleteButton?.removeAttribute('disabled');
+        deleteButton?.classList.remove('disabled-button');
+        deleteButton?.classList.add('borrar', 'borrar-equipos');
+      }
     } else {
       button?.setAttribute('disabled', 'true');
       button?.classList.remove('imprimir', 'imprimir-equipo');
@@ -136,7 +142,7 @@ export class ButtonsComponent {
   }
 
   borrarEquiposSeleccionados(): void {
-    if (this.esCliente || this.selectedIds.length === 0) {
+    if (this.restringeGestion || this.selectedIds.length === 0) {
       return;
     }
     this.borrarEquipos.emit([...this.selectedIds]);

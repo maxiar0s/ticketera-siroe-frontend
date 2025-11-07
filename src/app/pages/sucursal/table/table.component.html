@@ -160,6 +160,7 @@
                   />
                 </button>
                 <button
+                  *ngIf="!esComercial"
                   (click)="abrirModal(equipo.id)"
                   class="actions"
                 >
@@ -169,7 +170,11 @@
                     alt="agregar-datos.svg"
                   />
                 </button>
-                <button class="actions" (click)="eliminarEquipo(equipo.id)">
+                <button
+                  *ngIf="!esComercial"
+                  class="actions"
+                  (click)="eliminarEquipo(equipo.id)"
+                >
                   <img
                     src="/assets/svg/delete.svg"
                     class="svg-cursor svg eliminar-equipo"
@@ -186,7 +191,7 @@
               </button>
             </div>
             <button
-              *ngIf="!esCliente"
+              *ngIf="!esCliente && !esComercial"
               type="button"
               class="actions mobile-actions"
               (click)="abrirModalAcciones(equipo, i)"

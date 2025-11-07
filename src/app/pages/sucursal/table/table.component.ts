@@ -56,6 +56,8 @@ export class TableComponent {
   //? Estados de equipos
   public estadosEquipo: EstadoEquipo[] = [];
   public readonly esCliente: boolean;
+  public readonly esComercial: boolean;
+  private readonly permiteGestion: boolean;
 
   // Evento para notificar cuando se elimina un equipo
   @Output() equipoEliminado = new EventEmitter<void>();
@@ -68,6 +70,8 @@ export class TableComponent {
     private authService: AuthService
   ) {
     this.esCliente = this.authService.esCliente();
+    this.esComercial = this.authService.esComercial();
+    this.permiteGestion = !this.esCliente && !this.esComercial;
     this.actualizarFormatoFecha();
     // Cargar los estados de equipos al inicializar el componente
     this.cargarEstadosEquipo();
@@ -147,7 +151,7 @@ export class TableComponent {
 
 
   abrirModal(id: number) {
-    if (this.esCliente) {
+    if (!this.permiteGestion) {
       return;
     }
     this.selectedEquipoId = id;
@@ -163,7 +167,7 @@ export class TableComponent {
   }
 
   abrirModalAcciones(equipo: Equipo, indice: number): void {
-    if (this.esCliente) {
+    if (!this.permiteGestion) {
       return;
     }
     this.equipoAccionesSeleccionado = equipo;
@@ -236,7 +240,7 @@ export class TableComponent {
 
   // Método para eliminar un equipo directamente
   eliminarEquipo(id: number) {
-    if (this.esCliente) {
+    if (!this.permiteGestion) {
       return;
     }
     this.loaderService.showModal();
