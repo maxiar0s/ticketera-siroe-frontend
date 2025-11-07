@@ -31,8 +31,42 @@
   max-height: calc(90vh - 70px); /* Ajustar según la altura del header */
 }
 
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+  padding: 20px 24px 0;
+}
+
+.header-form {
+  margin: 0;
+  font-size: 1.9rem;
+  line-height: 1.3;
+  word-break: break-word;
+}
+
 .header-form span {
   font-weight: 400;
+}
+
+.close-button {
+  width: 32px;
+  height: 32px;
+  cursor: pointer;
+}
+
+@media (max-width: 410px) {
+  .modal-header {
+    flex-direction: column;
+    align-items: flex-start;
+    padding-right: 24px;
+  }
+
+  .close-button {
+    align-self: flex-end;
+  }
 }
 
 .information-section {
@@ -106,6 +140,12 @@
   word-break: break-word; /* Evita que el texto se desborde */
 }
 
+.device-component--arriendo,
+.device-value--arriendo {
+  color: #1a64c3;
+  font-weight: 600;
+}
+
 .comments-section {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -149,6 +189,7 @@
   font-weight: 600;
   cursor: pointer;
   transition: background-color 0.3s;
+  text-align: center;
 }
 
 .equiptment-button:hover {
@@ -168,18 +209,18 @@
     flex-direction: column;
     align-items: center;
   }
-  
+
   .image-container {
     width: 100%;
     max-width: 267px;
     height: auto;
     aspect-ratio: 267/367;
   }
-  
+
   .information {
     width: 100%;
   }
-  
+
   .information-device {
     grid-template-columns: repeat(2, 1fr);
   }
@@ -191,29 +232,29 @@
     width: 95%;
     max-height: 85vh;
   }
-  
+
   .modal-body {
     padding: 15px;
   }
-  
+
   .information-device {
     grid-template-columns: 1fr;
     padding: 10px;
   }
-  
+
   .comments-section {
     grid-template-columns: 1fr;
     padding: 10px;
   }
-  
+
   .date-title {
     margin-top: -5px;
   }
-  
+
   .button-section {
     justify-content: center;
   }
-  
+
   .equiptment-button {
     width: 100%;
     max-width: 250px;

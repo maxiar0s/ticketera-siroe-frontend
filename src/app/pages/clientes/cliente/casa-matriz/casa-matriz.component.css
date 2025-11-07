@@ -13,12 +13,11 @@
 .logo {
   justify-self: center;
   align-self: center;
-  max-height: 12rem;
+  max-height: 13rem;
   max-width: 100%;
+  min-width: 80%;
   object-fit: contain;
-  margin: auto;
-  border-radius: 25px;
-  margin: 1rem;
+  padding: 1rem;
 }
 
 .flex-column {
@@ -29,10 +28,11 @@
     "razon rut"
     "id encargado"
     "telefono correo"
-    "visitas emergencia";
+    "visitas emergencia"
+    "servicios servicios";
   box-sizing: border-box;
   width: 100%;
-  padding: 2rem;
+  padding: 1rem 2rem 1rem 1rem;
 }
 
 .flex-column > .casa-matriz,
@@ -70,6 +70,10 @@
 
 .info-emergencia {
   grid-area: emergencia;
+}
+
+.info-servicios {
+  grid-area: servicios;
 }
 
 .casa-matriz {
@@ -150,7 +154,8 @@
       "razon telefono"
       "encargado id"
       "rut correo"
-      "visitas emergencia";
+      "visitas emergencia"
+      "servicios servicios";
   }
 }
 
@@ -173,7 +178,8 @@
       "id"
       "correo"
       "visitas"
-      "emergencia";
+      "emergencia"
+      "servicios";
   }
 
 }

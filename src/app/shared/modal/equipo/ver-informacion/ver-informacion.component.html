@@ -2,9 +2,7 @@
   <div class="modal-content">
     <div class="modal-header">
       <h2 class="header-form">
-        Añadir datos:
-        <span>{{ Equipo.tipoEquipo.name }} {{ Equipo.codigoId }}</span>
-        <span *ngIf="Equipo.esArriendo" class="badge-arriendo">Arriendo</span>
+        {{ Equipo.tipoEquipo.name }} {{ Equipo.codigoId }}
       </h2>
       <img
         src="/assets/svg/exit-button.svg"
@@ -62,6 +60,12 @@
             <div *ngIf="Equipo.ram">
               <h3 class="device-component">Ram</h3>
               <p class="device-value">{{ Equipo.ram }}</p>
+            </div>
+            <div *ngIf="Equipo.esArriendo !== undefined">
+              <h3 class="device-component device-component--arriendo">Arriendo</h3>
+              <p class="device-value device-value--arriendo">
+                {{ Equipo.esArriendo ? 'Equipo en arriendo' : 'Equipo propio' }}
+              </p>
             </div>
             <div *ngIf="Equipo.tipoAlmacenamiento">
               <h3 class="device-component">Tipo almacenamiento</h3>
