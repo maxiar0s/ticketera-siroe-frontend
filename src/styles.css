@@ -470,9 +470,9 @@ input[type=number] {
 .selected-files ul{list-style:none;padding:0;margin:0.5rem 0 0;display:flex;flex-direction:column;gap:0.35rem;}
 .selected-files .file-name{font-size:0.9rem;color:#4a4a4a;font-weight:500;}
 .selected-files .link-button{margin-left:0.5rem;font-size:0.85rem;}
-.bitacora-table tbody tr.emergencia{background-color:rgba(214,31,91,.12);border-left:4px solid #d61f5b;}
-.bitacora-table tbody tr.emergencia:hover{background-color:rgba(214,31,91,.18);}
-.bitacora-table tbody tr.emergencia.selected{background-color:rgba(214,31,91,.24)!important;}
+.bitacora-table tbody tr.emergencia{background-color:#fff;border-left:4px solid #d61f5b;}
+.bitacora-table tbody tr.emergencia:hover{background-color:rgba(196,0,107,.06);}
+.bitacora-table tbody tr.emergencia.selected{background-color:rgba(196,0,107,.12)!important;}
 .bitacora-table tbody tr.emergencia td{border-top-color:rgba(214,31,91,.08);}
 .bitacora-detail.emergencia{border:1px solid rgba(214,31,91,.18);box-shadow:0 22px 48px rgba(214,31,91,.16);}
 .bitacora-detail.emergencia .detail-note{background-color:rgba(214,31,91,.08);}

@@ -3,6 +3,7 @@ import { protegerRutaGuard } from './guards/proteger-ruta.guard';
 import { AdminGuard } from './guards/admin-guard.guard';
 import { NoClienteGuard } from './guards/no-cliente.guard';
 import { ClienteGuard } from './guards/cliente.guard';
+import { NoComercialGuard } from './guards/no-comercial.guard';
 
 export const routes: Routes = [
   // Redireccionamiento
@@ -61,7 +62,7 @@ export const routes: Routes = [
   },
   {
     path: 'vehiculos',
-    canActivate: [protegerRutaGuard, NoClienteGuard],
+    canActivate: [protegerRutaGuard, NoClienteGuard, NoComercialGuard],
     loadComponent: () =>
       import('./pages/vehiculos/vehiculos.component').then(
         (m) => m.VehiculosComponent

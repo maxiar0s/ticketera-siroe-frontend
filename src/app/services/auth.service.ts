@@ -82,6 +82,10 @@ export class AuthService {
     return this.obtenerTipoCuenta() === 4;
   }
 
+  esComercial(): boolean {
+    return this.obtenerTipoCuenta() === 5;
+  }
+
   // Método para verificar la validez del token
   esTokenValido(): boolean {
     if(localStorage.getItem('token')) this.userSigned = true;

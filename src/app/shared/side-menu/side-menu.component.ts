@@ -8,6 +8,7 @@ import { ApiService } from '../../services/api.service';
 import menu_administrador from './menu-administrador.json';
 import menu_tecnico from './menu-tecnico.json';
 import menu_cliente from './menu-cliente.json';
+import menu_comercial from './menu-comercial.json';
 import menu_config from './menu-config.json';
 
 @Component({
@@ -48,6 +49,9 @@ export class SideMenuComponent {
     } else if (this.authService.esCliente()) {
       this.menu = this.clonarMenu(menu_cliente);
       this.logoRoute = '/dashboard-cliente';
+    } else if (this.authService.esComercial()) {
+      this.menu = this.clonarMenu(menu_comercial);
+      this.logoRoute = '/dashboard';
     } else {
       this.menu = this.clonarMenu(menu_tecnico);
       this.logoRoute = '/dashboard';
@@ -60,12 +64,15 @@ export class SideMenuComponent {
         const tieneTickets =
           !!perfil?.haveTickets ||
           this.authService.esAdministrador() ||
-          this.authService.esTecnico();
+          this.authService.esTecnico() ||
+          this.authService.esComercial();
         this.ajustarMenuPorTickets(tieneTickets, this.location.path());
       },
       error: () => {
         const fallbackTickets =
-          this.authService.esAdministrador() || this.authService.esTecnico();
+          this.authService.esAdministrador() ||
+          this.authService.esTecnico() ||
+          this.authService.esComercial();
         this.ajustarMenuPorTickets(fallbackTickets, this.location.path());
       },
     });

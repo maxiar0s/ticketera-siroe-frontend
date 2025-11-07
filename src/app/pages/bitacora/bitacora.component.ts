@@ -66,6 +66,7 @@ export class BitacoraComponent implements OnInit {
   readonly esAdmin: boolean;
   readonly esTecnico: boolean;
   readonly esMesaAyuda: boolean;
+  readonly esComercial: boolean;
   readonly esCliente: boolean;
   readonly puedeCrear: boolean;
   readonly soloLectura: boolean;
@@ -94,9 +95,10 @@ export class BitacoraComponent implements OnInit {
     this.esAdmin = this.authService.esAdministrador();
     this.esTecnico = this.authService.esTecnico();
     this.esMesaAyuda = this.authService.esMesaAyuda();
+    this.esComercial = this.authService.esComercial();
     this.esCliente = this.authService.esCliente();
     this.puedeCrear = this.esAdmin || this.esTecnico;
-    this.soloLectura = this.esMesaAyuda || this.esCliente;
+    this.soloLectura = this.esMesaAyuda || this.esCliente || this.esComercial;
 
     this.filtroForm = this.fb.group({
       clienteId: [''],
@@ -239,7 +241,8 @@ export class BitacoraComponent implements OnInit {
 
     this.apiService.perfilActual().subscribe({
       next: (perfil: Cuenta) => {
-        const rolTieneTickets = this.esAdmin || this.esTecnico;
+        const rolTieneTickets =
+          this.esAdmin || this.esTecnico || this.esComercial;
         const tieneTickets = rolTieneTickets || !!perfil?.haveTickets;
         this.perfilTieneTickets = tieneTickets;
         if (tieneTickets) {
@@ -262,7 +265,8 @@ export class BitacoraComponent implements OnInit {
       },
       error: (error) => {
         console.error('Error al cargar perfil para bitacora', error);
-        const rolTieneTickets = this.esAdmin || this.esTecnico;
+        const rolTieneTickets =
+          this.esAdmin || this.esTecnico || this.esComercial;
         this.perfilTieneTickets = rolTieneTickets;
         if (rolTieneTickets) {
           this.tituloModulo = 'Bitacora / Tickets';

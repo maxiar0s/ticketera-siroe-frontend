@@ -1,0 +1,34 @@
+[
+  {
+    "id": 1,
+    "nombre": "Dashboard",
+    "route": "/dashboard",
+    "svg": "dashboard",
+    "subItem": [],
+    "isOpen": false
+  },
+  {
+    "id": 2,
+    "nombre": "Clientes",
+    "route": "/clientes",
+    "svg": "clientes",
+    "subItem": [],
+    "isOpen": false
+  },
+  {
+    "id": 3,
+    "nombre": "Bitácora",
+    "route": "/bitacora",
+    "svg": "download",
+    "subItem": [],
+    "isOpen": false
+  },
+  {
+    "id": 4,
+    "nombre": "Proyectos",
+    "route": "/proyectos",
+    "svg": "openfolder",
+    "subItem": [],
+    "isOpen": false
+  }
+]

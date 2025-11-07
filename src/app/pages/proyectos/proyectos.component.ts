@@ -12,6 +12,7 @@ import { finalize } from 'rxjs';
 import { FormatoFechaPipe } from '../../pipes/formato-fecha.pipe';
 import { SignedUrlPipe } from '../../pipes/generar-url.pipe';
 import { ApiService } from '../../services/api.service';
+import { AuthService } from '../../services/auth.service';
 import { Proyecto, ProyectoAdjunto } from '../../interfaces/proyecto.interface';
 import { Cuenta } from '../../interfaces/Cuenta.interface';
 import { ClienteResumen } from '../../interfaces/cliente-resumen.interface';
@@ -78,8 +79,17 @@ export class ProyectosComponent implements OnInit {
   bitacorasFiltroAplicado = false;
   proyectosFiltro: Proyecto[] = [];
   private sucursalesFiltroCache = new Map<string, SucursalOption[]>();
+  readonly puedeGestionarProyectos: boolean;
 
-  constructor(private fb: FormBuilder, private apiService: ApiService) {
+  constructor(
+    private fb: FormBuilder,
+    private apiService: ApiService,
+    private authService: AuthService
+  ) {
+    this.puedeGestionarProyectos =
+      this.authService.esAdministrador() ||
+      this.authService.esTecnico() ||
+      this.authService.esMesaAyuda();
     this.proyectoForm = this.fb.group({
       id: this.fb.control<number | null>(null),
       nombre: this.fb.nonNullable.control('', {
@@ -99,6 +109,10 @@ export class ProyectosComponent implements OnInit {
       proyectoId: [''],
       buscar: [''],
     });
+
+    if (!this.puedeGestionarProyectos) {
+      this.proyectoForm.disable({ emitEvent: false });
+    }
   }
 
   ngOnInit(): void {
@@ -187,6 +201,9 @@ export class ProyectosComponent implements OnInit {
   }
 
   toggleEncargado(encargadoId: number, checked: boolean): void {
+    if (!this.puedeGestionarProyectos) {
+      return;
+    }
     const control = this.proyectoForm.get('encargadoIds');
     if (!control) {
       return;
@@ -206,18 +223,27 @@ export class ProyectosComponent implements OnInit {
   }
 
   aplicarFiltrosBitacoras(pagina: number = 1): void {
+    if (!this.puedeGestionarProyectos) {
+      return;
+    }
     this.bitacorasFiltroAplicado = true;
     this.bitacorasPagina = pagina;
     this.buscarBitacorasDisponibles(pagina);
   }
 
   mostrarTodasBitacoras(): void {
+    if (!this.puedeGestionarProyectos) {
+      return;
+    }
     this.bitacorasFiltroAplicado = true;
     this.bitacorasPagina = 1;
     this.buscarBitacorasDisponibles(1);
   }
 
   limpiarFiltrosBitacoras(): void {
+    if (!this.puedeGestionarProyectos) {
+      return;
+    }
     this.bitacoraFiltroForm.reset({
       clienteId: '',
       sucursalId: '',
@@ -232,6 +258,9 @@ export class ProyectosComponent implements OnInit {
   }
 
   onFiltroClienteChange(clienteId: string): void {
+    if (!this.puedeGestionarProyectos) {
+      return;
+    }
     this.bitacoraFiltroForm.patchValue({ sucursalId: '' }, { emitEvent: false });
     this.cargarSucursalesFiltro(clienteId);
   }
@@ -378,6 +407,9 @@ export class ProyectosComponent implements OnInit {
   }
 
   nuevoProyecto(): void {
+    if (!this.puedeGestionarProyectos) {
+      return;
+    }
     this.selectedProyecto = null;
     this.proyectoForm.reset({
       id: null,
@@ -409,6 +441,9 @@ export class ProyectosComponent implements OnInit {
   }
 
   onFotoPortadaSeleccionada(event: Event): void {
+    if (!this.puedeGestionarProyectos) {
+      return;
+    }
     const input = event.target as HTMLInputElement;
     if (!input.files || input.files.length === 0) {
       this.fotoPortadaFile = null;
@@ -418,6 +453,9 @@ export class ProyectosComponent implements OnInit {
   }
 
   guardarProyecto(): void {
+    if (!this.puedeGestionarProyectos) {
+      return;
+    }
     if (this.proyectoForm.invalid) {
       this.proyectoForm.markAllAsTouched();
       return;
@@ -467,6 +505,9 @@ export class ProyectosComponent implements OnInit {
   }
 
   eliminarProyecto(proyecto: Proyecto): void {
+    if (!this.puedeGestionarProyectos) {
+      return;
+    }
     if (!proyecto || !proyecto.id) {
       return;
     }
@@ -491,6 +532,9 @@ export class ProyectosComponent implements OnInit {
   }
 
   subirAdjuntos(event: Event): void {
+    if (!this.puedeGestionarProyectos) {
+      return;
+    }
     if (!this.selectedProyecto?.id) {
       return;
     }
@@ -517,6 +561,9 @@ export class ProyectosComponent implements OnInit {
   }
 
   eliminarAdjunto(adjunto: ProyectoAdjunto): void {
+    if (!this.puedeGestionarProyectos) {
+      return;
+    }
     if (!this.selectedProyecto?.id || !adjunto?.id) {
       return;
     }
@@ -536,6 +583,9 @@ export class ProyectosComponent implements OnInit {
   }
 
   buscarBitacorasDisponibles(pagina: number = 1): void {
+    if (!this.puedeGestionarProyectos) {
+      return;
+    }
     if (!this.bitacorasFiltroAplicado) {
       return;
     }
@@ -603,6 +653,9 @@ export class ProyectosComponent implements OnInit {
   }
 
   asignarBitacora(bitacora: Bitacora): void {
+    if (!this.puedeGestionarProyectos) {
+      return;
+    }
     if (!this.selectedProyecto?.id || !bitacora?.id) {
       return;
     }
@@ -624,6 +677,9 @@ export class ProyectosComponent implements OnInit {
   }
 
   removerBitacora(bitacora: Bitacora): void {
+    if (!this.puedeGestionarProyectos) {
+      return;
+    }
     if (!this.selectedProyecto?.id || !bitacora?.id) {
       return;
     }

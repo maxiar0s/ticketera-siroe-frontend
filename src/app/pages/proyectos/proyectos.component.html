@@ -5,6 +5,7 @@
       <button
         class="primary-button small nuevo-proyecto-button"
         type="button"
+        *ngIf="puedeGestionarProyectos"
         (click)="nuevoProyecto()"
       >
         Nuevo proyecto
@@ -107,15 +108,30 @@
         <h2>
           {{ proyectoForm.value.id ? 'Editar proyecto' : 'Nuevo proyecto' }}
         </h2>
-        <button class="primary-button form-save-button" type="submit" [disabled]="guardandoProyecto">
-          {{ guardandoProyecto ? 'Guardando...' : 'Guardar' }}
-        </button>
+        <div class="form-actions" *ngIf="puedeGestionarProyectos">
+          <button
+            class="delete-button"
+            type="button"
+            *ngIf="selectedProyecto?.id"
+            (click)="eliminarProyecto(selectedProyecto!)"
+          >
+            Eliminar
+          </button>
+          <button class="primary-button form-save-button" type="submit" [disabled]="guardandoProyecto">
+            {{ guardandoProyecto ? 'Guardando...' : 'Guardar' }}
+          </button>
+        </div>
       </div>
 
       <div class="form-grid">
         <label class="campo campo-nombre">
           <span class="label">Nombre</span>
-          <input type="text" formControlName="nombre" required />
+          <input
+            type="text"
+            formControlName="nombre"
+            required
+            [readonly]="!puedeGestionarProyectos"
+          />
           <span class="error" *ngIf="proyectoForm.get('nombre')?.invalid && proyectoForm.get('nombre')?.touched">
             El nombre es obligatorio.
           </span>
@@ -123,7 +139,11 @@
 
         <label class="campo campo-descripcion">
           <span class="label">Descripcion</span>
-          <textarea rows="3" formControlName="descripcion"></textarea>
+          <textarea
+            rows="3"
+            formControlName="descripcion"
+            [readonly]="!puedeGestionarProyectos"
+          ></textarea>
         </label>
 
         <div class="campo campo-encargados">
@@ -133,6 +153,7 @@
               <input
                 #encargadoCheckbox
                 type="checkbox"
+                [disabled]="!puedeGestionarProyectos"
                 [checked]="estaEncargadoSeleccionado(tecnico.id)"
                 (change)="toggleEncargado(tecnico.id, encargadoCheckbox.checked)"
               />
@@ -151,22 +172,38 @@
         <div class="campo campo-fechas">
           <label class="fecha">
             <span class="label">Fecha de inicio</span>
-            <input type="date" formControlName="fechaInicio" />
+            <input
+              type="date"
+              formControlName="fechaInicio"
+              [disabled]="!puedeGestionarProyectos"
+            />
           </label>
 
           <label class="fecha">
             <span class="label">Fecha de termino</span>
-            <input type="date" formControlName="fechaTermino" />
+            <input
+              type="date"
+              formControlName="fechaTermino"
+              [disabled]="!puedeGestionarProyectos"
+            />
           </label>
         </div>
 
         <label class="archivo">
           <span class="label">Foto de portada</span>
-          <input type="file" accept="image/*" (change)="onFotoPortadaSeleccionada($event)" />
+          <input
+            type="file"
+            accept="image/*"
+            (change)="onFotoPortadaSeleccionada($event)"
+            [disabled]="!puedeGestionarProyectos"
+          />
           <small class="help">Opcional. Selecciona una imagen para el proyecto.</small>
         </label>
 
-        <div class="campo eliminar-foto" *ngIf="proyectoSeleccionadoTieneFoto && !fotoPortadaFile">
+        <div
+          class="campo eliminar-foto"
+          *ngIf="puedeGestionarProyectos && proyectoSeleccionadoTieneFoto && !fotoPortadaFile"
+        >
           <label class="checkbox-control">
             <input type="checkbox" formControlName="eliminarFoto" />
             <span>Eliminar foto actual</span>
@@ -241,13 +278,16 @@
 
           <section class="adjuntos">
             <div class="section-header">
-              <h4>Documentos e imagenes</h4>
-              <label class="accion-boton upload-button">
-                Subir archivos
-                <input
-                  type="file"
-                  multiple
-                  (change)="subirAdjuntos($event)"
+          <h4>Documentos e imagenes</h4>
+          <label
+            class="accion-boton upload-button"
+            *ngIf="puedeGestionarProyectos"
+          >
+            Subir archivos
+            <input
+              type="file"
+              multiple
+              (change)="subirAdjuntos($event)"
                 />
               </label>
             </div>
@@ -271,12 +311,13 @@
                   >
                     Ver
                   </button>
-                  <button
-                    class="ghost-button small danger"
-                    type="button"
-                    (click)="eliminarAdjunto(adjunto)"
-                  >
-                    Eliminar
+                <button
+                  class="ghost-button small danger"
+                  type="button"
+                  *ngIf="puedeGestionarProyectos"
+                  (click)="eliminarAdjunto(adjunto)"
+                >
+                  Eliminar
                   </button>
                 </div>
               </li>
@@ -321,6 +362,7 @@
                 <button
                   class="registro-accion remover"
                   type="button"
+                  *ngIf="puedeGestionarProyectos"
                   (click)="removerBitacora(bitacora)"
                 >
                   Remover
@@ -330,7 +372,7 @@
           </section>
         </div>
 
-        <section class="bitacoras-disponibles-card">
+        <section class="bitacoras-disponibles-card" *ngIf="puedeGestionarProyectos">
           <h3>Agregar bitacoras / tickets</h3>
           <form
             class="filtros-bitacoras"
@@ -469,6 +511,7 @@
                 <button
                   class="registro-accion asignar"
                   type="button"
+                  *ngIf="puedeGestionarProyectos"
                   (click)="asignarBitacora(bitacora)"
                 >
                   Asignar
