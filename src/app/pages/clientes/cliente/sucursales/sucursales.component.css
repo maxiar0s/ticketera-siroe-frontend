@@ -14,7 +14,7 @@
   background-color: #f7f7f7;
   border: 1px solid #eaeaea;
   border-radius: 18px;
-  padding: 0 2rem;
+  padding: 2rem;
   align-items: center;
   min-height: 8rem;
   min-width: 100%;
@@ -137,11 +137,10 @@
 
 @media (max-width: 1200px) {
 
-
   .sucursal {
-    padding: 2rem 0;
+    padding: 2rem 1fr;
     display: grid;
-    grid-template-columns: 0.5fr 1fr 1fr 1.3fr;
+    grid-template-columns: 0.5fr 1fr 1fr 1fr;
     grid-template-rows: 1fr 1fr;
     grid-template-areas:
       "estado sucursal direccion button"

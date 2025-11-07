@@ -3,7 +3,7 @@
     <!-- Estado Sucursal -->
     <div class="sucursal-campo sucursal-campo-estado">
       <h3 class="table-title">Estado</h3>
-      <div class="estado" 
+      <div class="estado"
            [ngClass]="sucursal.estado === 1 ? 'abierto' :
                      sucursal.estado === 2 ? 'pendiente' :
                      'cerrado'"
@@ -23,7 +23,13 @@
     <!-- Nombre Sucursal -->
     <div class="sucursal-campo sucursal-campo-texto">
       <h3 class="table-title">Fecha ingreso</h3>
-      <p>{{ sucursal.fechaIngreso.toString() | formatoFecha }}</p>
+      <p>
+        {{
+          sucursal.fechaIngreso
+            ? (sucursal.fechaIngreso | formatoFecha:'dd/MM/yyyy')
+            : 'Sin fecha'
+        }}
+      </p>
     </div>
     <!-- Nombre Sucursal -->
     <div class="sucursal-campo sucursal-campo-texto">
