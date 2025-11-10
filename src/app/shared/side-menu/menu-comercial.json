@@ -30,5 +30,13 @@
     "svg": "openfolder",
     "subItem": [],
     "isOpen": false
+  },
+  {
+    "id": 5,
+    "nombre": "Documentación",
+    "route": "/documentacion",
+    "svg": "inventario",
+    "subItem": [],
+    "isOpen": false
   }
 ]

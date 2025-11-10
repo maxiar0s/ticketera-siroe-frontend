@@ -1,0 +1,228 @@
+<div class="documentacion-layout">
+  <div class="documentacion-panel card">
+    <div class="panel-header">
+      <div>
+        <p class="eyebrow">Módulo interno</p>
+        <h1>Documentación de clientes</h1>
+        <p class="subtitulo">
+          Centraliza contratos, facturas u otros archivos y mantenlos ordenados por cliente.
+        </p>
+      </div>
+      <div class="resumen-chips">
+        <div class="chip total">
+          <span>Total</span>
+          <strong>{{ resumenPorTipo.total }}</strong>
+        </div>
+        <div class="chip factura">
+          <span>Facturas</span>
+          <strong>{{ resumenPorTipo.factura }}</strong>
+        </div>
+        <div class="chip contrato">
+          <span>Contratos</span>
+          <strong>{{ resumenPorTipo.contrato }}</strong>
+        </div>
+        <div class="chip otros">
+          <span>Otros</span>
+          <strong>{{ resumenPorTipo.otros }}</strong>
+        </div>
+      </div>
+    </div>
+
+    <form class="filtro-form" [formGroup]="filtroForm" (ngSubmit)="aplicarFiltros()">
+      <div class="field-group">
+        <label for="filtroCliente">Cliente</label>
+        <select id="filtroCliente" formControlName="clienteId" [disabled]="cargandoClientes">
+          <option value="">Todos los clientes</option>
+          <option *ngFor="let cliente of clientes" [value]="cliente.id">
+            {{ cliente.razonSocial }}
+          </option>
+        </select>
+      </div>
+
+      <div class="field-group">
+        <label>Tipo de documento</label>
+        <div class="radio-group compact">
+          <label class="radio-pill">
+            <input type="radio" value="" formControlName="tipo" />
+            <span>Todos</span>
+          </label>
+          <label class="radio-pill" *ngFor="let opcion of tipoOpciones">
+            <input type="radio" [value]="opcion.value" formControlName="tipo" />
+            <span>{{ opcion.label }}</span>
+          </label>
+        </div>
+      </div>
+
+      <div class="field-group search-group">
+        <label for="buscar">Buscar</label>
+        <div class="search-input">
+          <input
+            id="buscar"
+            type="text"
+            formControlName="buscar"
+            placeholder="Nombre del archivo o descripción"
+          />
+          <button type="submit" class="btn primary">Buscar</button>
+        </div>
+      </div>
+
+      <div class="acciones-filtro">
+        <button type="submit" class="btn primary">Aplicar filtros</button>
+        <button type="button" class="btn ghost" (click)="limpiarFiltros()">Limpiar</button>
+      </div>
+    </form>
+
+    <div class="alertas">
+      <div class="alerta error" *ngIf="mensajeError">{{ mensajeError }}</div>
+      <div class="alerta exito" *ngIf="mensajeExito">{{ mensajeExito }}</div>
+    </div>
+
+    <div class="tabla-wrapper" [class.loading]="cargandoDocumentos">
+      <div class="loader" *ngIf="cargandoDocumentos">
+        <span class="spinner"></span>
+        <p>Cargando documentos...</p>
+      </div>
+
+      <table *ngIf="!cargandoDocumentos && documentos.length" class="tabla-documentos">
+        <thead>
+          <tr>
+            <th>Documento</th>
+            <th>Cliente</th>
+            <th>Tipo</th>
+            <th>Subido por</th>
+            <th>Fecha</th>
+            <th>Tamaño</th>
+            <th class="acciones">Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let documento of documentos; trackBy: trackByDocumento">
+            <td class="archivo-nombre">
+              <strong>{{ documento.nombreArchivo || 'Sin nombre' }}</strong>
+              <p class="descripcion" *ngIf="documento.descripcion">
+                {{ documento.descripcion }}
+              </p>
+            </td>
+            <td>
+              <p class="cliente-nombre">
+                {{ documento.casaMatriz?.razonSocial || 'Cliente eliminado' }}
+              </p>
+              <p class="cliente-rut" *ngIf="documento.casaMatriz?.rut">
+                {{ documento.casaMatriz?.rut }}
+              </p>
+            </td>
+            <td>
+              <span [class]="tipoBadgeClass(documento.tipo)">
+                {{ tipoLabel(documento.tipo) }}
+              </span>
+            </td>
+            <td>
+              <p>{{ documento.subidoPor?.name || '—' }}</p>
+              <small>{{ documento.subidoPor?.email || '' }}</small>
+            </td>
+            <td>
+              {{ documento.createdAt | date: 'mediumDate' }}
+            </td>
+            <td>
+              {{ formatearPeso(documento.size) }}
+            </td>
+            <td class="acciones">
+              <button
+                type="button"
+                class="btn ghost"
+                (click)="descargarDocumento(documento)"
+                [disabled]="descargandoId === documento.id"
+              >
+                {{ descargandoId === documento.id ? 'Descargando…' : 'Descargar' }}
+              </button>
+              <button
+                type="button"
+                class="btn danger"
+                (click)="eliminarDocumento(documento)"
+                [disabled]="eliminandoId === documento.id"
+              >
+                {{ eliminandoId === documento.id ? 'Eliminando…' : 'Eliminar' }}
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="sin-resultados" *ngIf="!cargandoDocumentos && !documentos.length">
+        <p>No encontramos documentos con los filtros seleccionados.</p>
+      </div>
+    </div>
+
+    <div class="paginador" *ngIf="paginasTotales > 1">
+      <button class="btn ghost" type="button" (click)="cambiarPagina(-1)" [disabled]="paginaActual === 1">
+        Anterior
+      </button>
+      <span>Página {{ paginaActual }} de {{ paginasTotales }}</span>
+      <button
+        class="btn ghost"
+        type="button"
+        (click)="cambiarPagina(1)"
+        [disabled]="paginaActual === paginasTotales"
+      >
+        Siguiente
+      </button>
+    </div>
+  </div>
+
+  <div class="upload-panel card">
+    <h2>Subir documento</h2>
+    <p class="descripcion">
+      Adjunta contratos, facturas u otros archivos relacionados a cada cliente.
+    </p>
+
+    <form [formGroup]="uploadForm" (ngSubmit)="subirDocumento()" class="upload-form">
+      <div class="field-group">
+        <label for="clienteUpload">Cliente</label>
+        <select id="clienteUpload" formControlName="clienteId" [disabled]="cargandoClientes">
+          <option value="" disabled>Selecciona un cliente</option>
+          <option *ngFor="let cliente of clientes" [value]="cliente.id">
+            {{ cliente.razonSocial }}
+          </option>
+        </select>
+      </div>
+
+      <div class="field-group">
+        <label>Tipo de documento</label>
+        <div class="radio-group">
+          <label class="radio-pill" *ngFor="let opcion of tipoOpciones">
+            <input type="radio" [value]="opcion.value" formControlName="tipo" />
+            <span>{{ opcion.label }}</span>
+          </label>
+        </div>
+      </div>
+
+      <div class="field-group">
+        <label for="descripcion">Descripción (opcional)</label>
+        <textarea
+          id="descripcion"
+          rows="3"
+          formControlName="descripcion"
+          placeholder="Ej: Contrato renovado Q1 2024"
+        ></textarea>
+      </div>
+
+      <div class="field-group file-field">
+        <label>Archivo</label>
+        <label class="file-input">
+          <input
+            #archivoInput
+            type="file"
+            accept=".pdf,.jpg,.jpeg,.png,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.zip,.rar,.txt"
+            (change)="seleccionarArchivo($event)"
+          />
+          <span>{{ archivoSeleccionadoNombre || 'Seleccionar archivo' }}</span>
+        </label>
+        <small>Formatos soportados: PDF, imágenes y documentos Office. Máx 20 MB.</small>
+      </div>
+
+      <button type="submit" class="btn primary stretch" [disabled]="!puedeSubir">
+        {{ subiendo ? 'Subiendo…' : 'Guardar documento' }}
+      </button>
+    </form>
+  </div>
+</div>

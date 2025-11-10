@@ -17,6 +17,7 @@ import {
 } from '../interfaces/vehiculo.interface';
 import { VehiculoSalida } from '../interfaces/vehiculo-salida.interface';
 import { NotificacionListadoRespuesta } from '../interfaces/notificacion.interface';
+import { DocumentoCliente, DocumentoClienteListado } from '../interfaces/documento-cliente.interface';
 
 type ClienteEquiposDetalle = { cliente: Cliente | null; equipos: Equipo[] };
 
@@ -151,6 +152,59 @@ export class ApiService {
   clientesBitacora(): Observable<any> {
     const endpoint = 'bitacoras/clientes';
     return this.getInformation(endpoint);
+  }
+
+  documentacionClientes(params: {
+    pagina?: number;
+    limite?: number;
+    clienteId?: string;
+    tipo?: string;
+    buscar?: string;
+  } = {}): Observable<DocumentoClienteListado> {
+    let httpParams = new HttpParams();
+
+    if (params.pagina) {
+      httpParams = httpParams.set('pagina', params.pagina.toString());
+    }
+    if (params.limite) {
+      httpParams = httpParams.set('limite', params.limite.toString());
+    }
+    if (params.clienteId && params.clienteId.trim().length) {
+      httpParams = httpParams.set('clienteId', params.clienteId.trim());
+    }
+    if (params.tipo && params.tipo.trim().length) {
+      httpParams = httpParams.set('tipo', params.tipo.trim());
+    }
+    if (params.buscar && params.buscar.trim().length) {
+      httpParams = httpParams.set('buscar', params.buscar.trim());
+    }
+
+    return this.http
+      .get<DocumentoClienteListado>(`${this.url}/documentacion`, { params: httpParams })
+      .pipe(
+        catchError((error: HttpErrorResponse) => {
+          console.error('Error al obtener documentación de clientes:', error);
+          return throwError(() => error);
+        })
+      );
+  }
+
+  crearDocumentoCliente(payload: FormData): Observable<DocumentoCliente> {
+    return this.http.post<DocumentoCliente>(`${this.url}/documentacion`, payload).pipe(
+      catchError((error: HttpErrorResponse) => {
+        console.error('Error al crear documento de cliente:', error);
+        return throwError(() => error);
+      })
+    );
+  }
+
+  eliminarDocumentoCliente(id: number): Observable<{ mensaje: string }> {
+    return this.http.delete<{ mensaje: string }>(`${this.url}/documentacion/${id}`).pipe(
+      catchError((error: HttpErrorResponse) => {
+        console.error('Error al eliminar documento de cliente:', error);
+        return throwError(() => error);
+      })
+    );
   }
 
   client(id: string, pagina: number, option: string): Observable<any> {

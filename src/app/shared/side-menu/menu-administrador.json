@@ -32,6 +32,14 @@
     "isOpen": false
   },
   {
+    "id": 8,
+    "nombre": "Documentación",
+    "route": "/documentacion",
+    "svg": "inventario",
+    "subItem": [],
+    "isOpen": false
+  },
+  {
     "id": 7,
     "nombre": "Vehículos",
     "route": "/vehiculos",

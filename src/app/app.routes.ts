@@ -4,6 +4,7 @@ import { AdminGuard } from './guards/admin-guard.guard';
 import { NoClienteGuard } from './guards/no-cliente.guard';
 import { ClienteGuard } from './guards/cliente.guard';
 import { NoComercialGuard } from './guards/no-comercial.guard';
+import { AdminComercialGuard } from './guards/admin-comercial.guard';
 
 export const routes: Routes = [
   // Redireccionamiento
@@ -40,6 +41,14 @@ export const routes: Routes = [
     path: 'clientes/:id',
     canActivate: [protegerRutaGuard],
     loadComponent: () => import('./pages/clientes/cliente/cliente.component').then( m => m.ClienteComponent ),
+  },
+  {
+    path: 'documentacion',
+    canActivate: [protegerRutaGuard, AdminComercialGuard],
+    loadComponent: () =>
+      import('./pages/documentacion/documentacion.component').then(
+        (m) => m.DocumentacionComponent
+      ),
   },
 
   // Sucursal
