@@ -1,7 +1,7 @@
 .documentacion-layout {
   display: grid;
-  grid-template-columns: minmax(0, 2fr) 420px;
-  gap: 1rem;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
   padding: 1.5rem 2rem 2.5rem;
   background-color: #f6f7fb;
   min-height: calc(100vh - 6rem);
@@ -443,13 +443,17 @@
   font-weight: 600;
 }
 
+.documentacion-panel {
+  order: 0;
+}
+
 .upload-panel {
   display: flex;
   flex-direction: column;
   gap: 1rem;
-  max-width: 420px;
   width: 100%;
-  justify-self: end;
+  justify-self: stretch;
+  order: -1;
 }
 
 .upload-panel h2 {
@@ -496,10 +500,6 @@
 }
 
 @media (max-width: 1200px) {
-  .documentacion-layout {
-    grid-template-columns: 1fr;
-  }
-
   .tabla-documentos td.acciones {
     flex-direction: row;
   }
@@ -552,11 +552,6 @@
 @media (max-width: 420px) {
   .card {
     padding: 1rem 1rem;
-  }
-
-  .upload-panel {
-    max-width: 100%;
-    justify-self: stretch;
   }
 
   .panel-header h1 {
