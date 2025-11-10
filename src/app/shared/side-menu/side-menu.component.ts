@@ -180,15 +180,28 @@ export class SideMenuComponent {
   }
 
   toggleSubItems(item: any): void {
+    const hasSubItems = Array.isArray(item.subItem) && item.subItem.length > 0;
+
     if (this.currentGroup === item.route) {
-      item.isOpen = false;
-      this.currentGroup = '';
-      this.currentSubGroup = '';
-    } else {
-      this.menu.forEach((i: { isOpen: boolean }) => (i.isOpen = false));
-      item.isOpen = true;
+      if (hasSubItems) {
+        item.isOpen = !item.isOpen;
+      }
       this.currentGroup = item.route;
       this.currentSubGroup = item.route;
+      return;
     }
+
+    this.menu.forEach((i: { isOpen: boolean }) => {
+      if (typeof i.isOpen === 'boolean') {
+        i.isOpen = false;
+      }
+    });
+
+    if (hasSubItems) {
+      item.isOpen = true;
+    }
+
+    this.currentGroup = item.route;
+    this.currentSubGroup = item.route;
   }
 }
