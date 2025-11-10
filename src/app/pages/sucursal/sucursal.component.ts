@@ -15,14 +15,17 @@ import { LoaderService } from '../../services/loader.service';
 import { NavegationComponent } from '../../shared/navegation/navegation.component';
 import { forkJoin, map, Observable, of, switchMap } from 'rxjs';
 import { catchError } from 'rxjs/operators';
-import * as XLSX from 'xlsx';
-import ExcelJS from 'exceljs';
-import { saveAs } from 'file-saver';
 import { EquiposFiltersComponent } from './filters/filters.component';
 import { EquipoFiltros } from '../../interfaces/equipo-filtros.interface';
 import { normalizarEsArriendo, normalizarServicios } from '../../utils/servicios.util';
 import { EquipoFormField } from '../../interfaces/EquipoForm.interface';
 import { CampoColor, CampoPresetOption, CampoStandard } from '../../interfaces/campo.interface';
+
+type XLSXModule = typeof import('xlsx');
+type ExcelJSLib = typeof import('exceljs');
+type SaveAsFunction = typeof import('file-saver');
+type ExcelJSRow = import('exceljs').Row;
+type ExcelJSCell = import('exceljs').Cell;
 
 interface EquipoExcelRow {
   Numero: number;
@@ -85,6 +88,9 @@ export class SucursalComponent {
     amarillo: 'FFFACC15',
     rojo: 'FFDC2626',
   };
+  private xlsxModulePromise?: Promise<XLSXModule>;
+  private excelJsModulePromise?: Promise<ExcelJSLib>;
+  private saveAsPromise?: Promise<SaveAsFunction>;
 
   constructor(
     private apiService:     ApiService,
@@ -297,18 +303,22 @@ export class SucursalComponent {
       next: ({ equipos, estados }) => {
         if (equipos.length === 0) {
           console.warn('No hay equipos para exportar.');
+          this.loaderService.hideModal();
           return;
         }
 
-        this.generarExcelEquipos(equipos, estados);
+        this.generarExcelEquipos(equipos, estados)
+          .catch((error) => {
+            console.error('Error al generar el archivo de equipos:', error);
+          })
+          .finally(() => {
+            this.loaderService.hideModal();
+          });
       },
       error: (error: unknown) => {
         console.error('Error al exportar equipos:', error);
         this.loaderService.hideModal();
       },
-      complete: () => {
-        this.loaderService.hideModal();
-      }
     });
   }
 
@@ -510,6 +520,30 @@ export class SucursalComponent {
     });
   }
 
+  private loadXlsx(): Promise<XLSXModule> {
+    if (!this.xlsxModulePromise) {
+      this.xlsxModulePromise = import('xlsx');
+    }
+    return this.xlsxModulePromise;
+  }
+
+  private loadExcelJs(): Promise<ExcelJSLib> {
+    if (!this.excelJsModulePromise) {
+      this.excelJsModulePromise = import('exceljs');
+    }
+    return this.excelJsModulePromise;
+  }
+
+  private loadSaveAs(): Promise<SaveAsFunction> {
+    if (!this.saveAsPromise) {
+      this.saveAsPromise = import('file-saver').then(
+        (module: { default?: SaveAsFunction; saveAs?: SaveAsFunction }) =>
+          module.saveAs ?? module.default ?? (module as unknown as SaveAsFunction)
+      );
+    }
+    return this.saveAsPromise;
+  }
+
   private mapearEquiposAData(equipos: Equipo[], estados: EstadoEquipo[]): EquipoExcelRow[] {
     return equipos.map((equipo, index) => ({
       Numero: index + 1,
@@ -534,13 +568,17 @@ export class SucursalComponent {
     }));
   }
 
-  private generarExcelEquipos(equipos: Equipo[], estados: EstadoEquipo[]): void {
+  private async generarExcelEquipos(
+    equipos: Equipo[],
+    estados: EstadoEquipo[]
+  ): Promise<void> {
     const data = this.mapearEquiposAData(equipos, estados);
 
     if (data.length === 0) {
       return;
     }
 
+    const XLSX = await this.loadXlsx();
     const worksheet = XLSX.utils.json_to_sheet(data);
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, 'Equipos');
@@ -550,7 +588,7 @@ export class SucursalComponent {
     XLSX.writeFile(workbook, fileName);
   }
 
-  private generarInformeExcel(
+  private async generarInformeExcel(
     equipos: Equipo[],
     estados: EstadoEquipo[],
     camposPorTipo: Map<number, EquipoFormField[]>
@@ -558,9 +596,10 @@ export class SucursalComponent {
     const data = this.mapearEquiposAData(equipos, estados);
 
     if (data.length === 0) {
-      return Promise.resolve();
+      return;
     }
 
+    const ExcelJS = await this.loadExcelJs();
     const workbook = new ExcelJS.Workbook();
     const worksheet = workbook.addWorksheet('Equipos');
 
@@ -599,7 +638,7 @@ export class SucursalComponent {
       }
     });
 
-    worksheet.eachRow((row: ExcelJS.Row, rowNumber: number) => {
+    worksheet.eachRow((row: ExcelJSRow, rowNumber: number) => {
       row.alignment = {
         vertical: 'middle',
         horizontal: rowNumber === 1 ? 'center' : 'left',
@@ -608,7 +647,7 @@ export class SucursalComponent {
 
       if (rowNumber === 1) {
         row.font = { bold: true, color: { argb: 'FFFFFFFF' } };
-        row.eachCell((cell: ExcelJS.Cell) => {
+        row.eachCell((cell: ExcelJSCell) => {
           cell.fill = {
             type: 'pattern',
             pattern: 'solid',
@@ -637,7 +676,7 @@ export class SucursalComponent {
       );
 
       if (!columnasColoreadas.has('RAM')) {
-        const ramCell = row.getCell('RAM') as ExcelJS.Cell;
+        const ramCell = row.getCell('RAM') as ExcelJSCell;
         const color = this.obtenerColorRam(ramCell.value);
 
         if (color) {
@@ -649,16 +688,16 @@ export class SucursalComponent {
     const nombreSucursal = this.sucursal?.sucursal ?? 'sucursal';
     const fileName = `${this.normalizarTexto(nombreSucursal)}-informe.xlsx`;
 
-    return workbook.xlsx.writeBuffer().then((buffer: ArrayBuffer) => {
-      const blob = new Blob([buffer], {
-        type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-      });
-      saveAs(blob, fileName);
+    const buffer = await workbook.xlsx.writeBuffer();
+    const saveAs = await this.loadSaveAs();
+    const blob = new Blob([buffer], {
+      type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
     });
+    saveAs(blob, fileName);
   }
 
   private aplicarColoresDefinidos(
-    row: ExcelJS.Row,
+    row: ExcelJSRow,
     equipo: Equipo,
     camposPorTipo: Map<number, EquipoFormField[]>,
     columnas: Map<string, string>
@@ -693,7 +732,7 @@ export class SucursalComponent {
 
       procesados.add(nombre);
 
-      const cell = row.getCell(llaveColumna) as ExcelJS.Cell;
+      const cell = row.getCell(llaveColumna) as ExcelJSCell;
       const valor = (equipo as any)[nombre];
 
       const color = this.obtenerColorDesdeDefiniciones(valor, campo);
@@ -898,7 +937,7 @@ export class SucursalComponent {
     return texto ? texto.toLowerCase() : null;
   }
 
-  private aplicarEstiloCriticidad(cell: ExcelJS.Cell, color: string): void {
+  private aplicarEstiloCriticidad(cell: ExcelJSCell, color: string): void {
     cell.fill = {
       type: 'pattern',
       pattern: 'solid',

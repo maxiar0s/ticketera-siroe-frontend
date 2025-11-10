@@ -1,11 +1,13 @@
 import { CommonModule } from '@angular/common';
 import {
+  ChangeDetectionStrategy,
   Component,
+  DestroyRef,
   ElementRef,
   HostListener,
-  OnDestroy,
   OnInit,
   ViewChild,
+  inject,
 } from '@angular/core';
 import {
   FormBuilder,
@@ -13,7 +15,8 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { Subject, finalize, takeUntil } from 'rxjs';
+import { finalize } from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ClienteResumen } from '../../interfaces/cliente-resumen.interface';
 import {
   DocumentoCliente,
@@ -33,8 +36,9 @@ type ResumenTipoDocumento = Record<
   imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './documentacion.component.html',
   styleUrl: './documentacion.component.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class DocumentacionComponent implements OnInit, OnDestroy {
+export class DocumentacionComponent implements OnInit {
   @ViewChild('archivoInput') archivoInput?: ElementRef<HTMLInputElement>;
 
   filtroForm: FormGroup;
@@ -74,8 +78,8 @@ export class DocumentacionComponent implements OnInit, OnDestroy {
     { value: 'otros', label: 'Otros' },
   ] as const;
 
-  private readonly destroy$ = new Subject<void>();
   private readonly maxFileSizeBytes = 20 * 1024 * 1024;
+  private readonly destroyRef = inject(DestroyRef);
 
   constructor(
     private fb: FormBuilder,
@@ -101,11 +105,6 @@ export class DocumentacionComponent implements OnInit, OnDestroy {
     this.cargarDocumentos();
   }
 
-  ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
-  }
-
   @HostListener('document:click')
   cerrarMenuAcciones(): void {
     this.menuDocumentoId = null;
@@ -120,7 +119,7 @@ export class DocumentacionComponent implements OnInit, OnDestroy {
     this.apiService
       .clientesResumen()
       .pipe(
-        takeUntil(this.destroy$),
+        takeUntilDestroyed(this.destroyRef),
         finalize(() => (this.cargandoClientes = false))
       )
       .subscribe({
@@ -150,7 +149,7 @@ export class DocumentacionComponent implements OnInit, OnDestroy {
     this.apiService
       .documentacionClientes(params)
       .pipe(
-        takeUntil(this.destroy$),
+        takeUntilDestroyed(this.destroyRef),
         finalize(() => {
           this.cargandoDocumentos = false;
           if (debeRecargar) {
@@ -253,7 +252,7 @@ export class DocumentacionComponent implements OnInit, OnDestroy {
     this.apiService
       .crearDocumentoCliente(formData)
       .pipe(
-        takeUntil(this.destroy$),
+        takeUntilDestroyed(this.destroyRef),
         finalize(() => (this.subiendo = false))
       )
       .subscribe({
@@ -294,7 +293,7 @@ export class DocumentacionComponent implements OnInit, OnDestroy {
     this.apiService
       .signedUrl(documento.archivo)
       .pipe(
-        takeUntil(this.destroy$),
+        takeUntilDestroyed(this.destroyRef),
         finalize(() => (this.descargandoId = null))
       )
       .subscribe({
@@ -327,7 +326,7 @@ export class DocumentacionComponent implements OnInit, OnDestroy {
     this.apiService
       .eliminarDocumentoCliente(documento.id)
       .pipe(
-        takeUntil(this.destroy$),
+        takeUntilDestroyed(this.destroyRef),
         finalize(() => (this.eliminandoId = null))
       )
       .subscribe({

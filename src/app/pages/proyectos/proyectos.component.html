@@ -29,7 +29,7 @@
       </p>
       <ul *ngIf="!proyectosCargando && proyectos.length > 0">
         <li
-          *ngFor="let proyecto of proyectos"
+          *ngFor="let proyecto of proyectos; trackBy: trackByProyecto"
           [class.activo]="selectedProyecto?.id === proyecto.id"
           (click)="seleccionarProyecto(proyecto)"
         >
@@ -149,7 +149,7 @@
         <div class="campo campo-encargados">
           <span class="label">Encargados</span>
           <div class="encargados-checklist">
-            <label class="encargado-item" *ngFor="let tecnico of tecnicos">
+            <label class="encargado-item" *ngFor="let tecnico of tecnicos; trackBy: trackByTecnico">
               <input
                 #encargadoCheckbox
                 type="checkbox"
@@ -224,7 +224,7 @@
             <div class="detalle-item">
               <span class="label">Encargados</span>
               <div class="value encargados-detalle">
-                <span class="chip" *ngFor="let encargado of proyecto.encargados">
+                <span class="chip" *ngFor="let encargado of proyecto.encargados; trackBy: trackByEncargado">
                   {{ encargado.name }}
                 </span>
                 <span *ngIf="!proyecto.encargados?.length" class="sin-encargados">
@@ -293,7 +293,7 @@
             </div>
             <p *ngIf="proyecto.adjuntos.length === 0">Sin archivos adjuntos.</p>
             <ul *ngIf="proyecto.adjuntos.length > 0">
-              <li *ngFor="let adjunto of proyecto.adjuntos">
+              <li *ngFor="let adjunto of proyecto.adjuntos; trackBy: trackByAdjunto">
                 <span>
                   {{ adjunto.nombreArchivo || adjunto.archivo }}
                   <small>
@@ -336,7 +336,7 @@
               class="registros-list"
             >
               <li
-                *ngFor="let bitacora of proyecto.bitacoras"
+                *ngFor="let bitacora of proyecto.bitacoras; trackBy: trackByBitacora"
                 class="registro-item"
                 [ngClass]="bitacora.esTicket ? 'ticket' : 'bitacora'"
               >
@@ -389,7 +389,7 @@
                 >
                   <option value="">Todos los clientes</option>
                   <option
-                    *ngFor="let cliente of clientesFiltro"
+                    *ngFor="let cliente of clientesFiltro; trackBy: trackByCliente"
                     [value]="cliente.id"
                   >
                     {{ cliente.razonSocial }}
@@ -405,7 +405,7 @@
                 >
                   <option value="">Todas</option>
                   <option
-                    *ngFor="let sucursal of sucursalesFiltro"
+                    *ngFor="let sucursal of sucursalesFiltro; trackBy: trackBySucursal"
                     [value]="sucursal.id"
                   >
                     {{ sucursal.sucursal }}
@@ -431,7 +431,7 @@
                   <option value="">Todos</option>
                   <option value="sin-proyecto">Sin proyecto</option>
                   <option
-                    *ngFor="let opcion of proyectosFiltro"
+                    *ngFor="let opcion of proyectosFiltro; trackBy: trackByProyecto"
                     [value]="opcion.id"
                   >
                     {{ opcion.nombre }}
@@ -485,7 +485,7 @@
               class="registros-list disponibles"
             >
               <li
-                *ngFor="let bitacora of bitacorasDisponibles"
+                *ngFor="let bitacora of bitacorasDisponibles; trackBy: trackByBitacora"
                 class="registro-item"
                 [ngClass]="bitacora.esTicket ? 'ticket' : 'bitacora'"
               >

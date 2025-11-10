@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, computed, signal } from '@angular/core';
 import { jwtDecode } from 'jwt-decode';
 
 interface Token {
@@ -12,48 +12,56 @@ interface Token {
   providedIn: 'root'
 })
 export class AuthService {
-  private key = 'token';
-  userSigned: boolean = false;
+  private readonly key = 'token';
+  private readonly tokenSignal = signal<string | null>(this.obtenerTokenDeStorage());
+  private readonly decodedTokenSignal = computed<Token | null>(() => {
+    const token = this.tokenSignal();
+    if (!token) {
+      return null;
+    }
+    try {
+      return jwtDecode<Token>(token);
+    } catch (error) {
+      console.error('Error al decodificar el token:', error);
+      return null;
+    }
+  });
 
-  constructor() { }
+  private readonly storageListener = (event: StorageEvent) => {
+    if (event.key === this.key) {
+      this.tokenSignal.set(event.newValue);
+    }
+  };
 
-  ngOnInit() {
-    if(localStorage.getItem(this.key)) this.userSigned = true;
-    else this.userSigned = false;
+  constructor() {
+    if (typeof window !== 'undefined') {
+      window.addEventListener('storage', this.storageListener);
+    }
+  }
+
+  get userSigned(): boolean {
+    return this.esTokenValido();
   }
 
   guardarToken(token: string): void {
     localStorage.setItem(this.key, token);
-    this.userSigned = true;
+    this.tokenSignal.set(token);
   }
 
-  // Obtener el token
   obtenerToken(): string | null {
-    return localStorage.getItem(this.key);
+    return this.tokenSignal();
   }
 
-  // Decodificar el token
   decodificarToken(): Token | null {
-    const token = this.obtenerToken();
-    if (token) {
-      try {
-        return jwtDecode<Token>(token);
-      } catch (error) {
-        console.error('Error al decodificar el token:', error);
-        return null;
-      }
-    }
-    return null;
+    return this.decodedTokenSignal();
   }
 
-  // Verificar si el token ha expirado
   estaTokenExpirado(): boolean {
-    const payload = this.decodificarToken();
+    const payload = this.decodedTokenSignal();
     if (payload) {
       const tiempoActual = Math.floor(Date.now() / 1000);
       return payload.exp < tiempoActual;
     }
-    // Si no hay token, es expirado
     return true;
   }
 
@@ -65,7 +73,6 @@ export class AuthService {
     return null;
   }
 
-  // Metodo para verificar tipo de usuario
   esAdministrador(): boolean {
     return this.obtenerTipoCuenta() === 1;
   }
@@ -86,16 +93,16 @@ export class AuthService {
     return this.obtenerTipoCuenta() === 5;
   }
 
-  // Método para verificar la validez del token
   esTokenValido(): boolean {
-    if(localStorage.getItem('token')) this.userSigned = true;
-    return !this.estaTokenExpirado();
+    return !!this.obtenerToken() && !this.estaTokenExpirado();
   }
 
-  // Método para cerrar sesión
   eliminarToken(): void {
-    console.log('eliminando token');
     localStorage.removeItem(this.key);
-    this.userSigned = false;
+    this.tokenSignal.set(null);
+  }
+
+  private obtenerTokenDeStorage(): string | null {
+    return typeof localStorage !== 'undefined' ? localStorage.getItem(this.key) : null;
   }
 }

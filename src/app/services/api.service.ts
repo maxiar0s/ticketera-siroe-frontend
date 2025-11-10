@@ -1009,7 +1009,7 @@ export class ApiService {
   }
 
   // Consumo de imagenes GCS (Google Cloud Storage)
-  signedUrl(fileName: string): Observable<any> {
+  signedUrl(fileName: string): Observable<string> {
     const apiUrl = `${this.url}/api/generar-url/${fileName}`;
     return this.http
       .get<{ signedUrl: string }>(apiUrl)

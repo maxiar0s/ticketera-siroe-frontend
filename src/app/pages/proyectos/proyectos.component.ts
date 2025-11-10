@@ -1,5 +1,11 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  DestroyRef,
+  OnInit,
+  inject,
+} from '@angular/core';
 import {
   FormBuilder,
   FormControl,
@@ -9,12 +15,17 @@ import {
   Validators,
 } from '@angular/forms';
 import { finalize } from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormatoFechaPipe } from '../../pipes/formato-fecha.pipe';
 import { SignedUrlPipe } from '../../pipes/generar-url.pipe';
 import { ApiService } from '../../services/api.service';
 import { AuthService } from '../../services/auth.service';
 import { SignalService } from '../../services/signal.service';
-import { Proyecto, ProyectoAdjunto } from '../../interfaces/proyecto.interface';
+import {
+  Proyecto,
+  ProyectoAdjunto,
+  ProyectoEncargado,
+} from '../../interfaces/proyecto.interface';
 import { Cuenta } from '../../interfaces/Cuenta.interface';
 import { ClienteResumen } from '../../interfaces/cliente-resumen.interface';
 import { Tecnico } from '../../interfaces/tecnico.interface';
@@ -48,6 +59,7 @@ interface SucursalOption {
   ],
   templateUrl: './proyectos.component.html',
   styleUrl: './proyectos.component.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProyectosComponent implements OnInit {
   proyectos: Proyecto[] = [];
@@ -81,6 +93,7 @@ export class ProyectosComponent implements OnInit {
   proyectosFiltro: Proyecto[] = [];
   private sucursalesFiltroCache = new Map<string, SucursalOption[]>();
   readonly puedeGestionarProyectos: boolean;
+  private readonly destroyRef = inject(DestroyRef);
 
   constructor(
     private fb: FormBuilder,
@@ -135,7 +148,10 @@ export class ProyectosComponent implements OnInit {
   }
 
   private cargarClientesFiltro(): void {
-    this.apiService.clientesBitacora().subscribe({
+    this.apiService
+      .clientesBitacora()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
       next: (clientes) => {
         this.clientesFiltro = Array.isArray(clientes) ? clientes : [];
         const clienteActual = this.bitacoraFiltroForm.get('clienteId')?.value;
@@ -157,6 +173,7 @@ export class ProyectosComponent implements OnInit {
   private cargarProyectosFiltroOpciones(): void {
     this.apiService
       .getProyectos({ pagina: 1, limite: 100 })
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (respuesta) => {
           const lista = Array.isArray(respuesta?.data) ? respuesta.data : [];
@@ -180,7 +197,10 @@ export class ProyectosComponent implements OnInit {
       return;
     }
 
-    this.apiService.sucursalesPorCliente(clienteId).subscribe({
+    this.apiService
+      .sucursalesPorCliente(clienteId)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
       next: (sucursales) => {
         const opciones =
           (sucursales ?? []).map((item: any) => ({
@@ -276,7 +296,10 @@ export class ProyectosComponent implements OnInit {
         limite: this.proyectosLimite,
         buscar: this.proyectosBuscar,
       })
-      .pipe(finalize(() => (this.proyectosCargando = false)))
+      .pipe(
+        takeUntilDestroyed(this.destroyRef),
+        finalize(() => (this.proyectosCargando = false))
+      )
       .subscribe({
         next: (respuesta) => {
           const proyectosData = (Array.isArray(respuesta?.data)
@@ -321,7 +344,10 @@ export class ProyectosComponent implements OnInit {
     const recolectados: Cuenta[] = [];
 
     const cargarSoloTecnicos = (): void => {
-      this.apiService.tecnicosDisponibles().subscribe({
+      this.apiService
+        .tecnicosDisponibles()
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe({
         next: (tecnicos) => {
           this.tecnicos = Array.isArray(tecnicos) ? tecnicos : [];
         },
@@ -333,7 +359,10 @@ export class ProyectosComponent implements OnInit {
     };
 
     const obtenerPagina = (pagina: number): void => {
-      this.apiService.users(pagina, 'Todos los ingresos').subscribe({
+      this.apiService
+        .users(pagina, 'Todos los ingresos')
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe({
         next: (respuesta) => {
           const cuentas = Array.isArray(respuesta?.cuentas)
             ? (respuesta.cuentas as Cuenta[])
@@ -490,7 +519,10 @@ export class ProyectosComponent implements OnInit {
       : this.apiService.crearProyecto(formData);
 
     solicitud$
-      .pipe(finalize(() => (this.guardandoProyecto = false)))
+      .pipe(
+        takeUntilDestroyed(this.destroyRef),
+        finalize(() => (this.guardandoProyecto = false))
+      )
       .subscribe({
         next: (respuesta) => {
           if (respuesta) {
@@ -521,7 +553,10 @@ export class ProyectosComponent implements OnInit {
       return;
     }
 
-    this.apiService.eliminarProyecto(proyecto.id).subscribe({
+    this.apiService
+      .eliminarProyecto(proyecto.id)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
       next: () => {
         if (this.selectedProyecto?.id === proyecto.id) {
           this.selectedProyecto = null;
@@ -552,6 +587,7 @@ export class ProyectosComponent implements OnInit {
 
     this.apiService
       .agregarAdjuntosProyecto(this.selectedProyecto.id, formData)
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: () => {
           this.cargarDetalleProyecto(this.selectedProyecto!.id);
@@ -577,6 +613,7 @@ export class ProyectosComponent implements OnInit {
 
     this.apiService
       .eliminarProyectoAdjunto(this.selectedProyecto.id, adjunto.id)
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: () => this.cargarDetalleProyecto(this.selectedProyecto!.id),
         error: (error) => {
@@ -596,7 +633,10 @@ export class ProyectosComponent implements OnInit {
     this.buscandoBitacoras = true;
     this.apiService
       .bitacoras(params)
-      .pipe(finalize(() => (this.buscandoBitacoras = false)))
+      .pipe(
+        takeUntilDestroyed(this.destroyRef),
+        finalize(() => (this.buscandoBitacoras = false))
+      )
       .subscribe({
         next: (respuesta) => {
           this.bitacorasDisponibles = Array.isArray(respuesta?.data)
@@ -666,6 +706,7 @@ export class ProyectosComponent implements OnInit {
       .asignarBitacorasAProyecto(this.selectedProyecto.id, {
         bitacoraIds: [bitacora.id],
       })
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: () => {
           this.cargarDetalleProyecto(this.selectedProyecto!.id);
@@ -694,6 +735,7 @@ export class ProyectosComponent implements OnInit {
     }
     this.apiService
       .removerBitacoraDeProyecto(this.selectedProyecto.id, bitacora.id)
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: () => {
           this.cargarDetalleProyecto(this.selectedProyecto!.id);
@@ -712,7 +754,10 @@ export class ProyectosComponent implements OnInit {
       return;
     }
 
-    this.apiService.getProyecto(id).subscribe({
+    this.apiService
+      .getProyecto(id)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
       next: (detalle) => {
         const normalizado = this.normalizarProyecto(detalle);
         if (!normalizado) {
@@ -748,7 +793,10 @@ export class ProyectosComponent implements OnInit {
       return;
     }
 
-    this.apiService.signedUrl(nombre).subscribe({
+    this.apiService
+      .signedUrl(nombre)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
       next: (url) => {
         if (url) {
           window.open(url, '_blank', 'noopener');
@@ -787,4 +835,13 @@ export class ProyectosComponent implements OnInit {
           : 0,
     };
   }
+
+  trackByProyecto = (_: number, proyecto: Proyecto) => proyecto.id;
+  trackByTecnico = (_: number, tecnico: Tecnico) => tecnico.id;
+  trackByEncargado = (_: number, encargado: ProyectoEncargado) => encargado.id;
+  trackByAdjunto = (_: number, adjunto: ProyectoAdjunto) => adjunto.id;
+  trackByBitacora = (_: number, bitacora: Bitacora) =>
+    bitacora.id ?? bitacora.titulo ?? bitacora.fechaVisita ?? 0;
+  trackByCliente = (_: number, cliente: ClienteResumen) => cliente.id;
+  trackBySucursal = (_: number, sucursal: SucursalOption) => sucursal.id;
 }
