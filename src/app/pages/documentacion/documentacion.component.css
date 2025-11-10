@@ -505,6 +505,12 @@
   }
 }
 
+@media (max-width: 1100px) {
+  .documentacion-layout {
+    padding: 1rem;
+  }
+}
+
 @media (max-width: 768px) {
   .documentacion-layout {
     padding: 1rem;
