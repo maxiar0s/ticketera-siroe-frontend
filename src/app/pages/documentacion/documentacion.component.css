@@ -304,9 +304,69 @@
 .tabla-documentos {
   width: 100%;
   border-collapse: collapse;
-  font-size: 1.05rem;
+  font-size: 1rem;
   min-width: min(760px, 100%);
-  table-layout: fixed;
+  table-layout: auto;
+}
+
+.tabla-mobile {
+  display: none;
+}
+
+.mobile-card {
+  background: #fff;
+  border: 1px solid rgba(205, 210, 230, 0.8);
+  border-radius: 16px;
+  padding: 1.1rem;
+  box-shadow: 0 10px 24px rgba(32, 43, 74, 0.08);
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+}
+
+.mobile-card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.mobile-doc-name {
+  font-size: 1.05rem;
+  margin: 0;
+  flex: 1;
+}
+
+.mobile-row {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.mobile-row .label,
+.mobile-inline .label {
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: #8b90aa;
+  display: block;
+  margin-bottom: 0.1rem;
+}
+
+.mobile-inline {
+  display: flex;
+  gap: 1rem;
+  justify-content: space-between;
+}
+
+.mobile-inline > div {
+  flex: 1;
+}
+
+.mobile-actions {
+  display: flex;
+  gap: 0.6rem;
+  flex-wrap: wrap;
 }
 
 .tabla-documentos th,
@@ -513,6 +573,31 @@
 .file-input input {
   display: none;
 }
+
+.col-documento {
+  width: 200px;
+}
+
+.col-cliente {
+  width: 200px;
+}
+
+.col-tipo {
+  width: 90px;
+}
+
+.col-subido {
+  width: 200px;
+}
+
+.col-fecha {
+  width: 90px;
+}
+
+.col-tamano {
+  width: 90px;
+}
+
 @media (max-width: 1400px) {
   .documentacion-layout {
     padding: 1.5rem 1.5rem 1.5rem 2.5rem;
@@ -561,16 +646,14 @@
 }
 
 @media (max-width: 640px) {
-  .acciones-inline {
+  .tabla-documentos {
     display: none;
   }
 
-  .acciones-toggle {
-    display: inline-flex;
-  }
-
-  .tabla-documentos td.acciones {
-    align-items: flex-start;
+  .tabla-mobile {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
   }
 }
 

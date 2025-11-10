@@ -52,6 +52,7 @@ export class DocumentacionComponent implements OnInit, OnDestroy {
   descargandoId: number | null = null;
   eliminandoId: number | null = null;
   menuDocumentoId: number | null = null;
+  documentoModal: DocumentoCliente | null = null;
 
   mensajeError = '';
   mensajeExito = '';
@@ -270,6 +271,11 @@ export class DocumentacionComponent implements OnInit, OnDestroy {
     event.stopPropagation();
     this.menuDocumentoId =
       this.menuDocumentoId === documento.id ? null : documento.id;
+  }
+
+  abrirAccionesModal(documento: DocumentoCliente): void {
+    this.documentoModal = documento;
+    this.menuDocumentoId = null;
   }
 
   descargarDocumento(documento: DocumentoCliente): void {

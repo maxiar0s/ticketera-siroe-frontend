@@ -126,7 +126,7 @@
             <td class="col-tamano">
               {{ formatearPeso(documento.size) }}
             </td>
-            <td class="acciones col-acciones" (click)="$event.stopPropagation()">
+            <td class="acciones col-acciones">
               <div class="acciones-inline">
                 <button
                   type="button"
@@ -148,31 +148,67 @@
               <button
                 type="button"
                 class="btn ghost acciones-toggle"
-                (click)="toggleAccionesMenu($event, documento)"
+                (click)="abrirAccionesModal(documento)"
               >
                 Acciones
               </button>
-              <div class="acciones-menu" *ngIf="menuDocumentoId === documento.id">
-                <button
-                  type="button"
-                  (click)="descargarDocumento(documento)"
-                  [disabled]="descargandoId === documento.id"
-                >
-                  {{ descargandoId === documento.id ? 'Descargando…' : 'Descargar' }}
-                </button>
-                <button
-                  type="button"
-                  class="danger"
-                  (click)="eliminarDocumento(documento)"
-                  [disabled]="eliminandoId === documento.id"
-                >
-                  {{ eliminandoId === documento.id ? 'Eliminando…' : 'Eliminar' }}
-                </button>
-              </div>
             </td>
           </tr>
         </tbody>
       </table>
+
+      <div *ngIf="!cargandoDocumentos && documentos.length" class="tabla-mobile">
+        <article class="mobile-card" *ngFor="let documento of documentos; trackBy: trackByDocumento">
+          <header class="mobile-card-header">
+            <strong class="mobile-doc-name">{{ documento.nombreArchivo || 'Sin nombre' }}</strong>
+            <span class="mobile-tag" [class]="tipoBadgeClass(documento.tipo)">
+              {{ tipoLabel(documento.tipo) }}
+            </span>
+          </header>
+          <div class="mobile-row">
+            <span class="label">Cliente</span>
+            <div>
+              <p>{{ documento.casaMatriz?.razonSocial || 'Cliente eliminado' }}</p>
+              <small>{{ documento.casaMatriz?.rut }}</small>
+            </div>
+          </div>
+          <div class="mobile-row">
+            <span class="label">Subido por</span>
+            <div>
+              <p>{{ documento.subidoPor?.name || '—' }}</p>
+              <small>{{ documento.subidoPor?.email || '' }}</small>
+            </div>
+          </div>
+          <div class="mobile-inline">
+            <div>
+              <span class="label">Fecha</span>
+              <p>{{ documento.createdAt | date: 'dd/MM/yyyy' }}</p>
+            </div>
+            <div>
+              <span class="label">Tamaño</span>
+              <p>{{ formatearPeso(documento.size) }}</p>
+            </div>
+          </div>
+          <footer class="mobile-actions">
+            <button
+              type="button"
+              class="btn ghost"
+              (click)="descargarDocumento(documento)"
+              [disabled]="descargandoId === documento.id"
+            >
+              {{ descargandoId === documento.id ? 'Descargando…' : 'Descargar' }}
+            </button>
+            <button
+              type="button"
+              class="btn danger"
+              (click)="eliminarDocumento(documento)"
+              [disabled]="eliminandoId === documento.id"
+            >
+              {{ eliminandoId === documento.id ? 'Eliminando…' : 'Eliminar' }}
+            </button>
+          </footer>
+        </article>
+      </div>
 
       <div class="sin-resultados" *ngIf="!cargandoDocumentos && !documentos.length">
         <p>No encontramos documentos con los filtros seleccionados.</p>
@@ -250,5 +286,33 @@
         {{ subiendo ? 'Subiendo…' : 'Guardar documento' }}
       </button>
     </form>
+  </div>
+</div>
+
+<div class="acciones-modal-backdrop" *ngIf="documentoModal as docSeleccionado">
+  <div class="acciones-modal">
+    <h3>Acciones</h3>
+    <p class="modal-doc-name">{{ docSeleccionado.nombreArchivo || 'Sin nombre' }}</p>
+    <div class="modal-actions">
+      <button
+        type="button"
+        class="btn ghost"
+        (click)="descargarDocumento(docSeleccionado)"
+        [disabled]="descargandoId === docSeleccionado.id"
+      >
+        {{ descargandoId === docSeleccionado.id ? 'Descargando…' : 'Descargar' }}
+      </button>
+      <button
+        type="button"
+        class="btn danger"
+        (click)="eliminarDocumento(docSeleccionado)"
+        [disabled]="eliminandoId === docSeleccionado.id"
+      >
+        {{ eliminandoId === docSeleccionado.id ? 'Eliminando…' : 'Eliminar' }}
+      </button>
+    </div>
+    <button class="btn ghost cerrar-modal" type="button" (click)="documentoModal = null">
+      Cerrar
+    </button>
   </div>
 </div>
