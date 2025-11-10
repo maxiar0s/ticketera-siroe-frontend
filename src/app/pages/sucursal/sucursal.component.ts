@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, DestroyRef, inject } from '@angular/core';
 import { HeaderComponent } from './header/header.component';
 import { TableComponent } from './table/table.component';
 import { SignalService } from '../../services/signal.service';
@@ -20,6 +20,7 @@ import { EquipoFiltros } from '../../interfaces/equipo-filtros.interface';
 import { normalizarEsArriendo, normalizarServicios } from '../../utils/servicios.util';
 import { EquipoFormField } from '../../interfaces/EquipoForm.interface';
 import { CampoColor, CampoPresetOption, CampoStandard } from '../../interfaces/campo.interface';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 type XLSXModule = typeof import('xlsx');
 type ExcelJSLib = typeof import('exceljs');
@@ -62,7 +63,8 @@ interface EquipoExcelRow {
     NavegationComponent,
   ],
   templateUrl: './sucursal.component.html',
-  styleUrl: './sucursal.component.css'
+  styleUrl: './sucursal.component.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SucursalComponent {
   // Elementos para el paginador
@@ -91,6 +93,8 @@ export class SucursalComponent {
   private xlsxModulePromise?: Promise<XLSXModule>;
   private excelJsModulePromise?: Promise<ExcelJSLib>;
   private saveAsPromise?: Promise<SaveAsFunction>;
+  private readonly cdr = inject(ChangeDetectorRef);
+  private readonly destroyRef = inject(DestroyRef);
 
   constructor(
     private apiService:     ApiService,
@@ -107,7 +111,9 @@ export class SucursalComponent {
   // Metodo para obtener el ID de la sucursal actual de la ruta
   getSucursalId(): string {
     let id = '';
-    this.route.params.subscribe(params => {
+    this.route.params
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(params => {
       id = params['id'];
     });
     return id;
@@ -125,7 +131,9 @@ export class SucursalComponent {
       this.apiService.createEquiptment(payloadBase)
     );
 
-    forkJoin(solicitudes).subscribe({
+    forkJoin(solicitudes)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
       next: (respuestas) => {
         respuestas.forEach((respuesta, index) => {
           if (respuesta?.error) {
@@ -142,6 +150,7 @@ export class SucursalComponent {
         console.log('Proceso de creacion de equipos completado.');
         this.cerrarModal = false;
         this.cambiarSeleccion();
+        this.cdr.markForCheck();
       }
     });
   }
@@ -182,6 +191,7 @@ export class SucursalComponent {
 
     this.apiService
       .sucursal(id, this.paginaActual, this.option ?? '', this.filtrosEquipos)
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (respuesta) => {
           const { sucursal, paginas } = respuesta;
@@ -225,10 +235,12 @@ export class SucursalComponent {
           }
 
           this.loaderService.hideSection();
+          this.cdr.markForCheck();
         },
         error: (error: unknown) => {
           console.error('Error al obtener sucursales', error);
           this.loaderService.hideSection();
+          this.cdr.markForCheck();
         },
       });
   }
@@ -277,17 +289,22 @@ export class SucursalComponent {
 
     const eliminaciones$ = ids.map((id) => this.apiService.deleteEquipment(id));
 
-    forkJoin(eliminaciones$).subscribe({
+    forkJoin(eliminaciones$)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
       next: () => {
         this.Devices = [];
         this.cambiarSeleccion();
+        this.cdr.markForCheck();
       },
       error: (error: unknown) => {
         console.error('Error al eliminar equipos seleccionados:', error);
         this.loaderService.hideModal();
+        this.cdr.markForCheck();
       },
       complete: () => {
         this.loaderService.hideModal();
+        this.cdr.markForCheck();
       }
     });
   }
@@ -299,11 +316,14 @@ export class SucursalComponent {
 
     this.loaderService.showModal();
 
-    this.obtenerEquiposYEstados().subscribe({
+    this.obtenerEquiposYEstados()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
       next: ({ equipos, estados }) => {
         if (equipos.length === 0) {
           console.warn('No hay equipos para exportar.');
           this.loaderService.hideModal();
+          this.cdr.markForCheck();
           return;
         }
 
@@ -313,11 +333,13 @@ export class SucursalComponent {
           })
           .finally(() => {
             this.loaderService.hideModal();
+            this.cdr.markForCheck();
           });
       },
       error: (error: unknown) => {
         console.error('Error al exportar equipos:', error);
         this.loaderService.hideModal();
+        this.cdr.markForCheck();
       },
     });
   }
@@ -329,11 +351,14 @@ export class SucursalComponent {
 
     this.loaderService.showModal();
 
-    this.obtenerEquiposYEstados().subscribe({
+    this.obtenerEquiposYEstados()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
       next: ({ equipos, estados, camposPorTipo }) => {
         if (equipos.length === 0) {
           console.warn('No hay equipos para generar informe.');
           this.loaderService.hideModal();
+          this.cdr.markForCheck();
           return;
         }
 
@@ -343,11 +368,13 @@ export class SucursalComponent {
           })
           .finally(() => {
             this.loaderService.hideModal();
+            this.cdr.markForCheck();
           });
       },
       error: (error: unknown) => {
         console.error('Error al preparar datos para el informe de equipos:', error);
         this.loaderService.hideModal();
+        this.cdr.markForCheck();
       }
     });
   }
