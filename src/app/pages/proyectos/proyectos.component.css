@@ -73,7 +73,6 @@
 .nuevo-proyecto-button {
   white-space:nowrap;
   flex-shrink:0;
-  width:100%;
 }
 
 .sidebar-search {
@@ -1043,8 +1042,7 @@
 
 @media (max-width:1280px) {
   .proyectos-layout {
-    padding:1.2rem 1.4rem 1.8rem 1.8rem;
-    gap:1.8rem;
+    gap:1.5rem;
   }
 
   .proyectos-sidebar {
@@ -1068,6 +1066,7 @@
   }
 }
 
+/*
 @media (max-width:768px) {
   .proyectos-layout {
     padding:1rem;
@@ -1076,10 +1075,6 @@
   .sidebar-header {
     flex-direction:column;
     align-items:stretch;
-  }
-
-  .nuevo-proyecto-button {
-    width:100%;
   }
 
   .form-header {
@@ -1130,3 +1125,4 @@
     justify-content:flex-end;
   }
 }
+*/

@@ -20,6 +20,7 @@ import {
   DocumentoClienteTipo,
 } from '../../interfaces/documento-cliente.interface';
 import { ApiService } from '../../services/api.service';
+import { SignalService } from '../../services/signal.service';
 
 type ResumenTipoDocumento = Record<
   DocumentoClienteTipo | 'total',
@@ -76,7 +77,11 @@ export class DocumentacionComponent implements OnInit, OnDestroy {
   private readonly destroy$ = new Subject<void>();
   private readonly maxFileSizeBytes = 20 * 1024 * 1024;
 
-  constructor(private fb: FormBuilder, private apiService: ApiService) {
+  constructor(
+    private fb: FormBuilder,
+    private apiService: ApiService,
+    private signalService: SignalService
+  ) {
     this.filtroForm = this.fb.group({
       clienteId: [''],
       tipo: [''],
@@ -91,6 +96,7 @@ export class DocumentacionComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.signalService.updateData('Documentación');
     this.cargarClientes();
     this.cargarDocumentos();
   }

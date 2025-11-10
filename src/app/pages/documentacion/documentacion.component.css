@@ -1,10 +1,9 @@
 .documentacion-layout {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 1.5rem;
+  gap: 1rem;
   padding: 1.5rem 2rem 2.5rem;
   background-color: #f6f7fb;
-  min-height: calc(100vh - 6rem);
   align-items: flex-start;
 }
 
@@ -353,6 +352,19 @@
   margin-bottom: 0.1rem;
 }
 
+.mobile-row small,
+.mobile-row p,
+.mobile-inline p {
+  font-size: 1rem;
+  margin: 0;
+  color: #2b3250;
+}
+
+.mobile-row small {
+  font-size: 0.95rem;
+  color: #5b6182;
+}
+
 .mobile-inline {
   display: flex;
   gap: 1rem;
@@ -574,30 +586,6 @@
   display: none;
 }
 
-.col-documento {
-  width: 200px;
-}
-
-.col-cliente {
-  width: 200px;
-}
-
-.col-tipo {
-  width: 90px;
-}
-
-.col-subido {
-  width: 200px;
-}
-
-.col-fecha {
-  width: 90px;
-}
-
-.col-tamano {
-  width: 90px;
-}
-
 @media (max-width: 1400px) {
   .documentacion-layout {
     padding: 1.5rem 1.5rem 1.5rem 2.5rem;
@@ -645,7 +633,7 @@
   }
 }
 
-@media (max-width: 640px) {
+@media (max-width: 1024px) {
   .tabla-documentos {
     display: none;
   }

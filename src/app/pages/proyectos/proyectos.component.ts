@@ -13,6 +13,7 @@ import { FormatoFechaPipe } from '../../pipes/formato-fecha.pipe';
 import { SignedUrlPipe } from '../../pipes/generar-url.pipe';
 import { ApiService } from '../../services/api.service';
 import { AuthService } from '../../services/auth.service';
+import { SignalService } from '../../services/signal.service';
 import { Proyecto, ProyectoAdjunto } from '../../interfaces/proyecto.interface';
 import { Cuenta } from '../../interfaces/Cuenta.interface';
 import { ClienteResumen } from '../../interfaces/cliente-resumen.interface';
@@ -84,7 +85,8 @@ export class ProyectosComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private apiService: ApiService,
-    private authService: AuthService
+    private authService: AuthService,
+    private signalService: SignalService
   ) {
     this.puedeGestionarProyectos =
       this.authService.esAdministrador() ||
@@ -116,6 +118,7 @@ export class ProyectosComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.signalService.updateData('Proyectos');
     this.cargarTecnicos();
     this.cargarProyectos();
     this.cargarClientesFiltro();
