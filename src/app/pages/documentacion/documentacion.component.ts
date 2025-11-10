@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import {
   Component,
   ElementRef,
+  HostListener,
   OnDestroy,
   OnInit,
   ViewChild,
@@ -50,6 +51,7 @@ export class DocumentacionComponent implements OnInit, OnDestroy {
   subiendo = false;
   descargandoId: number | null = null;
   eliminandoId: number | null = null;
+  menuDocumentoId: number | null = null;
 
   mensajeError = '';
   mensajeExito = '';
@@ -95,6 +97,11 @@ export class DocumentacionComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
+  }
+
+  @HostListener('document:click')
+  cerrarMenuAcciones(): void {
+    this.menuDocumentoId = null;
   }
 
   get puedeSubir(): boolean {
@@ -258,11 +265,19 @@ export class DocumentacionComponent implements OnInit, OnDestroy {
       });
   }
 
+  toggleAccionesMenu(event: MouseEvent, documento: DocumentoCliente): void {
+    event.preventDefault();
+    event.stopPropagation();
+    this.menuDocumentoId =
+      this.menuDocumentoId === documento.id ? null : documento.id;
+  }
+
   descargarDocumento(documento: DocumentoCliente): void {
     if (!documento?.archivo) {
       return;
     }
 
+    this.menuDocumentoId = null;
     this.descargandoId = documento.id;
     this.apiService
       .signedUrl(documento.archivo)
@@ -295,6 +310,7 @@ export class DocumentacionComponent implements OnInit, OnDestroy {
       return;
     }
 
+    this.menuDocumentoId = null;
     this.eliminandoId = documento.id;
     this.apiService
       .eliminarDocumentoCliente(documento.id)

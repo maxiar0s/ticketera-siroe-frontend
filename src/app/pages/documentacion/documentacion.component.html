@@ -86,24 +86,24 @@
       <table *ngIf="!cargandoDocumentos && documentos.length" class="tabla-documentos">
         <thead>
           <tr>
-            <th>Documento</th>
-            <th>Cliente</th>
-            <th>Tipo</th>
-            <th>Subido por</th>
-            <th>Fecha</th>
-            <th>Tamaño</th>
-            <th class="acciones">Acciones</th>
+            <th class="col-documento">Documento</th>
+            <th class="col-cliente">Cliente</th>
+            <th class="col-tipo">Tipo</th>
+            <th class="col-subido">Subido por</th>
+            <th class="col-fecha">Fecha</th>
+            <th class="col-tamano">Tamaño</th>
+            <th class="acciones col-acciones">Acciones</th>
           </tr>
         </thead>
         <tbody>
           <tr *ngFor="let documento of documentos; trackBy: trackByDocumento">
-            <td class="archivo-nombre">
+            <td class="archivo-nombre col-documento">
               <strong>{{ documento.nombreArchivo || 'Sin nombre' }}</strong>
               <p class="descripcion" *ngIf="documento.descripcion">
                 {{ documento.descripcion }}
               </p>
             </td>
-            <td>
+            <td class="col-cliente">
               <p class="cliente-nombre">
                 {{ documento.casaMatriz?.razonSocial || 'Cliente eliminado' }}
               </p>
@@ -111,38 +111,64 @@
                 {{ documento.casaMatriz?.rut }}
               </p>
             </td>
-            <td>
+            <td class="col-tipo">
               <span [class]="tipoBadgeClass(documento.tipo)">
                 {{ tipoLabel(documento.tipo) }}
               </span>
             </td>
-            <td>
+            <td class="col-subido">
               <p>{{ documento.subidoPor?.name || '—' }}</p>
               <small>{{ documento.subidoPor?.email || '' }}</small>
             </td>
-            <td>
-              {{ documento.createdAt | date: 'mediumDate' }}
+            <td class="col-fecha">
+              {{ documento.createdAt | date: 'dd/MM/yyyy' }}
             </td>
-            <td>
+            <td class="col-tamano">
               {{ formatearPeso(documento.size) }}
             </td>
-            <td class="acciones">
+            <td class="acciones col-acciones" (click)="$event.stopPropagation()">
+              <div class="acciones-inline">
+                <button
+                  type="button"
+                  class="btn ghost"
+                  (click)="descargarDocumento(documento)"
+                  [disabled]="descargandoId === documento.id"
+                >
+                  {{ descargandoId === documento.id ? 'Descargando…' : 'Descargar' }}
+                </button>
+                <button
+                  type="button"
+                  class="btn danger"
+                  (click)="eliminarDocumento(documento)"
+                  [disabled]="eliminandoId === documento.id"
+                >
+                  {{ eliminandoId === documento.id ? 'Eliminando…' : 'Eliminar' }}
+                </button>
+              </div>
               <button
                 type="button"
-                class="btn ghost"
-                (click)="descargarDocumento(documento)"
-                [disabled]="descargandoId === documento.id"
+                class="btn ghost acciones-toggle"
+                (click)="toggleAccionesMenu($event, documento)"
               >
-                {{ descargandoId === documento.id ? 'Descargando…' : 'Descargar' }}
+                Acciones
               </button>
-              <button
-                type="button"
-                class="btn danger"
-                (click)="eliminarDocumento(documento)"
-                [disabled]="eliminandoId === documento.id"
-              >
-                {{ eliminandoId === documento.id ? 'Eliminando…' : 'Eliminar' }}
-              </button>
+              <div class="acciones-menu" *ngIf="menuDocumentoId === documento.id">
+                <button
+                  type="button"
+                  (click)="descargarDocumento(documento)"
+                  [disabled]="descargandoId === documento.id"
+                >
+                  {{ descargandoId === documento.id ? 'Descargando…' : 'Descargar' }}
+                </button>
+                <button
+                  type="button"
+                  class="danger"
+                  (click)="eliminarDocumento(documento)"
+                  [disabled]="eliminandoId === documento.id"
+                >
+                  {{ eliminandoId === documento.id ? 'Eliminando…' : 'Eliminar' }}
+                </button>
+              </div>
             </td>
           </tr>
         </tbody>

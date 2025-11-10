@@ -1,7 +1,7 @@
 .documentacion-layout {
   display: grid;
   grid-template-columns: minmax(0, 2fr) 420px;
-  gap: 2rem;
+  gap: 1rem;
   padding: 1.5rem 2rem 2.5rem;
   background-color: #f6f7fb;
   min-height: calc(100vh - 6rem);
@@ -253,6 +253,7 @@
   overflow: hidden;
   background: #fff;
   position: relative;
+  overflow-x: auto;
 }
 
 .tabla-wrapper.loading {
@@ -287,6 +288,7 @@
   width: 100%;
   border-collapse: collapse;
   font-size: 1.15rem;
+  min-width: 760px;
 }
 
 .tabla-documentos th,
@@ -310,12 +312,21 @@
 
 .archivo-nombre strong {
   color: #1f2a44;
+  display: block;
+  max-width: 320px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .archivo-nombre .descripcion {
   margin: 0.2rem 0 0;
   color: #60698d;
   font-size: 1.1rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .cliente-nombre {
@@ -366,6 +377,53 @@
   display: flex;
   flex-direction: column;
   gap: 0.4rem;
+  position: relative;
+}
+
+.acciones-inline {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: nowrap;
+}
+
+.acciones-toggle {
+  display: none;
+  margin-top: 0.2rem;
+}
+
+.acciones-menu {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 0.3rem);
+  background: #ffffff;
+  border-radius: 14px;
+  box-shadow: 0 16px 30px rgba(22, 29, 57, 0.18);
+  border: 1px solid rgba(205, 210, 230, 0.7);
+  padding: 0.8rem;
+  display: flex;
+  flex-direction: column;
+  min-width: 180px;
+  gap: 0.35rem;
+  z-index: 5;
+}
+
+.acciones-menu button {
+  border: none;
+  background: none;
+  text-align: left;
+  font-weight: 600;
+  color: #2b3250;
+  cursor: pointer;
+  padding: 0.2rem 0;
+}
+
+.acciones-menu button.danger {
+  color: #b71653;
+}
+
+.acciones-menu button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 .sin-resultados {
@@ -431,6 +489,11 @@
 .file-input input {
   display: none;
 }
+@media (max-width: 1400px) {
+  .documentacion-layout {
+    padding: 1.5rem 1.5rem 1.5rem 2.5rem;
+  }
+}
 
 @media (max-width: 1200px) {
   .documentacion-layout {
@@ -445,6 +508,7 @@
 @media (max-width: 768px) {
   .documentacion-layout {
     padding: 1rem;
+    gap: 0.5rem;
   }
 
   .filtro-form {
@@ -459,10 +523,51 @@
   .tabla-documentos td {
     padding: 0.85rem 0.9rem;
   }
+
+  .col-tamano {
+    display: none;
+  }
+}
+
+@media (max-width: 640px) {
+  .acciones-inline {
+    display: none;
+  }
+
+  .acciones-toggle {
+    display: inline-flex;
+  }
+
+  .tabla-documentos td.acciones {
+    align-items: flex-start;
+  }
 }
 
 @media (max-width: 480px) {
-    .documentacion-layout {
+  .documentacion-layout {
     padding: 0.5rem;
+  }
+}
+
+@media (max-width: 420px) {
+  .card {
+    padding: 1rem 1rem;
+  }
+
+  .upload-panel {
+    max-width: 100%;
+    justify-self: stretch;
+  }
+
+  .panel-header h1 {
+    font-size: 1.5rem;
+  }
+
+  .btn {
+    width: 100%;
+  }
+
+  .tabla-documentos {
+    min-width: 640px;
   }
 }
