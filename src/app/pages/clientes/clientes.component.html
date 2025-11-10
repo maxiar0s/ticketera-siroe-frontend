@@ -110,6 +110,14 @@
                   />
                 </button>
               </div>
+              <button
+                *ngIf="puedeVerDatosBancarios"
+                type="button"
+                class="client-button client-button--secondary"
+                (click)="abrirModalDatosBancarios(casaMatriz)"
+              >
+                Ver datos bancarios
+              </button>
             </div>
           </div>
         </div>
@@ -150,3 +158,10 @@
   (eliminarCliente)="eliminarCliente($event)"
   (editarCliente)="modificarCliente($event)"
 ></app-opciones-cliente>
+
+<app-datos-bancarios-cliente
+  *ngIf="puedeVerDatosBancarios"
+  [visible]="mostrarModalDatosBancarios"
+  [cliente]="clienteConDatosBancarios"
+  (cerrar)="cerrarModalDatosBancarios()"
+></app-datos-bancarios-cliente>

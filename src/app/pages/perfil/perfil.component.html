@@ -40,6 +40,58 @@
       </ng-template>
     </section>
 
+    <section class="perfil-bancario" *ngIf="esCliente && user.clientesAutorizados?.length">
+      <h2>Datos bancarios para pagos</h2>
+      <p class="perfil-bancario__ayuda">
+        Estos datos se compartirán con tu cuenta para facilitar pagos y conciliaciones.
+      </p>
+      <div class="perfil-bancario__lista">
+        <article class="perfil-bancario__item" *ngFor="let cliente of user.clientesAutorizados">
+          <header class="perfil-bancario__encabezado">
+            <div>
+              <p class="perfil-bancario__cliente">Cliente asociado</p>
+              <h3>{{ cliente.razonSocial }}</h3>
+            </div>
+            <span class="perfil-bancario__estado" [class.perfil-bancario__estado--warning]="!clienteTieneDatosBancarios(cliente)">
+              {{ clienteTieneDatosBancarios(cliente) ? 'Información disponible' : 'Pendiente' }}
+            </span>
+          </header>
+
+          <div class="perfil-bancario__grid" *ngIf="clienteTieneDatosBancarios(cliente); else perfilBancarioSinDatos">
+            <div class="perfil-bancario__field">
+              <span class="perfil-bancario__label">Banco</span>
+              <span class="perfil-bancario__value">{{ mostrarDatoBancario(cliente.datosBancarios?.banco) }}</span>
+            </div>
+            <div class="perfil-bancario__field">
+              <span class="perfil-bancario__label">Tipo de cuenta</span>
+              <span class="perfil-bancario__value">{{ mostrarDatoBancario(cliente.datosBancarios?.tipoCuenta) }}</span>
+            </div>
+            <div class="perfil-bancario__field">
+              <span class="perfil-bancario__label">Número de cuenta</span>
+              <span class="perfil-bancario__value">{{ mostrarDatoBancario(cliente.datosBancarios?.numeroCuenta) }}</span>
+            </div>
+            <div class="perfil-bancario__field">
+              <span class="perfil-bancario__label">Titular</span>
+              <span class="perfil-bancario__value">{{ mostrarDatoBancario(cliente.datosBancarios?.titular) }}</span>
+            </div>
+            <div class="perfil-bancario__field">
+              <span class="perfil-bancario__label">RUT titular</span>
+              <span class="perfil-bancario__value">{{ mostrarDatoBancario(cliente.datosBancarios?.rutTitular) }}</span>
+            </div>
+            <div class="perfil-bancario__field">
+              <span class="perfil-bancario__label">Correo para comprobantes</span>
+              <span class="perfil-bancario__value">{{ mostrarDatoBancario(cliente.datosBancarios?.correoNotificacion) }}</span>
+            </div>
+          </div>
+          <ng-template #perfilBancarioSinDatos>
+            <p class="perfil-bancario__placeholder">
+              Este cliente aún no registra datos bancarios.
+            </p>
+          </ng-template>
+        </article>
+      </div>
+    </section>
+
     <section class="perfil-contenido">
       <form class="perfil-formulario" [formGroup]="perfilForm" (ngSubmit)="guardarPerfil()">
         <header class="perfil-formulario__encabezado">

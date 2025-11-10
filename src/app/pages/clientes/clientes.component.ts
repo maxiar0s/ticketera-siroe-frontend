@@ -13,6 +13,8 @@ import { TelefonoPipe } from '../../pipes/telefono.pipe';
 import { RutPipe } from '../../pipes/rut.pipe';
 import { OpcionesClienteComponent } from '../../shared/modal/cliente/opciones-cliente/opciones-cliente.component';
 import { normalizarServicios } from '../../utils/servicios.util';
+import { normalizarDatosBancarios } from '../../utils/datos-bancarios.util';
+import { DatosBancariosClienteComponent } from "../../shared/modal/cliente/datos-bancarios/datos-bancarios.component";
 
 @Component({
   selector: 'clientes',
@@ -25,7 +27,8 @@ import { normalizarServicios } from '../../utils/servicios.util';
     SignedUrlPipe,
     TelefonoPipe,
     RutPipe,
-    OpcionesClienteComponent
+    OpcionesClienteComponent,
+    DatosBancariosClienteComponent
   ],
   templateUrl: './clientes.component.html',
   styleUrls: ['./clientes.component.css']
@@ -33,6 +36,7 @@ import { normalizarServicios } from '../../utils/servicios.util';
 export class ClientesComponent implements OnInit {
   public esAdministrador: boolean = false;
   public esCliente: boolean = false;
+  public esComercial: boolean = false;
 
   // Elementos para el paginador
   public paginaActual:    number = 1;
@@ -52,6 +56,8 @@ export class ClientesComponent implements OnInit {
   public isModalAjustesClienteVisible: boolean = false;
   public selectedClienteIndex: number = -1;
   public selectedCliente: Cliente | null = null;
+  public mostrarModalDatosBancarios: boolean = false;
+  public clienteConDatosBancarios: Cliente | null = null;
 
   constructor(
     private apiService: ApiService,
@@ -64,6 +70,7 @@ export class ClientesComponent implements OnInit {
     this.signalService.updateData('Clientes');
     this.esAdministrador = this.authService.esAdministrador();
     this.esCliente = this.authService.esCliente();
+    this.esComercial = this.authService.esComercial();
     this.cargarClientes();
   }
 
@@ -172,9 +179,10 @@ export class ClientesComponent implements OnInit {
             const { paginas, clientes } = respuesta;
             this.loaderService.hideSection();
             this.obtainedClients = true;
-            this.casasMatricez = (clientes ?? []).map((cliente: Cliente & { servicios?: unknown }) => ({
+            this.casasMatricez = (clientes ?? []).map((cliente: Cliente & { servicios?: unknown; datosBancarios?: unknown }) => ({
               ...cliente,
               servicios: normalizarServicios(cliente.servicios),
+              datosBancarios: normalizarDatosBancarios(cliente.datosBancarios),
             }));
             this.paginas = paginas;
           } else {
@@ -235,6 +243,20 @@ export class ClientesComponent implements OnInit {
     }
 
     return '';
+  }
+
+  get puedeVerDatosBancarios(): boolean {
+    return this.esAdministrador || this.esComercial;
+  }
+
+  abrirModalDatosBancarios(cliente: Cliente): void {
+    this.clienteConDatosBancarios = cliente;
+    this.mostrarModalDatosBancarios = true;
+  }
+
+  cerrarModalDatosBancarios(): void {
+    this.mostrarModalDatosBancarios = false;
+    this.clienteConDatosBancarios = null;
   }
 }
 

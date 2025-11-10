@@ -39,6 +39,12 @@ export class CrearClienteComponent implements OnChanges {
     visitasMensuales: 0,
     visitasEmergenciaAnuales: 0,
     servicios: [] as string[],
+    banco: '',
+    tipoCuenta: '',
+    numeroCuenta: '',
+    titular: '',
+    rutTitular: '',
+    correoNotificacion: '',
   };
   public readonly serviciosDisponibles: string[] = [
     'Soporte TI',
@@ -65,6 +71,12 @@ export class CrearClienteComponent implements OnChanges {
       visitasMensuales: [this.initialFormValues.visitasMensuales, [Validators.required, Validators.min(0)]],
       visitasEmergenciaAnuales: [this.initialFormValues.visitasEmergenciaAnuales, [Validators.required, Validators.min(0)]],
       servicios: [this.initialFormValues.servicios, [Validators.required]],
+      banco: [this.initialFormValues.banco],
+      tipoCuenta: [this.initialFormValues.tipoCuenta],
+      numeroCuenta: [this.initialFormValues.numeroCuenta],
+      titular: [this.initialFormValues.titular],
+      rutTitular: [this.initialFormValues.rutTitular],
+      correoNotificacion: [this.initialFormValues.correoNotificacion, Validators.email],
     });
   }
 
@@ -99,6 +111,12 @@ export class CrearClienteComponent implements OnChanges {
         visitasMensuales: this.cliente.visitasMensuales ?? 0,
         visitasEmergenciaAnuales: this.cliente.visitasEmergenciaAnuales ?? 0,
         servicios: this.cliente.servicios ?? [],
+        banco: this.cliente.datosBancarios?.banco ?? '',
+        tipoCuenta: this.cliente.datosBancarios?.tipoCuenta ?? '',
+        numeroCuenta: this.cliente.datosBancarios?.numeroCuenta ?? '',
+        titular: this.cliente.datosBancarios?.titular ?? '',
+        rutTitular: this.cliente.datosBancarios?.rutTitular ?? '',
+        correoNotificacion: this.cliente.datosBancarios?.correoNotificacion ?? '',
       });
       // Resetear el estado dirty al cargar datos
       this.clientForm.markAsPristine();
@@ -160,6 +178,9 @@ export class CrearClienteComponent implements OnChanges {
 
       formData.append('servicios', JSON.stringify(serviciosSeleccionados));
 
+      const datosBancarios = this.obtenerDatosBancariosFormulario();
+      formData.append('datosBancarios', JSON.stringify(datosBancarios));
+
       // Manejar el archivo de imagen
       if (this.selectedFile) {
         formData.set('imagen', this.selectedFile);
@@ -220,5 +241,26 @@ export class CrearClienteComponent implements OnChanges {
     const control = this.clientForm.get('servicios');
     const seleccionados = Array.isArray(control?.value) ? control?.value : [];
     return seleccionados.includes(servicio);
+  }
+
+  private obtenerDatosBancariosFormulario() {
+    const limpiar = (valor: unknown): string | null => {
+      if (valor === null || valor === undefined) {
+        return null;
+      }
+      const texto = typeof valor === 'string' ? valor : `${valor}`;
+      const trimmed = texto.trim();
+      return trimmed.length ? trimmed : null;
+    };
+
+    const valores = this.clientForm.getRawValue();
+    return {
+      banco: limpiar(valores['banco']),
+      tipoCuenta: limpiar(valores['tipoCuenta']),
+      numeroCuenta: limpiar(valores['numeroCuenta']),
+      titular: limpiar(valores['titular']),
+      rutTitular: limpiar(valores['rutTitular']),
+      correoNotificacion: limpiar(valores['correoNotificacion']),
+    };
   }
 }

@@ -136,8 +136,49 @@
             <div *ngIf="clientForm.get('visitasEmergenciaAnuales')?.hasError('min') && clientForm.get('visitasEmergenciaAnuales')?.touched" class="error">
               Ingresa un numero mayor o igual a 0.
             </div>
-          </div>
         </div>
+      </div>
+
+        <fieldset class="bank-section">
+          <legend>Datos bancarios para pagos</legend>
+          <p class="bank-section__help">Esta información estará disponible para el equipo comercial y para el cliente asignado.</p>
+
+          <div class="two-inputs">
+            <div class="form-group width-50">
+              <label for="banco">Banco</label>
+              <input id="banco" type="text" formControlName="banco" placeholder="Ej. Banco Estado" (input)="clientForm.markAsDirty()" />
+            </div>
+            <div class="form-group width-50">
+              <label for="tipoCuenta">Tipo de cuenta</label>
+              <input id="tipoCuenta" type="text" formControlName="tipoCuenta" placeholder="Ej. Cuenta corriente" (input)="clientForm.markAsDirty()" />
+            </div>
+          </div>
+
+          <div class="two-inputs">
+            <div class="form-group width-50">
+              <label for="numeroCuenta">Número de cuenta</label>
+              <input id="numeroCuenta" type="text" formControlName="numeroCuenta" placeholder="Ingresa el número de cuenta" (input)="clientForm.markAsDirty()" />
+            </div>
+            <div class="form-group width-50">
+              <label for="titular">Titular</label>
+              <input id="titular" type="text" formControlName="titular" placeholder="Nombre del titular" (input)="clientForm.markAsDirty()" />
+            </div>
+          </div>
+
+          <div class="two-inputs">
+            <div class="form-group width-50">
+              <label for="rutTitular">RUT titular</label>
+              <input id="rutTitular" type="text" formControlName="rutTitular" placeholder="RUT del titular" (input)="clientForm.markAsDirty()" />
+            </div>
+            <div class="form-group width-50">
+              <label for="correoNotificacion">Correo para comprobantes</label>
+              <input id="correoNotificacion" type="email" formControlName="correoNotificacion" placeholder="correo@dominio.cl" (input)="clientForm.markAsDirty()" />
+              <div *ngIf="clientForm.get('correoNotificacion')?.invalid && clientForm.get('correoNotificacion')?.touched" class="error">
+                Ingresa un correo válido.
+              </div>
+            </div>
+          </div>
+        </fieldset>
 
         <!-- Mensaje de Error -->
         <div *ngIf="errorMessage" class="error-message">

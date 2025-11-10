@@ -135,17 +135,12 @@ export class SideMenuComponent {
       return;
     }
 
-    if (!tieneTickets && this.authService.esCliente()) {
-      this.menu.splice(index, 1);
-      const destino = this.logoRoute || '/dashboard';
-      const normalizedCurrent = this.normalizeRoute(currentPath);
-      if (normalizedCurrent === 'bitacora') {
-        this.router.navigate([destino]).finally(() => {
-          this.sincronizarSeleccionConRuta(this.location.path());
-        });
-      } else {
-        this.sincronizarSeleccionConRuta(this.location.path());
-      }
+    if (this.authService.esCliente()) {
+      this.menu[index] = {
+        ...this.menu[index],
+        nombre: tieneTickets ? 'Bitacora / Tickets' : 'Bitacora',
+      };
+      this.sincronizarSeleccionConRuta(this.location.path());
       return;
     }
 

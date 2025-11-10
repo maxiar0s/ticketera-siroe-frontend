@@ -1,4 +1,5 @@
 import { Sucursal } from "./Sucursal.interface";
+import { DatosBancarios } from "./datos-bancarios.interface";
 export interface Cliente {
   id:                string;
   imagen:            string;
@@ -15,4 +16,5 @@ export interface Cliente {
   visitasEmergenciaAnualesRealizadas?: number;
   Equipos?:           any[];
   sucursales?:        Sucursal[];
+  datosBancarios?:    DatosBancarios | null;
 }

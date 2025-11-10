@@ -67,6 +67,104 @@
   color: #6c7684;
 }
 
+.perfil-bancario {
+  background-color: #ffffff;
+  border-radius: 12px;
+  padding: 1.5rem 2rem;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.06);
+  display: grid;
+  gap: 1rem;
+}
+
+.perfil-bancario__ayuda {
+  margin: 0;
+  color: #69717a;
+}
+
+.perfil-bancario__lista {
+  display: grid;
+  gap: 1rem;
+}
+
+.perfil-bancario__item {
+  border: 1px solid #e4e8ef;
+  border-radius: 12px;
+  padding: 1.2rem 1.4rem;
+  background-color: #f9fafc;
+  display: grid;
+  gap: 1rem;
+}
+
+.perfil-bancario__encabezado {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.perfil-bancario__cliente {
+  margin: 0;
+  text-transform: uppercase;
+  font-size: 0.9rem;
+  color: #a0a8b9;
+  letter-spacing: 0.06rem;
+}
+
+.perfil-bancario__encabezado h3 {
+  margin: 0.2rem 0 0;
+  font-size: 1.4rem;
+}
+
+.perfil-bancario__estado {
+  border-radius: 999px;
+  padding: 0.35rem 0.95rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  background-color: #ecfdf5;
+  color: #047857;
+}
+
+.perfil-bancario__estado--warning {
+  background-color: #fef3c7;
+  color: #92400e;
+}
+
+.perfil-bancario__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
+}
+
+.perfil-bancario__field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.perfil-bancario__label {
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  color: #6c7684;
+  letter-spacing: 0.05rem;
+  font-weight: 600;
+}
+
+.perfil-bancario__value {
+  font-size: 1.2rem;
+  color: #1f1f1f;
+  font-weight: 500;
+  word-break: break-word;
+}
+
+.perfil-bancario__placeholder {
+  margin: 0;
+  padding: 0.75rem 1rem;
+  border-radius: 10px;
+  background-color: #fff7ed;
+  color: #c2410c;
+  font-weight: 600;
+}
+
 .perfil-avatar {
   width: 6rem;
   height: 6rem;

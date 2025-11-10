@@ -81,8 +81,14 @@ export class BitacoraComponent implements OnInit {
   ] as const;
 
   tieneAccesoTickets = true;
+  soloBitacorasCliente = false;
   perfilTieneTickets = false;
   tituloModulo = 'Bitacora de visitas';
+  get opcionesFiltroTipoVisibles() {
+    return this.soloBitacorasCliente
+      ? this.opcionesFiltroTipo.filter((opcion) => opcion.value === 'bitacora')
+      : this.opcionesFiltroTipo;
+  }
 
   constructor(
     private fb: FormBuilder,
@@ -199,6 +205,32 @@ export class BitacoraComponent implements OnInit {
     aplicarValidaciones();
   }
 
+  private actualizarTituloModulo(perfilConTickets: boolean): void {
+    if (!this.esCliente || perfilConTickets) {
+      this.tituloModulo = 'Bitacora / Tickets';
+      return;
+    }
+    this.tituloModulo = 'Bitacora de visitas';
+  }
+
+  private sincronizarControlTipo(): void {
+    const tipoCtrl = this.filtroForm.get('tipo');
+    if (!tipoCtrl) {
+      return;
+    }
+    if (this.soloBitacorasCliente) {
+      tipoCtrl.disable({ emitEvent: false });
+      tipoCtrl.setValue('bitacora', { emitEvent: false });
+    } else {
+      if (tipoCtrl.disabled) {
+        tipoCtrl.enable({ emitEvent: false });
+      }
+      if (!tipoCtrl.value) {
+        tipoCtrl.setValue('ambos', { emitEvent: false });
+      }
+    }
+  }
+
   downloadAdjunto(fileName: string): void {
     if (!fileName) {
       console.error('Nombre de archivo no proporcionado');
@@ -243,56 +275,49 @@ export class BitacoraComponent implements OnInit {
       next: (perfil: Cuenta) => {
         const rolTieneTickets =
           this.esAdmin || this.esTecnico || this.esComercial;
-        const tieneTickets = rolTieneTickets || !!perfil?.haveTickets;
-        this.perfilTieneTickets = tieneTickets;
-        if (tieneTickets) {
-          this.tituloModulo = 'Bitacora / Tickets';
-        }
+        const clienteTieneTickets = !!perfil?.haveTickets;
+        const tieneTickets = rolTieneTickets || clienteTieneTickets;
 
-        this.tieneAccesoTickets = !this.esCliente || tieneTickets;
+        this.perfilTieneTickets = tieneTickets;
+        this.tieneAccesoTickets = !this.esCliente || clienteTieneTickets;
+        this.soloBitacorasCliente = this.esCliente && !clienteTieneTickets;
+        this.actualizarTituloModulo(tieneTickets);
+        this.sincronizarControlTipo();
         this.signalService.updateData(this.tituloModulo);
 
-        if (this.tieneAccesoTickets) {
-          this.errorMensaje = '';
-          this.cargarClientes();
-          this.cargarTecnicosDisponibles();
-          this.cargarProyectos();
-        } else {
-          this.bitacoras = [];
-          this.paginasTotales = 0;
-          this.errorMensaje = 'Tu cuenta no tiene acceso a Tickets.';
-        }
+        this.errorMensaje = '';
+        this.cargarClientes();
+        this.cargarTecnicosDisponibles();
+        this.cargarProyectos();
       },
       error: (error) => {
         console.error('Error al cargar perfil para bitacora', error);
         const rolTieneTickets =
           this.esAdmin || this.esTecnico || this.esComercial;
         this.perfilTieneTickets = rolTieneTickets;
-        if (rolTieneTickets) {
-          this.tituloModulo = 'Bitacora / Tickets';
-        }
         this.tieneAccesoTickets = !this.esCliente || rolTieneTickets;
+        this.soloBitacorasCliente = this.esCliente && !rolTieneTickets;
+        this.actualizarTituloModulo(this.perfilTieneTickets);
+        this.sincronizarControlTipo();
         this.signalService.updateData(this.tituloModulo);
 
-        if (this.tieneAccesoTickets) {
-          this.cargarClientes();
-          this.cargarTecnicosDisponibles();
-          this.cargarProyectos();
-        } else {
+        if (!this.tieneAccesoTickets && !this.soloBitacorasCliente) {
           this.bitacoras = [];
           this.paginasTotales = 0;
           this.errorMensaje =
             'No se pudo verificar el acceso a Tickets para esta cuenta.';
+          return;
         }
+
+        this.errorMensaje = '';
+        this.cargarClientes();
+        this.cargarTecnicosDisponibles();
+        this.cargarProyectos();
       },
     });
   }
 
   private cargarClientes(): void {
-    if (!this.tieneAccesoTickets) {
-      return;
-    }
-
     this.apiService.clientesBitacora().subscribe({
       next: (clientes) => {
         this.clientes = Array.isArray(clientes) ? clientes : [];
@@ -310,15 +335,8 @@ export class BitacoraComponent implements OnInit {
       },
       error: (error) => {
         console.error('Error al cargar clientes', error);
-        if (error?.status === 403) {
-          this.tieneAccesoTickets = false;
-          this.bitacoras = [];
-          this.paginasTotales = 0;
-          this.errorMensaje =
-            error?.error?.error ?? 'Tu cuenta no tiene acceso a Tickets.';
-          return;
-        }
         this.errorMensaje =
+          error?.error?.error ??
           'No fue posible obtener el listado de clientes disponibles.';
         this.cargarBitacoras();
       },
@@ -499,9 +517,10 @@ export class BitacoraComponent implements OnInit {
       clienteId: this.esCliente && this.clientes.length === 1 ? this.clientes[0].id : '',
       sucursalId: '',
       buscar: '',
-      tipo: 'ambos',
+      tipo: this.soloBitacorasCliente ? 'bitacora' : 'ambos',
       proyectoId: '',
     });
+    this.sincronizarControlTipo();
     const clienteId = this.filtroForm.value.clienteId;
     if (clienteId) {
       this.cargarSucursalesParaCliente(clienteId, 'filtro');
@@ -518,13 +537,6 @@ export class BitacoraComponent implements OnInit {
     }
     this.errorMensaje = '';
 
-    if (!this.tieneAccesoTickets) {
-      this.cargando = false;
-      this.bitacoras = [];
-      this.paginasTotales = 0;
-      return;
-    }
-
     const filtros = this.filtroForm.getRawValue();
     const params: Record<string, any> = {
       pagina: this.paginaActual,
@@ -533,7 +545,9 @@ export class BitacoraComponent implements OnInit {
       sucursalId: filtros.sucursalId,
       buscar: filtros.buscar,
     };
-    if (filtros.tipo && filtros.tipo !== 'ambos') {
+    if (this.soloBitacorasCliente) {
+      params['tipo'] = 'bitacora';
+    } else if (filtros.tipo && filtros.tipo !== 'ambos') {
       params['tipo'] = filtros.tipo;
     }
     if (filtros.proyectoId) {
@@ -563,14 +577,6 @@ export class BitacoraComponent implements OnInit {
         },
         error: (error) => {
           console.error('Error al cargar bitacoras', error);
-          if (error?.status === 403) {
-            this.tieneAccesoTickets = false;
-            this.bitacoras = [];
-            this.paginasTotales = 0;
-            this.errorMensaje =
-              error?.error?.error ?? 'Tu cuenta no tiene acceso a Tickets.';
-            return;
-          }
           this.errorMensaje =
             error?.error?.error ??
             'Ocurrio un error al intentar obtener las bitacoras.';

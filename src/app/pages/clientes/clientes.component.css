@@ -158,6 +158,19 @@
   border-color: #b71752;
 }
 
+.client-button--secondary {
+  border-color: #b71653;
+  color: #b71653;
+  font-weight: 600;
+  margin-top: 0.25rem;
+}
+
+.client-button--secondary:hover {
+  background-color: #b71653;
+  border-color: #b71653;
+  color: #ffffff;
+}
+
 .button-ajustes:hover{
   cursor: pointer;
 }

@@ -20,11 +20,9 @@
     </button>
   </header>
 
-  <div *ngIf="!tieneAccesoTickets" class="bitacora-empty acceso-restringido">
-    Tu cuenta no tiene acceso a Tickets. Contacta al administrador para habilitarlo.
+  <div *ngIf="soloBitacorasCliente" class="bitacora-empty acceso-restringido">
+    Esta cuenta no tiene acceso al modulo de tickets. Solo se muestran las bitacoras registradas.
   </div>
-
-  <ng-container *ngIf="tieneAccesoTickets">
 
   <form
     class="bitacora-filters"
@@ -61,11 +59,11 @@
         </select>
       </label>
 
-      <label class="filter-field">
+      <label class="filter-field" *ngIf="!soloBitacorasCliente">
         <span class="label">Tipo</span>
         <select formControlName="tipo">
           <option
-            *ngFor="let opcion of opcionesFiltroTipo"
+            *ngFor="let opcion of opcionesFiltroTipoVisibles"
             [value]="opcion.value"
           >
             {{ opcion.label }}
@@ -450,7 +448,6 @@
       </section>
     </section>
   </div>
-</ng-container>
 </div>
 
 <ng-container *ngIf="tieneAccesoTickets">

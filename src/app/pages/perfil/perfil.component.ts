@@ -7,6 +7,7 @@ import { SignalService } from '../../services/signal.service';
 import { Cuenta } from '../../interfaces/Cuenta.interface';
 import { ClienteResumen } from '../../interfaces/cliente-resumen.interface';
 import { obtenerIniciales, generarColorDesdeTexto } from '../../utils/avatar.util';
+import { normalizarDatosBancarios, tieneDatosBancarios } from '../../utils/datos-bancarios.util';
 
 @Component({
   selector: 'perfil',
@@ -137,6 +138,7 @@ export class PerfilComponent implements OnInit {
         const clientesAutorizados = (perfil.clientesAutorizados ?? []).map((cliente) => ({
           ...cliente,
           servicios: normalizarServicios(cliente.servicios),
+          datosBancarios: normalizarDatosBancarios(cliente.datosBancarios),
         }));
         const perfilNormalizado: Cuenta = {
           ...perfil,
@@ -171,6 +173,14 @@ export class PerfilComponent implements OnInit {
       return 'Sin servicios registrados';
     }
     return servicios.join(', ');
+  }
+
+  clienteTieneDatosBancarios(cliente: ClienteResumen | null | undefined): boolean {
+    return tieneDatosBancarios(cliente?.datosBancarios);
+  }
+
+  mostrarDatoBancario(valor?: string | null): string {
+    return valor && valor.trim().length ? valor : 'No registrado';
   }
 
   private actualizarAvatar(perfil: Cuenta | null): void {
