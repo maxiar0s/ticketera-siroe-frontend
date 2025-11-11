@@ -79,6 +79,27 @@
   grid-template-columns: 25% 75%;
   box-shadow: 0 5px 8px rgba(0, 0, 0, 0.1);
   align-items: center;
+  position: relative;
+}
+
+.card-body--lead {
+  background-color: #fff6fb;
+  border-color: #f3cfe0;
+  box-shadow: 0 8px 20px rgba(183, 22, 83, 0.15);
+}
+
+.client-badge {
+  position: absolute;
+  top: 1.2rem;
+  right: 1.2rem;
+  background: linear-gradient(135deg, #b71653, #d83a7d);
+  color: #fff;
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding: 0.3rem 0.9rem;
+  border-radius: 999px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
 
 .logo {
@@ -169,6 +190,18 @@
   background-color: #b71653;
   border-color: #b71653;
   color: #ffffff;
+}
+
+.lead-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.15rem 0.75rem;
+  border-radius: 999px;
+  background-color: #ffe5f0;
+  color: #b71653;
+  font-weight: 600;
+  font-size: 0.9rem;
+  text-transform: capitalize;
 }
 
 .button-ajustes:hover{

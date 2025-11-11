@@ -2,12 +2,13 @@ import { Component, Input, OnInit } from '@angular/core';
 import { Cliente } from '../../../../interfaces/cliente.interface';
 import { CommonModule } from '@angular/common';
 import { SignedUrlPipe } from '../../../../pipes/generar-url.pipe';
+import { TelefonoPipe } from '../../../../pipes/telefono.pipe';
 import { ApiService } from '../../../../services/api.service';
 
 @Component({
   selector: 'cliente-casa-matriz',
   standalone: true,
-  imports: [CommonModule, SignedUrlPipe],
+  imports: [CommonModule, SignedUrlPipe, TelefonoPipe],
   templateUrl: './casa-matriz.component.html',
   styleUrls: ['./casa-matriz.component.css']
 })

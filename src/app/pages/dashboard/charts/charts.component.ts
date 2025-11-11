@@ -262,10 +262,16 @@ export class ChartsComponent implements OnInit {
 
     if (this.modoCliente) {
       this.totalVisitasMensualesAsignadas = detalles.reduce((acumulado, { cliente }) => {
+        if ((cliente as Cliente)?.esLead) {
+          return acumulado;
+        }
         return acumulado + this.normalizarCantidad((cliente as any)?.visitasMensuales);
       }, 0);
 
       this.visitasEmergenciaAsignadasAnuales = detalles.reduce((acumulado, { cliente }) => {
+        if ((cliente as Cliente)?.esLead) {
+          return acumulado;
+        }
         return acumulado + this.normalizarCantidad((cliente as any)?.visitasEmergenciaAnuales);
       }, 0);
 

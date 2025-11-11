@@ -15,7 +15,8 @@ export interface DocumentoCliente {
   casaMatriz?: {
     id: string;
     razonSocial: string;
-    rut?: string;
+    rut?: string | null;
+    esLead?: boolean | null;
   } | null;
   subidoPor?: {
     id: number;

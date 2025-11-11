@@ -130,6 +130,7 @@ export class ClienteComponent {
             visitasMensualesRealizadas = 0,
             visitasEmergenciaAnualesRealizadas = 0,
             servicios: serviciosRespuesta = [],
+            esLead = false,
           } = cliente;
           const servicios = normalizarServicios(serviciosRespuesta);
           this.cliente = {
@@ -146,6 +147,7 @@ export class ClienteComponent {
             visitasEmergenciaAnuales,
             visitasMensualesRealizadas,
             visitasEmergenciaAnualesRealizadas,
+            esLead,
             servicios,
           };
           this.paginas = paginas;

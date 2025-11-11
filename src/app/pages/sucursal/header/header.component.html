@@ -11,15 +11,14 @@
   <div class="grid-body-container">
     <div class="grid-body">
       @if(sucursal) {
-      <img
-        *ngIf="
-          sucursal.casaMatriz.imagen | signedUrl | async as signedUrl;
-          else Loading
-        "
-        class="logo"
-        [src]="signedUrl"
-        [alt]="sucursal.casaMatriz.imagen"
-      />
+      <ng-container *ngIf="sucursal.casaMatriz.imagen as imagen; else Loading">
+        <img
+          *ngIf="imagen | signedUrl | async as signedUrl"
+          class="logo"
+          [src]="signedUrl"
+          [alt]="imagen"
+        />
+      </ng-container>
       <ng-template #Loading>
         <div class="spinner-images spinner-size-images"></div>
       </ng-template>

@@ -153,7 +153,7 @@ export class SummaryComponent implements OnChanges {
       case 'rut':
         return cliente.rut || '-';
       case 'fechaIngreso':
-        return this.formatearFecha(cliente.fechaIngreso);
+        return cliente.fechaIngreso ? this.formatearFecha(cliente.fechaIngreso) : '-';
       case 'visitasMensuales':
         return this.formatearCantidad(cliente.visitasMensuales);
       case 'visitasMensualesRealizadas':

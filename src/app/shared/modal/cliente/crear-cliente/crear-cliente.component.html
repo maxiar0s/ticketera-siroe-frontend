@@ -6,7 +6,23 @@
     </div>
     <div class="modal-body">
       <p class="description-form">Rellena todos los campos con los datos requeridos. Asegúrate de que la información sea correcta antes de guardar.</p>
+
       <form [formGroup]="clientForm" (ngSubmit)="onSubmit()">
+        <div class="lead-toggle">
+          <label class="lead-toggle__control">
+            <input type="checkbox" formControlName="esLead" />
+            <span>Marcar como cliente lead</span>
+          </label>
+          <p class="lead-toggle__hint">
+            Los leads solo requieren datos básicos. Cuando este cliente se convierta en uno real, se solicitará la información restante.
+          </p>
+        </div>
+
+        <div class="lead-alert" *ngIf="clientForm.get('esLead')?.value">
+          <strong>Lead en seguimiento:</strong>
+          <span>no necesita visitas, servicios ni datos de contacto completos todavía.</span>
+        </div>
+
 
         <div class="two-inputs">
           <!-- Campo Rut -->
@@ -84,11 +100,15 @@
 
     <div class="form-group servicios-group">
       <label>Servicios</label>
+      <p class="lead-note" *ngIf="clientForm.get('servicios')?.disabled">
+        Los leads no tienen servicios asociados. Activa el cliente para definirlos.
+      </p>
       <div class="servicios-options">
         <label
           class="servicio-option"
           *ngFor="let servicio of serviciosDisponibles"
           [class.servicio-option--selected]="estaServicioSeleccionado(servicio)"
+          [class.servicio-option--disabled]="clientForm.get('servicios')?.disabled"
         >
           <input
             type="checkbox"
@@ -115,14 +135,17 @@
 
     <div class="two-inputs">
       <!-- Campo Visitas Mensuales -->
-      <div class="form-group width-50">
-        <label for="visitasMensuales">Visitas mensuales (bitacoras)</label>
+          <div class="form-group width-50">
+            <label for="visitasMensuales">Visitas mensuales (bitacoras)</label>
             <input id="visitasMensuales" formControlName="visitasMensuales" type="number" min="0" placeholder="Ingresa la cantidad mensual" (input)="clientForm.markAsDirty()"/>
             <div *ngIf="clientForm.get('visitasMensuales')?.hasError('required') && clientForm.get('visitasMensuales')?.touched" class="error">
               Ingresa una cantidad de visitas mensuales.
             </div>
             <div *ngIf="clientForm.get('visitasMensuales')?.hasError('min') && clientForm.get('visitasMensuales')?.touched" class="error">
               Ingresa un numero mayor o igual a 0.
+            </div>
+            <div *ngIf="clientForm.get('visitasMensuales')?.disabled" class="lead-note">
+              Se habilitará cuando el cliente deje de ser lead.
             </div>
           </div>
 
@@ -135,6 +158,9 @@
             </div>
             <div *ngIf="clientForm.get('visitasEmergenciaAnuales')?.hasError('min') && clientForm.get('visitasEmergenciaAnuales')?.touched" class="error">
               Ingresa un numero mayor o igual a 0.
+            </div>
+            <div *ngIf="clientForm.get('visitasEmergenciaAnuales')?.disabled" class="lead-note">
+              Se habilitará cuando el cliente deje de ser lead.
             </div>
         </div>
       </div>

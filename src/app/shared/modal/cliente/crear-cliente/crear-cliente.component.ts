@@ -1,10 +1,13 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators, ValidatorFn } from '@angular/forms';
 import { FormatInputRutDirective } from '../../../../directives/rut.directive';
 import { FormatInputTelefonoDirective } from '../../../../directives/telefono.directive';
 import { validarRut } from '../../../../validators/rut.validator';
 import { Cliente } from '../../../../interfaces/cliente.interface';
+
+type CampoBasico = 'rut' | 'razonSocial' | 'encargadoGeneral' | 'correo' | 'telefonoEncargado';
+type CampoValidador = CampoBasico | 'visitasMensuales' | 'visitasEmergenciaAnuales' | 'servicios';
 
 @Component({
   selector: 'shared-crear-cliente',
@@ -15,12 +18,17 @@ import { Cliente } from '../../../../interfaces/cliente.interface';
 })
 export class CrearClienteComponent implements OnChanges {
   ngOnInit(): void {
-    // Marcar el formulario como dirty si cualquier campo cambia
     Object.keys(this.clientForm.controls).forEach(key => {
       this.clientForm.get(key)?.valueChanges.subscribe(() => {
         this.clientForm.markAsDirty();
       });
     });
+
+    this.clientForm.get('esLead')?.valueChanges.subscribe((valor) => {
+      this.aplicarModoLead(!!valor);
+    });
+
+    this.aplicarModoLead(this.clientForm.get('esLead')?.value ?? false);
   }
   @Input() cliente: Cliente | null = null;
   @Input() modoEdicion: boolean = false;
@@ -30,6 +38,7 @@ export class CrearClienteComponent implements OnChanges {
   public creating!: boolean;
   public selectedFile: File | null = null;
   private readonly initialFormValues = {
+    esLead: false,
     rut: '',
     razonSocial: '',
     imagen: '',
@@ -46,6 +55,16 @@ export class CrearClienteComponent implements OnChanges {
     rutTitular: '',
     correoNotificacion: '',
   };
+  private readonly campoValidators: Record<CampoValidador, ValidatorFn[]> = {
+    rut: [Validators.required, validarRut()],
+    razonSocial: [Validators.required],
+    encargadoGeneral: [Validators.required],
+    correo: [Validators.required, Validators.email],
+    telefonoEncargado: [Validators.required, Validators.pattern('^[\\s\\S]{11,12}$')],
+    visitasMensuales: [Validators.required, Validators.min(0)],
+    visitasEmergenciaAnuales: [Validators.required, Validators.min(0)],
+    servicios: [Validators.required],
+  };
   public readonly serviciosDisponibles: string[] = [
     'Soporte TI',
     'Web',
@@ -59,18 +78,24 @@ export class CrearClienteComponent implements OnChanges {
   clientForm: FormGroup;
   errorMessage: string = '';
   tituloModal: string = 'Crear Cliente';
+  private leadValoresPrevios = {
+    visitasMensuales: this.initialFormValues.visitasMensuales,
+    visitasEmergenciaAnuales: this.initialFormValues.visitasEmergenciaAnuales,
+    servicios: [...this.initialFormValues.servicios],
+  };
 
   constructor(private fb: FormBuilder) {
     this.clientForm = this.fb.group({
-      rut: [this.initialFormValues.rut, [Validators.required, validarRut()]],
-      razonSocial: [this.initialFormValues.razonSocial, Validators.required],
+      esLead: [this.initialFormValues.esLead],
+      rut: [this.initialFormValues.rut, this.campoValidators.rut],
+      razonSocial: [this.initialFormValues.razonSocial, this.campoValidators.razonSocial],
       imagen: [this.initialFormValues.imagen],
-      encargadoGeneral: [this.initialFormValues.encargadoGeneral, Validators.required],
-      correo: [this.initialFormValues.correo, [Validators.required, Validators.email]],
-      telefonoEncargado: [this.initialFormValues.telefonoEncargado, [Validators.required, Validators.pattern('^[\\s\\S]{11,12}$')]],
-      visitasMensuales: [this.initialFormValues.visitasMensuales, [Validators.required, Validators.min(0)]],
-      visitasEmergenciaAnuales: [this.initialFormValues.visitasEmergenciaAnuales, [Validators.required, Validators.min(0)]],
-      servicios: [this.initialFormValues.servicios, [Validators.required]],
+      encargadoGeneral: [this.initialFormValues.encargadoGeneral, this.campoValidators.encargadoGeneral],
+      correo: [this.initialFormValues.correo, this.campoValidators.correo],
+      telefonoEncargado: [this.initialFormValues.telefonoEncargado, this.campoValidators.telefonoEncargado],
+      visitasMensuales: [this.initialFormValues.visitasMensuales, this.campoValidators.visitasMensuales],
+      visitasEmergenciaAnuales: [this.initialFormValues.visitasEmergenciaAnuales, this.campoValidators.visitasEmergenciaAnuales],
+      servicios: [this.initialFormValues.servicios, this.campoValidators.servicios],
       banco: [this.initialFormValues.banco],
       tipoCuenta: [this.initialFormValues.tipoCuenta],
       numeroCuenta: [this.initialFormValues.numeroCuenta],
@@ -100,27 +125,39 @@ export class CrearClienteComponent implements OnChanges {
   }
 
   cargarDatosCliente() {
-    if (this.cliente) {
-      const telefonoFormateado = this.formatearTelefonoParaEdicion(this.cliente.telefonoEncargado);
-      this.clientForm.patchValue({
-        rut: this.cliente.rut,
-        razonSocial: this.cliente.razonSocial,
-        encargadoGeneral: this.cliente.encargadoGeneral,
-        correo: this.cliente.correo,
-        telefonoEncargado: telefonoFormateado,
-        visitasMensuales: this.cliente.visitasMensuales ?? 0,
-        visitasEmergenciaAnuales: this.cliente.visitasEmergenciaAnuales ?? 0,
-        servicios: this.cliente.servicios ?? [],
-        banco: this.cliente.datosBancarios?.banco ?? '',
-        tipoCuenta: this.cliente.datosBancarios?.tipoCuenta ?? '',
-        numeroCuenta: this.cliente.datosBancarios?.numeroCuenta ?? '',
-        titular: this.cliente.datosBancarios?.titular ?? '',
-        rutTitular: this.cliente.datosBancarios?.rutTitular ?? '',
-        correoNotificacion: this.cliente.datosBancarios?.correoNotificacion ?? '',
-      });
-      // Resetear el estado dirty al cargar datos
-      this.clientForm.markAsPristine();
+    if (!this.cliente) {
+      return;
     }
+
+    const telefonoFormateado = this.formatearTelefonoParaEdicion(this.cliente.telefonoEncargado);
+    const esLead = !!this.cliente.esLead;
+
+    this.clientForm.patchValue({
+      esLead,
+      rut: this.cliente.rut ?? '',
+      razonSocial: this.cliente.razonSocial ?? '',
+      encargadoGeneral: this.cliente.encargadoGeneral ?? '',
+      correo: this.cliente.correo ?? '',
+      telefonoEncargado: telefonoFormateado,
+      visitasMensuales: this.cliente.visitasMensuales ?? 0,
+      visitasEmergenciaAnuales: this.cliente.visitasEmergenciaAnuales ?? 0,
+      servicios: this.cliente.servicios ?? [],
+      banco: this.cliente.datosBancarios?.banco ?? '',
+      tipoCuenta: this.cliente.datosBancarios?.tipoCuenta ?? '',
+      numeroCuenta: this.cliente.datosBancarios?.numeroCuenta ?? '',
+      titular: this.cliente.datosBancarios?.titular ?? '',
+      rutTitular: this.cliente.datosBancarios?.rutTitular ?? '',
+      correoNotificacion: this.cliente.datosBancarios?.correoNotificacion ?? '',
+    }, { emitEvent: false });
+
+    this.leadValoresPrevios = {
+      visitasMensuales: this.cliente.visitasMensuales ?? 0,
+      visitasEmergenciaAnuales: this.cliente.visitasEmergenciaAnuales ?? 0,
+      servicios: Array.isArray(this.cliente.servicios) ? [...this.cliente.servicios] : [],
+    };
+
+    this.aplicarModoLead(esLead);
+    this.clientForm.markAsPristine();
   }
 
   abrirModal() {
@@ -130,6 +167,13 @@ export class CrearClienteComponent implements OnChanges {
   cerrar() {
     this.isVisible = false;
     this.clientForm.reset(this.initialFormValues);
+    this.leadValoresPrevios = {
+      visitasMensuales: this.initialFormValues.visitasMensuales,
+      visitasEmergenciaAnuales: this.initialFormValues.visitasEmergenciaAnuales,
+      servicios: [...this.initialFormValues.servicios],
+    };
+    this.aplicarModoLead(this.initialFormValues.esLead);
+    this.clientForm.markAsPristine();
     this.selectedFile = null;
     this.errorMessage = '';
     this.cerrarModal.emit();
@@ -146,20 +190,27 @@ export class CrearClienteComponent implements OnChanges {
     if (this.clientForm.valid) {
       this.creating = true;
 
-      // Crear un nuevo FormData para evitar duplicados
       const formData = new FormData();
-      const serviciosSeleccionados: string[] = Array.isArray(this.clientForm.value['servicios'])
-        ? [...this.clientForm.value['servicios']]
+      const formValue = this.clientForm.getRawValue();
+      const esLead = !!formValue['esLead'];
+      const serviciosSeleccionados: string[] = Array.isArray(formValue['servicios'])
+        ? [...formValue['servicios']]
         : [];
 
       // Limpiar el teléfono antes de enviarlo (solo números, 9 dígitos)
-      let telefono = this.clientForm.value['telefonoEncargado'] || '';
+      let telefono = formValue['telefonoEncargado'] || '';
       telefono = telefono.replace(/\D/g, '').slice(0, 9);
 
-      // Agregar todos los campos del formulario al FormData
-      Object.keys(this.clientForm.value).forEach(key => {
-        let value = this.clientForm.value[key];
+      Object.keys(formValue).forEach(key => {
+        let value = formValue[key];
         if (key === 'servicios') {
+          return;
+        }
+        if (key === 'esLead') {
+          formData.append(key, value ? 'true' : 'false');
+          return;
+        }
+        if (esLead && (key === 'visitasMensuales' || key === 'visitasEmergenciaAnuales')) {
           return;
         }
         if (key === 'telefonoEncargado') {
@@ -176,7 +227,9 @@ export class CrearClienteComponent implements OnChanges {
         }
       });
 
-      formData.append('servicios', JSON.stringify(serviciosSeleccionados));
+      if (!esLead) {
+        formData.append('servicios', JSON.stringify(serviciosSeleccionados));
+      }
 
       const datosBancarios = this.obtenerDatosBancariosFormulario();
       formData.append('datosBancarios', JSON.stringify(datosBancarios));
@@ -194,7 +247,7 @@ export class CrearClienteComponent implements OnChanges {
 
       // Imprimir los datos que se van a enviar para depuración
       console.log('Datos del formulario a enviar:');
-      Object.keys(this.clientForm.value).forEach(field => {
+      Object.keys(formValue).forEach(field => {
         console.log(`${field}: ${formData.get(field)}`);
       });
 
@@ -206,6 +259,74 @@ export class CrearClienteComponent implements OnChanges {
       Object.keys(this.clientForm.controls).forEach(key => {
         this.clientForm.get(key)?.markAsTouched();
       });
+    }
+  }
+
+  private aplicarModoLead(esLead: boolean): void {
+    this.actualizarValidadoresLead(esLead);
+    this.toggleCamposLead(esLead);
+  }
+
+  private actualizarValidadoresLead(esLead: boolean): void {
+    const camposBasicos: CampoBasico[] = ['rut', 'razonSocial', 'encargadoGeneral', 'correo', 'telefonoEncargado'];
+    camposBasicos.forEach((campo) => {
+      const control = this.clientForm.get(campo);
+      if (!control) {
+        return;
+      }
+      if (esLead) {
+        control.clearValidators();
+      } else {
+        control.setValidators(this.campoValidators[campo]);
+      }
+      control.updateValueAndValidity({ emitEvent: false });
+    });
+
+    const visitasMensualesCtrl = this.clientForm.get('visitasMensuales');
+    const visitasEmergenciaCtrl = this.clientForm.get('visitasEmergenciaAnuales');
+    const serviciosCtrl = this.clientForm.get('servicios');
+
+    if (esLead) {
+      visitasMensualesCtrl?.clearValidators();
+      visitasEmergenciaCtrl?.clearValidators();
+      serviciosCtrl?.clearValidators();
+    } else {
+      visitasMensualesCtrl?.setValidators(this.campoValidators.visitasMensuales);
+      visitasEmergenciaCtrl?.setValidators(this.campoValidators.visitasEmergenciaAnuales);
+      serviciosCtrl?.setValidators(this.campoValidators.servicios);
+    }
+
+    visitasMensualesCtrl?.updateValueAndValidity({ emitEvent: false });
+    visitasEmergenciaCtrl?.updateValueAndValidity({ emitEvent: false });
+    serviciosCtrl?.updateValueAndValidity({ emitEvent: false });
+  }
+
+  private toggleCamposLead(esLead: boolean): void {
+    const visitasMensualesCtrl = this.clientForm.get('visitasMensuales');
+    const visitasEmergenciaCtrl = this.clientForm.get('visitasEmergenciaAnuales');
+    const serviciosCtrl = this.clientForm.get('servicios');
+
+    if (esLead) {
+      const serviciosActuales = serviciosCtrl?.value;
+      this.leadValoresPrevios = {
+        visitasMensuales: visitasMensualesCtrl?.value ?? 0,
+        visitasEmergenciaAnuales: visitasEmergenciaCtrl?.value ?? 0,
+        servicios: Array.isArray(serviciosActuales) ? [...serviciosActuales] : [],
+      };
+
+      visitasMensualesCtrl?.setValue(0, { emitEvent: false });
+      visitasMensualesCtrl?.disable({ emitEvent: false });
+      visitasEmergenciaCtrl?.setValue(0, { emitEvent: false });
+      visitasEmergenciaCtrl?.disable({ emitEvent: false });
+      serviciosCtrl?.setValue([], { emitEvent: false });
+      serviciosCtrl?.disable({ emitEvent: false });
+    } else {
+      visitasMensualesCtrl?.enable({ emitEvent: false });
+      visitasMensualesCtrl?.setValue(this.leadValoresPrevios.visitasMensuales ?? 0, { emitEvent: false });
+      visitasEmergenciaCtrl?.enable({ emitEvent: false });
+      visitasEmergenciaCtrl?.setValue(this.leadValoresPrevios.visitasEmergenciaAnuales ?? 0, { emitEvent: false });
+      serviciosCtrl?.enable({ emitEvent: false });
+      serviciosCtrl?.setValue([...this.leadValoresPrevios.servicios], { emitEvent: false });
     }
   }
 
@@ -222,7 +343,7 @@ export class CrearClienteComponent implements OnChanges {
 
   toggleServicio(servicio: string): void {
     const control = this.clientForm.get('servicios');
-    if (!control) {
+    if (!control || control.disabled) {
       return;
     }
     const seleccionados = Array.isArray(control.value) ? [...control.value] : [];

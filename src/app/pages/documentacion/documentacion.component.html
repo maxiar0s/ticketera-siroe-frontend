@@ -34,7 +34,7 @@
         <select id="filtroCliente" formControlName="clienteId" [disabled]="cargandoClientes">
           <option value="">Todos los clientes</option>
           <option *ngFor="let cliente of clientes" [value]="cliente.id">
-            {{ cliente.razonSocial }}
+            {{ cliente.razonSocial }}{{ cliente.esLead ? ' · Lead' : '' }}
           </option>
         </select>
       </div>
@@ -96,7 +96,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let documento of documentos; trackBy: trackByDocumento">
+          <tr *ngFor="let documento of documentos; trackBy: trackByDocumento" [ngClass]="{ 'fila-lead': documento.casaMatriz?.esLead }">
             <td class="archivo-nombre col-documento">
               <strong>{{ documento.nombreArchivo || 'Sin nombre' }}</strong>
               <p class="descripcion" *ngIf="documento.descripcion">
@@ -106,6 +106,7 @@
             <td class="col-cliente">
               <p class="cliente-nombre">
                 {{ documento.casaMatriz?.razonSocial || 'Cliente eliminado' }}
+                <span class="lead-badge" *ngIf="documento.casaMatriz?.esLead">Lead</span>
               </p>
               <p class="cliente-rut" *ngIf="documento.casaMatriz?.rut">
                 {{ documento.casaMatriz?.rut }}
@@ -158,12 +159,13 @@
       </table>
 
       <div *ngIf="!cargandoDocumentos && documentos.length" class="tabla-mobile">
-        <article class="mobile-card" *ngFor="let documento of documentos; trackBy: trackByDocumento">
+        <article class="mobile-card" *ngFor="let documento of documentos; trackBy: trackByDocumento" [ngClass]="{ 'mobile-card--lead': documento.casaMatriz?.esLead }">
           <header class="mobile-card-header">
             <strong class="mobile-doc-name">{{ documento.nombreArchivo || 'Sin nombre' }}</strong>
             <span class="mobile-tag" [class]="tipoBadgeClass(documento.tipo)">
               {{ tipoLabel(documento.tipo) }}
             </span>
+            <span class="lead-badge" *ngIf="documento.casaMatriz?.esLead">Lead</span>
           </header>
           <div class="mobile-row">
             <span class="label">Cliente</span>

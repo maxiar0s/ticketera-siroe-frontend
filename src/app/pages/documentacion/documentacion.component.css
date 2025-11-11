@@ -323,6 +323,12 @@
   gap: 0.7rem;
 }
 
+.mobile-card--lead {
+  border-color: #f4c5db;
+  background: #fff9fc;
+  box-shadow: 0 12px 26px rgba(183, 22, 83, 0.14);
+}
+
 .mobile-card-header {
   display: flex;
   align-items: flex-start;
@@ -381,12 +387,30 @@
   flex-wrap: wrap;
 }
 
+.lead-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.2rem 0.75rem;
+  border-radius: 999px;
+  background-color: #ffe5f0;
+  color: #b71653;
+  font-weight: 600;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
 .tabla-documentos th,
 .tabla-documentos td {
   padding: 1rem 1.2rem;
   text-align: left;
   vertical-align: top;
   word-break: break-word;
+}
+
+.tabla-documentos tbody tr.fila-lead td {
+  background-color: #fff5fb;
+  border-top: 1px solid rgba(183, 22, 83, 0.18);
 }
 
 .tabla-documentos thead {

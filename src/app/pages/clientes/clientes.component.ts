@@ -224,6 +224,11 @@ export class ClientesComponent implements OnInit {
 
   serviciosCliente(cliente?: Cliente | null): string {
     const servicios = normalizarServicios(cliente?.servicios);
+    if (cliente?.esLead) {
+      return servicios.length
+        ? servicios.join(', ')
+        : 'Lead sin servicios asignados';
+    }
     if (!servicios.length) {
       return 'Sin servicios registrados';
     }

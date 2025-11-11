@@ -22,16 +22,16 @@
         *ngFor="let casaMatriz of casasMatricez; let i = index"
         class="client"
       >
-        <div class="card-body">
-          <img
-            *ngIf="
-              casaMatriz.imagen | signedUrl | async as signedUrl;
-              else loading
-            "
-            class="logo"
-            [src]="signedUrl"
-            [alt]="casaMatriz.imagen"
-          />
+        <div class="card-body" [ngClass]="{ 'card-body--lead': casaMatriz.esLead }">
+          <span class="client-badge" *ngIf="casaMatriz.esLead">Lead</span>
+          <ng-container *ngIf="casaMatriz.imagen as imagen; else loading">
+            <img
+              *ngIf="imagen | signedUrl | async as signedUrl"
+              class="logo"
+              [src]="signedUrl"
+              [alt]="imagen"
+            />
+          </ng-container>
           <ng-template #loading>
             <div #loading class="spinner-images spinner-size-images"></div>
           </ng-template>
@@ -39,17 +39,17 @@
             <div class="information-content">
               <div class="information">
                 <p>
-                  Razón social: <span>{{ casaMatriz.razonSocial }}</span>
+                  Razón social: <span>{{ casaMatriz.razonSocial || 'Sin razón social' }}</span>
                 </p>
                 <p>
-                  Encargado: <span>{{ casaMatriz.encargadoGeneral }}</span>
+                  Encargado: <span>{{ casaMatriz.encargadoGeneral || '—' }}</span>
                 </p>
                 <p>
-                  Correo: <span>{{ casaMatriz.correo }}</span>
+                  Correo: <span>{{ casaMatriz.correo || '—' }}</span>
                 </p>
                 <p>
                   RUT Cliente:
-                  <span>{{ casaMatriz.rut.toString() | rut }}</span>
+                  <span>{{ casaMatriz.rut ? (casaMatriz.rut | rut) : '—' }}</span>
                 </p>
               </div>
             </div>
@@ -60,27 +60,36 @@
                 </p>
                 <p>
                   Teléfono:
-                  <span>{{
-                    casaMatriz.telefonoEncargado.toString() | telefono
-                  }}</span>
+                  <span>
+                    {{
+                      casaMatriz.telefonoEncargado !== null &&
+                      casaMatriz.telefonoEncargado !== undefined
+                        ? (casaMatriz.telefonoEncargado.toString() | telefono)
+                        : '—'
+                    }}
+                  </span>
                 </p>
                 <p>
                   Visitas mensuales:
-                  <span
-                  [ngClass]="obtenerClaseVisitas(casaMatriz.visitasMensuales, casaMatriz.visitasMensualesRealizadas)"
-                  >
-                  {{ casaMatriz.visitasMensuales ?? 0 }} /
-                  {{ casaMatriz.visitasMensualesRealizadas ?? 0 }}
-                </span>
-              </p>
-              <p>
-                Visitas emergencia anuales:
-                <span
-                [ngClass]="obtenerClaseVisitas(casaMatriz.visitasEmergenciaAnuales, casaMatriz.visitasEmergenciaAnualesRealizadas)"
-                >
-                {{ casaMatriz.visitasEmergenciaAnuales ?? 0 }} /
-                {{ casaMatriz.visitasEmergenciaAnualesRealizadas ?? 0 }}
-              </span>
+                  <ng-container *ngIf="!casaMatriz.esLead; else leadMensuales">
+                    <span
+                      [ngClass]="obtenerClaseVisitas(casaMatriz.visitasMensuales, casaMatriz.visitasMensualesRealizadas)"
+                    >
+                      {{ casaMatriz.visitasMensuales ?? 0 }} /
+                      {{ casaMatriz.visitasMensualesRealizadas ?? 0 }}
+                    </span>
+                  </ng-container>
+                </p>
+                <p>
+                  Visitas emergencia anuales:
+                  <ng-container *ngIf="!casaMatriz.esLead; else leadEmergencias">
+                    <span
+                      [ngClass]="obtenerClaseVisitas(casaMatriz.visitasEmergenciaAnuales, casaMatriz.visitasEmergenciaAnualesRealizadas)"
+                    >
+                      {{ casaMatriz.visitasEmergenciaAnuales ?? 0 }} /
+                      {{ casaMatriz.visitasEmergenciaAnualesRealizadas ?? 0 }}
+                    </span>
+                  </ng-container>
             </p>
             <p>
               Servicios:
@@ -124,6 +133,14 @@
       </div>
     </div>
   </div>
+
+  <ng-template #leadMensuales>
+    <span class="lead-pill">No aplica para leads</span>
+  </ng-template>
+
+  <ng-template #leadEmergencias>
+    <span class="lead-pill">No aplica para leads</span>
+  </ng-template>
 
   <ng-template #noClientes>
     <p class="no-sucursales">No hay clientes registrados</p>
