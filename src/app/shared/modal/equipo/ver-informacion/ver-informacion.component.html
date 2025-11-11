@@ -61,10 +61,10 @@
               <h3 class="device-component">Ram</h3>
               <p class="device-value">{{ Equipo.ram }}</p>
             </div>
-            <div *ngIf="Equipo.esArriendo !== undefined">
+            <div *ngIf="Equipo.esArriendo === true">
               <h3 class="device-component device-component--arriendo">Arriendo</h3>
               <p class="device-value device-value--arriendo">
-                {{ Equipo.esArriendo ? 'Equipo en arriendo' : 'Equipo propio' }}
+                Equipo en arriendo
               </p>
             </div>
             <div *ngIf="Equipo.tipoAlmacenamiento">
