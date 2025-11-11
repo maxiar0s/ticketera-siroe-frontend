@@ -13,9 +13,9 @@
     </section>
 
     <section class="perfil-clientes" *ngIf="esCliente">
-      <h2>Mis clientes asignados</h2>
+      <h2>Mis datos</h2>
       <p class="perfil-clientes__ayuda">
-        Revisa los servicios activos para cada cliente autorizado en tu cuenta.
+        Visualiza la información de tu organización y los servicios asociados a tu cuenta.
       </p>
       <ng-container *ngIf="user.clientesAutorizados?.length; else sinClientesAsignados">
         <div class="perfil-clientes__lista">
@@ -41,9 +41,9 @@
     </section>
 
     <section class="perfil-bancario" *ngIf="esCliente && user.clientesAutorizados?.length">
-      <h2>Datos bancarios para pagos</h2>
+      <h2>Mis datos bancarios</h2>
       <p class="perfil-bancario__ayuda">
-        Estos datos se compartirán con tu cuenta para facilitar pagos y conciliaciones.
+        Consulta la información bancaria registrada para tu cuenta.
       </p>
       <div class="perfil-bancario__lista">
         <article class="perfil-bancario__item" *ngFor="let cliente of user.clientesAutorizados">
