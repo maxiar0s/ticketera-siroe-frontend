@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, DestroyRef, OnInit, inject } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, DestroyRef, OnInit, inject } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { CrearClienteComponent } from '../../shared/modal/cliente/crear-cliente/crear-cliente.component';
@@ -41,6 +41,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 })
 export class ClientesComponent implements OnInit {
   private readonly destroyRef = inject(DestroyRef);
+  private readonly cdr = inject(ChangeDetectorRef);
   private readonly cargarClientesTrigger$ = new Subject<{ pagina: number; filtros: ClienteFiltros }>();
   public esAdministrador: boolean = false;
   public esCliente: boolean = false;
@@ -384,6 +385,7 @@ export class ClientesComponent implements OnInit {
         if (!respuesta) {
           this.casasMatricez = [];
           this.paginas = 1;
+          this.cdr.markForCheck();
           return;
         }
 
@@ -394,6 +396,7 @@ export class ClientesComponent implements OnInit {
           datosBancarios: normalizarDatosBancarios(cliente.datosBancarios),
         }));
         this.paginas = paginas ?? 1;
+        this.cdr.markForCheck();
       });
   }
 
