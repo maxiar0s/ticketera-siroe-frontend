@@ -1,102 +1,110 @@
 ﻿<section class="main-grid">
-  @if(cliente){
-    <ng-container *ngIf="cliente!.imagen as imagen; else loading">
-      <img *ngIf="imagen | signedUrl | async as signedUrl" class="logo" [src]="signedUrl" [alt]="imagen">
+  <ng-container *ngIf="cliente as detalle; else estadoCarga">
+    <ng-container *ngIf="detalle.imagen as imagen; else imagenLoading">
+      <img
+        *ngIf="imagen | signedUrl | async as signedUrl; else imagenLoading"
+        class="logo"
+        [src]="signedUrl"
+        [alt]="imagen"
+      />
     </ng-container>
-    <ng-template #loading>
-      <div #loading class="spinner-images spinner-size-images"></div>
+    <ng-template #imagenLoading>
+      <div class="spinner-images spinner-size-images"></div>
     </ng-template>
-  } @else {
-    <div #loading class="spinner-images spinner-size-images"></div>
-  }
-  <div class="flex-column">
-    <h2 *ngIf="cliente" class="casa-matriz">
-      {{ cliente!.razonSocial || 'Sin razón social' }}
-      <span class="lead-chip" *ngIf="cliente!.esLead">Lead</span>
-    </h2>
-    <h2 *ngIf="!cliente" class="temp-title casa-matriz">Cargando cliente...</h2>
 
-        <div class="information info-razon">
-          <p>Razon Social: <span>{{ cliente!.razonSocial || 'Sin registro' }}</span></p>
-        </div>
+    <div class="flex-column">
+      <h2 class="casa-matriz">
+        {{ detalle.razonSocial || 'Sin razón social' }}
+        <span class="lead-chip" *ngIf="detalle.esLead">Lead</span>
+      </h2>
 
-        <div class="information info-encargado">
-          <p>Encargado: <span>{{ cliente!.encargadoGeneral || '—' }}</span></p>
-        </div>
+      <div class="information info-razon">
+        <p>Razon Social: <span>{{ detalle.razonSocial || 'Sin registro' }}</span></p>
+      </div>
 
-        <div class="information info-rut">
-          <p>RUT Cliente: <span>{{ cliente!.rut || '—' }}</span></p>
-        </div>
+      <div class="information info-encargado">
+        <p>Encargado: <span>{{ detalle.encargadoGeneral || '—' }}</span></p>
+      </div>
 
-        <div class="information info-telefono">
-          <p>Telefono:
-            <span>
-              {{
-                cliente!.telefonoEncargado !== null && cliente!.telefonoEncargado !== undefined
-                  ? (cliente!.telefonoEncargado.toString() | telefono)
-                  : '—'
-              }}
+      <div class="information info-rut">
+        <p>RUT Cliente: <span>{{ detalle.rut || '—' }}</span></p>
+      </div>
+
+      <div class="information info-telefono">
+        <p>Telefono:
+          <span>
+            {{
+              detalle.telefonoEncargado !== null && detalle.telefonoEncargado !== undefined
+                ? (detalle.telefonoEncargado.toString() | telefono)
+                : '—'
+            }}
+          </span>
+        </p>
+      </div>
+
+      <div class="information info-servicios">
+        <p>
+          Servicios:
+          <ng-container *ngIf="!detalle.esLead; else leadServicios">
+            <span *ngIf="detalle.servicios?.length; else sinServicios">
+              {{ detalle.servicios?.join(', ') }}
             </span>
-          </p>
-        </div>
-
-        <div class="information info-servicios">
-          <p>
-            Servicios:
-            <ng-container *ngIf="!cliente!.esLead; else leadServicios">
-              <span *ngIf="cliente!.servicios?.length; else sinServicios">
-                {{ cliente!.servicios?.join(', ') }}
-              </span>
-            </ng-container>
-          </p>
-          <ng-template #sinServicios>
-            <span>Sin servicios registrados</span>
-          </ng-template>
-          <ng-template #leadServicios>
-            <span>Lead sin servicios asignados</span>
-          </ng-template>
-        </div>
-
-        <div class="information info-id">
-          <p>ID Cliente: <span>{{ cliente!.id}}</span></p>
-        </div>
-
-        <div class="information info-correo">
-          <p>Correo: <span>{{ cliente!.correo }}</span></p>
-        </div>
-
-        <div class="information info-visitas">
-          <p>
-            Visitas mensuales:
-            <ng-container *ngIf="!cliente!.esLead; else leadMetricas">
-              <span
-                [ngClass]="obtenerClaseVisitas(cliente!.visitasMensuales, cliente!.visitasMensualesRealizadas)"
-              >
-                {{ cliente!.visitasMensuales ?? 0 }} /
-                {{ cliente!.visitasMensualesRealizadas ?? 0 }}
-              </span>
-            </ng-container>
-          </p>
-        </div>
-
-        <div class="information info-emergencia">
-          <p>
-            Visitas emergencia anuales:
-            <ng-container *ngIf="!cliente!.esLead; else leadMetricas">
-              <span
-                [ngClass]="obtenerClaseVisitas(cliente!.visitasEmergenciaAnuales, cliente!.visitasEmergenciaAnualesRealizadas)"
-              >
-                {{ cliente!.visitasEmergenciaAnuales ?? 0 }} /
-                {{ cliente!.visitasEmergenciaAnualesRealizadas ?? 0 }}
-              </span>
-            </ng-container>
-          </p>
-        </div>
-
-        <ng-template #leadMetricas>
-          <span class="lead-pill">No aplica para leads</span>
+          </ng-container>
+        </p>
+        <ng-template #sinServicios>
+          <span>Sin servicios registrados</span>
         </ng-template>
+        <ng-template #leadServicios>
+          <span>Lead sin servicios asignados</span>
+        </ng-template>
+      </div>
 
-  </div>
+      <div class="information info-id">
+        <p>ID Cliente: <span>{{ detalle.id }}</span></p>
+      </div>
 
+      <div class="information info-correo">
+        <p>Correo: <span>{{ detalle.correo || '—' }}</span></p>
+      </div>
+
+      <div class="information info-visitas">
+        <p>
+          Visitas mensuales:
+          <ng-container *ngIf="!detalle.esLead; else leadMetricas">
+            <span
+              [ngClass]="obtenerClaseVisitas(detalle.visitasMensuales, detalle.visitasMensualesRealizadas)"
+            >
+              {{ detalle.visitasMensuales ?? 0 }} /
+              {{ detalle.visitasMensualesRealizadas ?? 0 }}
+            </span>
+          </ng-container>
+        </p>
+      </div>
+
+      <div class="information info-emergencia">
+        <p>
+          Visitas emergencia anuales:
+          <ng-container *ngIf="!detalle.esLead; else leadMetricas">
+            <span
+              [ngClass]="obtenerClaseVisitas(detalle.visitasEmergenciaAnuales, detalle.visitasEmergenciaAnualesRealizadas)"
+            >
+              {{ detalle.visitasEmergenciaAnuales ?? 0 }} /
+              {{ detalle.visitasEmergenciaAnualesRealizadas ?? 0 }}
+            </span>
+          </ng-container>
+        </p>
+      </div>
+    </div>
+  </ng-container>
+
+  <ng-template #estadoCarga>
+    <div class="spinner-images spinner-size-images"></div>
+    <div class="flex-column">
+      <h2 class="temp-title casa-matriz">Cargando cliente...</h2>
+    </div>
+  </ng-template>
+
+  <ng-template #leadMetricas>
+    <span class="lead-pill">No aplica para leads</span>
+  </ng-template>
 </section>

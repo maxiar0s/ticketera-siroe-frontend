@@ -215,6 +215,29 @@
   gap: 1rem;
 }
 
+.filters-toggle-bar {
+  display: flex;
+  justify-content: flex-start;
+  margin-top: 1rem;
+}
+
+.filters-toggle {
+  background-color: #fff;
+  border: 1px solid #dcdcdc;
+  border-radius: 999px;
+  padding: 0.45rem 1.2rem;
+  font-weight: 600;
+  color: #555;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.filters-toggle:hover {
+  border-color: #b71653;
+  color: #b71653;
+  background-color: rgba(183, 22, 83, 0.08);
+}
+
 .filters-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));

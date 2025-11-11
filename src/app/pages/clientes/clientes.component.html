@@ -5,7 +5,18 @@
     </button>
   </div>
 
-  <form class="filters-card" [formGroup]="filtroForm" (ngSubmit)="aplicarFiltros()">
+  <div class="filters-toggle-bar">
+    <button type="button" class="filters-toggle" (click)="filtrosVisibles = !filtrosVisibles">
+      {{ filtrosVisibles ? 'Ocultar filtros' : 'Mostrar filtros' }}
+    </button>
+  </div>
+
+  <form
+    *ngIf="filtrosVisibles"
+    class="filters-card"
+    [formGroup]="filtroForm"
+    (ngSubmit)="aplicarFiltros()"
+  >
     <div class="filters-grid">
       <div class="filter-field servicios-field">
         <label class="filter-label">Servicios</label>

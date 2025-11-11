@@ -41,6 +41,7 @@ export class ClientesComponent implements OnInit {
   public esCliente: boolean = false;
   public esComercial: boolean = false;
   public filtroForm: FormGroup;
+  public filtrosVisibles = false;
   public readonly serviciosDisponibles: string[] = [
     'Soporte TI',
     'Web',
