@@ -45,6 +45,7 @@ export class BitacoraComponent implements OnInit {
   private sucursalesCache = new Map<string, SucursalOption[]>();
   tecnicosDisponibles: Tecnico[] = [];
   proyectos: Proyecto[] = [];
+  private clientesLeadMap = new Map<string, boolean>();
 
   paginaActual = 1;
   paginasTotales = 0;
@@ -321,6 +322,7 @@ export class BitacoraComponent implements OnInit {
     this.apiService.clientesBitacora().subscribe({
       next: (clientes) => {
         this.clientes = Array.isArray(clientes) ? clientes : [];
+        this.actualizarMapaClientesLead(this.clientes);
         const clienteActual = this.filtroForm.value.clienteId;
 
         if (!clienteActual && this.clientes.length === 1) {
@@ -338,6 +340,7 @@ export class BitacoraComponent implements OnInit {
         this.errorMensaje =
           error?.error?.error ??
           'No fue posible obtener el listado de clientes disponibles.';
+        this.clientesLeadMap.clear();
         this.cargarBitacoras();
       },
     });
@@ -507,6 +510,16 @@ export class BitacoraComponent implements OnInit {
     }
   }
 
+  esBitacoraLead(bitacora?: Bitacora | null): boolean {
+    if (!bitacora) {
+      return false;
+    }
+    if (bitacora.casaMatriz?.esLead !== undefined) {
+      return !!bitacora.casaMatriz.esLead;
+    }
+    return !!this.clientesLeadMap.get(bitacora.casaMatrizId);
+  }
+
   buscarBitacoras(): void {
     this.paginaActual = 1;
     this.cargarBitacoras();
@@ -625,6 +638,16 @@ export class BitacoraComponent implements OnInit {
   seleccionarBitacora(bitacora: Bitacora): void {
     this.bitacoraSeleccionada = bitacora;
     this.detalleVisible = true;
+  }
+
+  private actualizarMapaClientesLead(clientes: ClienteResumen[]): void {
+    this.clientesLeadMap.clear();
+    clientes.forEach((cliente) => {
+      if (!cliente?.id) {
+        return;
+      }
+      this.clientesLeadMap.set(cliente.id, !!cliente.esLead);
+    });
   }
 
   cerrarDetalle(): void {

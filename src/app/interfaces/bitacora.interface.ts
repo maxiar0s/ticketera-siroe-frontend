@@ -17,6 +17,7 @@ export interface Bitacora {
     id: string;
     razonSocial: string;
     rut?: string;
+    esLead?: boolean;
   };
   sucursal?: {
     id: string;

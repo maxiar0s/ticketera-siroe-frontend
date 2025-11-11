@@ -152,6 +152,12 @@
                 {{ bitacora.esTicket ? 'Ticket' : 'Bitacora' }}
               </span>
               <span
+                *ngIf="esBitacoraLead(bitacora)"
+                class="tipo-chip lead"
+              >
+                Lead
+              </span>
+              <span
                 *ngIf="bitacora.esTicket"
                 class="tipo-chip ticket-estado-listado"
                 [ngClass]="bitacora.estadoTicket === 'terminado' ? 'resuelto' : 'ingresado'"
@@ -266,6 +272,12 @@
             [ngClass]="bitacoraSeleccionada.esTicket ? 'ticket' : 'bitacora'"
           >
             {{ bitacoraSeleccionada.esTicket ? 'Ticket' : 'Bitacora' }}
+          </span>
+          <span
+            *ngIf="esBitacoraLead(bitacoraSeleccionada)"
+            class="lead-detail-chip"
+          >
+            Lead
           </span>
           <span
             *ngIf="bitacoraSeleccionada.esTicket"

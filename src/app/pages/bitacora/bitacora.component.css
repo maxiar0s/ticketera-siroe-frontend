@@ -336,6 +336,12 @@ textarea {
   border: 1px solid rgba(216, 27, 96, 0.3);
 }
 
+.tipo-chip.lead {
+  background-color: rgba(183, 22, 83, 0.08);
+  color: #b71653;
+  border: 1px solid rgba(183, 22, 83, 0.25);
+}
+
 .bitacora-table tbody tr.ticket {
   border-left-color: #1976d2;
 }
@@ -606,6 +612,21 @@ textarea {
 .type-badge.bitacora {
   background-color: rgba(183, 22, 83, 0.18);
   color: #7d0f3a;
+}
+
+.lead-detail-chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.3rem 0.8rem;
+  border-radius: 999px;
+  background-color: #ffe5f0;
+  color: #b71653;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  border: 1px solid rgba(183, 22, 83, 0.25);
 }
 
 .detail-grid {
