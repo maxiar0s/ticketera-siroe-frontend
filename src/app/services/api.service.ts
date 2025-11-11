@@ -1,6 +1,6 @@
 ﻿import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { catchError, forkJoin, map, Observable, of, throwError } from 'rxjs';
+import { catchError, forkJoin, map, Observable, of, shareReplay, throwError } from 'rxjs';
 import { Cliente } from '../interfaces/cliente.interface';
 import { ClienteResumen } from '../interfaces/cliente-resumen.interface';
 import { ClienteFiltros } from '../interfaces/cliente-filtros.interface';
@@ -19,6 +19,8 @@ import {
 import { VehiculoSalida } from '../interfaces/vehiculo-salida.interface';
 import { NotificacionListadoRespuesta } from '../interfaces/notificacion.interface';
 import { DocumentoCliente, DocumentoClienteListado } from '../interfaces/documento-cliente.interface';
+import { EstadoSucursal } from '../interfaces/estado-sucursal.interface';
+import { environment } from '../../environments/environment';
 
 type ClienteEquiposDetalle = { cliente: Cliente | null; equipos: Equipo[] };
 
@@ -30,10 +32,11 @@ export class ApiService {
   //private url = 'http://167.71.172.190:3000';
   //private url = 'https://167.71.172.190';
 
-  private url = 'http://localhost:3000';
+  private url = environment.apiBaseUrl;
   //private url = 'https://api.soportesiroe.cl'
 
   private readonly equiposClienteCache = new Map<string, ClienteEquiposDetalle>();
+  private estadosSucursalCache$?: Observable<EstadoSucursal[]>;
 
   constructor(private http: HttpClient) {}
 
@@ -984,9 +987,15 @@ export class ApiService {
   }
 
   // Obtener estados de sucursales
-  getEstadosSucursal(): Observable<any> {
-    const endpoint = 'estados-sucursales';
-    return this.getInformation(endpoint);
+  getEstadosSucursal(): Observable<EstadoSucursal[]> {
+    if (!this.estadosSucursalCache$) {
+      const endpoint = 'estados-sucursales';
+      this.estadosSucursalCache$ = this.getInformation(endpoint).pipe(
+        map((respuesta) => (Array.isArray(respuesta) ? respuesta : [])),
+        shareReplay({ bufferSize: 1, refCount: true })
+      );
+    }
+    return this.estadosSucursalCache$;
   }
 
   // Actualizar estado de sucursal

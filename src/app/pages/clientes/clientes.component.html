@@ -99,7 +99,7 @@
   >
     <div class="clients-container">
       <div
-        *ngFor="let casaMatriz of casasMatricez; let i = index"
+        *ngFor="let casaMatriz of casasMatricez; let i = index; trackBy: trackCliente"
         class="client"
       >
         <div class="card-body" [ngClass]="{ 'card-body--lead': casaMatriz.esLead }">

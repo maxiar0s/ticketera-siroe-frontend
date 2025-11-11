@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, DestroyRef, inject } from '@angular/core';
 import { HeaderComponent } from './header/header.component';
 import { SucursalesComponent } from './sucursales/sucursales.component';
 import { LoaderService } from '../../../services/loader.service';
@@ -13,6 +13,8 @@ import { NavegationComponent } from "../../../shared/navegation/navegation.compo
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../../services/auth.service';
 import { normalizarServicios } from '../../../utils/servicios.util';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { finalize } from 'rxjs';
 
 @Component({
   selector: 'cliente',
@@ -22,6 +24,7 @@ import { normalizarServicios } from '../../../utils/servicios.util';
   styleUrl: './cliente.component.css'
 })
 export class ClienteComponent {
+  private readonly destroyRef = inject(DestroyRef);
   public cerrarModal!: boolean;
   public esAdministrador: boolean = false;
   // Elementos para el paginador
@@ -47,8 +50,20 @@ export class ClienteComponent {
   ) {  }
 
   ngOnInit() {
-    this.cambiarSucursal();
     this.esAdministrador = this.authService.esAdministrador();
+    this.route.params
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((params) => {
+        const id = params['id'];
+        if (!id) {
+          this.router.navigate(['/clientes']);
+          return;
+        }
+        this.casaMatrizId = id;
+        this.option = '';
+        this.paginaActual = 1;
+        this.cambiarSucursal();
+      });
   }
 
   selectedOption(value: string) {
@@ -95,26 +110,38 @@ export class ClienteComponent {
   }
 
   cambiarSucursal() {
+    if (!this.casaMatrizId) {
+      return;
+    }
+
     this.sucursales = undefined;
     this.loaderService.showSection();
     this.obtainedSucursales = false;
 
-    if(!this.Title) this.signalService.updateData('');;
+    if (!this.Title) {
+      this.signalService.updateData('');
+    }
 
-    this.route.params.subscribe(params => {
-      const id = params['id'];
-      this.casaMatrizId = id;
-      this.apiService.client(id, this.paginaActual, this.option).subscribe({
-        next: (respuesta) => {
+    this.apiService
+      .client(this.casaMatrizId, this.paginaActual, this.option)
+      .pipe(
+        finalize(() => {
           this.loaderService.hideSection();
+          this.obtainedSucursales = true;
+        })
+      )
+      .subscribe({
+        next: (respuesta) => {
           const { cliente, paginas } = respuesta;
 
-          if(!cliente) {
+          if (!cliente) {
             this.router.navigate(['/clientes']);
             return;
           }
 
-          if(!this.Title) this.headerTitle(cliente.razonSocial);
+          if (!this.Title) {
+            this.headerTitle(cliente.razonSocial);
+          }
 
           const {
             id,
@@ -152,14 +179,12 @@ export class ClienteComponent {
           };
           this.paginas = paginas;
           this.sucursales = cliente.sucursales;
-          this.loaderService.hideSection();
-          this.obtainedSucursales = true;
         },
         error: (error) => {
           console.error('Error al obtener sucursales', error);
-        }
-      })
-    })
+          this.sucursales = [];
+        },
+      });
   }
 
   headerTitle(value: string) {

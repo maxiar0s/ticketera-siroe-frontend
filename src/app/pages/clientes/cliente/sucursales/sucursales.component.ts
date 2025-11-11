@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, Output, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, EventEmitter, Input, Output, OnInit, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { Sucursal } from '../../../../interfaces/Sucursal.interface';
 import { EstadoSucursal } from '../../../../interfaces/estado-sucursal.interface';
@@ -8,15 +8,18 @@ import { OpcionesSucursalComponent } from '../../../../shared/modal/sucursal/opc
 import { CrearModificarSucursalComponent } from '../../../../shared/modal/sucursal/crear-modificar-sucursal/crear-modificar-sucursal.component';
 import { ApiService } from '../../../../services/api.service';
 import { LoaderService } from '../../../../services/loader.service';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'cliente-sucursales',
   standalone: true,
   imports: [CommonModule, RouterLink, FormatoFechaPipe, OpcionesSucursalComponent, CrearModificarSucursalComponent],
   templateUrl: './sucursales.component.html',
-  styleUrl: './sucursales.component.css'
+  styleUrl: './sucursales.component.css',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SucursalesComponent implements OnInit {
+  private readonly destroyRef = inject(DestroyRef);
   @Input() esAdministrador!: boolean;
 
   // Arreglo de sucursales
@@ -85,28 +88,31 @@ export class SucursalesComponent implements OnInit {
 
   // Método para cargar los estados de sucursales
   cargarEstadosSucursal() {
-    this.apiService.getEstadosSucursal().subscribe({
-      next: (estados) => {
-        this.estadosSucursal = estados;
-        // Si no hay estados cargados desde la API, usar valores predeterminados
-        if (!this.estadosSucursal || this.estadosSucursal.length === 0) {
+    this.apiService
+      .getEstadosSucursal()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (estados) => {
+          this.estadosSucursal = estados;
+          // Si no hay estados cargados desde la API, usar valores predeterminados
+          if (!this.estadosSucursal || this.estadosSucursal.length === 0) {
+            this.estadosSucursal = [
+              { id: 1, name: 'Activa' },
+              { id: 2, name: 'Inactiva' },
+              { id: 3, name: 'Suspendida' }
+            ];
+          }
+        },
+        error: (error) => {
+          console.error('Error al cargar estados de sucursales:', error);
+          // En caso de error, usar valores predeterminados
           this.estadosSucursal = [
             { id: 1, name: 'Activa' },
             { id: 2, name: 'Inactiva' },
             { id: 3, name: 'Suspendida' }
           ];
         }
-      },
-      error: (error) => {
-        console.error('Error al cargar estados de sucursales:', error);
-        // En caso de error, usar valores predeterminados
-        this.estadosSucursal = [
-          { id: 1, name: 'Activa' },
-          { id: 2, name: 'Inactiva' },
-          { id: 3, name: 'Suspendida' }
-        ];
-      }
-    });
+      });
   }
 
   // Método para obtener el nombre del estado según su ID

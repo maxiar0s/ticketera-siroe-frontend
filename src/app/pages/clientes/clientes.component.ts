@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, OnInit, inject } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { CrearClienteComponent } from '../../shared/modal/cliente/crear-cliente/crear-cliente.component';
@@ -17,6 +17,8 @@ import { OpcionesClienteComponent } from '../../shared/modal/cliente/opciones-cl
 import { normalizarServicios } from '../../utils/servicios.util';
 import { normalizarDatosBancarios } from '../../utils/datos-bancarios.util';
 import { DatosBancariosClienteComponent } from "../../shared/modal/cliente/datos-bancarios/datos-bancarios.component";
+import { Subject, catchError, of, switchMap, tap } from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'clientes',
@@ -34,9 +36,12 @@ import { DatosBancariosClienteComponent } from "../../shared/modal/cliente/datos
     DatosBancariosClienteComponent
   ],
   templateUrl: './clientes.component.html',
-  styleUrls: ['./clientes.component.css']
+  styleUrls: ['./clientes.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ClientesComponent implements OnInit {
+  private readonly destroyRef = inject(DestroyRef);
+  private readonly cargarClientesTrigger$ = new Subject<{ pagina: number; filtros: ClienteFiltros }>();
   public esAdministrador: boolean = false;
   public esCliente: boolean = false;
   public esComercial: boolean = false;
@@ -95,6 +100,7 @@ export class ClientesComponent implements OnInit {
     this.esAdministrador = this.authService.esAdministrador();
     this.esCliente = this.authService.esCliente();
     this.esComercial = this.authService.esComercial();
+    this.inicializarCargaClientes();
     this.cargarClientes();
   }
 
@@ -193,37 +199,8 @@ export class ClientesComponent implements OnInit {
   }
 
   cargarClientes():void {
-    this.casasMatricez = undefined;
-    this.obtainedClients = false;
-    this.loaderService.showSection();
     const filtros = this.obtenerFiltrosConsulta();
-    this.apiService.clients(this.paginaActual, filtros)
-      .subscribe({
-        next: (respuesta) => {
-          if (respuesta) {
-            const { paginas, clientes } = respuesta;
-            this.loaderService.hideSection();
-            this.obtainedClients = true;
-            this.casasMatricez = (clientes ?? []).map((cliente: Cliente & { servicios?: unknown; datosBancarios?: unknown }) => ({
-              ...cliente,
-              servicios: normalizarServicios(cliente.servicios),
-              datosBancarios: normalizarDatosBancarios(cliente.datosBancarios),
-            }));
-            this.paginas = paginas;
-          } else {
-            this.loaderService.hideSection();
-            this.obtainedClients = true;
-            this.casasMatricez = [];
-            console.error('La respuesta del servidor es null o undefined');
-          }
-        },
-        error: (error) => {
-          this.loaderService.hideSection();
-          this.obtainedClients = true;
-          this.casasMatricez = [];
-          console.error('Error al cargar clientes:', error);
-        }
-      });
+    this.cargarClientesTrigger$.next({ pagina: this.paginaActual, filtros });
   }
 
   cambiarPagina(pagina: number):void {
@@ -333,6 +310,8 @@ export class ClientesComponent implements OnInit {
     return Array.isArray(valores) && valores.includes(servicio);
   }
 
+  trackCliente = (_index: number, cliente: Cliente) => cliente.id;
+
   private obtenerFiltrosConsulta(): ClienteFiltros {
     const valores = this.filtroForm.getRawValue();
     const filtros: ClienteFiltros = {};
@@ -378,6 +357,44 @@ export class ClientesComponent implements OnInit {
     }
 
     return filtros;
+  }
+
+  private inicializarCargaClientes(): void {
+    this.cargarClientesTrigger$
+      .pipe(
+        tap(() => {
+          this.casasMatricez = undefined;
+          this.obtainedClients = false;
+          this.loaderService.showSection();
+        }),
+        switchMap(({ pagina, filtros }) =>
+          this.apiService.clients(pagina, filtros).pipe(
+            catchError((error) => {
+              console.error('Error al cargar clientes:', error);
+              return of(null);
+            })
+          )
+        ),
+        takeUntilDestroyed(this.destroyRef)
+      )
+      .subscribe((respuesta) => {
+        this.loaderService.hideSection();
+        this.obtainedClients = true;
+
+        if (!respuesta) {
+          this.casasMatricez = [];
+          this.paginas = 1;
+          return;
+        }
+
+        const { paginas, clientes } = respuesta;
+        this.casasMatricez = (clientes ?? []).map((cliente: Cliente & { servicios?: unknown; datosBancarios?: unknown }) => ({
+          ...cliente,
+          servicios: normalizarServicios(cliente.servicios),
+          datosBancarios: normalizarDatosBancarios(cliente.datosBancarios),
+        }));
+        this.paginas = paginas ?? 1;
+      });
   }
 
   private parseBooleanSelect(valor: unknown): boolean | null {

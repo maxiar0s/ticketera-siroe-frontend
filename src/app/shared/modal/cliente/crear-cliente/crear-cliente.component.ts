@@ -1,10 +1,11 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges, inject } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators, ValidatorFn } from '@angular/forms';
 import { FormatInputRutDirective } from '../../../../directives/rut.directive';
 import { FormatInputTelefonoDirective } from '../../../../directives/telefono.directive';
 import { validarRut } from '../../../../validators/rut.validator';
 import { Cliente } from '../../../../interfaces/cliente.interface';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 type CampoBasico = 'rut' | 'razonSocial' | 'encargadoGeneral' | 'correo' | 'telefonoEncargado';
 type CampoValidador = CampoBasico | 'visitasMensuales' | 'visitasEmergenciaAnuales' | 'servicios';
@@ -14,21 +15,29 @@ type CampoValidador = CampoBasico | 'visitasMensuales' | 'visitasEmergenciaAnual
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, FormatInputRutDirective, FormatInputTelefonoDirective],
   templateUrl: './crear-cliente.component.html',
-  styleUrl: './crear-cliente.component.css'
+  styleUrl: './crear-cliente.component.css',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class CrearClienteComponent implements OnChanges {
+export class CrearClienteComponent implements OnInit, OnChanges {
+  private readonly destroyRef = inject(DestroyRef);
+
   ngOnInit(): void {
-    Object.keys(this.clientForm.controls).forEach(key => {
-      this.clientForm.get(key)?.valueChanges.subscribe(() => {
+    const esLeadControl = this.clientForm.get('esLead');
+    if (esLeadControl) {
+      esLeadControl.valueChanges
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe((valor) => {
+          this.aplicarModoLead(!!valor);
+        });
+    }
+
+    this.clientForm.valueChanges
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => {
         this.clientForm.markAsDirty();
       });
-    });
 
-    this.clientForm.get('esLead')?.valueChanges.subscribe((valor) => {
-      this.aplicarModoLead(!!valor);
-    });
-
-    this.aplicarModoLead(this.clientForm.get('esLead')?.value ?? false);
+    this.aplicarModoLead(esLeadControl?.value ?? false);
   }
   @Input() cliente: Cliente | null = null;
   @Input() modoEdicion: boolean = false;
