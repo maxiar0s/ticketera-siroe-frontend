@@ -1,9 +1,11 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { RouterModule } from '@angular/router';
+import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { CrearClienteComponent } from '../../shared/modal/cliente/crear-cliente/crear-cliente.component';
 import { ApiService } from '../../services/api.service';
 import { Cliente } from '../../interfaces/cliente.interface';
+import { ClienteFiltros } from '../../interfaces/cliente-filtros.interface';
 import { SignalService } from '../../services/signal.service';
 import { LoaderService } from '../../services/loader.service';
 import { NavegationComponent } from "../../shared/navegation/navegation.component";
@@ -22,6 +24,7 @@ import { DatosBancariosClienteComponent } from "../../shared/modal/cliente/datos
   imports: [
     CommonModule,
     RouterModule,
+    ReactiveFormsModule,
     CrearClienteComponent,
     NavegationComponent,
     SignedUrlPipe,
@@ -37,6 +40,15 @@ export class ClientesComponent implements OnInit {
   public esAdministrador: boolean = false;
   public esCliente: boolean = false;
   public esComercial: boolean = false;
+  public filtroForm: FormGroup;
+  public readonly serviciosDisponibles: string[] = [
+    'Soporte TI',
+    'Web',
+    'Arriendo',
+    'Camaras',
+    'Redes Sociales',
+    'Otros',
+  ];
 
   // Elementos para el paginador
   public paginaActual:    number = 1;
@@ -64,7 +76,18 @@ export class ClientesComponent implements OnInit {
     private signalService: SignalService,
     public loaderService: LoaderService,
     private authService: AuthService,
-  ) {}
+    private fb: FormBuilder,
+  ) {
+    this.filtroForm = this.fb.group({
+      servicios: [[]],
+      visitasMensualesMin: [''],
+      visitasMensualesMax: [''],
+      visitasEmergenciaMin: [''],
+      visitasEmergenciaMax: [''],
+      esLead: ['todos'],
+      tieneDatosBancarios: ['todos'],
+    });
+  }
 
   ngOnInit(): void {
     this.signalService.updateData('Clientes');
@@ -172,7 +195,8 @@ export class ClientesComponent implements OnInit {
     this.casasMatricez = undefined;
     this.obtainedClients = false;
     this.loaderService.showSection();
-    this.apiService.clients(this.paginaActual)
+    const filtros = this.obtenerFiltrosConsulta();
+    this.apiService.clients(this.paginaActual, filtros)
       .subscribe({
         next: (respuesta) => {
           if (respuesta) {
@@ -262,6 +286,112 @@ export class ClientesComponent implements OnInit {
   cerrarModalDatosBancarios(): void {
     this.mostrarModalDatosBancarios = false;
     this.clienteConDatosBancarios = null;
+  }
+
+  aplicarFiltros(): void {
+    this.paginaActual = 1;
+    this.cargarClientes();
+  }
+
+  limpiarFiltros(): void {
+    this.filtroForm.reset({
+      servicios: [],
+      visitasMensualesMin: '',
+      visitasMensualesMax: '',
+      visitasEmergenciaMin: '',
+      visitasEmergenciaMax: '',
+      esLead: 'todos',
+      tieneDatosBancarios: 'todos',
+    });
+    this.aplicarFiltros();
+  }
+
+  toggleFiltroServicio(servicio: string): void {
+    const control = this.filtroForm.get('servicios');
+    if (!control) {
+      return;
+    }
+    const actuales: string[] = Array.isArray(control.value)
+      ? [...control.value]
+      : [];
+    const index = actuales.indexOf(servicio);
+    if (index >= 0) {
+      actuales.splice(index, 1);
+    } else {
+      actuales.push(servicio);
+    }
+    control.setValue(actuales);
+  }
+
+  servicioFiltroSeleccionado(servicio: string): boolean {
+    const valores = this.filtroForm.get('servicios')?.value;
+    return Array.isArray(valores) && valores.includes(servicio);
+  }
+
+  private obtenerFiltrosConsulta(): ClienteFiltros {
+    const valores = this.filtroForm.getRawValue();
+    const filtros: ClienteFiltros = {};
+
+    if (Array.isArray(valores.servicios) && valores.servicios.length) {
+      filtros.servicios = valores.servicios;
+    }
+
+    const visitasMensualesMin = this.sanitizarNumero(
+      valores.visitasMensualesMin
+    );
+    const visitasMensualesMax = this.sanitizarNumero(
+      valores.visitasMensualesMax
+    );
+    const visitasEmergenciaMin = this.sanitizarNumero(
+      valores.visitasEmergenciaMin
+    );
+    const visitasEmergenciaMax = this.sanitizarNumero(
+      valores.visitasEmergenciaMax
+    );
+
+    if (visitasMensualesMin !== null) {
+      filtros.visitasMensualesMin = visitasMensualesMin;
+    }
+    if (visitasMensualesMax !== null) {
+      filtros.visitasMensualesMax = visitasMensualesMax;
+    }
+    if (visitasEmergenciaMin !== null) {
+      filtros.visitasEmergenciaMin = visitasEmergenciaMin;
+    }
+    if (visitasEmergenciaMax !== null) {
+      filtros.visitasEmergenciaMax = visitasEmergenciaMax;
+    }
+
+    const esLead = this.parseBooleanSelect(valores.esLead);
+    if (esLead !== null) {
+      filtros.esLead = esLead;
+    }
+
+    const datosBancarios = this.parseBooleanSelect(valores.tieneDatosBancarios);
+    if (datosBancarios !== null) {
+      filtros.tieneDatosBancarios = datosBancarios;
+    }
+
+    return filtros;
+  }
+
+  private parseBooleanSelect(valor: unknown): boolean | null {
+    const texto = typeof valor === 'string' ? valor.trim().toLowerCase() : '';
+    if (texto === 'true') {
+      return true;
+    }
+    if (texto === 'false') {
+      return false;
+    }
+    return null;
+  }
+
+  private sanitizarNumero(valor: unknown): number | null {
+    if (valor === null || valor === undefined || `${valor}`.trim() === '') {
+      return null;
+    }
+    const numero = Number.parseInt(`${valor}`.trim(), 10);
+    return Number.isNaN(numero) ? null : numero;
   }
 }
 

@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { catchError, forkJoin, map, Observable, of, throwError } from 'rxjs';
 import { Cliente } from '../interfaces/cliente.interface';
 import { ClienteResumen } from '../interfaces/cliente-resumen.interface';
+import { ClienteFiltros } from '../interfaces/cliente-filtros.interface';
 import { Equipo } from '../interfaces/equipo.interface';
 import { VisitaProgramada } from '../interfaces/visita-programada.interface';
 import { Tecnico } from '../interfaces/tecnico.interface';
@@ -129,9 +130,41 @@ export class ApiService {
   }
 
   // Casas Matricez
-  clients(pagina: number): Observable<any> {
-    const endpoint = `clientes?pagina=${pagina}`;
-    return this.getInformation(endpoint);
+  clients(pagina: number, filtros: ClienteFiltros = {}): Observable<any> {
+    let params = new HttpParams().set('pagina', pagina.toString());
+
+    if (Array.isArray(filtros.servicios) && filtros.servicios.length) {
+      params = params.set('servicios', filtros.servicios.join(','));
+    }
+
+    const setNumberParam = (key: string, value?: number | null) => {
+      if (value === null || value === undefined || Number.isNaN(value)) {
+        return;
+      }
+      params = params.set(key, value.toString());
+    };
+
+    setNumberParam('visitasMensualesMin', filtros.visitasMensualesMin ?? null);
+    setNumberParam('visitasMensualesMax', filtros.visitasMensualesMax ?? null);
+    setNumberParam('visitasEmergenciaMin', filtros.visitasEmergenciaMin ?? null);
+    setNumberParam('visitasEmergenciaMax', filtros.visitasEmergenciaMax ?? null);
+
+    const setBooleanParam = (key: string, value?: boolean | null) => {
+      if (value === null || value === undefined) {
+        return;
+      }
+      params = params.set(key, value ? 'true' : 'false');
+    };
+
+    setBooleanParam('esLead', filtros.esLead ?? null);
+    setBooleanParam('tieneDatosBancarios', filtros.tieneDatosBancarios ?? null);
+
+    return this.http.get<any>(`${this.url}/clientes`, { params }).pipe(
+      catchError((error: HttpErrorResponse) => {
+        console.error('Error al obtener clientes:', error);
+        return throwError(() => error);
+      })
+    );
   }
 
   clientesResumen(): Observable<ClienteResumen[]> {

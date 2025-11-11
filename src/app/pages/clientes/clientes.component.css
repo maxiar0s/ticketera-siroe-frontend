@@ -204,6 +204,131 @@
   text-transform: capitalize;
 }
 
+.filters-card {
+  margin-top: 1rem;
+  padding: 1.5rem 2rem;
+  border: 1px solid #ebebea;
+  border-radius: 16px;
+  background-color: #fffefe;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.filters-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
+  width: 100%;
+}
+
+.filter-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.filter-label {
+  font-weight: 600;
+  color: #444;
+  font-size: 0.95rem;
+}
+
+.servicios-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.servicio-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.45rem 0.85rem;
+  border-radius: 999px;
+  border: 1px solid #dcdcdc;
+  background-color: #fff;
+  font-size: 0.9rem;
+  color: #444;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.servicio-chip input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.servicio-chip--active {
+  border-color: #b71653;
+  background-color: rgba(183, 22, 83, 0.08);
+  color: #b71653;
+}
+
+.range-inputs {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(90px, 1fr));
+  gap: 0.5rem;
+}
+
+.range-inputs input,
+.filter-select {
+  border: 1px solid #dcdcdc;
+  border-radius: 12px;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.95rem;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.filters-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.filters-button {
+  border-radius: 999px;
+  border: 1px solid transparent;
+  padding: 0.55rem 1.5rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.filters-button.primary {
+  background-color: #b71653;
+  color: #fff;
+  border-color: #b71653;
+}
+
+.filters-button.primary:hover {
+  background-color: #9c1246;
+}
+
+.filters-button.ghost {
+  background-color: #fff;
+  border-color: #dcdcdc;
+  color: #555;
+}
+
+.filters-button.ghost:hover {
+  border-color: #b71653;
+  color: #b71653;
+}
+
+@media (max-width: 768px) {
+  .filters-card {
+    padding: 1.25rem;
+  }
+
+  .filters-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
 .button-ajustes:hover{
   cursor: pointer;
 }

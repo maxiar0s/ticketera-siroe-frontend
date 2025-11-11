@@ -4,6 +4,68 @@
       <span>Añadir cliente</span>
     </button>
   </div>
+
+  <form class="filters-card" [formGroup]="filtroForm" (ngSubmit)="aplicarFiltros()">
+    <div class="filters-grid">
+      <div class="filter-field servicios-field">
+        <label class="filter-label">Servicios</label>
+        <div class="servicios-options">
+          <label
+            class="servicio-chip"
+            *ngFor="let servicio of serviciosDisponibles"
+            [class.servicio-chip--active]="servicioFiltroSeleccionado(servicio)"
+          >
+            <input
+              type="checkbox"
+              [checked]="servicioFiltroSeleccionado(servicio)"
+              (change)="toggleFiltroServicio(servicio)"
+            />
+            <span>{{ servicio }}</span>
+          </label>
+        </div>
+      </div>
+
+      <div class="filter-field">
+        <label class="filter-label">Visitas mensuales (bitácoras)</label>
+        <div class="range-inputs">
+          <input type="number" placeholder="Mín" formControlName="visitasMensualesMin" />
+          <input type="number" placeholder="Máx" formControlName="visitasMensualesMax" />
+        </div>
+      </div>
+
+      <div class="filter-field">
+        <label class="filter-label">Visitas emergencia anuales</label>
+        <div class="range-inputs">
+          <input type="number" placeholder="Mín" formControlName="visitasEmergenciaMin" />
+          <input type="number" placeholder="Máx" formControlName="visitasEmergenciaMax" />
+        </div>
+      </div>
+
+      <div class="filter-field">
+        <label class="filter-label">Tipo de cliente</label>
+        <select formControlName="esLead" class="filter-select">
+          <option value="todos">Todos</option>
+          <option value="true">Solo leads</option>
+          <option value="false">Solo clientes</option>
+        </select>
+      </div>
+
+      <div class="filter-field">
+        <label class="filter-label">Datos bancarios</label>
+        <select formControlName="tieneDatosBancarios" class="filter-select">
+          <option value="todos">Todos</option>
+          <option value="true">Con datos cargados</option>
+          <option value="false">Sin datos</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="filters-actions">
+      <button type="submit" class="filters-button primary">Aplicar filtros</button>
+      <button type="button" class="filters-button ghost" (click)="limpiarFiltros()">Limpiar</button>
+    </div>
+  </form>
+
   @if(!casasMatricez) {
   <div class="container-spinner">
     <div class="spinner-section spinner-size-section"></div>
