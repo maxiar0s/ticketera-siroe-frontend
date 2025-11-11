@@ -57,16 +57,16 @@
 
 .buttons {
   display: flex;
-  justify-content: space-between;
+  justify-content: space-around;
 }
 
 .svg {
-  height: 15px;
+  height: 2rem;
 }
 
 .modify-or-delete-button {
   display: flex;
-  gap: 10px;
+  gap: 1rem;
   align-items: center;
   justify-content: center;
   color: #474747;
@@ -76,7 +76,8 @@
   border-radius: 50px;
   transition: 300ms;
   border: none;
-  font-size: 0.9rem;
+  font-size: 1.3rem;
+  font-weight: 500;
 }
 
 .modify-or-delete-button:hover {

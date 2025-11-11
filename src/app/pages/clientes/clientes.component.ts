@@ -41,7 +41,6 @@ export class ClientesComponent implements OnInit {
   public esCliente: boolean = false;
   public esComercial: boolean = false;
   public filtroForm: FormGroup;
-  public filtrosVisibles = false;
   public readonly serviciosDisponibles: string[] = [
     'Soporte TI',
     'Web',
@@ -64,6 +63,7 @@ export class ClientesComponent implements OnInit {
   public errorMessage:    string = '';
   public clienteParaEditar: Cliente | null = null;
   public modoEdicion: boolean = false;
+  public filtrosVisibles = false;
 
   // Modal opciones cliente
   public isModalAjustesClienteVisible: boolean = false;
