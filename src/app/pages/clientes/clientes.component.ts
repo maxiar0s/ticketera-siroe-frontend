@@ -279,6 +279,10 @@ export class ClientesComponent implements OnInit {
     return this.esAdministrador || this.esComercial;
   }
 
+  get puedeCrearClientes(): boolean {
+    return this.esAdministrador || this.esComercial;
+  }
+
   abrirModalDatosBancarios(cliente: Cliente): void {
     this.clienteConDatosBancarios = cliente;
     this.mostrarModalDatosBancarios = true;
