@@ -13,7 +13,7 @@ import { Equipo } from '../../interfaces/equipo.interface';
 import { EstadoEquipo } from '../../interfaces/estado-equipo.interface';
 import { LoaderService } from '../../services/loader.service';
 import { NavegationComponent } from '../../shared/navegation/navegation.component';
-import { forkJoin, map, Observable, of, switchMap } from 'rxjs';
+import { finalize, forkJoin, map, Observable, of, switchMap } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { EquiposFiltersComponent } from './filters/filters.component';
 import { EquipoFiltros } from '../../interfaces/equipo-filtros.interface';
@@ -120,39 +120,54 @@ export class SucursalComponent {
   }
 
   crearEquipos(datos: any) {
+    if (!datos) {
+      return;
+    }
+
+    const totalEquipos = Number.parseInt(datos.cantidad, 10);
+    if (!Number.isFinite(totalEquipos) || totalEquipos <= 0) {
+      return;
+    }
+
     this.cerrarModal = true;
-    const { cantidad } = datos;
     const payloadBase = {
       ...datos,
       esArriendo: this.clienteTieneArriendo ? !!datos?.esArriendo : false,
     };
 
-    const solicitudes = Array.from({ length: cantidad }, () =>
+    const solicitudes = Array.from({ length: totalEquipos }, () =>
       this.apiService.createEquiptment(payloadBase)
     );
 
     forkJoin(solicitudes)
-      .pipe(takeUntilDestroyed(this.destroyRef))
+      .pipe(
+        takeUntilDestroyed(this.destroyRef),
+        finalize(() => {
+          this.cerrarModal = false;
+          this.cambiarSeleccion();
+          this.cdr.markForCheck();
+        })
+      )
       .subscribe({
-      next: (respuestas) => {
-        respuestas.forEach((respuesta, index) => {
-          if (respuesta?.error) {
-            console.error(`Error en el equipo ${index + 1}:`, respuesta.error);
-          } else {
-            console.log(`Equipo ${index + 1} creado exitosamente:`, respuesta);
-          }
-        });
-      },
-      error: (error: unknown) => {
-        console.error('Error general al crear equipos:', error);
-      },
-      complete: () => {
-        console.log('Proceso de creacion de equipos completado.');
-        this.cerrarModal = false;
-        this.cambiarSeleccion();
-        this.cdr.markForCheck();
-      }
-    });
+        next: (respuestas) => {
+          respuestas.forEach((respuesta, index) => {
+            if (respuesta?.error) {
+              console.error(
+                `Error en el equipo ${index + 1}:`,
+                respuesta.error
+              );
+            } else {
+              console.log(
+                `Equipo ${index + 1} creado exitosamente:`,
+                respuesta
+              );
+            }
+          });
+        },
+        error: (error: unknown) => {
+          console.error('Error general al crear equipos:', error);
+        },
+      });
   }
 
   selectedOption(value: string) {
