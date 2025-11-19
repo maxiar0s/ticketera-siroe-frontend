@@ -1,9 +1,11 @@
 import { CommonModule } from '@angular/common';
 import {
+  ChangeDetectorRef,
   Component,
   EventEmitter,
   Input,
   Output,
+  ViewRef,
 } from '@angular/core';
 import {
   FormBuilder,
@@ -80,7 +82,8 @@ export class ModificarEquipoComponent {
   constructor(
     private fb: FormBuilder,
     public loaderService: LoaderService,
-    private apiService: ApiService
+    private apiService: ApiService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit() {
@@ -113,6 +116,7 @@ export class ModificarEquipoComponent {
             this.actualizarFormularioConCampos(campos, respuesta);
             this.loaderService.hideModal();
             this.formCharged = true;
+            this.refrescarVista();
 
             // Guardar los valores originales del formulario
             this.originalFormValues = {...this.equipoForm.value};
@@ -125,12 +129,14 @@ export class ModificarEquipoComponent {
           error: (error) => {
             console.error('Error al obtener los campos', error);
             this.loaderService.hideModal();
+            this.refrescarVista();
           },
         });
       },
       error: (error) => {
         console.error('Error al obtener el equipo', error);
         this.loaderService.hideModal();
+        this.refrescarVista();
       },
     });
   }
@@ -139,11 +145,21 @@ export class ModificarEquipoComponent {
     this.apiService.getEstadosEquipo().subscribe({
       next: (estados) => {
         this.estadosEquipo = estados;
+        this.refrescarVista();
       },
       error: (error) => {
         console.error('Error al cargar los estados de equipo:', error);
+        this.refrescarVista();
       }
     });
+  }
+
+  private refrescarVista(): void {
+    const viewRef = this.cdr as ViewRef;
+    if (viewRef?.destroyed) {
+      return;
+    }
+    this.cdr.detectChanges();
   }
 
   cargarDepartamentos() {
@@ -151,9 +167,11 @@ export class ModificarEquipoComponent {
       next: (departamentos) => {
         this.departamentos = departamentos;
         this.establecerDepartamentoEnFormulario();
+        this.refrescarVista();
       },
       error: (error) => {
         console.error('Error al cargar los departamentos de equipo:', error);
+        this.refrescarVista();
       },
     });
   }
