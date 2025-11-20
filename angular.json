@@ -33,12 +33,33 @@
               "file-saver"
             ]
           },
-          "configurations": {
+            "configurations": {
             "production": {
               "fileReplacements": [
                 {
                   "replace": "src/environments/environment.ts",
                   "with": "src/environments/environment.prod.ts"
+                }
+              ],
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "500kb",
+                  "maximumError": "1mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "14kb",
+                  "maximumError": "18kb"
+                }
+              ],
+              "outputHashing": "all"
+            },
+            "demo": {
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.demo.ts"
                 }
               ],
               "budgets": [
@@ -71,6 +92,9 @@
             },
             "development": {
               "buildTarget": "front-siroe-soporte:build:development"
+            },
+            "demo": {
+              "buildTarget": "front-siroe-soporte:build:demo"
             }
           },
           "defaultConfiguration": "development"
