@@ -91,10 +91,10 @@ export class DashboardCalendarComponent implements OnInit {
   eliminandoId: number | null = null;
   tecnicosDropdownAbierto = false;
   private readonly coloresEvento: Record<TipoEventoDia, string> = {
-    programada: '#1f8f56',
-    completada: '#b71653',
-    emergencia: '#ff3b30',
-    ticket: '#1976d2',
+    programada: 'var(--color-success)',
+    completada: 'var(--color-primary)',
+    emergencia: 'var(--color-danger)',
+    ticket: 'var(--color-info)',
   };
 
   private vista = {
@@ -602,7 +602,7 @@ export class DashboardCalendarComponent implements OnInit {
 
     if (dia.eventCount <= 0) {
       estilos['--day-border-gradient'] = 'transparent';
-      estilos['--day-background'] = '#ffffff';
+      estilos['--day-background'] = 'var(--color-surface)';
       return estilos;
     }
 
@@ -611,8 +611,8 @@ export class DashboardCalendarComponent implements OnInit {
 
     const fondoEmergencia = dia.tipos.includes('emergencia')
       ? this.crearGradiente(['emergencia'], 'vertical', 0.12)
-      : '#ffffff';
-    estilos['--day-background'] = fondoEmergencia ?? '#ffffff';
+      : 'var(--color-surface)';
+    estilos['--day-background'] = fondoEmergencia ?? 'var(--color-surface)';
 
     return estilos;
   }

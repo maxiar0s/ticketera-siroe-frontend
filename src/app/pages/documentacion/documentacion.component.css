@@ -3,12 +3,12 @@
   grid-template-columns: 1fr;
   gap: 1rem;
   padding: 1.5rem 2rem 2.5rem;
-  background-color: #f6f7fb;
+  background-color: var(--color-surface-soft);
   align-items: flex-start;
 }
 
 .card {
-  background-color: #ffffff;
+  background-color: var(--color-surface);
   border-radius: 20px;
   padding: 2rem 2.4rem;
   box-shadow: 0 18px 45px rgba(28, 45, 94, 0.08);
@@ -27,7 +27,7 @@
 .panel-header h1 {
   margin: 0.2rem 0;
   font-size: clamp(1.4rem, 4vw, 2.3rem);
-  color: #1f2a44;
+  color: var(--color-secondary);
   word-break: break-word;
 }
 
@@ -66,7 +66,7 @@
   font-size: clamp(0.85rem, 2.4vw, 1.1rem);
   text-transform: uppercase;
   letter-spacing: 0.06em;
-  color: #6d7392;
+  color: var(--color-text-alt);
 }
 
 .chip strong {
@@ -86,8 +86,8 @@
 }
 
 .chip.otros {
-  background: rgba(183, 22, 83, 0.09);
-  border-color: rgba(183, 22, 83, 0.3);
+  background: rgba(var(--color-primary-rgb), 0.09);
+  border-color: rgba(var(--color-primary-rgb), 0.3);
 }
 
 .filtro-form {
@@ -117,7 +117,7 @@
   border: 1px solid rgba(161, 168, 197, 0.7);
   padding: 0.65rem 0.9rem;
   font-size: 1.1rem;
-  background-color: #fff;
+  background-color: var(--color-surface);
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
   width: 100%;
   box-sizing: border-box;
@@ -126,8 +126,8 @@
 .field-group select:focus,
 .field-group input:focus,
 .field-group textarea:focus {
-  border-color: #b71653;
-  box-shadow: 0 0 0 3px rgba(183, 22, 83, 0.12);
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(var(--color-primary-rgb), 0.12);
   outline: none;
 }
 
@@ -148,20 +148,20 @@
   padding: 0.35rem 0.85rem;
   border-radius: 999px;
   border: 1px solid rgba(161, 168, 197, 0.7);
-  background: #fff;
+  background: var(--color-surface);
   cursor: pointer;
   font-size: clamp(0.95rem, 2.6vw, 1.15rem);
-  color: #4a4f68;
+  color: var(--color-secondary-alt);
   gap: 0.35rem;
 }
 
 .radio-pill input {
-  accent-color: #b71653;
+  accent-color: var(--color-primary);
 }
 
 .radio-pill input:checked + span {
   font-weight: 600;
-  color: #b71653;
+  color: var(--color-primary);
 }
 
 .radio-pill input:focus-visible {
@@ -204,9 +204,9 @@
 }
 
 .btn.primary {
-  background: linear-gradient(135deg, #b71653, #d83a7d);
-  color: #fff;
-  box-shadow: 0 12px 28px rgba(183, 22, 83, 0.25);
+  background: linear-gradient(135deg, var(--color-primary), #d83a7d);
+  color: var(--color-surface);
+  box-shadow: 0 12px 28px rgba(var(--color-primary-rgb), 0.25);
 }
 
 .btn.primary:disabled {
@@ -216,15 +216,15 @@
 }
 
 .btn.ghost {
-  background: #fff;
+  background: var(--color-surface);
   border: 1px solid rgba(161, 168, 197, 0.6);
-  color: #4a4f68;
+  color: var(--color-secondary-alt);
 }
 
 .btn.danger {
   background: rgba(214, 46, 91, 0.12);
-  color: #b71653;
-  border: 1px solid rgba(183, 22, 83, 0.4);
+  color: var(--color-primary);
+  border: 1px solid rgba(var(--color-primary-rgb), 0.4);
 }
 
 .btn.stretch {
@@ -267,7 +267,7 @@
   border: 1px solid rgba(205, 210, 230, 0.7);
   border-radius: 18px;
   overflow: hidden;
-  background: #fff;
+  background: var(--color-surface);
   position: relative;
   overflow-x: auto;
 }
@@ -289,8 +289,8 @@
   width: 36px;
   height: 36px;
   border-radius: 50%;
-  border: 3px solid rgba(183, 22, 83, 0.2);
-  border-top-color: #b71653;
+  border: 3px solid rgba(var(--color-primary-rgb), 0.2);
+  border-top-color: var(--color-primary);
   animation: spin 1s linear infinite;
 }
 
@@ -313,7 +313,7 @@
 }
 
 .mobile-card {
-  background: #fff;
+  background: var(--color-surface);
   border: 1px solid rgba(205, 210, 230, 0.8);
   border-radius: 16px;
   padding: 1.1rem;
@@ -326,7 +326,7 @@
 .mobile-card--lead {
   border-color: #f4c5db;
   background: #fff9fc;
-  box-shadow: 0 12px 26px rgba(183, 22, 83, 0.14);
+  box-shadow: 0 12px 26px rgba(var(--color-primary-rgb), 0.14);
 }
 
 .mobile-card-header {
@@ -363,7 +363,7 @@
 .mobile-inline p {
   font-size: 1rem;
   margin: 0;
-  color: #2b3250;
+  color: var(--color-secondary);
 }
 
 .mobile-row small {
@@ -393,7 +393,7 @@
   padding: 0.2rem 0.75rem;
   border-radius: 999px;
   background-color: #ffe5f0;
-  color: #b71653;
+  color: var(--color-primary);
   font-weight: 600;
   font-size: 0.75rem;
   text-transform: uppercase;
@@ -410,7 +410,7 @@
 
 .tabla-documentos tbody tr.fila-lead td {
   background-color: #fff5fb;
-  border-top: 1px solid rgba(183, 22, 83, 0.18);
+  border-top: 1px solid rgba(var(--color-primary-rgb), 0.18);
 }
 
 .tabla-documentos thead {
@@ -426,7 +426,7 @@
 }
 
 .archivo-nombre strong {
-  color: #1f2a44;
+  color: var(--color-secondary);
   display: block;
   max-width: 320px;
   white-space: nowrap;
@@ -447,7 +447,7 @@
 .cliente-nombre {
   margin: 0;
   font-weight: 600;
-  color: #2b3250;
+  color: var(--color-secondary);
 }
 
 .cliente-rut {
@@ -478,8 +478,8 @@
 }
 
 .tipo-chip.otros {
-  background: rgba(183, 22, 83, 0.14);
-  color: #b71653;
+  background: rgba(var(--color-primary-rgb), 0.14);
+  color: var(--color-primary);
 }
 
 .tabla-documentos td small {
@@ -510,7 +510,7 @@
   position: absolute;
   right: 0;
   top: calc(100% + 0.3rem);
-  background: #ffffff;
+  background: var(--color-surface);
   border-radius: 14px;
   box-shadow: 0 16px 30px rgba(22, 29, 57, 0.18);
   border: 1px solid rgba(205, 210, 230, 0.7);
@@ -527,13 +527,13 @@
   background: none;
   text-align: left;
   font-weight: 600;
-  color: #2b3250;
+  color: var(--color-secondary);
   cursor: pointer;
   padding: 0.2rem 0;
 }
 
 .acciones-menu button.danger {
-  color: #b71653;
+  color: var(--color-primary);
 }
 
 .acciones-menu button:disabled {
@@ -544,7 +544,7 @@
 .sin-resultados {
   text-align: center;
   padding: 2rem;
-  color: #6d7392;
+  color: var(--color-text-alt);
   font-weight: 500;
 }
 
@@ -554,7 +554,7 @@
   align-items: center;
   gap: 0.8rem;
   margin-top: 1.2rem;
-  color: #4a4f68;
+  color: var(--color-secondary-alt);
   font-weight: 600;
 }
 
@@ -575,7 +575,7 @@
 .upload-panel h2 {
   margin: 0;
   font-size: 1.6rem;
-  color: #1f2a44;
+  color: var(--color-secondary);
 }
 
 .upload-panel .descripcion {
@@ -595,15 +595,15 @@
 }
 
 .file-input {
-  border: 1px dashed rgba(183, 22, 83, 0.4);
+  border: 1px dashed rgba(var(--color-primary-rgb), 0.4);
   border-radius: 16px;
   padding: 0.9rem 1rem;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
-  color: #b71653;
+  color: var(--color-primary);
   font-weight: 600;
-  background: rgba(183, 22, 83, 0.04);
+  background: rgba(var(--color-primary-rgb), 0.04);
 }
 
 .file-input input {

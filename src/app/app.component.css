@@ -10,7 +10,7 @@
   flex-shrink: 0;
   min-width: 20rem;
   max-width: 20rem;
-  background-color: #f7f7f7;
+  background-color: var(--color-surface-alt);
 }
 
 /* @media (max-width: 1400) {

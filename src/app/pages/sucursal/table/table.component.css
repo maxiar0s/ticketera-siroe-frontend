@@ -42,7 +42,7 @@
 }
 
 .div-table::-webkit-scrollbar-thumb {
-  background: rgba(183, 22, 83, 0.35);
+  background: rgba(var(--color-primary-rgb), 0.35);
   border-radius: 999px;
 }
 
@@ -75,7 +75,7 @@
   padding: 0 0.85rem;
   border-radius: 999px;
   border: 1px solid #e2e2e2;
-  background-color: #ffffff;
+  background-color: var(--color-surface);
   box-shadow: 0 12px 24px rgba(0, 0, 0, 0.14);
   color: #5b5b5b;
   font-weight: 600;
@@ -378,7 +378,7 @@ input[type="checkbox"] {
 }
 .actions-modal {
   width: min(380px, 100%);
-  background-color: #ffffff;
+  background-color: var(--color-surface);
   border-radius: 1.25rem;
   box-shadow: 0 20px 45px rgba(0, 0, 0, 0.22);
   display: flex;
@@ -390,8 +390,8 @@ input[type="checkbox"] {
   align-items: center;
   justify-content: space-between;
   padding: 1rem 1.25rem;
-  background: linear-gradient(90deg, #c4006b 0%, #e10880 100%);
-  color: #ffffff;
+  background: linear-gradient(90deg, var(--color-primary-strong) 0%, #e10880 100%);
+  color: var(--color-surface);
 }
 .actions-modal__title {
   margin: 0;
@@ -435,7 +435,7 @@ input[type="checkbox"] {
   margin: 0;
   font-size: 1.25rem;
   font-weight: 700;
-  color: #2f2f2f;
+  color: var(--color-text);
 }
 .actions-modal__subtitle {
   margin: 0;
@@ -461,7 +461,7 @@ input[type="checkbox"] {
   border: none;
   border-radius: 0.9rem;
   background-color: #f6f6f6;
-  color: #2f2f2f;
+  color: var(--color-text);
   font-weight: 600;
   text-align: left;
   cursor: pointer;
@@ -547,6 +547,6 @@ input[type="checkbox"] {
 
 .chip-arriendo--empty {
   background-color: #f3f4f6;
-  color: #6b7280;
+  color: var(--color-text-alt);
   font-weight: 500;
 }

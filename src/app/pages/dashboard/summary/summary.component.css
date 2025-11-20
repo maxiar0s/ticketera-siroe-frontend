@@ -1,5 +1,5 @@
 .dashboard-section {
-  background-color: #f7f7f7;
+  background-color: var(--color-surface-alt);
   border-radius: 30px;
   padding: 5px 20px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -19,22 +19,22 @@
   align-items: center;
   gap: 0.5rem;
   font-weight: 600;
-  color: #4f4f4f;
+  color: var(--color-text);
 }
 
 .summary-controls select {
-  border: 1px solid #cccccc;
+  border: 1px solid var(--color-border);
   border-radius: 20px;
   padding: 0.3rem 0.9rem;
-  background-color: #ffffff;
-  color: #4f4f4f;
+  background-color: var(--color-surface);
+  color: var(--color-text);
   cursor: pointer;
   transition: border-color 0.2s ease;
 }
 
 .summary-controls select:focus {
   outline: none;
-  border-color: #1976d2;
+  border-color: var(--color-info);
   box-shadow: 0 0 0 1px rgba(25, 118, 210, 0.2);
 }
 
@@ -42,7 +42,7 @@
   border-collapse: collapse;
   table-layout: fixed;
   width: 100%;
-  color: #4f4f4f;
+  color: var(--color-text);
   text-align: left;
   padding: 0 2rem;
   min-width: 560px; /* Asegura que la tabla no se comprima demasiado */
@@ -63,7 +63,7 @@
 }
 
 .table-row-style:hover {
-  background-color: #f0f0f0; /* Efecto hover para mejorar UX */
+  background-color: var(--color-disabled-border); /* Efecto hover para mejorar UX */
 }
 
 /* Media queries para pantallas grandes */

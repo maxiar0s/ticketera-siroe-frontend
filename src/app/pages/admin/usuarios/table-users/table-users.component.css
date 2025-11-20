@@ -5,8 +5,8 @@
 
 .users-table {
   border-radius: 20px;
-  border: 1px solid #eaeaea;
-  background-color: #f7f7f7;
+  border: 1px solid var(--color-border);
+  background-color: var(--color-surface-alt);
   padding: 5px 35px;
   box-shadow: 4px 4px 18px -2px #E7E4E8CC;
   overflow-x: auto; /* Add horizontal scrolling */
@@ -36,7 +36,7 @@
 
 .activo {
   background-color: #1EC6B8;
-  color: #FFFFFF;
+  color: var(--color-surface);
 }
 
 .inactivo {
@@ -46,7 +46,7 @@
 
 .suspendido {
   background-color: #B1B1B1;
-  color: #FFFFFF;
+  color: var(--color-surface);
 }
 
 .row-table {

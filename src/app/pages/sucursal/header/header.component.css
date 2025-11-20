@@ -12,7 +12,7 @@
   width: 100%;
   max-width: 100%; /* Asegurar que no exceda el ancho del contenedor */
   background-color: #f6f6f7;
-  border: 1px solid #ebebea;
+  border: 1px solid var(--color-border);
   border-radius: 25px;
   padding: 0;
 }

@@ -104,18 +104,18 @@
   width: 6px;
   color: white;
   height: 5rem;
-  background-color: #b71752;
+  background-color: var(--color-primary);
   border-top-right-radius: 15px;
   border-bottom-right-radius: 15px;
 }
 .active {
   background-color: #f8e2ea;
   font-weight: 600;
-  color: #b71752;
+  color: var(--color-primary);
 }
 .active p {
   font-weight: 600;
-  color: #b71752;
+  color: var(--color-primary);
 }
 
 img[class="routed-image svg-size"],

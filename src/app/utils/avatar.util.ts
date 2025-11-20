@@ -19,7 +19,7 @@ export function obtenerIniciales(value: string | null | undefined, fallback = '?
 export function generarColorDesdeTexto(valor: string | null | undefined): string {
   const texto = (valor ?? '').trim();
   if (texto.length === 0) {
-    return '#b71653';
+    return 'var(--color-primary)';
   }
 
   let hash = 0;

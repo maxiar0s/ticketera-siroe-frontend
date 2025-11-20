@@ -34,8 +34,8 @@
 .nav-button,
 .today-button {
   background-color: transparent;
-  border: 1px solid #cccccc;
-  color: #4f4f4f;
+  border: 1px solid var(--color-border);
+  color: var(--color-text);
   padding: 0.25rem 0.75rem;
   border-radius: 6px;
   cursor: pointer;
@@ -44,9 +44,9 @@
 
 .nav-button:hover,
 .today-button:hover {
-  background-color: #b71653;
-  border-color: #b71653;
-  color: #ffffff;
+  background-color: var(--color-primary);
+  border-color: var(--color-primary);
+  color: var(--color-surface);
 }
 
 .calendar-grid {
@@ -59,15 +59,15 @@
   text-align: center;
   font-weight: 600;
   font-size: 0.9rem;
-  color: #b71653;
+  color: var(--color-primary);
   text-transform: uppercase;
 }
 
 .day-cell {
   position: relative;
   border: 2px solid transparent;
-  background: var(--day-background, #ffffff);
-  color: #4f4f4f;
+  background: var(--day-background, var(--color-surface));
+  color: var(--color-text);
   border-radius: 10px;
   min-height: 64px;
   padding: 0.35rem 0.5rem;
@@ -108,13 +108,13 @@
 }
 
 .day-cell.hoy {
-  border: 2px solid #b71653;
+  border: 2px solid var(--color-primary);
 }
 
 .day-cell.seleccionado {
-  background: var(--day-background, #ffffff);
-  color: #4f4f4f;
-  box-shadow: 0 0 0 2px #b71653 inset, 0 4px 12px rgba(183, 22, 83, 0.25);
+  background: var(--day-background, var(--color-surface));
+  color: var(--color-text);
+  box-shadow: 0 0 0 2px var(--color-primary) inset, 0 4px 12px rgba(var(--color-primary-rgb), 0.25);
 }
 
 .day-cell.con-eventos::before {
@@ -156,8 +156,8 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  background: var(--badge-background, #b71653);
-  color: #ffffff;
+  background: var(--badge-background, var(--color-primary));
+  color: var(--color-surface);
   border-radius: 999px;
   min-width: 1.35rem;
   height: 1.35rem;
@@ -167,19 +167,19 @@
 }
 
 .badge-completada {
-  --badge-background: #b71653;
+  --badge-background: var(--color-primary);
 }
 
 .badge-emergencia {
-  --badge-background: #ff3b30;
+  --badge-background: var(--color-danger);
 }
 
 .badge-programada {
-  --badge-background: #1f8f56;
+  --badge-background: var(--color-success);
 }
 
 .badge-ticket {
-  --badge-background: #1976d2;
+  --badge-background: var(--color-info);
 }
 
 .sidebar {
@@ -204,8 +204,8 @@
 
 .add-button {
   border: none;
-  background-color: #b71653;
-  color: #ffffff;
+  background-color: var(--color-primary);
+  color: var(--color-surface);
   border-radius: 6px;
   padding: 0.4rem 1rem;
   cursor: pointer;
@@ -218,12 +218,12 @@
 
 .sidebar-info {
   margin: 0;
-  color: #b71653;
+  color: var(--color-primary);
 }
 
 .sidebar-error {
   margin: 0;
-  color: #c62828;
+  color: var(--color-danger);
 }
 
 .sidebar-success {
@@ -246,7 +246,7 @@
 }
 
 .event-list li {
-  background-color: #ffffff;
+  background-color: var(--color-surface);
   border-radius: 10px;
   padding: 0.75rem 1rem;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -257,7 +257,7 @@
 }
 
 .event-list li.evento-programado {
-  border-left-color: #1f8f56;
+  border-left-color: var(--color-success);
 }
 
 .event-list li.evento-programado .evento-cliente {
@@ -265,15 +265,15 @@
 }
 
 .event-list li.evento-completada {
-  border-left-color: #b71653;
+  border-left-color: var(--color-primary);
 }
 
 .event-list li.evento-ticket {
-  border-left-color: #1976d2;
+  border-left-color: var(--color-info);
 }
 
 .event-list li.evento-ticket .evento-cliente {
-  color: #0f4f91;
+  color: var(--color-info);
 }
 
 .evento-cliente {
@@ -292,9 +292,9 @@
 }
 
 .evento-editar {
-  border: 1px solid #d8d8d8;
-  background-color: #ffffff;
-  color: #5a5a5a;
+  border: 1px solid var(--color-disabled);
+  background-color: var(--color-surface);
+  color: var(--color-text);
   font-size: 1rem;
   font-weight: 600;
   padding: 0.36rem 1.05rem;
@@ -313,7 +313,7 @@
 .evento-eliminar {
   border: none;
   background-color: transparent;
-  color: #c62828;
+  color: var(--color-danger);
   font-size: 0.85rem;
   font-weight: 600;
   cursor: pointer;
@@ -337,19 +337,19 @@
   font-size: 0.98rem;
   font-weight: 600;
   text-transform: uppercase;
-  color: #b71653;
+  color: var(--color-primary);
 }
 
 .evento-programado .evento-etiqueta {
-  color: #1f8f56;
+  color: var(--color-success);
 }
 
 .evento-completada .evento-etiqueta {
-  color: #b71653;
+  color: var(--color-primary);
 }
 
 .evento-ticket .evento-etiqueta {
-  color: #1976d2;
+  color: var(--color-info);
 }
 
 .evento-ticket-info {
@@ -376,7 +376,7 @@
 
 .ticket-chip.cerrado {
   background-color: rgba(76, 175, 80, 0.18);
-  color: #2f7a32;
+  color: var(--color-success);
   border-color: rgba(76, 175, 80, 0.4);
 }
 .evento-detalle {
@@ -384,37 +384,37 @@
   flex-wrap: wrap;
   gap: 0.75rem;
   font-size: 1.12rem;
-  color: #b71653;
+  color: var(--color-primary);
 }
 
 .evento-programado .evento-detalle {
-  color: #1f8f56;
+  color: var(--color-success);
 }
 
 .evento-completada .evento-detalle {
-  color: #b71653;
+  color: var(--color-primary);
 }
 
 .evento-ticket .evento-detalle {
-  color: #1976d2;
+  color: var(--color-info);
 }
 
 .event-list li.evento-emergencia {
-  border-left-color: #ff3b30;
+  border-left-color: var(--color-danger);
 }
 
 .event-list li.evento-emergencia .evento-cliente {
-  color: #ff3b30;
+  color: var(--color-danger);
 }
 
 .evento-emergencia .evento-etiqueta,
 .evento-emergencia .evento-detalle {
-  color: #ff3b30;
+  color: var(--color-danger);
 }
 
 .evento-descripcion {
   margin: 0;
-  color: #4f4f4f;
+  color: var(--color-text);
   font-size: 1.12rem;
 }
 
@@ -422,7 +422,7 @@
   display: flex;
   flex-direction: column;
   gap: 1rem;
-  background-color: #ffffff;
+  background-color: var(--color-surface);
   padding: 1rem;
   border-radius: 10px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -444,11 +444,11 @@
 .form-field input,
 .form-field select,
 .form-field textarea {
-  border: 1px solid #cccccc;
+  border: 1px solid var(--color-border);
   border-radius: 6px;
   padding: 0.45rem 0.6rem;
   font-size: 1rem;
-  color: #4f4f4f;
+  color: var(--color-text);
   background-color: #fafafa;
   font-family: inherit;
 }
@@ -457,8 +457,8 @@
 .form-field select:focus,
 .form-field textarea:focus {
   outline: none;
-  border-color: #1976d2;
-  background-color: #ffffff;
+  border-color: var(--color-info);
+  background-color: var(--color-surface);
   box-shadow: 0 0 0 1px rgba(25, 118, 210, 0.2);
 }
 
@@ -475,8 +475,8 @@
 
 .form-actions button {
   border: none;
-  background-color: #b71653;
-  color: #ffffff;
+  background-color: var(--color-primary);
+  color: var(--color-surface);
   border-radius: 6px;
   padding: 0.55rem 1.5rem;
   cursor: pointer;
@@ -494,7 +494,7 @@
 
 .field-error {
   font-size: 0.75rem;
-  color: #c62828;
+  color: var(--color-danger);
 }
 
 @media (max-width: 960px) {

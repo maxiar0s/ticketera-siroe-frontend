@@ -5,5 +5,5 @@
 }
 
 .title {
-  color: #474747;
+  color: var(--color-text);
 }

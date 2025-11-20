@@ -7,7 +7,7 @@
   align-items: center;
   gap: 0.5rem;
   padding: 0.65rem 1.5rem;
-  background: #b71653;
+  background: var(--color-primary);
   border: none;
   border-radius: 999px;
   cursor: pointer;
@@ -35,7 +35,7 @@
   gap: 1.5rem;
   padding: 0 1.5rem;
   border-radius: 16px;
-  background-color: #ffffff;
+  background-color: var(--color-surface);
   border: 1px solid #f1f1f5;
   box-shadow: 0 4px 12px rgba(15, 23, 42, 0.04);
   margin-top: 1rem;
@@ -73,7 +73,7 @@
 .filters__field > label {
   font-size: 0.9rem;
   font-weight: 600;
-  color: #1f2937;
+  color: var(--color-secondary);
 }
 
 .filters__field input[type='date'],
@@ -82,10 +82,10 @@
   width: 100%;
   padding: 0.55rem 0.75rem;
   border-radius: 10px;
-  border: 1px solid #d1d5db;
+  border: 1px solid var(--color-border-strong);
   font-size: 0.9rem;
-  color: #111827;
-  background-color: #f9fafb;
+  color: var(--color-secondary);
+  background-color: var(--color-surface-soft);
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
@@ -93,9 +93,9 @@
 .filters__field input[type='number']:focus,
 .filters__field select:focus {
   outline: none;
-  border-color: #de2a7b;
+  border-color: var(--color-primary-bright);
   box-shadow: 0 0 0 4px rgba(222, 42, 123, 0.15);
-  background-color: #ffffff;
+  background-color: var(--color-surface);
 }
 
 .filters__checkbox-group {
@@ -113,27 +113,27 @@
   display: inline-flex;
   align-items: center;
   gap: 0.4rem;
-  background-color: #ffffff;
+  background-color: var(--color-surface);
   border-radius: 999px;
   padding: 0.4rem 0.75rem;
-  border: 1px solid #e5e7eb;
+  border: 1px solid var(--color-border);
   cursor: pointer;
   font-size: 0.85rem;
   transition: border-color 0.2s ease, background-color 0.2s ease;
 }
 
 .filters__checkbox input {
-  accent-color: #de2a7b;
+  accent-color: var(--color-primary-bright);
 }
 
 .filters__checkbox:hover {
-  border-color: #de2a7b;
+  border-color: var(--color-primary-bright);
   background-color: rgba(222, 42, 123, 0.08);
 }
 
 .filters__empty {
   font-size: 0.85rem;
-  color: #6b7280;
+  color: var(--color-text-alt);
 }
 
 .filters__field--range .filters__range {
@@ -166,8 +166,8 @@
 }
 
 .filters__action-button--primary {
-  background: #b71653;
-  color: #ffffff;
+  background: var(--color-primary);
+  color: var(--color-surface);
   box-shadow: 0 8px 16px rgba(193, 34, 154, 0.25);
 }
 
@@ -178,11 +178,11 @@
 
 .filters__action-button--secondary {
   background-color: #f3f4f6;
-  color: #1f2937;
+  color: var(--color-secondary);
 }
 
 .filters__action-button--secondary:hover {
-  background-color: #e5e7eb;
+  background-color: var(--color-border);
 }
 
 @media (max-width: 900px) {

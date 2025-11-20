@@ -1,5 +1,5 @@
 .modal-content {
-  background-color: #f7f6f6;
+  background-color: var(--color-surface-alt);
   border-radius: 2rem;
   width: 90%;
   max-width: 400px;
@@ -10,7 +10,7 @@
 .colaborador {
   margin-bottom: 20px;
   text-align: center;
-  color: #474747;
+  color: var(--color-text);
 }
 
 .buttons {
@@ -27,7 +27,7 @@
   gap: 10px;
   align-items: center;
   justify-content: center;
-  color: #474747;
+  color: var(--color-text);
   background-color: #EBEBEB;
   height: 30px;
   width: 150px;
@@ -35,7 +35,7 @@
   transition: 300ms;
 }
 .modify-or-delete-button:hover {
-  color: #f7f6f6;
+  color: var(--color-surface-alt);
   cursor: pointer;
-  background-color: #B71653;
+  background-color: var(--color-primary);
 }

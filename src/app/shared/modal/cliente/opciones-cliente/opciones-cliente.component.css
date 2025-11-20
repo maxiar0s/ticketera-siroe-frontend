@@ -12,7 +12,7 @@
 }
 
 .modal-content {
-  background-color: #f7f6f6;
+  background-color: var(--color-surface-alt);
   border-radius: 2rem;
   width: 90%;
   max-width: 400px;
@@ -47,7 +47,7 @@
 .colaborador {
   margin-bottom: 20px;
   text-align: center;
-  color: #474747;
+  color: var(--color-text);
 }
 
 .description-form {
@@ -69,7 +69,7 @@
   gap: 1rem;
   align-items: center;
   justify-content: center;
-  color: #474747;
+  color: var(--color-text);
   background-color: #EBEBEB;
   height: 30px;
   width: 150px;
@@ -81,15 +81,15 @@
 }
 
 .modify-or-delete-button:hover {
-  color: #f7f6f6;
+  color: var(--color-surface-alt);
   cursor: pointer;
-  background-color: #B71653;
+  background-color: var(--color-primary);
 }
 
 .spinner-buttons {
   border: 3px solid rgba(255, 255, 255, 0.3);
   border-radius: 50%;
-  border-top: 3px solid #fff;
+  border-top: 3px solid var(--color-surface);
   width: 20px;
   height: 20px;
   animation: spin 1s linear infinite;
@@ -101,7 +101,7 @@
 }
 
 .spinner-color {
-  border-top-color: #B71653;
+  border-top-color: var(--color-primary);
 }
 
 @keyframes spin {

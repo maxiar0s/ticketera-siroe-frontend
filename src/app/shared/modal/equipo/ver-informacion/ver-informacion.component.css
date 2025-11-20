@@ -13,7 +13,7 @@
 }
 
 .modal-content {
-  background-color: #f7f6f6;
+  background-color: var(--color-surface-alt);
   border-radius: 2rem;
   width: 90%;
   max-width: 800px;
@@ -79,10 +79,10 @@
 .image-container {
   margin: auto 0;
   border-radius: 20px;
-  border: 1px solid #EBEEF2;
+  border: 1px solid var(--color-border);
   width: 267px;
   height: 367px;
-  background-color: #FFFFFF;
+  background-color: var(--color-surface);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -117,8 +117,8 @@
   height: auto;
   min-height: 240px;
   padding: 15px;
-  background-color: #FFFFFF;
-  border: 1px solid #EBEEF2;
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
   border-radius: 10px;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -128,14 +128,14 @@
 
 .device-component {
   font-size: 12px;
-  color: #474747;
+  color: var(--color-text);
   font-weight: 600;
   margin-bottom: 5px;
 }
 
 .device-value {
   font-size: 12px;
-  color: #474747;
+  color: var(--color-text);
   font-weight: 400;
   word-break: break-word; /* Evita que el texto se desborde */
 }
@@ -157,8 +157,8 @@
   column-gap: 20px;
   border-radius: 10px;
   padding: 15px;
-  background-color: #FFFFFF;
-  border: 1px solid #EBEEF2;
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
   gap: 10px;
 }
 
@@ -180,7 +180,7 @@
 }
 
 .equiptment-button {
-  background-color: #b71653;
+  background-color: var(--color-primary);
   color: white;
   border: none;
   border-radius: 20px;
@@ -193,7 +193,7 @@
 }
 
 .equiptment-button:hover {
-  background-color: #a01349;
+  background-color: var(--color-primary-strong);
 }
 
 /* Media queries para pantallas medianas */

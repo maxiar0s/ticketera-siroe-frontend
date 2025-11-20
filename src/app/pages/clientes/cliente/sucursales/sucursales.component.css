@@ -11,8 +11,8 @@
   grid-template-columns: 0.4fr repeat(5, 1fr) ;
   justify-content: center;
   gap: 0.5rem;
-  background-color: #f7f7f7;
-  border: 1px solid #eaeaea;
+  background-color: var(--color-surface-alt);
+  border: 1px solid var(--color-border);
   border-radius: 18px;
   padding: 2rem;
   align-items: center;
@@ -104,18 +104,18 @@
   justify-content: center;
   white-space: nowrap;
   padding: 0.5rem 2rem;
-  border: 1px solid #4e4f4e;
+  border: 1px solid var(--color-text);
   border-radius: 25px;
-  color: #4e4f4e;
+  color: var(--color-text);
   transition: 350ms;
   text-decoration: none;
   font-size: 14px;
 }
 .button:hover {
   cursor: pointer;
-  background-color: #b71752;
-  color: #f7f7f7;
-  border-color: #b71752;
+  background-color: var(--color-primary);
+  color: var(--color-surface-alt);
+  border-color: var(--color-primary);
 }
 
 .navegation {
@@ -131,7 +131,7 @@
 
 .no-sucursales {
   margin-left: 4rem;
-  color: #4e4f4e;
+  color: var(--color-text);
   font-weight: 500;
 }
 

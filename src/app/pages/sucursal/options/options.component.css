@@ -29,9 +29,9 @@
   justify-content: center;
   white-space: nowrap;
   padding: 0.5rem 2rem;
-  border: 1px solid #4e4f4e;
+  border: 1px solid var(--color-text);
   border-radius: 25px;
-  color: #4e4f4e;
+  color: var(--color-text);
   transition: 350ms;
   text-decoration: none;
   font-size: 1.3rem;
@@ -40,15 +40,15 @@
 
 .option-button:not(:disabled):hover {
   cursor: pointer;
-  background-color: #b71752;
-  color: #f7f7f7;
-  border-color: #b71752;
+  background-color: var(--color-primary);
+  color: var(--color-surface-alt);
+  border-color: var(--color-primary);
 }
 
 .option-button:disabled {
   cursor: not-allowed;
-  color: #c2c2c2;
-  border-color: #c2c2c2;
+  color: var(--color-disabled);
+  border-color: var(--color-disabled);
   background-color: transparent;
 }
 
@@ -103,7 +103,7 @@
 .equipment-list-header {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-  background-color: #f0f0f0;
+  background-color: var(--color-disabled-border);
   padding: 1.2rem 1.5rem;
   font-weight: 600;
   font-size: 1.1rem;
@@ -115,7 +115,7 @@
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
   padding: 1.2rem 1.5rem;
-  border-bottom: 1px solid #eaeaea;
+  border-bottom: 1px solid var(--color-border);
   font-size: 1rem;
   transition: background-color 0.2s;
 }

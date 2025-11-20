@@ -2,21 +2,21 @@
   display: grid;
   gap: 2rem;
   padding: 2rem 3rem;
-  color: #1f1f1f;
+  color: var(--color-text);
 }
 
 .perfil-resumen {
   display: flex;
   align-items: center;
   gap: 1.5rem;
-  background-color: #f7f7f7;
+  background-color: var(--color-surface-alt);
   padding: 1.5rem 2rem;
   border-radius: 12px;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
 }
 
 .perfil-clientes {
-  background-color: #ffffff;
+  background-color: var(--color-surface);
   border-radius: 12px;
   padding: 1.5rem 2rem;
   box-shadow: 0 10px 24px rgba(0, 0, 0, 0.06);
@@ -31,7 +31,7 @@
 
 .perfil-clientes__ayuda {
   margin: 0;
-  color: #69717a;
+  color: var(--color-text-alt);
 }
 
 .perfil-clientes__lista {
@@ -40,10 +40,10 @@
 }
 
 .perfil-clientes__item {
-  border: 1px solid #e4e8ef;
+  border: 1px solid var(--color-border);
   border-radius: 10px;
   padding: 1rem 1.2rem;
-  background-color: #f9fafc;
+  background-color: var(--color-surface-soft);
 }
 
 .perfil-clientes__item h3 {
@@ -53,22 +53,22 @@
 
 .perfil-clientes__rut {
   margin: 0.2rem 0;
-  color: #4f4f4f;
+  color: var(--color-text);
 }
 
 .perfil-clientes__servicios {
   margin: 0.2rem 0 0;
-  color: #1f1f1f;
+  color: var(--color-text);
   font-weight: 500;
 }
 
 .perfil-clientes__mensaje {
   margin: 0;
-  color: #6c7684;
+  color: var(--color-text-alt);
 }
 
 .perfil-bancario {
-  background-color: #ffffff;
+  background-color: var(--color-surface);
   border-radius: 12px;
   padding: 1.5rem 2rem;
   box-shadow: 0 10px 24px rgba(0, 0, 0, 0.06);
@@ -78,7 +78,7 @@
 
 .perfil-bancario__ayuda {
   margin: 0;
-  color: #69717a;
+  color: var(--color-text-alt);
 }
 
 .perfil-bancario__lista {
@@ -87,10 +87,10 @@
 }
 
 .perfil-bancario__item {
-  border: 1px solid #e4e8ef;
+  border: 1px solid var(--color-border);
   border-radius: 12px;
   padding: 1.2rem 1.4rem;
-  background-color: #f9fafc;
+  background-color: var(--color-surface-soft);
   display: grid;
   gap: 1rem;
 }
@@ -144,14 +144,14 @@
 .perfil-bancario__label {
   font-size: 0.9rem;
   text-transform: uppercase;
-  color: #6c7684;
+  color: var(--color-text-alt);
   letter-spacing: 0.05rem;
   font-weight: 600;
 }
 
 .perfil-bancario__value {
   font-size: 1.2rem;
-  color: #1f1f1f;
+  color: var(--color-text);
   font-weight: 500;
   word-break: break-word;
 }
@@ -174,7 +174,7 @@
   justify-content: center;
   font-weight: 600;
   font-size: 2.4rem;
-  color: #ffffff;
+  color: var(--color-surface);
   text-transform: uppercase;
   box-shadow: 0 8px 18px rgba(0, 0, 0, 0.18);
 }
@@ -187,13 +187,13 @@
 .perfil-rol {
   margin: 0.2rem 0;
   font-weight: 600;
-  color: #b71653;
+  color: var(--color-primary);
 }
 
 .perfil-email,
 .perfil-telefono {
   margin: 0.15rem 0;
-  color: #4f4f4f;
+  color: var(--color-text);
 }
 
 .perfil-contenido {
@@ -204,7 +204,7 @@
 .perfil-formulario {
   display: grid;
   gap: 1.5rem;
-  background-color: #ffffff;
+  background-color: var(--color-surface);
   border-radius: 12px;
   padding: 2rem 2.5rem;
   box-shadow: 0 14px 28px rgba(0, 0, 0, 0.08);
@@ -217,7 +217,7 @@
 
 .perfil-formulario__encabezado p {
   margin: 0.35rem 0 0;
-  color: #69717a;
+  color: var(--color-text-alt);
 }
 
 .perfil-restriccion {
@@ -238,7 +238,7 @@
 
 .perfil-formulario__grupo label {
   font-weight: 600;
-  color: #2f2f2f;
+  color: var(--color-text);
 }
 
 .perfil-formulario__grupo input {
@@ -250,8 +250,8 @@
 }
 
 .perfil-formulario__grupo input:focus {
-  border-color: #b71653;
-  box-shadow: 0 0 0 3px rgba(183, 22, 83, 0.15);
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(var(--color-primary-rgb), 0.15);
   outline: none;
 }
 
@@ -271,11 +271,11 @@
 .perfil-ayuda {
   margin: 0;
   font-size: 1.3rem;
-  color: #6c7684;
+  color: var(--color-text-alt);
 }
 
 .perfil-error {
-  color: #c62828;
+  color: var(--color-danger);
   font-size: 1.2rem;
 }
 
@@ -297,8 +297,8 @@
   border: none;
   border-radius: 999px;
   padding: 0.9rem 2.4rem;
-  background-color: #b71653;
-  color: #ffffff;
+  background-color: var(--color-primary);
+  color: var(--color-surface);
   font-weight: 600;
   cursor: pointer;
   transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
@@ -313,14 +313,14 @@
 
 .perfil-submit:not(:disabled):hover {
   transform: translateY(-1px);
-  box-shadow: 0 10px 16px rgba(183, 22, 83, 0.22);
+  box-shadow: 0 10px 16px rgba(var(--color-primary-rgb), 0.22);
   background-color: #991146;
 }
 
 .perfil-estado {
   padding: 4rem 2rem;
   text-align: center;
-  color: #4f4f4f;
+  color: var(--color-text);
 }
 
 @media (max-width: 768px) {

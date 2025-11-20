@@ -3,7 +3,7 @@
   grid-template-columns: 340px 1fr;
   gap: 2rem;
   padding: 2.5rem 3rem;
-  color: #1f1f1f;
+  color: var(--color-text);
 }
 
 .opciones-lista {
@@ -18,7 +18,7 @@
   gap: 1.2rem;
   padding: 1.4rem 1.3rem;
   border-radius: 14px;
-  background: #ffffff;
+  background: var(--color-surface);
   box-shadow: 0 10px 24px rgba(15, 41, 77, 0.12);
   cursor: pointer;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
@@ -30,7 +30,7 @@
 }
 
 .opcion-card--activo {
-  border: 2px solid #b71653;
+  border: 2px solid var(--color-primary);
 }
 
 .opcion-icono {
@@ -56,8 +56,8 @@
 
 .opcion-info button {
   border: none;
-  background: #b71653;
-  color: #ffffff;
+  background: var(--color-primary);
+  color: var(--color-surface);
   padding: 0.6rem 1.4rem;
   border-radius: 999px;
   font-weight: 600;
@@ -71,7 +71,7 @@
 }
 
 .opciones-contenido {
-  background-color: #ffffff;
+  background-color: var(--color-surface);
   border-radius: 16px;
   padding: 2.5rem;
   box-shadow: 0 14px 30px rgba(15, 41, 77, 0.12);
@@ -122,8 +122,8 @@
 }
 
 .preferencias-grupo select:focus {
-  border-color: #b71653;
-  box-shadow: 0 0 0 3px rgba(183, 22, 83, 0.15);
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(var(--color-primary-rgb), 0.15);
   outline: none;
 }
 
@@ -155,9 +155,9 @@
 
 .preferencias-submit {
   justify-self: flex-start;
-  background: linear-gradient(135deg, #b71653, #d72b6d);
+  background: linear-gradient(135deg, var(--color-primary), var(--color-primary-bright));
   border: none;
-  color: #ffffff;
+  color: var(--color-surface);
   font-weight: 600;
   padding: 0.9rem 2.2rem;
   border-radius: 999px;
@@ -167,7 +167,7 @@
 
 .preferencias-submit:hover {
   transform: translateY(-1px);
-  box-shadow: 0 14px 22px rgba(183, 22, 83, 0.25);
+  box-shadow: 0 14px 22px rgba(var(--color-primary-rgb), 0.25);
 }
 
 .respaldo-panel {
@@ -183,8 +183,8 @@
 
 .respaldo-acciones button,
 .respaldo-subir {
-  background: linear-gradient(135deg, #b71653, #d72b6d);
-  color: #ffffff;
+  background: linear-gradient(135deg, var(--color-primary), var(--color-primary-bright));
+  color: var(--color-surface);
   border: none;
   border-radius: 999px;
   padding: 0.9rem 2.1rem;
@@ -195,8 +195,8 @@
 
 .respaldo-acciones button:hover,
 .respaldo-subir:hover {
-  background: linear-gradient(135deg, #b71653, #d72b6d);
-  box-shadow: 0 14px 22px rgba(183, 22, 83, 0.25);
+  background: linear-gradient(135deg, var(--color-primary), var(--color-primary-bright));
+  box-shadow: 0 14px 22px rgba(var(--color-primary-rgb), 0.25);
   transform: translateY(-1px);
 
 }
@@ -252,7 +252,7 @@
 .opciones-cargando {
   padding: 4rem;
   text-align: center;
-  color: #4f4f4f;
+  color: var(--color-text);
 }
 
 @media (max-width: 1024px) {

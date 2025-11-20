@@ -25,7 +25,7 @@ export class PerfilComponent implements OnInit {
   mensajeExito = '';
   mensajeError = '';
   avatarIniciales = '?';
-  avatarColor = '#b71653';
+  avatarColor = 'var(--color-primary)';
   esCliente = false;
 
   constructor(

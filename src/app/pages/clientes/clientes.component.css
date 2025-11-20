@@ -28,8 +28,8 @@
   height: 30px;
   padding: 5px 25px;
   gap: 10px;
-  background-color: #b71653;
-  color: #ffffff;
+  background-color: var(--color-primary);
+  color: var(--color-surface);
   border-radius: 40px;
   border: none;
   transition: background-color 0.3s ease;
@@ -41,7 +41,7 @@
 
 .option-button:hover {
   cursor: pointer;
-  background-color: #9a1346;
+  background-color: var(--color-primary-strong);
 }
 
 .option-button img {
@@ -55,9 +55,9 @@
   align-items: center;
   height: 140px;
   padding: 1.9rem 2.6rem;
-  background-color: #f7f7f7;
+  background-color: var(--color-surface-alt);
   border-radius: 10px;
-  border: 1px solid #ebebea;
+  border: 1px solid var(--color-border);
 }
 
 .grid-clients {
@@ -73,9 +73,9 @@
 .card-body {
   min-height: 140px;
   padding: 1.9rem 2.6rem;
-  background-color: #f7f7f7;
+  background-color: var(--color-surface-alt);
   border-radius: 10px;
-  border: 1px solid #ebebea;
+  border: 1px solid var(--color-border);
   display: grid;
   gap: 1rem;
   grid-template-columns: 25% 75%;
@@ -87,15 +87,15 @@
 .card-body--lead {
   background-color: #fff6fb;
   border-color: #f3cfe0;
-  box-shadow: 0 8px 20px rgba(183, 22, 83, 0.15);
+  box-shadow: 0 8px 20px rgba(var(--color-primary-rgb), 0.15);
 }
 
 .client-badge {
   position: absolute;
   top: 1.2rem;
   right: 1.2rem;
-  background: linear-gradient(135deg, #b71653, #d83a7d);
-  color: #fff;
+  background: linear-gradient(135deg, var(--color-primary), #d83a7d);
+  color: var(--color-surface);
   font-size: 0.85rem;
   font-weight: 600;
   padding: 0.3rem 0.9rem;
@@ -139,12 +139,12 @@
 }
 
 .visita-count-ok {
-  color: #1f8f56;
+  color: var(--color-success);
   font-weight: 600;
 }
 
 .visita-count-alert {
-  color: #ff3b30;
+  color: var(--color-danger);
   font-weight: 600;
 }
 
@@ -162,10 +162,10 @@
 .client-button {
   padding: 0.75rem 1.2rem; /* Reducido el padding horizontal */
   margin: 0;
-  border: 1px solid #4f4f4f;
+  border: 1px solid var(--color-text);
   border-radius: 25px;
   font-weight: 500;
-  color: #474747;
+  color: var(--color-text);
   transition: all 350ms;
   text-align: center;
   text-decoration: none;
@@ -176,22 +176,22 @@
 }
 
 .client-button:hover {
-  color: #f7f7f7;
-  background-color: #b71752;
-  border-color: #b71752;
+  color: var(--color-surface-alt);
+  background-color: var(--color-primary);
+  border-color: var(--color-primary);
 }
 
 .client-button--secondary {
-  border-color: #b71653;
-  color: #b71653;
+  border-color: var(--color-primary);
+  color: var(--color-primary);
   font-weight: 600;
   margin-top: 0.25rem;
 }
 
 .client-button--secondary:hover {
-  background-color: #b71653;
-  border-color: #b71653;
-  color: #ffffff;
+  background-color: var(--color-primary);
+  border-color: var(--color-primary);
+  color: var(--color-surface);
 }
 
 .lead-pill {
@@ -200,7 +200,7 @@
   padding: 0.15rem 0.75rem;
   border-radius: 999px;
   background-color: #ffe5f0;
-  color: #b71653;
+  color: var(--color-primary);
   font-weight: 600;
   font-size: 0.9rem;
   text-transform: capitalize;
@@ -209,9 +209,9 @@
 .filters-card {
   margin-top: 1rem;
   padding: 1.5rem 2rem;
-  border: 1px solid #ebebea;
+  border: 1px solid var(--color-border);
   border-radius: 16px;
-  background-color: #fffefe;
+  background-color: var(--color-surface);
   display: flex;
   flex-direction: column;
   gap: 1rem;
@@ -225,13 +225,13 @@
 }
 
 .header-button--secondary {
-  background-color: #fff;
-  color: #b71653;
-  border: 1px solid #b71653;
+  background-color: var(--color-surface);
+  color: var(--color-primary);
+  border: 1px solid var(--color-primary);
 }
 
 .header-button--secondary:hover {
-  color: #fff;
+  color: var(--color-surface);
 }
 
 .filters-grid {
@@ -265,8 +265,8 @@
   gap: 0.4rem;
   padding: 0.45rem 0.85rem;
   border-radius: 999px;
-  border: 1px solid #dcdcdc;
-  background-color: #fff;
+  border: 1px solid var(--color-disabled);
+  background-color: var(--color-surface);
   font-size: 0.9rem;
   color: #444;
   cursor: pointer;
@@ -280,9 +280,9 @@
 }
 
 .servicio-chip--active {
-  border-color: #b71653;
-  background-color: rgba(183, 22, 83, 0.08);
-  color: #b71653;
+  border-color: var(--color-primary);
+  background-color: rgba(var(--color-primary-rgb), 0.08);
+  color: var(--color-primary);
 }
 
 .range-inputs {
@@ -293,7 +293,7 @@
 
 .range-inputs input,
 .filter-select {
-  border: 1px solid #dcdcdc;
+  border: 1px solid var(--color-disabled);
   border-radius: 12px;
   padding: 0.5rem 0.75rem;
   font-size: 0.95rem;
@@ -318,9 +318,9 @@
 }
 
 .filters-button.primary {
-  background-color: #b71653;
-  color: #fff;
-  border-color: #b71653;
+  background-color: var(--color-primary);
+  color: var(--color-surface);
+  border-color: var(--color-primary);
 }
 
 .filters-button.primary:hover {
@@ -328,14 +328,14 @@
 }
 
 .filters-button.ghost {
-  background-color: #fff;
-  border-color: #dcdcdc;
+  background-color: var(--color-surface);
+  border-color: var(--color-disabled);
   color: #555;
 }
 
 .filters-button.ghost:hover {
-  border-color: #b71653;
-  color: #b71653;
+  border-color: var(--color-primary);
+  color: var(--color-primary);
 }
 
 @media (max-width: 768px) {
@@ -367,18 +367,18 @@
   display: block;
   margin-left: auto;
   padding: 0.5rem 2rem;
-  border: 1px solid #4f4f4f;
+  border: 1px solid var(--color-text);
   text-align: center;
   margin-top: 0.8rem;
   border-radius: 25px;
-  color: #4f4f4f;
+  color: var(--color-text);
   transition: 300ms;
 }
 
 .crear-cliente:hover {
   cursor: pointer;
-  background-color: #474747;
-  color: #f7f7f7;
+  background-color: var(--color-text);
+  color: var(--color-surface-alt);
 }
 
 .form-crear-cliente {
@@ -396,9 +396,9 @@
 .no-sucursales {
   text-align: center;
   padding: 30px;
-  background-color: #f7f7f7;
+  background-color: var(--color-surface-alt);
   border-radius: 10px;
-  border: 1px solid #ebebea;
+  border: 1px solid var(--color-border);
   font-weight: 500;
   color: #666;
 }

@@ -16,8 +16,8 @@
   height: 30px;
   padding: 5px 25px;
   gap: 10px;
-  background-color: #b71653;
-  color: #ffffff;
+  background-color: var(--color-primary);
+  color: var(--color-surface);
   border-radius: 40px;
 }
 .option-button span {

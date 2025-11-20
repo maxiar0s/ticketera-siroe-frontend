@@ -7,7 +7,7 @@
 
 button {
   font-weight: 400;
-  color: #474747;
+  color: var(--color-text);
   padding-top: 0.7rem;
   padding-bottom: 0.7rem;
   padding-left: 1.6rem;
@@ -29,7 +29,7 @@ button:disabled {
 
 button.active {
   font-weight: bold;
-  background-color: #b71653;
+  background-color: var(--color-primary);
   border-radius: 10px;
   color: white;
 }

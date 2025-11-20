@@ -33,7 +33,7 @@ export class TopBarComponent implements AfterViewInit, OnInit, OnDestroy {
   public title = this.signalService.getDataSignal();
   public isExpanded = false;
   public avatarIniciales = '?';
-  public avatarColor = '#b71653';
+  public avatarColor = 'var(--color-primary)';
   public unreadCount = 0;
   public popupVisible = false;
   public notificaciones: Notificacion[] = [];
@@ -135,7 +135,7 @@ export class TopBarComponent implements AfterViewInit, OnInit, OnDestroy {
       },
       error: () => {
         this.avatarIniciales = '?';
-        this.avatarColor = '#b71653';
+        this.avatarColor = 'var(--color-primary)';
       },
     });
   }
