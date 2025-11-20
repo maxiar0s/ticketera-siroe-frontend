@@ -1,9 +1,12 @@
-import { Component } from '@angular/core';
+import { Component, Inject, Renderer2 } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { SideMenuComponent } from './shared/side-menu/side-menu.component';
 import { TopBarComponent } from './shared/top-bar/top-bar.component';
 import { CommonModule } from '@angular/common';
 import { AuthService } from './services/auth.service';
+import { Title } from '@angular/platform-browser';
+import { BRAND } from './config/branding';
+import { DOCUMENT } from '@angular/common';
 
 @Component({
   selector: 'app-root',
@@ -13,7 +16,35 @@ import { AuthService } from './services/auth.service';
   styleUrl: './app.component.css'
 })
 export class AppComponent {
-  title = 'front-siroe-soporte';
+  title = BRAND.appTitle;
 
-  constructor(public authService: AuthService) {}
+  constructor(
+    public authService: AuthService,
+    private titleService: Title,
+    private renderer: Renderer2,
+    @Inject(DOCUMENT) private document: Document
+  ) {
+    this.titleService.setTitle(BRAND.appTitle);
+    this.setFavicon(BRAND.favicon);
+  }
+
+  private setFavicon(faviconUrl: string): void {
+    if (!faviconUrl) {
+      return;
+    }
+    const head = this.document.querySelector('head');
+    if (!head) {
+      return;
+    }
+
+    // Reutilizamos si existe, si no lo creamos
+    let link: HTMLLinkElement | null = head.querySelector('link[rel*="icon"]');
+    if (!link) {
+      link = this.renderer.createElement('link');
+      this.renderer.setAttribute(link, 'rel', 'icon');
+      this.renderer.appendChild(head, link);
+    }
+
+    this.renderer.setAttribute(link, 'href', faviconUrl);
+  }
 }

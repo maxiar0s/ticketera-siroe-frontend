@@ -3,6 +3,7 @@ import { Component, Renderer2 } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { ApiService } from '../../services/api.service';
+import { BRAND } from '../../config/branding';
 
 // Menus
 import menu_administrador from './menu-administrador.json';
@@ -26,6 +27,7 @@ export class SideMenuComponent {
   public menu: any[] = [];
   public menuConfig = menu_config;
   public logoRoute: string = '/dashboard';
+  public brand = BRAND;
 
   constructor(
     private authService: AuthService,
