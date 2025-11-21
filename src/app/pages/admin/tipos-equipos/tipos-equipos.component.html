@@ -231,11 +231,12 @@
           </select>
           <button
             type="button"
-            class="btn-icon"
+            class="btn-standard-remove"
             title="Eliminar opción"
             (click)="eliminarOpcionPreset(i)"
           >
-            ×
+            <span aria-hidden="true" class="btn-standard-remove__icon">×</span>
+            <span class="btn-standard-remove__label">Eliminar</span>
           </button>
         </div>
       </div>
@@ -335,11 +336,12 @@
             <div class="form-group standard-remove">
               <button
                 type="button"
-                class="btn-icon"
+                class="btn-standard-remove"
                 title="Eliminar estándar"
                 (click)="eliminarEstandar(j)"
               >
-                ×
+                <span aria-hidden="true" class="btn-standard-remove__icon">×</span>
+                <span class="btn-standard-remove__label">Eliminar</span>
               </button>
             </div>
           </div>

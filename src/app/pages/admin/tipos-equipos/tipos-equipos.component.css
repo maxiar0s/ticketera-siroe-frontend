@@ -242,23 +242,41 @@
 
 .standard-remove {
   display: flex;
+  justify-content: flex-start;
   align-items: center;
-  justify-content: center;
 }
 
-.btn-icon {
-  border: none;
-  background: none;
+.btn-standard-remove {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  border: 1px solid rgba(255, 82, 82, 0.4);
+  background: rgba(255, 82, 82, 0.08);
   color: var(--color-danger);
-  font-size: 1.25rem;
+  font-weight: 700;
+  font-size: 0.95rem;
   cursor: pointer;
-  padding: 0.25rem 0.4rem;
-  transition: color 0.2s ease, transform 0.2s ease;
+  padding: 0.45rem 0.9rem;
+  border-radius: 999px;
+  transition: background-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease,
+    transform 0.15s ease;
+  white-space: nowrap;
+  align-self: center;
+  justify-self: start;
 }
 
-.btn-icon:hover {
-  color: var(--color-primary);
-  transform: scale(1.05);
+.btn-standard-remove__icon {
+  font-size: 1rem;
+  line-height: 1;
+}
+
+.btn-standard-remove:hover,
+.btn-standard-remove:focus-visible {
+  background: var(--color-danger);
+  color: var(--color-surface);
+  box-shadow: 0 10px 24px rgba(255, 82, 82, 0.22);
+  transform: translateY(-1px);
+  outline: none;
 }
 
 .sr-only {
@@ -288,11 +306,15 @@ button {
   border-radius: 10px;
   padding: 0.7rem 1.35rem;
   background: var(--color-primary);
-  color: var(--color-surface);
+  color: var(--color-text);
   font-weight: 600;
   cursor: pointer;
   transition: background 0.2s ease, transform 0.2s ease;
   margin: 1rem 0;
+}
+
+button:hover {
+  color: var(--color-surface);
 }
 
 button:disabled {
