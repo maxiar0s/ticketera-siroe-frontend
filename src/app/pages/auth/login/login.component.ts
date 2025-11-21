@@ -5,6 +5,7 @@ import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { AuthService } from '../../../services/auth.service';
 import { LoaderService } from '../../../services/loader.service';
+import { BRAND } from '../../../config/branding';
 
 @Component({
   selector: 'app-login',
@@ -16,6 +17,8 @@ import { LoaderService } from '../../../services/loader.service';
 export class LoginComponent {
   public errorMessage: boolean = false;
   public logging!: boolean;
+  public brand = BRAND;
+  public loginLogo = BRAND.loginLogo ?? BRAND.logoMain;
 
   public loginForm: FormGroup = this.fb.group({
     email: ['', [Validators.required],],

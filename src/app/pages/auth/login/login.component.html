@@ -1,6 +1,6 @@
 <div class="login-page">
   <div class="form-layout">
-    <img src="/assets/img/soporte.png" alt="siroe_logo" class="img-logo">
+    <img [src]="loginLogo" [alt]="brand.appTitle + ' logo login'" class="img-logo">
     <div></div>
     <div *ngIf="errorMessage" class="error-header error">
       Correo electrónico o contraseña incorrecta, intente nuevamente.

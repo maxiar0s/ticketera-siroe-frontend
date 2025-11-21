@@ -7,6 +7,8 @@ export const BRAND = {
   logoMain: '/assets/img/soporte.png',
   /** Logo compacto (sidebar colapsado/móvil) */
   logoCompact: '/assets/img/soporte-s.png',
-  /** Favicon (puedes apuntar a otro .ico/.png en assets) */
+  /** Logo de login (puedes usar uno horizontal). Si no se define, se usa logoMain */
+  loginLogo: '/assets/img/soporte.png',
+
   favicon: '/favicon.ico',
 };

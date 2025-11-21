@@ -23,11 +23,11 @@
   position: relative;
 }
 
-.logo[src="/assets/img/soporte.png"] {
+.logo-main {
   display: block;
 }
 
-.logo[src="/assets/img/soporte-s.png"] {
+.logo-compact {
   display: none;
 }
 
@@ -173,12 +173,12 @@ img[src="/assets/svg/side-menu-arrow-up.svg"],
     width: 4px;
   }
 
-  .logo[src="/assets/img/soporte.png"] {
+  .logo-main {
     display: none;
   }
 
   /* Mostrar logo pequeño */
-  .logo[src="/assets/img/soporte-s.png"] {
+  .logo-compact {
     display: block;
     height: 5rem; /* Ajustar tamaño para el logo pequeño */
     padding: 0 1rem;
