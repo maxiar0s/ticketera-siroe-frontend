@@ -3,7 +3,7 @@
   position: fixed;
   flex-grow: 1;
   min-height: 100vh;
-  border-right: 1px solid #f5e6f1;
+  border-right: 1px solid var(--color-border);
   display: flex;
   flex-direction: column;
   width: 20rem;
@@ -109,7 +109,7 @@
   border-bottom-right-radius: 15px;
 }
 .active {
-  background-color: #f8e2ea;
+  background-color: var(--color-primary-soft);
   font-weight: 600;
   color: var(--color-primary);
 }
@@ -124,6 +124,38 @@ img[class="routed-image svg-size"],
 }
 .active img[class="routed-image svg-size"] {
   display: block;
+}
+
+.icon-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.icon-mask {
+  width: 24px;
+  height: 24px;
+  display: inline-block;
+  background-color: #b6b7b7;
+  mask-repeat: no-repeat;
+  mask-position: center;
+  mask-size: contain;
+  -webkit-mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  -webkit-mask-size: contain;
+}
+
+.icon-mask--active {
+  display: none;
+  background-color: var(--color-primary);
+}
+
+.active .icon-mask {
+  display: none;
+}
+
+.active .icon-mask--active {
+  display: inline-block;
 }
 
 img[src="/assets/svg/side-menu-arrow-up.svg"],

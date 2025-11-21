@@ -18,17 +18,17 @@
         [ngClass]="{ active: currentGroup.includes(item.route) }"
       >
         <div class="activated-item"></div>
-        <div>
-          <img
-            class="normal-image svg-size"
-            [src]="'/assets/svg/' + item.svg + '.svg'"
-            [alt]="item.svg + '.svg'"
-          />
-          <img
-            class="routed-image svg-size"
-            [src]="'/assets/svg/' + item.svg + '-routed.svg'"
-            [alt]="item.svg + 'routed.svg'"
-          />
+        <div class="icon-wrapper">
+          <span
+            class="icon-mask"
+            [style.-webkit-mask-image]="'url(/assets/svg/' + item.svg + '.svg)'"
+            [style.mask-image]="'url(/assets/svg/' + item.svg + '.svg)'"
+          ></span>
+          <span
+            class="icon-mask icon-mask--active"
+            [style.-webkit-mask-image]="'url(/assets/svg/' + item.svg + '-routed.svg)'"
+            [style.mask-image]="'url(/assets/svg/' + item.svg + '-routed.svg)'"
+          ></span>
         </div>
         <p class="color-option">{{ item.nombre }}</p>
         <div>
@@ -54,11 +54,11 @@
           class="subItem"
           (click)="activeSubGroup(subItem.route)"
         >
-          <img
-            [src]="'/assets/svg/' + subItem.svg + '.svg'"
-            [alt]="item.svg + '.svg'"
-            class="svg-size"
-          />
+          <span
+            class="icon-mask"
+            [style.-webkit-mask-image]="'url(/assets/svg/' + subItem.svg + '.svg)'"
+            [style.mask-image]="'url(/assets/svg/' + subItem.svg + '.svg)'"
+          ></span>
           <p class="color-option">{{ subItem.nombre }}</p>
         </a>
       </div>
