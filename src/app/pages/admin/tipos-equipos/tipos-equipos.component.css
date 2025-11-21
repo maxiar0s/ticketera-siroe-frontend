@@ -1,10 +1,5 @@
 :host {
   display: block;
-  --color-primary: var(--color-primary);
-  --color-primary-hover: #9f1347;
-  --color-primary-soft: rgba(183, 23, 82, 0.08);
-  --color-primary-soft-strong: rgba(183, 23, 82, 0.15);
-  --color-danger: #ef4444;
 }
 
 .tipos-wrapper {
@@ -306,7 +301,7 @@ button {
   border-radius: 10px;
   padding: 0.7rem 1.35rem;
   background: var(--color-primary);
-  color: var(--color-text);
+  color: var(--color-surface);
   font-weight: 600;
   cursor: pointer;
   transition: background 0.2s ease, transform 0.2s ease;
@@ -622,7 +617,7 @@ button:not(:disabled):hover {
   justify-content: space-between;
   align-items: flex-start;
   gap: 1rem;
-  background: var(--color-primary, #5c2d91);
+  background: var(--color-primary);
   padding: 1rem 1.25rem;
   border-radius: 14px;
 }

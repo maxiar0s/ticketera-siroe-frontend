@@ -13,9 +13,9 @@
   --color-surface: #ffffff;
   --color-surface-alt: #f7f7f7;
   --color-surface-soft: #f6f7fb;
-  --color-primary-soft: var(--color-primary-soft);
+  --color-primary-soft: rgba(183, 23, 82, 0.08);
   --color-border: #ebeef2;
-  --color-border-strong: var(--color-border-strong);
+  --color-border-strong: #d6d9e2;
   --color-text: #474747;
   --color-text-alt: #6c7684;
   --color-disabled: #d9d9d9;
@@ -23,7 +23,7 @@
 
   /* Estados */
   --color-success: #1f8f56;
-  --color-info: var(--color-info);
+  --color-info: #1d62b0;
   --color-warning: #facc15;
   --color-danger: #d7393b;
 }
