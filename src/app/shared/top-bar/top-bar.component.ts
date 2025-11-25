@@ -164,13 +164,30 @@ export class TopBarComponent implements AfterViewInit, OnInit, OnDestroy {
       this.notificationService.marcarComoLeidas([notificacion.id]);
     }
 
-    const esBitacora =
-      notificacion.referenciaTipo === 'ticket' ||
-      notificacion.referenciaTipo === 'bitacora';
-    if (esBitacora && notificacion.referenciaId) {
-      this.router.navigate(['/bitacora'], {
-        queryParams: { bitacoraId: notificacion.referenciaId },
+    if (
+      notificacion.referenciaTipo === 'bitacora' &&
+      (notificacion.referenciaId || notificacion.metadata?.bitacoraId)
+    ) {
+      const destinoId = notificacion.referenciaId ?? notificacion.metadata?.bitacoraId;
+      this.router.navigate(['/bitacoras'], {
+        queryParams: { bitacoraId: destinoId },
         state: {
+          notificacionId: notificacion.id,
+        },
+      });
+      this.notificationService.cerrarPopup();
+      return;
+    }
+
+    if (
+      notificacion.referenciaTipo === 'ticket' &&
+      (notificacion.referenciaId || notificacion.metadata?.ticketId)
+    ) {
+      const destinoId = notificacion.referenciaId ?? notificacion.metadata?.ticketId;
+      this.router.navigate(['/tickets'], {
+        queryParams: { ticketId: destinoId },
+        state: {
+          ticketId: destinoId,
           notificacionId: notificacion.id,
         },
       });

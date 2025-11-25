@@ -17,8 +17,16 @@
   },
   {
     "id": 3,
-    "nombre": "Bitácora",
-    "route": "/bitacora",
+    "nombre": "Bitácoras",
+    "route": "/bitacoras",
+    "svg": "download",
+    "subItem": [],
+    "isOpen": false
+  },
+  {
+    "id": 6,
+    "nombre": "Tickets",
+    "route": "/tickets",
     "svg": "download",
     "subItem": [],
     "isOpen": false

@@ -1,4 +1,5 @@
 import { Bitacora } from './bitacora.interface';
+import { Ticket } from './ticket.interface';
 
 export interface ProyectoEncargado {
   id: number;
@@ -36,6 +37,7 @@ export interface Proyecto {
   totalTickets: number;
   adjuntos: ProyectoAdjunto[];
   bitacoras?: Bitacora[];
+  tickets?: Ticket[];
   creadoPor?: ProyectoEncargado | null;
   actualizadoPor?: ProyectoEncargado | null;
   createdAt?: string;

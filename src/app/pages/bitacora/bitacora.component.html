@@ -1,34 +1,22 @@
-﻿<div class="bitacora-container">
+<div class="bitacora-container">
   <header class="bitacora-header">
     <div>
       <h1>{{ tituloModulo }}</h1>
       <p class="subtitle">
-        {{
-          perfilTieneTickets
-            ? 'Revisa, registra y gestiona los tickets junto a las bitacoras.'
-            : 'Revisa y registra el detalle de cada visita realizada a tus clientes.'
-        }}
+        Revisa y registra el detalle de cada visita realizada a tus clientes.
       </p>
     </div>
     <button
       type="button"
       class="primary-button"
-      *ngIf="puedeCrear && tieneAccesoTickets"
+      *ngIf="puedeCrear"
       (click)="abrirFormularioCrear()"
     >
       Registrar
     </button>
   </header>
 
-  <div *ngIf="soloBitacorasCliente" class="bitacora-empty acceso-restringido">
-    Esta cuenta no tiene acceso al modulo de tickets. Solo se muestran las bitacoras registradas.
-  </div>
-
-  <form
-    class="bitacora-filters"
-    [formGroup]="filtroForm"
-    (ngSubmit)="buscarBitacoras()"
-  >
+  <form class="bitacora-filters" [formGroup]="filtroForm" (ngSubmit)="buscarBitacoras()">
     <div class="filters-grid">
       <label class="filter-field">
         <span class="label">Cliente</span>
@@ -55,18 +43,6 @@
             [value]="sucursal.id"
           >
             {{ sucursal.sucursal }}
-          </option>
-        </select>
-      </label>
-
-      <label class="filter-field" *ngIf="!soloBitacorasCliente">
-        <span class="label">Tipo</span>
-        <select formControlName="tipo">
-          <option
-            *ngFor="let opcion of opcionesFiltroTipoVisibles"
-            [value]="opcion.value"
-          >
-            {{ opcion.label }}
           </option>
         </select>
       </label>
@@ -126,7 +102,6 @@
       <thead>
         <tr>
           <th>Fecha</th>
-          <th class="tipo-col">Tipo</th>
           <th>Cliente</th>
           <th>Sucursal</th>
           <th>Técnicos</th>
@@ -140,39 +115,17 @@
           (click)="seleccionarBitacora(bitacora)"
           [class.selected]="bitacoraSeleccionada?.id === bitacora.id"
           [class.emergencia]="bitacora.isEmergencia"
-          [class.ticket]="bitacora.esTicket"
         >
           <td>{{ bitacora.fechaVisita | formatoFecha:'dd/MM/yyyy' }}</td>
-          <td class="tipo">
-            <div class="tipo-wrapper">
-              <span
-                class="tipo-chip"
-                [ngClass]="bitacora.esTicket ? 'ticket' : 'bitacora'"
-              >
-                {{ bitacora.esTicket ? 'Ticket' : 'Bitacora' }}
-              </span>
-              <span
-                *ngIf="esBitacoraLead(bitacora)"
-                class="tipo-chip lead"
-              >
-                Lead
-              </span>
-              <span
-                *ngIf="bitacora.esTicket"
-                class="tipo-chip ticket-estado-listado"
-                [ngClass]="bitacora.estadoTicket === 'terminado' ? 'resuelto' : 'ingresado'"
-              >
-                {{ bitacora.estadoTicket === 'terminado' ? 'Cerrado' : 'Abierto' }}
-              </span>
-              <span
-                *ngIf="bitacora.isEmergencia"
-                class="tipo-chip emergencia"
-              >
-                Emergencia
-              </span>
-            </div>
+          <td>
+            {{ bitacora.casaMatriz?.razonSocial || 'N/A' }}
+            <span
+              *ngIf="esBitacoraLead(bitacora)"
+              class="tipo-chip lead"
+            >
+              Lead
+            </span>
           </td>
-          <td>{{ bitacora.casaMatriz?.razonSocial || 'N/A' }}</td>
           <td>{{ bitacora.sucursal?.sucursal || 'General' }}</td>
           <td class="tecnicos">
             <ng-container *ngIf="bitacora.tecnicos?.length; else sinTecnicos">
@@ -245,7 +198,6 @@
     <section
       class="bitacora-detail"
       [class.emergencia]="bitacoraSeleccionada.isEmergencia"
-      [class.ticket]="bitacoraSeleccionada.esTicket"
       (click)="$event.stopPropagation()"
       role="dialog"
       aria-modal="true"
@@ -262,30 +214,14 @@
       <header>
         <div class="detail-heading">
           <h2 id="bitacoraDetalleTitulo">
-            {{
-              bitacoraSeleccionada.titulo ||
-                (bitacoraSeleccionada.esTicket ? 'Detalle del ticket' : 'Detalle de la visita')
-            }}
+            {{ bitacoraSeleccionada.titulo || 'Detalle de la visita' }}
           </h2>
-          <span
-            class="type-badge"
-            [ngClass]="bitacoraSeleccionada.esTicket ? 'ticket' : 'bitacora'"
-          >
-            {{ bitacoraSeleccionada.esTicket ? 'Ticket' : 'Bitacora' }}
-          </span>
+          <span class="type-badge bitacora">Bitacora</span>
           <span
             *ngIf="esBitacoraLead(bitacoraSeleccionada)"
             class="lead-detail-chip"
           >
             Lead
-          </span>
-          <span
-            *ngIf="bitacoraSeleccionada.esTicket"
-            class="ticket-state-pill"
-            [class.ticket-state-terminado]="bitacoraSeleccionada.estadoTicket === 'terminado'"
-            [class.ticket-state-ingresado]="bitacoraSeleccionada.estadoTicket !== 'terminado'"
-          >
-            {{ bitacoraSeleccionada.estadoTicket === 'terminado' ? 'Cerrado' : 'Abierto' }}
           </span>
           <span
             *ngIf="bitacoraSeleccionada.isEmergencia"
@@ -339,31 +275,9 @@
           </span>
         </div>
         <div>
-          <span class="label">Tipo</span>
-          <span class="value">
-            {{ bitacoraSeleccionada.esTicket ? 'Ticket' : 'Bitacora' }}
-          </span>
-        </div>
-        <div>
-          <span class="label">{{ bitacoraSeleccionada.esTicket ? 'Fecha de ingreso' : 'Fecha visita' }}</span>
+          <span class="label">Fecha visita</span>
           <span class="value">
             {{ bitacoraSeleccionada.fechaVisita | formatoFecha:'fullDate' }}
-          </span>
-        </div>
-        <div *ngIf="bitacoraSeleccionada.esTicket">
-          <span class="label">Estado</span>
-          <span class="value">
-            {{ bitacoraSeleccionada.estadoTicket === 'terminado' ? 'Cerrado' : 'Abierto' }}
-          </span>
-        </div>
-        <div *ngIf="bitacoraSeleccionada.esTicket && bitacoraSeleccionada.estadoTicket === 'terminado'">
-          <span class="label">Fecha de termino</span>
-          <span class="value">
-            {{
-              bitacoraSeleccionada.fechaTermino
-                ? (bitacoraSeleccionada.fechaTermino | formatoFecha:'fullDate')
-                : 'Sin registrar'
-            }}
           </span>
         </div>
         <div *ngIf="bitacoraSeleccionada.horaLlegada">
@@ -402,17 +316,13 @@
         </div>
       </div>
 
-      <article
-        class="detail-note"
-        [class.ticket-detail]="bitacoraSeleccionada.esTicket"
-      >
-        <h3>{{ bitacoraSeleccionada.esTicket ? 'Detalle del ticket' : 'Detalle de la visita' }}</h3>
+      <article class="detail-note">
+        <h3>Detalle de la visita</h3>
         <p>
           {{ bitacoraSeleccionada.descripcion }}
         </p>
         <div
           class="adjuntos"
-          [class.ticket-ingreso]="bitacoraSeleccionada.esTicket"
           *ngIf="bitacoraSeleccionada.adjuntos && bitacoraSeleccionada.adjuntos.length > 0"
         >
           <h4>Archivos adjuntos</h4>
@@ -426,57 +336,24 @@
           </ul>
         </div>
       </article>
-
-      <section
-        class="ticket-completion"
-        *ngIf="
-          bitacoraSeleccionada.esTicket &&
-          bitacoraSeleccionada.estadoTicket === 'terminado'
-        "
-      >
-        <article class="detail-note ticket-terminado">
-          <h3>Detalle de lo realizado</h3>
-          <p>
-            {{ bitacoraSeleccionada.detalleTermino || 'Sin detalle registrado.' }}
-          </p>
-          <div
-            class="adjuntos ticket-evidencias"
-            *ngIf="
-              bitacoraSeleccionada.adjuntosTermino &&
-              bitacoraSeleccionada.adjuntosTermino.length > 0
-            "
-          >
-            <h4>Evidencias</h4>
-            <ul class="adjuntos-list">
-              <li *ngFor="let a of bitacoraSeleccionada.adjuntosTermino">
-                <button type="button" class="link-button" (click)="downloadAdjunto(a)">
-                  <i class="fas fa-download"></i>
-                  {{ a.split('/').pop() }}
-                </button>
-              </li>
-            </ul>
-          </div>
-        </article>
-      </section>
     </section>
   </div>
 </div>
 
-<ng-container *ngIf="tieneAccesoTickets">
-  <div
-    class="bitacora-modal-backdrop"
-    *ngIf="formularioVisible"
-  >
-    <div class="bitacora-modal" role="dialog" aria-modal="true">
-      <header class="modal-header">
-        <div>
-          <h2>{{ modoEdicion ? 'Editar' : 'Registrar' }}</h2>
-          <p class="subtitle">
-            Completa los datos para dejar registro de la visita realizada.
-          </p>
-        </div>
-      </header>
-      <form [formGroup]="bitacoraForm" (ngSubmit)="guardarBitacora()">
+<div
+  class="bitacora-modal-backdrop"
+  *ngIf="formularioVisible"
+>
+  <div class="bitacora-modal" role="dialog" aria-modal="true">
+    <header class="modal-header">
+      <div>
+        <h2>{{ modoEdicion ? 'Editar' : 'Registrar' }}</h2>
+        <p class="subtitle">
+          Completa los datos para dejar registro de la visita realizada.
+        </p>
+      </div>
+    </header>
+    <form [formGroup]="bitacoraForm" (ngSubmit)="guardarBitacora()">
       <div class="modal-grid">
         <label>
           <span class="label">Título (opcional)</span>
@@ -487,12 +364,11 @@
           />
         </label>
 
-        <label [class.invalid]="campoInvalido('clienteId')">
+        <label [class.invalid]="bitacoraForm.get('clienteId')?.invalid && (bitacoraForm.get('clienteId')?.dirty || bitacoraForm.get('clienteId')?.touched)">
           <span class="label">Cliente</span>
           <select
             formControlName="clienteId"
             (change)="onClienteFormChange($any($event.target).value)"
-            [attr.aria-invalid]="campoInvalido('clienteId')"
           >
             <option value="" disabled>Selecciona un cliente</option>
             <option
@@ -502,12 +378,9 @@
               {{ cliente.razonSocial }}
             </option>
           </select>
-          <div class="field-error" *ngIf="mensajeError('clienteId') as error">
-            {{ error }}
-          </div>
         </label>
 
-        <label *ngIf="!esTicketSeleccionado">
+        <label>
           <span class="label">Sucursal</span>
           <select formControlName="sucursalId">
             <option value="">General</option>
@@ -516,42 +389,6 @@
               [value]="sucursal.id"
             >
               {{ sucursal.sucursal }}
-            </option>
-          </select>
-        </label>
-
-        <label>
-          <span class="label">Tipo de registro</span>
-          <div class="tipo-toggle" [class.disabled]="esTicketControl?.disabled">
-            <button
-              type="button"
-              class="toggle-option bitacora"
-              [class.active]="!esTicketControl?.value"
-              [disabled]="esTicketControl?.disabled"
-              (click)="seleccionarTipoRegistro(false)"
-            >
-              Bitacora
-            </button>
-            <button
-              type="button"
-              class="toggle-option ticket"
-              [class.active]="esTicketControl?.value"
-              [disabled]="esTicketControl?.disabled"
-              (click)="seleccionarTipoRegistro(true)"
-            >
-              Ticket
-            </button>
-          </div>
-        </label>
-
-        <label *ngIf="esTicketSeleccionado">
-          <span class="label">Estado del ticket</span>
-          <select formControlName="ticketEstado">
-            <option
-              *ngFor="let estado of estadosTicket"
-              [value]="estado.value"
-            >
-              {{ estado.label }}
             </option>
           </select>
         </label>
@@ -569,70 +406,35 @@
           </select>
         </label>
 
-        <label [class.invalid]="campoInvalido('fechaVisita')">
-          <span class="label">
-            {{ esTicketSeleccionado ? 'Fecha de ingreso' : 'Fecha de la visita' }}
-          </span>
+        <label [class.invalid]="bitacoraForm.get('fechaVisita')?.invalid && (bitacoraForm.get('fechaVisita')?.dirty || bitacoraForm.get('fechaVisita')?.touched)">
+          <span class="label">Fecha de la visita</span>
           <input
             type="date"
             formControlName="fechaVisita"
-            [attr.aria-invalid]="campoInvalido('fechaVisita')"
           />
-          <div class="field-error" *ngIf="mensajeError('fechaVisita') as error">
-            {{ error }}
-          </div>
         </label>
 
-        <ng-container *ngIf="mostrarCamposHorarios">
-          <label>
-            <span class="label">Hora de llegada</span>
-            <input type="datetime-local" formControlName="horaLlegada" />
-          </label>
+        <label [class.invalid]="bitacoraForm.get('horaLlegada')?.invalid && (bitacoraForm.get('horaLlegada')?.dirty || bitacoraForm.get('horaLlegada')?.touched)">
+          <span class="label">Hora de llegada</span>
+          <input type="datetime-local" formControlName="horaLlegada" />
+        </label>
 
-          <label>
-            <span class="label">Hora de salida</span>
-            <input type="datetime-local" formControlName="horaSalida" />
-          </label>
-        </ng-container>
+        <label [class.invalid]="bitacoraForm.get('horaSalida')?.invalid && (bitacoraForm.get('horaSalida')?.dirty || bitacoraForm.get('horaSalida')?.touched)">
+          <span class="label">Hora de salida</span>
+          <input type="datetime-local" formControlName="horaSalida" />
+        </label>
 
-        <div class="termino-ticket-fields" *ngIf="mostrarCamposTerminoTicket">
-          <label [class.invalid]="campoInvalido('ticketFechaTermino')">
-            <span class="label">Fecha de termino</span>
-            <input
-              type="date"
-              formControlName="ticketFechaTermino"
-              [attr.aria-invalid]="campoInvalido('ticketFechaTermino')"
-            />
-            <div class="field-error" *ngIf="mensajeError('ticketFechaTermino') as error">
-              {{ error }}
-            </div>
-          </label>
-
-          <label class="full" [class.invalid]="campoInvalido('ticketDetalleTermino')">
-            <span class="label">Detalle de lo realizado</span>
-            <textarea
-              formControlName="ticketDetalleTermino"
-              rows="4"
-              placeholder="Describe el trabajo realizado para cerrar el ticket."
-              [attr.aria-invalid]="campoInvalido('ticketDetalleTermino')"
-            ></textarea>
-            <div class="field-error" *ngIf="mensajeError('ticketDetalleTermino') as error">
-              {{ error }}
-            </div>
-          </label>
-        </div>
-
-        <label class="full" [class.invalid]="campoInvalido('tecnicos')">
-          <span class="label">Tecnicos</span>
+        <label class="full" [class.invalid]="bitacoraForm.get('tecnicos')?.invalid && (bitacoraForm.get('tecnicos')?.dirty || bitacoraForm.get('tecnicos')?.touched)">
+          <span class="label">Técnicos</span>
           <div class="clientes-dropdown" (click)="$event.stopPropagation()">
             <button
-            type="button"
-            class="dropdown-button"
-            (click)="toggleTecnicosDropdown($event)"
-            [disabled]="tecnicosDisponibles.length === 0 || bitacoraForm.get('tecnicos')?.disabled"
-            [class.invalid]="campoInvalido('tecnicos')"
-            [attr.aria-expanded]="tecnicosDropdownAbierto"
-          >
+              type="button"
+              class="dropdown-button"
+              (click)="toggleTecnicosDropdown($event)"
+              [disabled]="tecnicosDisponibles.length === 0 || bitacoraForm.get('tecnicos')?.disabled"
+              [class.invalid]="bitacoraForm.get('tecnicos')?.invalid && (bitacoraForm.get('tecnicos')?.dirty || bitacoraForm.get('tecnicos')?.touched)"
+              [attr.aria-expanded]="tecnicosDropdownAbierto"
+            >
               {{ resumenTecnicosSeleccionados }}
               <img src="/assets/svg/side-menu-arrow-down.svg" alt="toggle" class="dropdown-arrow" />
             </button>
@@ -655,25 +457,18 @@
           <div class="helper-text" *ngIf="tecnicosDisponibles.length === 0">
             No hay tecnicos disponibles para seleccionar.
           </div>
-          <div class="field-error" *ngIf="mensajeError('tecnicos') as error">
-            {{ error }}
-          </div>
         </label>
 
-        <label class="full" [class.invalid]="campoInvalido('descripcion')">
+        <label class="full" [class.invalid]="bitacoraForm.get('descripcion')?.invalid && (bitacoraForm.get('descripcion')?.dirty || bitacoraForm.get('descripcion')?.touched)">
           <span class="label">Detalle</span>
           <textarea
             formControlName="descripcion"
             rows="4"
             placeholder="Describe las actividades realizadas, hallazgos y compromisos."
-            [attr.aria-invalid]="campoInvalido('descripcion')"
           ></textarea>
-          <div class="field-error" *ngIf="mensajeError('descripcion') as error">
-            {{ error }}
-          </div>
         </label>
 
-        <label class="full checkbox-field" *ngIf="!esTicketSeleccionado">
+        <label class="full checkbox-field">
           <input
             id="isEmergencia"
             type="checkbox"
@@ -687,22 +482,13 @@
           </div>
         </label>
 
-        <label
-          class="full file-upload-field"
-          [class.ticket-ingreso]="esTicketSeleccionado"
-        >
-          <span class="label">
-            {{
-              esTicketSeleccionado
-                ? 'Archivos adjuntos'
-                : 'Adjuntar documentos / imagenes'
-            }}
-          </span>
+        <label class="full file-upload-field">
+          <span class="label">Adjuntar documentos / imagenes</span>
           <input
             #fileIngresoInput
             type="file"
             class="file-input"
-            (change)="onFilesSelected($event, 'ingreso')"
+            (change)="onFilesSelected($event)"
             accept="image/*,.pdf,.doc,.docx"
             multiple
           />
@@ -725,9 +511,6 @@
               }}
             </span>
           </div>
-          <div class="helper-text" *ngIf="esTicketSeleccionado && estadoTicketSeleccionado === 'ingresado'">
-            Estos documentos se conservaran cuando cierres el ticket.
-          </div>
 
           <div class="selected-files" *ngIf="selectedIngresoFiles.length > 0">
             <ul>
@@ -736,59 +519,7 @@
                 <button
                   type="button"
                   class="link-button"
-                  (click)="removeSelectedFile(i, 'ingreso')"
-                >
-                  Quitar
-                </button>
-              </li>
-            </ul>
-          </div>
-        </label>
-
-        <label
-          class="full file-upload-field ticket-evidencias"
-          *ngIf="mostrarCamposTerminoTicket"
-        >
-          <span class="label">Evidencias (fotos)</span>
-          <input
-            #fileEvidenciaInput
-            type="file"
-            class="file-input"
-            (change)="onFilesSelected($event, 'evidencia')"
-            accept="image/*"
-            multiple
-          />
-
-          <div class="file-picker">
-            <button
-              type="button"
-              class="file-button"
-              (click)="fileEvidenciaInput.click()"
-            >
-              Elegir archivo
-            </button>
-            <span class="file-status">
-              {{
-                selectedEvidenceFiles.length === 0
-                  ? 'No se ha subido archivo.'
-                  : selectedEvidenceFiles.length === 1
-                    ? selectedEvidenceFiles[0].name
-                    : selectedEvidenceFiles.length + ' archivos seleccionados'
-              }}
-            </span>
-          </div>
-          <div class="helper-text">
-            Adjunta imagenes que respalden el trabajo realizado (JPG, PNG, HEIC).
-          </div>
-
-          <div class="selected-files" *ngIf="selectedEvidenceFiles.length > 0">
-            <ul>
-              <li *ngFor="let f of selectedEvidenceFiles; let i = index">
-                <span class="file-name">{{ f.name }}</span>
-                <button
-                  type="button"
-                  class="link-button"
-                  (click)="removeSelectedFile(i, 'evidencia')"
+                  (click)="removeSelectedFile(i)"
                 >
                   Quitar
                 </button>
@@ -813,5 +544,3 @@
     </form>
   </div>
 </div>
-</ng-container>
-

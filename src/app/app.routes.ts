@@ -58,11 +58,21 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/sucursal/sucursal.component').then( m => m.SucursalComponent ),
   },
 
-  // Bitacora
+  // Bitacoras y Tickets
   {
     path: 'bitacora',
     canActivate: [protegerRutaGuard],
     loadComponent: () => import('./pages/bitacora/bitacora.component').then( m => m.BitacoraComponent ),
+  },
+  {
+    path: 'bitacoras',
+    canActivate: [protegerRutaGuard],
+    loadComponent: () => import('./pages/bitacora/bitacora.component').then( m => m.BitacoraComponent ),
+  },
+  {
+    path: 'tickets',
+    canActivate: [protegerRutaGuard],
+    loadComponent: () => import('./pages/tickets/tickets.component').then( m => m.TicketsComponent ),
   },
   {
     path: 'proyectos',

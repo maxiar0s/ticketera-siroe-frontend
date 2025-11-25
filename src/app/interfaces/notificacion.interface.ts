@@ -3,6 +3,7 @@ export interface NotificacionMetadata {
   fecha?: string | null;
   esTicket?: boolean;
   bitacoraId?: number | null;
+  ticketId?: number | null;
   titulo?: string | null;
   [key: string]: unknown;
 }

@@ -694,9 +694,13 @@ export class DashboardCalendarComponent implements OnInit {
       return;
     }
 
-    this.router.navigate(['/bitacora'], {
-      queryParams: { bitacoraId: destinoId },
-      state: { bitacoraId: destinoId },
+    const esTicket = this.esEventoTicket(evento);
+    const ruta = esTicket ? '/tickets' : '/bitacoras';
+    const queryParams = esTicket ? { ticketId: destinoId } : { bitacoraId: destinoId };
+
+    this.router.navigate([ruta], {
+      queryParams,
+      state: esTicket ? { ticketId: destinoId } : { bitacoraId: destinoId },
     });
   }
 

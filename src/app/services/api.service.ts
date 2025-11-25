@@ -706,8 +706,35 @@ export class ApiService {
     return this.getInformation(endpoint);
   }
 
+  tickets(params: Record<string, any> = {}): Observable<any> {
+    const searchParams = new URLSearchParams();
+    Object.entries(params).forEach(([key, value]) => {
+      if (value === undefined || value === null) {
+        return;
+      }
+      const stringValue = typeof value === 'string' ? value.trim() : String(value);
+      if (stringValue !== '') {
+        searchParams.append(key, stringValue);
+      }
+    });
+
+    const query = searchParams.toString();
+    const endpoint = query ? `tickets?${query}` : 'tickets';
+    return this.getInformation(endpoint);
+  }
+
+  ticket(id: number): Observable<any> {
+    const endpoint = `tickets/${id}`;
+    return this.getInformation(endpoint);
+  }
+
   eliminarBitacora(id: number): Observable<any> {
     const endpoint = `bitacoras/${id}`;
+    return this.deleteInformation(endpoint);
+  }
+
+  eliminarTicket(id: number): Observable<any> {
+    const endpoint = `tickets/${id}`;
     return this.deleteInformation(endpoint);
   }
 
@@ -731,8 +758,18 @@ export class ApiService {
     return this.postInformation(payload, endpoint);
   }
 
+  crearTicket(payload: any): Observable<any> {
+    const endpoint = 'tickets';
+    return this.postInformation(payload, endpoint);
+  }
+
   actualizarBitacora(id: number, payload: any): Observable<any> {
     const endpoint = `bitacoras/${id}`;
+    return this.putInformation(payload, endpoint);
+  }
+
+  actualizarTicket(id: number, payload: any): Observable<any> {
+    const endpoint = `tickets/${id}`;
     return this.putInformation(payload, endpoint);
   }
 

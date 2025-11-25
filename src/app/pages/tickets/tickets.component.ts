@@ -8,7 +8,7 @@ import {
 } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { finalize } from 'rxjs';
-import { Bitacora } from '../../interfaces/bitacora.interface';
+import { Ticket } from '../../interfaces/ticket.interface';
 import { ClienteResumen } from '../../interfaces/cliente-resumen.interface';
 import { Tecnico } from '../../interfaces/tecnico.interface';
 import { Proyecto } from '../../interfaces/proyecto.interface';
@@ -24,19 +24,19 @@ interface SucursalOption {
 }
 
 @Component({
-  selector: 'app-bitacoras',
+  selector: 'app-tickets',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, FormatoFechaPipe],
-  templateUrl: './bitacora.component.html',
-  styleUrl: './bitacora.component.css',
+  templateUrl: './tickets.component.html',
+  styleUrl: './tickets.component.css',
 })
-export class BitacoraComponent implements OnInit {
+export class TicketsComponent implements OnInit {
   filtroForm: FormGroup;
-  bitacoraForm: FormGroup;
+  ticketForm: FormGroup;
 
-  bitacoras: Bitacora[] = [];
-  bitacoraSeleccionada?: Bitacora;
-  private bitacoraDestinoId: number | null = null;
+  tickets: Ticket[] = [];
+  ticketSeleccionado?: Ticket;
+  private ticketDestinoId: number | null = null;
 
   clientes: ClienteResumen[] = [];
   sucursalesFiltro: SucursalOption[] = [];
@@ -54,11 +54,13 @@ export class BitacoraComponent implements OnInit {
   guardando = false;
   errorMensaje = '';
   exitoMensaje = '';
+  accesoDenegado = false;
 
   formularioVisible = false;
   modoEdicion = false;
   selectedIngresoFiles: File[] = [];
-  eliminandoBitacoraId: number | null = null;
+  selectedEvidenceFiles: File[] = [];
+  eliminandoTicketId: number | null = null;
   tecnicosDropdownAbierto = false;
   detalleVisible = false;
 
@@ -69,7 +71,19 @@ export class BitacoraComponent implements OnInit {
   readonly esCliente: boolean;
   readonly puedeCrear: boolean;
   readonly soloLectura: boolean;
-  readonly tituloModulo = 'Bitacoras';
+
+  readonly estadosTicket = [
+    { value: 'ingresado', label: 'Abierto' },
+    { value: 'terminado', label: 'Cerrado' },
+  ] as const;
+  readonly filtrosEstado = [
+    { value: 'todos', label: 'Todos' },
+    { value: 'ingresado', label: 'Abiertos' },
+    { value: 'terminado', label: 'Cerrados' },
+  ];
+
+  tituloModulo = 'Tickets';
+  tieneAccesoTickets = true;
 
   constructor(
     private fb: FormBuilder,
@@ -85,25 +99,28 @@ export class BitacoraComponent implements OnInit {
     this.esComercial = this.authService.esComercial();
     this.esCliente = this.authService.esCliente();
     this.puedeCrear = this.esAdmin || this.esTecnico;
-    this.soloLectura = this.esMesaAyuda || this.esCliente || this.esComercial;
+    this.soloLectura = this.esMesaAyuda || this.esComercial;
 
     this.filtroForm = this.fb.group({
       clienteId: [''],
       sucursalId: [''],
       buscar: [''],
+      estado: ['todos'],
       proyectoId: [''],
     });
 
-    this.bitacoraForm = this.fb.group({
+    this.ticketForm = this.fb.group({
       id: [null],
       titulo: [''],
       clienteId: ['', Validators.required],
       sucursalId: [''],
       fechaVisita: ['', Validators.required],
-      horaLlegada: ['', Validators.required],
-      horaSalida: ['', Validators.required],
+      horaLlegada: [''],
+      horaSalida: [''],
       tecnicos: [[], Validators.required],
-      isEmergencia: [false],
+      ticketEstado: ['ingresado', Validators.required],
+      ticketFechaTermino: [''],
+      ticketDetalleTermino: [''],
       descripcion: ['', [Validators.required, Validators.minLength(5)]],
       proyectoId: [null],
     });
@@ -112,23 +129,81 @@ export class BitacoraComponent implements OnInit {
   ngOnInit(): void {
     this.signalService.updateData(this.tituloModulo);
     this.route.queryParamMap.subscribe((params) => {
-      const idParam = params.get('bitacoraId');
+      const idParam = params.get('ticketId');
       if (!idParam) {
         return;
       }
       const parsed = Number.parseInt(idParam, 10);
       if (!Number.isNaN(parsed)) {
-        this.bitacoraDestinoId = parsed;
+        this.ticketDestinoId = parsed;
       }
     });
 
-    this.cargarDatosIniciales();
+    this.apiService.perfilActual().subscribe({
+      next: (perfil) => {
+        const rolTieneTickets = this.esAdmin || this.esTecnico || this.esComercial;
+        const clienteTieneTickets = !!perfil?.haveTickets;
+        this.tieneAccesoTickets = rolTieneTickets || clienteTieneTickets;
+        this.accesoDenegado = this.esCliente && !clienteTieneTickets;
+        if (!this.tieneAccesoTickets) {
+          this.errorMensaje = 'Tu cuenta no tiene acceso al módulo de tickets.';
+          this.tickets = [];
+          return;
+        }
+        this.inicializarDatos();
+      },
+      error: () => {
+        const rolTieneTickets = this.esAdmin || this.esTecnico || this.esComercial;
+        this.tieneAccesoTickets = rolTieneTickets;
+        this.accesoDenegado = this.esCliente && !rolTieneTickets;
+        if (!this.tieneAccesoTickets) {
+          this.errorMensaje = 'No se pudo verificar el acceso a Tickets para esta cuenta.';
+          this.tickets = [];
+          return;
+        }
+        this.inicializarDatos();
+      },
+    });
+
+    this.configurarValidacionesDinamicas();
   }
 
-  private cargarDatosIniciales(): void {
+  private inicializarDatos(): void {
+    this.errorMensaje = '';
     this.cargarClientes();
     this.cargarTecnicosDisponibles();
     this.cargarProyectos();
+  }
+
+  private configurarValidacionesDinamicas(): void {
+    const estadoCtrl = this.ticketForm.get('ticketEstado');
+    const fechaTerminoCtrl = this.ticketForm.get('ticketFechaTermino');
+    const detalleTerminoCtrl = this.ticketForm.get('ticketDetalleTermino');
+
+    if (!estadoCtrl || !fechaTerminoCtrl || !detalleTerminoCtrl) {
+      return;
+    }
+
+    const aplicarValidaciones = () => {
+      const estado = (estadoCtrl.value ?? 'ingresado') as 'ingresado' | 'terminado';
+      if (estado === 'terminado') {
+        fechaTerminoCtrl.setValidators([Validators.required]);
+        detalleTerminoCtrl.setValidators([Validators.required, Validators.minLength(5)]);
+      } else {
+        fechaTerminoCtrl.setValue('', { emitEvent: false });
+        fechaTerminoCtrl.clearValidators();
+        detalleTerminoCtrl.setValue('', { emitEvent: false });
+        detalleTerminoCtrl.clearValidators();
+        if (this.selectedEvidenceFiles.length) {
+          this.selectedEvidenceFiles = [];
+        }
+      }
+      fechaTerminoCtrl.updateValueAndValidity({ emitEvent: false });
+      detalleTerminoCtrl.updateValueAndValidity({ emitEvent: false });
+    };
+
+    estadoCtrl.valueChanges.subscribe(() => aplicarValidaciones());
+    aplicarValidaciones();
   }
 
   private cargarClientes(): void {
@@ -146,7 +221,7 @@ export class BitacoraComponent implements OnInit {
           this.cargarSucursalesParaCliente(clienteActual, 'filtro');
         }
 
-        this.cargarBitacoras();
+        this.cargarTickets();
       },
       error: (error) => {
         console.error('Error al cargar clientes', error);
@@ -154,7 +229,7 @@ export class BitacoraComponent implements OnInit {
           error?.error?.error ??
           'No fue posible obtener el listado de clientes disponibles.';
         this.clientesLeadMap.clear();
-        this.cargarBitacoras();
+        this.cargarTickets();
       },
     });
   }
@@ -175,19 +250,17 @@ export class BitacoraComponent implements OnInit {
       .getProyectos({ pagina: 1, limite: 100 })
       .subscribe({
         next: (respuesta) => {
-          const lista = Array.isArray(respuesta?.data) ? respuesta.data : [];
-          this.proyectos = lista;
+          this.proyectos = Array.isArray(respuesta?.data) ? respuesta.data : [];
         },
-        error: (error) => {
-          console.error('Error al cargar proyectos', error);
+        error: () => {
           this.proyectos = [];
         },
       });
   }
 
-  buscarBitacoras(): void {
+  buscarTickets(): void {
     this.paginaActual = 1;
-    this.cargarBitacoras();
+    this.cargarTickets();
   }
 
   limpiarFiltros(): void {
@@ -195,6 +268,7 @@ export class BitacoraComponent implements OnInit {
       clienteId: this.esCliente && this.clientes.length === 1 ? this.clientes[0].id : '',
       sucursalId: '',
       buscar: '',
+      estado: 'todos',
       proyectoId: '',
     });
     const clienteId = this.filtroForm.value.clienteId;
@@ -204,10 +278,14 @@ export class BitacoraComponent implements OnInit {
       this.sucursalesFiltro = [];
     }
     this.paginaActual = 1;
-    this.cargarBitacoras();
+    this.cargarTickets();
   }
 
-  private cargarBitacoras(mostrarLoader: boolean = true): void {
+  private cargarTickets(mostrarLoader: boolean = true): void {
+    if (!this.tieneAccesoTickets) {
+      return;
+    }
+
     if (mostrarLoader) {
       this.cargando = true;
     }
@@ -221,6 +299,9 @@ export class BitacoraComponent implements OnInit {
       sucursalId: filtros.sucursalId,
       buscar: filtros.buscar,
     };
+    if (filtros.estado && filtros.estado !== 'todos') {
+      params['estado'] = filtros.estado;
+    }
     if (filtros.proyectoId) {
       if (filtros.proyectoId === 'sin-proyecto') {
         params['sinProyecto'] = 'true';
@@ -230,28 +311,28 @@ export class BitacoraComponent implements OnInit {
     }
 
     this.apiService
-      .bitacoras(params)
+      .tickets(params)
       .pipe(finalize(() => (this.cargando = false)))
       .subscribe({
         next: (respuesta) => {
           const data = respuesta?.data ?? [];
-          this.bitacoras = data;
+          this.tickets = data;
           this.paginasTotales = respuesta?.paginasTotales ?? 0;
           this.paginaActual = respuesta?.pagina ?? 1;
-          if (this.bitacoraSeleccionada) {
+          if (this.ticketSeleccionado) {
             const actualizada = data.find(
-              (item: Bitacora) => item.id === this.bitacoraSeleccionada?.id
+              (item: Ticket) => item.id === this.ticketSeleccionado?.id
             );
-            this.bitacoraSeleccionada = actualizada;
+            this.ticketSeleccionado = actualizada;
           }
-          this.procesarBitacoraDestino();
+          this.procesarTicketDestino();
         },
         error: (error) => {
-          console.error('Error al cargar bitacoras', error);
+          console.error('Error al cargar tickets', error);
           this.errorMensaje =
             error?.error?.error ??
-            'Ocurrio un error al intentar obtener las bitacoras.';
-          this.bitacoras = [];
+            'Ocurrio un error al intentar obtener los tickets.';
+          this.tickets = [];
           this.paginasTotales = 0;
         },
       });
@@ -262,61 +343,63 @@ export class BitacoraComponent implements OnInit {
       return;
     }
     this.paginaActual = pagina;
-    this.cargarBitacoras();
+    this.cargarTickets();
   }
 
-  private procesarBitacoraDestino(): void {
-    if (!this.bitacoraDestinoId) {
+  private procesarTicketDestino(): void {
+    if (!this.ticketDestinoId) {
       return;
     }
-    const objetivo = this.bitacoras.find(
-      (item: Bitacora) => item.id === this.bitacoraDestinoId
+    const objetivo = this.tickets.find(
+      (item: Ticket) => item.id === this.ticketDestinoId
     );
     if (!objetivo) {
       return;
     }
-    this.seleccionarBitacora(objetivo);
-    this.bitacoraDestinoId = null;
-    this.limpiarParametrosDestino();
-  }
-
-  private limpiarParametrosDestino(): void {
+    this.ticketSeleccionado = objetivo;
+    if (this.puedeEditarTicket(objetivo)) {
+      this.abrirFormularioEditar(objetivo);
+    } else {
+      this.detalleVisible = true;
+    }
+    this.ticketDestinoId = null;
     this.router.navigate([], {
-      queryParams: { bitacoraId: null },
+      queryParams: { ticketId: null },
       queryParamsHandling: 'merge',
       replaceUrl: true,
     });
   }
 
-  seleccionarBitacora(bitacora: Bitacora): void {
-    this.bitacoraSeleccionada = bitacora;
+  seleccionarTicket(ticket: Ticket): void {
+    this.ticketSeleccionado = ticket;
     this.detalleVisible = true;
   }
 
   cerrarDetalle(): void {
     this.detalleVisible = false;
-    this.bitacoraSeleccionada = undefined;
+    this.ticketSeleccionado = undefined;
   }
 
-  puedeEditarBitacora(_bitacora: Bitacora): boolean {
+  puedeEditarTicket(_ticket: Ticket): boolean {
     return this.esAdmin || this.esTecnico;
   }
 
   abrirFormularioCrear(): void {
-    if (!this.puedeCrear) {
+    if (!this.puedeCrear || !this.tieneAccesoTickets) {
       return;
     }
 
     this.detalleVisible = false;
-    this.bitacoraSeleccionada = undefined;
+    this.ticketSeleccionado = undefined;
     this.habilitarTodosLosControles();
     const clienteId =
       this.filtroForm.value.clienteId ||
       (this.clientes.length === 1 ? this.clientes[0].id : '');
 
     this.selectedIngresoFiles = [];
+    this.selectedEvidenceFiles = [];
     this.tecnicosDropdownAbierto = false;
-    this.bitacoraForm.reset({
+    this.ticketForm.reset({
       id: null,
       titulo: '',
       clienteId,
@@ -325,7 +408,9 @@ export class BitacoraComponent implements OnInit {
       horaLlegada: '',
       horaSalida: '',
       tecnicos: [],
-      isEmergencia: false,
+      ticketEstado: 'ingresado',
+      ticketFechaTermino: '',
+      ticketDetalleTermino: '',
       descripcion: '',
       proyectoId: null,
     });
@@ -342,28 +427,31 @@ export class BitacoraComponent implements OnInit {
     }
   }
 
-  abrirFormularioEditar(bitacora: Bitacora, event?: Event): void {
+  abrirFormularioEditar(ticket: Ticket, event?: Event): void {
     event?.stopPropagation();
-    if (!this.puedeEditarBitacora(bitacora)) {
+    if (!this.puedeEditarTicket(ticket)) {
       return;
     }
 
     this.detalleVisible = false;
     this.habilitarTodosLosControles();
     this.selectedIngresoFiles = [];
+    this.selectedEvidenceFiles = [];
     this.tecnicosDropdownAbierto = false;
-    this.bitacoraForm.reset({
-      id: bitacora.id,
-      titulo: bitacora.titulo ?? '',
-      clienteId: bitacora.casaMatrizId,
-      sucursalId: bitacora.sucursalId ?? '',
-      fechaVisita: bitacora.fechaVisita?.slice(0, 10) ?? '',
-      horaLlegada: this.formatearParaInputFecha(bitacora.horaLlegada),
-      horaSalida: this.formatearParaInputFecha(bitacora.horaSalida),
-      tecnicos: Array.isArray(bitacora.tecnicos) ? [...bitacora.tecnicos] : [],
-      isEmergencia: !!bitacora.isEmergencia,
-      descripcion: bitacora.descripcion,
-      proyectoId: bitacora.proyectoId ?? null,
+    this.ticketForm.reset({
+      id: ticket.id,
+      titulo: ticket.titulo ?? '',
+      clienteId: ticket.casaMatrizId,
+      sucursalId: ticket.sucursalId ?? '',
+      fechaVisita: ticket.fechaVisita?.slice(0, 10) ?? '',
+      horaLlegada: this.formatearParaInputFecha(ticket.horaLlegada),
+      horaSalida: this.formatearParaInputFecha(ticket.horaSalida),
+      tecnicos: Array.isArray(ticket.tecnicos) ? [...ticket.tecnicos] : [],
+      ticketEstado: ticket.estadoTicket ?? 'ingresado',
+      ticketFechaTermino: this.formatearParaInputSoloFecha(ticket.fechaTermino),
+      ticketDetalleTermino: ticket.detalleTermino ?? '',
+      descripcion: ticket.descripcion,
+      proyectoId: ticket.proyectoId ?? null,
     });
 
     this.formularioVisible = true;
@@ -371,10 +459,10 @@ export class BitacoraComponent implements OnInit {
     this.exitoMensaje = '';
     this.errorMensaje = '';
 
-    const clienteId = bitacora.casaMatrizId;
+    const clienteId = ticket.casaMatrizId;
     this.cargarSucursalesParaCliente(clienteId, 'form', () => {
-      this.bitacoraForm.patchValue({
-        sucursalId: bitacora.sucursalId ?? '',
+      this.ticketForm.patchValue({
+        sucursalId: ticket.sucursalId ?? '',
       });
     });
   }
@@ -383,32 +471,99 @@ export class BitacoraComponent implements OnInit {
     this.formularioVisible = false;
     this.modoEdicion = false;
     this.guardando = false;
-    this.bitacoraForm.reset({
+    this.ticketForm.reset({
       tecnicos: [],
-      isEmergencia: false,
+      ticketEstado: 'ingresado',
+      ticketFechaTermino: '',
+      ticketDetalleTermino: '',
       proyectoId: null,
     });
     this.sucursalesFormulario = [];
     this.selectedIngresoFiles = [];
+    this.selectedEvidenceFiles = [];
     this.tecnicosDropdownAbierto = false;
     this.habilitarTodosLosControles();
   }
 
-  guardarBitacora(): void {
-    if (this.guardando) {
+  get tecnicosSeleccionados(): string[] {
+    const value = this.ticketForm.get('tecnicos')?.value;
+    return Array.isArray(value) ? value : [];
+  }
+
+  get resumenTecnicosSeleccionados(): string {
+    const seleccionados = this.tecnicosSeleccionados;
+    if (seleccionados.length === 0) {
+      return 'Selecciona tecnicos';
+    }
+    if (seleccionados.length === 1) {
+      return seleccionados[0];
+    }
+    return `${seleccionados.length} tecnicos seleccionados`;
+  }
+
+  get estadoTicketSeleccionado(): 'ingresado' | 'terminado' {
+    const control = this.ticketForm.get('ticketEstado');
+    const valor = control?.value;
+    return valor === 'terminado' ? 'terminado' : 'ingresado';
+  }
+
+  get mostrarCamposTerminoTicket(): boolean {
+    return this.estadoTicketSeleccionado === 'terminado';
+  }
+
+  get mostrarCamposHorarios(): boolean {
+    return this.estadoTicketSeleccionado === 'terminado';
+  }
+
+  toggleTecnicosDropdown(event: MouseEvent): void {
+    event.stopPropagation();
+    this.tecnicosDropdownAbierto = !this.tecnicosDropdownAbierto;
+  }
+
+  onToggleTecnico(tecnico: Tecnico, event?: MouseEvent): void {
+    event?.stopPropagation();
+    const actuales = this.tecnicosSeleccionados;
+    const index = actuales.indexOf(tecnico.name);
+    let actualizados: string[];
+    if (index >= 0) {
+      actualizados = [
+        ...actuales.slice(0, index),
+        ...actuales.slice(index + 1),
+      ];
+    } else {
+      actualizados = [...actuales, tecnico.name];
+    }
+    this.ticketForm.get('tecnicos')?.setValue(actualizados);
+    this.ticketForm.get('tecnicos')?.markAsDirty();
+    this.ticketForm.get('tecnicos')?.markAsTouched();
+  }
+
+  estaTecnicoSeleccionado(tecnico: Tecnico): boolean {
+    return this.tecnicosSeleccionados.includes(tecnico.name);
+  }
+
+  @HostListener('document:click')
+  cerrarDropdowns(): void {
+    if (this.tecnicosDropdownAbierto) {
+      this.tecnicosDropdownAbierto = false;
+    }
+  }
+
+  guardarTicket(): void {
+    if (this.guardando || !this.tieneAccesoTickets) {
       return;
     }
 
-    if (this.bitacoraForm.invalid) {
-      this.bitacoraForm.markAllAsTouched();
+    if (this.ticketForm.invalid) {
+      this.ticketForm.markAllAsTouched();
       return;
     }
 
-    const formValue = this.bitacoraForm.getRawValue();
-    const payload = this.construirPayload(formValue);
+    const formValue = this.ticketForm.getRawValue();
+    const payload = this.construirPayloadCompleto(formValue);
     if (!payload) {
       this.errorMensaje =
-        'Debes ingresar todos los campos obligatorios de la visita.';
+        'Debes ingresar al menos un tecnico responsable para el ticket.';
       return;
     }
 
@@ -418,19 +573,22 @@ export class BitacoraComponent implements OnInit {
     const esEdicion = this.modoEdicion && formValue.id;
     let solicitud$;
 
-    if (this.selectedIngresoFiles.length) {
+    if (this.selectedIngresoFiles.length || this.selectedEvidenceFiles.length) {
       const formData = new FormData();
       formData.append('payload', JSON.stringify(payload));
       this.selectedIngresoFiles.forEach((file) => {
         formData.append('files', file, file.name);
       });
+      this.selectedEvidenceFiles.forEach((file) => {
+        formData.append('evidenceFiles', file, file.name);
+      });
       solicitud$ = esEdicion
-        ? this.apiService.actualizarBitacora(formValue.id, formData)
-        : this.apiService.crearBitacora(formData);
+        ? this.apiService.actualizarTicket(formValue.id, formData)
+        : this.apiService.crearTicket(formData);
     } else {
       solicitud$ = esEdicion
-        ? this.apiService.actualizarBitacora(formValue.id, payload)
-        : this.apiService.crearBitacora(payload);
+        ? this.apiService.actualizarTicket(formValue.id, payload)
+        : this.apiService.crearTicket(payload);
     }
 
     solicitud$
@@ -438,43 +596,48 @@ export class BitacoraComponent implements OnInit {
       .subscribe({
         next: (respuesta) => {
           this.exitoMensaje = esEdicion
-            ? 'Bitacora actualizada correctamente.'
-            : 'Bitacora registrada correctamente.';
+            ? 'Ticket actualizado correctamente.'
+            : 'Ticket registrado correctamente.';
           this.cerrarFormulario();
           if (esEdicion) {
-            this.cargarBitacoras(false);
-            this.refrescarBitacora(formValue.id);
+            this.cargarTickets(false);
+            this.refrescarTicket(formValue.id);
           } else {
             this.paginaActual = 1;
-            this.cargarBitacoras();
+            this.cargarTickets();
             if (respuesta?.id) {
-              this.refrescarBitacora(respuesta.id);
+              this.refrescarTicket(respuesta.id);
             }
           }
         },
         error: (error) => {
-          console.error('Error al guardar bitacora', error);
+          console.error('Error al guardar ticket', error);
           this.errorMensaje =
-            error?.error?.error ?? 'No se pudo guardar la bitacora.';
+            error?.error?.error ?? 'No se pudo guardar el ticket.';
         },
       });
   }
 
-  onFilesSelected(event: Event): void {
+  onFilesSelected(event: Event, tipo: 'ingreso' | 'evidencia'): void {
     const input = event.target as HTMLInputElement | null;
     const files = input?.files ? Array.from(input.files) : [];
     if (!files.length) {
       return;
     }
-    files.forEach((file) => this.selectedIngresoFiles.push(file));
+
+    const destino =
+      tipo === 'evidencia' ? this.selectedEvidenceFiles : this.selectedIngresoFiles;
+    files.forEach((file) => destino.push(file));
     if (input) {
       input.value = '';
     }
   }
 
-  removeSelectedFile(index: number): void {
-    if (index >= 0 && index < this.selectedIngresoFiles.length) {
-      this.selectedIngresoFiles.splice(index, 1);
+  removeSelectedFile(index: number, tipo: 'ingreso' | 'evidencia'): void {
+    const destino =
+      tipo === 'evidencia' ? this.selectedEvidenceFiles : this.selectedIngresoFiles;
+    if (index >= 0 && index < destino.length) {
+      destino.splice(index, 1);
     }
   }
 
@@ -488,7 +651,7 @@ export class BitacoraComponent implements OnInit {
   }
 
   onClienteFormChange(clienteId: string): void {
-    this.bitacoraForm.patchValue({ sucursalId: '' });
+    this.ticketForm.patchValue({ sucursalId: '' });
     if (!clienteId) {
       this.sucursalesFormulario = [];
       return;
@@ -550,67 +713,17 @@ export class BitacoraComponent implements OnInit {
     });
   }
 
-  get tecnicosSeleccionados(): string[] {
-    const value = this.bitacoraForm.get('tecnicos')?.value;
-    return Array.isArray(value) ? value : [];
-  }
-
-  get resumenTecnicosSeleccionados(): string {
-    const seleccionados = this.tecnicosSeleccionados;
-    if (seleccionados.length === 0) {
-      return 'Selecciona tecnicos';
-    }
-    if (seleccionados.length === 1) {
-      return seleccionados[0];
-    }
-    return `${seleccionados.length} tecnicos seleccionados`;
-  }
-
-  toggleTecnicosDropdown(event: MouseEvent): void {
-    event.stopPropagation();
-    this.tecnicosDropdownAbierto = !this.tecnicosDropdownAbierto;
-  }
-
-  onToggleTecnico(tecnico: Tecnico, event?: MouseEvent): void {
-    event?.stopPropagation();
-    const actuales = this.tecnicosSeleccionados;
-    const index = actuales.indexOf(tecnico.name);
-    let actualizados: string[];
-    if (index >= 0) {
-      actualizados = [
-        ...actuales.slice(0, index),
-        ...actuales.slice(index + 1),
-      ];
-    } else {
-      actualizados = [...actuales, tecnico.name];
-    }
-    this.bitacoraForm.get('tecnicos')?.setValue(actualizados);
-    this.bitacoraForm.get('tecnicos')?.markAsDirty();
-    this.bitacoraForm.get('tecnicos')?.markAsTouched();
-  }
-
-  estaTecnicoSeleccionado(tecnico: Tecnico): boolean {
-    return this.tecnicosSeleccionados.includes(tecnico.name);
-  }
-
-  @HostListener('document:click')
-  cerrarDropdowns(): void {
-    if (this.tecnicosDropdownAbierto) {
-      this.tecnicosDropdownAbierto = false;
-    }
-  }
-
-  esBitacoraLead(bitacora?: Bitacora | null): boolean {
-    if (!bitacora) {
+  esTicketLead(ticket?: Ticket | null): boolean {
+    if (!ticket) {
       return false;
     }
-    if (bitacora.casaMatriz?.esLead !== undefined) {
-      return !!bitacora.casaMatriz.esLead;
+    if (ticket.casaMatriz?.esLead !== undefined) {
+      return !!ticket.casaMatriz.esLead;
     }
-    return !!this.clientesLeadMap.get(bitacora.casaMatrizId);
+    return !!this.clientesLeadMap.get(ticket.casaMatrizId);
   }
 
-  private construirPayload(formValue: any): any | null {
+  private construirPayloadCompleto(formValue: any): any | null {
     const tecnicosEntrada = Array.isArray(formValue.tecnicos)
       ? formValue.tecnicos
       : [];
@@ -619,16 +732,6 @@ export class BitacoraComponent implements OnInit {
       .filter((item: string) => item.length > 0);
 
     if (tecnicos.length === 0) {
-      return null;
-    }
-
-    const horaLlegadaISO = this.formatearAISO(formValue.horaLlegada);
-    const horaSalidaISO = this.formatearAISO(formValue.horaSalida);
-    if (!horaLlegadaISO || !horaSalidaISO) {
-      return null;
-    }
-
-    if (new Date(horaSalidaISO) <= new Date(horaLlegadaISO)) {
       return null;
     }
 
@@ -643,19 +746,54 @@ export class BitacoraComponent implements OnInit {
       }
     }
 
-    return {
+    const estadoTicket = this.normalizarEstadoTicket(formValue.ticketEstado);
+
+    const payload: any = {
       casaMatrizId: formValue.clienteId,
       sucursalId: formValue.sucursalId || null,
       fechaVisita: formValue.fechaVisita,
-      horaLlegada: horaLlegadaISO,
-      horaSalida: horaSalidaISO,
+      horaLlegada: this.formatearAISO(formValue.horaLlegada),
+      horaSalida: this.formatearAISO(formValue.horaSalida),
       tecnicos,
       descripcion: formValue.descripcion.trim(),
       titulo: formValue.titulo ? formValue.titulo.trim() : null,
-      isEmergencia: !!formValue.isEmergencia,
+      isEmergencia: false,
+      estadoTicket,
       proyectoId,
-      tecnicosIds: this.obtenerIdsTecnicosSeleccionados(tecnicos),
+      fechaTermino: null,
+      detalleTermino: null,
     };
+    payload.tecnicosIds = this.obtenerIdsTecnicosSeleccionados(tecnicos);
+
+    if (estadoTicket === 'terminado') {
+      const fechaTerminoValor =
+        formValue.ticketFechaTermino && `${formValue.ticketFechaTermino}`.trim().length
+          ? `${formValue.ticketFechaTermino}`.trim()
+          : this.obtenerFechaActual();
+      payload.fechaTermino = fechaTerminoValor;
+
+      const detalle = formValue.ticketDetalleTermino
+        ? formValue.ticketDetalleTermino.trim()
+        : '';
+      payload.detalleTermino =
+        detalle.length > 0
+          ? detalle
+          : payload.descripcion && payload.descripcion.length >= 5
+          ? payload.descripcion
+          : 'Ticket cerrado por el técnico.';
+    }
+
+    return payload;
+  }
+
+  private normalizarEstadoTicket(valor: unknown): 'ingresado' | 'terminado' {
+    if (typeof valor === 'string') {
+      const normalizado = valor.trim().toLowerCase();
+      if (normalizado === 'terminado') {
+        return 'terminado';
+      }
+    }
+    return 'ingresado';
   }
 
   private obtenerIdsTecnicosSeleccionados(nombres: string[]): number[] {
@@ -702,81 +840,92 @@ export class BitacoraComponent implements OnInit {
     return local.toISOString().slice(0, 16);
   }
 
+  private formatearParaInputSoloFecha(value: string | null | undefined): string {
+    if (!value) {
+      return '';
+    }
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) {
+      return '';
+    }
+    return date.toISOString().slice(0, 10);
+  }
+
   private obtenerFechaActual(): string {
     const hoy = new Date();
     return hoy.toISOString().slice(0, 10);
   }
 
   private habilitarTodosLosControles(): void {
-    Object.keys(this.bitacoraForm.controls).forEach((control) => {
-      this.bitacoraForm.get(control)?.enable({ emitEvent: false });
+    Object.keys(this.ticketForm.controls).forEach((control) => {
+      this.ticketForm.get(control)?.enable({ emitEvent: false });
     });
   }
 
-  eliminarBitacora(evento: Event, bitacora: Bitacora): void {
+  eliminarTicket(evento: Event, ticket: Ticket): void {
     evento.stopPropagation();
-    if (!this.esAdmin || !bitacora?.id || this.eliminandoBitacoraId === bitacora.id) {
+    if (!this.esAdmin || !ticket?.id || this.eliminandoTicketId === ticket.id) {
       return;
     }
 
-    const confirmado = confirm('Confirma eliminar esta bitacora?');
+    const confirmado = confirm('Confirma eliminar este ticket?');
     if (!confirmado) {
       return;
     }
 
     this.errorMensaje = '';
     this.exitoMensaje = '';
-    this.eliminandoBitacoraId = bitacora.id;
-    const debeRetroceder = this.bitacoras.length === 1 && this.paginaActual > 1;
+    this.eliminandoTicketId = ticket.id;
+    const debeRetroceder = this.tickets.length === 1 && this.paginaActual > 1;
 
     this.apiService
-      .eliminarBitacora(bitacora.id)
-      .pipe(finalize(() => (this.eliminandoBitacoraId = null)))
+      .eliminarTicket(ticket.id)
+      .pipe(finalize(() => (this.eliminandoTicketId = null)))
       .subscribe({
         next: () => {
           if (debeRetroceder) {
             this.paginaActual -= 1;
           }
-          if (this.bitacoraSeleccionada?.id === bitacora.id) {
-            this.bitacoraSeleccionada = undefined;
+          if (this.ticketSeleccionado?.id === ticket.id) {
+            this.ticketSeleccionado = undefined;
           }
-          this.exitoMensaje = 'Bitacora eliminada correctamente.';
-          this.cargarBitacoras(false);
+          this.exitoMensaje = 'Ticket eliminado correctamente.';
+          this.cargarTickets(false);
         },
         error: (error) => {
-          console.error('Error al eliminar bitacora', error);
+          console.error('Error al eliminar ticket', error);
           this.errorMensaje =
             error?.error?.error ??
-            'No fue posible eliminar la bitacora. Intenta nuevamente.';
+            'No fue posible eliminar el ticket. Intenta nuevamente.';
         },
       });
   }
 
-  private refrescarBitacora(id: number): void {
+  private refrescarTicket(id: number): void {
     if (!id) {
       return;
     }
-    this.apiService.bitacora(id).subscribe({
+    this.apiService.ticket(id).subscribe({
       next: (detalle) => {
         if (!detalle) {
           return;
         }
 
         this.detalleVisible = true;
-        this.bitacoraSeleccionada = detalle;
-        this.actualizarBitacoraEnListado(detalle);
+        this.ticketSeleccionado = detalle;
+        this.actualizarTicketEnListado(detalle);
       },
       error: (error) => {
-        console.error('Error al refrescar bitacora', error);
+        console.error('Error al refrescar ticket', error);
       },
     });
   }
 
-  private actualizarBitacoraEnListado(detalle: Bitacora): void {
+  private actualizarTicketEnListado(detalle: Ticket): void {
     if (!detalle?.id) {
       return;
     }
-    this.bitacoras = this.bitacoras.map((item) =>
+    this.tickets = this.tickets.map((item) =>
       item.id === detalle.id ? { ...item, ...detalle } : item
     );
   }

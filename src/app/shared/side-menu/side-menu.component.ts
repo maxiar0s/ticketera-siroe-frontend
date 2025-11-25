@@ -129,30 +129,17 @@ export class SideMenuComponent {
   }
 
   private ajustarMenuPorTickets(tieneTickets: boolean, currentPath: string): void {
-    const index = this.menu.findIndex(
-      (item) => this.normalizeRoute(item.route) === 'bitacora'
+    const ticketIndex = this.menu.findIndex(
+      (item) => this.normalizeRoute(item.route) === 'tickets'
     );
 
-    if (index === -1) {
-      return;
-    }
-
-    if (this.authService.esCliente()) {
-      this.menu[index] = {
-        ...this.menu[index],
-        nombre: tieneTickets ? 'Bitacora / Tickets' : 'Bitacora',
-      };
+    if (!tieneTickets && ticketIndex !== -1) {
+      this.menu.splice(ticketIndex, 1);
       this.sincronizarSeleccionConRuta(this.location.path());
       return;
     }
 
-    if (tieneTickets) {
-      this.menu[index] = {
-        ...this.menu[index],
-        nombre: 'Bitacora / Tickets',
-      };
-      this.sincronizarSeleccionConRuta(this.location.path());
-    }
+    this.sincronizarSeleccionConRuta(this.location.path());
   }
 
   cerrarSesion(): void {
