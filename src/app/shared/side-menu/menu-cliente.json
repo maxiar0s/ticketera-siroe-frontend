@@ -19,7 +19,7 @@
     "id": 3,
     "nombre": "Bitacoras",
     "route": "/bitacoras",
-    "svg": "download",
+    "svg": "visit",
     "subItem": [],
     "isOpen": false
   },
@@ -27,7 +27,7 @@
     "id": 4,
     "nombre": "Tickets",
     "route": "/tickets",
-    "svg": "download",
+    "svg": "ticket",
     "subItem": [],
     "isOpen": false
   }
