@@ -5,6 +5,9 @@ import {
   FormGroup,
   ReactiveFormsModule,
   Validators,
+  AbstractControl,
+  ValidationErrors,
+  ValidatorFn,
 } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { finalize } from 'rxjs';
@@ -94,20 +97,43 @@ export class BitacoraComponent implements OnInit {
       proyectoId: [''],
     });
 
-    this.bitacoraForm = this.fb.group({
-      id: [null],
-      titulo: [''],
-      clienteId: ['', Validators.required],
-      sucursalId: [''],
-      fechaVisita: ['', Validators.required],
-      horaLlegada: ['', Validators.required],
-      horaSalida: ['', Validators.required],
-      tecnicos: [[], Validators.required],
-      isEmergencia: [false],
-      descripcion: ['', [Validators.required, Validators.minLength(5)]],
-      proyectoId: [null],
-    });
+    this.bitacoraForm = this.fb.group(
+      {
+        id: [null],
+        titulo: [''],
+        clienteId: ['', Validators.required],
+        sucursalId: [''],
+        fechaVisita: ['', Validators.required],
+        horaLlegada: ['', Validators.required],
+        horaSalida: ['', Validators.required],
+        tecnicos: [[], Validators.required],
+        isEmergencia: [false],
+        descripcion: ['', [Validators.required, Validators.minLength(5)]],
+        proyectoId: [null],
+      },
+      { validators: this.dateRangeValidator }
+    );
   }
+
+  dateRangeValidator: ValidatorFn = (
+    control: AbstractControl
+  ): ValidationErrors | null => {
+    const start = control.get('horaLlegada')?.value;
+    const end = control.get('horaSalida')?.value;
+
+    if (!start || !end) {
+      return null;
+    }
+
+    const startDate = new Date(start);
+    const endDate = new Date(end);
+
+    if (endDate <= startDate) {
+      return { dateRangeInvalid: true };
+    }
+
+    return null;
+  };
 
   ngOnInit(): void {
     this.signalService.updateData(this.tituloModulo);
@@ -140,7 +166,10 @@ export class BitacoraComponent implements OnInit {
 
         if (!clienteActual && this.clientes.length === 1) {
           const unico = this.clientes[0];
-          this.filtroForm.patchValue({ clienteId: unico.id }, { emitEvent: false });
+          this.filtroForm.patchValue(
+            { clienteId: unico.id },
+            { emitEvent: false }
+          );
           this.cargarSucursalesParaCliente(unico.id, 'filtro');
         } else if (clienteActual) {
           this.cargarSucursalesParaCliente(clienteActual, 'filtro');
@@ -171,18 +200,16 @@ export class BitacoraComponent implements OnInit {
   }
 
   private cargarProyectos(): void {
-    this.apiService
-      .getProyectos({ pagina: 1, limite: 100 })
-      .subscribe({
-        next: (respuesta) => {
-          const lista = Array.isArray(respuesta?.data) ? respuesta.data : [];
-          this.proyectos = lista;
-        },
-        error: (error) => {
-          console.error('Error al cargar proyectos', error);
-          this.proyectos = [];
-        },
-      });
+    this.apiService.getProyectos({ pagina: 1, limite: 100 }).subscribe({
+      next: (respuesta) => {
+        const lista = Array.isArray(respuesta?.data) ? respuesta.data : [];
+        this.proyectos = lista;
+      },
+      error: (error) => {
+        console.error('Error al cargar proyectos', error);
+        this.proyectos = [];
+      },
+    });
   }
 
   buscarBitacoras(): void {
@@ -192,7 +219,8 @@ export class BitacoraComponent implements OnInit {
 
   limpiarFiltros(): void {
     this.filtroForm.reset({
-      clienteId: this.esCliente && this.clientes.length === 1 ? this.clientes[0].id : '',
+      clienteId:
+        this.esCliente && this.clientes.length === 1 ? this.clientes[0].id : '',
       sucursalId: '',
       buscar: '',
       proyectoId: '',
@@ -258,7 +286,11 @@ export class BitacoraComponent implements OnInit {
   }
 
   cambiarPagina(pagina: number): void {
-    if (pagina < 1 || pagina > this.paginasTotales || pagina === this.paginaActual) {
+    if (
+      pagina < 1 ||
+      pagina > this.paginasTotales ||
+      pagina === this.paginaActual
+    ) {
       return;
     }
     this.paginaActual = pagina;
@@ -433,31 +465,29 @@ export class BitacoraComponent implements OnInit {
         : this.apiService.crearBitacora(payload);
     }
 
-    solicitud$
-      .pipe(finalize(() => (this.guardando = false)))
-      .subscribe({
-        next: (respuesta) => {
-          this.exitoMensaje = esEdicion
-            ? 'Bitacora actualizada correctamente.'
-            : 'Bitacora registrada correctamente.';
-          this.cerrarFormulario();
-          if (esEdicion) {
-            this.cargarBitacoras(false);
-            this.refrescarBitacora(formValue.id);
-          } else {
-            this.paginaActual = 1;
-            this.cargarBitacoras();
-            if (respuesta?.id) {
-              this.refrescarBitacora(respuesta.id);
-            }
+    solicitud$.pipe(finalize(() => (this.guardando = false))).subscribe({
+      next: (respuesta) => {
+        this.exitoMensaje = esEdicion
+          ? 'Bitacora actualizada correctamente.'
+          : 'Bitacora registrada correctamente.';
+        this.cerrarFormulario();
+        if (esEdicion) {
+          this.cargarBitacoras(false);
+          this.refrescarBitacora(formValue.id);
+        } else {
+          this.paginaActual = 1;
+          this.cargarBitacoras();
+          if (respuesta?.id) {
+            this.refrescarBitacora(respuesta.id);
           }
-        },
-        error: (error) => {
-          console.error('Error al guardar bitacora', error);
-          this.errorMensaje =
-            error?.error?.error ?? 'No se pudo guardar la bitacora.';
-        },
-      });
+        }
+      },
+      error: (error) => {
+        console.error('Error al guardar bitacora', error);
+        this.errorMensaje =
+          error?.error?.error ?? 'No se pudo guardar la bitacora.';
+      },
+    });
   }
 
   onFilesSelected(event: Event): void {
@@ -673,7 +703,9 @@ export class BitacoraComponent implements OnInit {
 
     const ids = nombres
       .map((nombre) => mapa.get(nombre.trim().toLowerCase()))
-      .filter((id): id is number => typeof id === 'number' && Number.isInteger(id));
+      .filter(
+        (id): id is number => typeof id === 'number' && Number.isInteger(id)
+      );
 
     return Array.from(new Set(ids));
   }
@@ -715,7 +747,11 @@ export class BitacoraComponent implements OnInit {
 
   eliminarBitacora(evento: Event, bitacora: Bitacora): void {
     evento.stopPropagation();
-    if (!this.esAdmin || !bitacora?.id || this.eliminandoBitacoraId === bitacora.id) {
+    if (
+      !this.esAdmin ||
+      !bitacora?.id ||
+      this.eliminandoBitacoraId === bitacora.id
+    ) {
       return;
     }
 
@@ -808,12 +844,14 @@ export class BitacoraComponent implements OnInit {
           document.body.removeChild(a);
         } else {
           console.error('URL firmada no disponible');
-          this.errorMensaje = 'No se pudo descargar el archivo. URL no disponible.';
+          this.errorMensaje =
+            'No se pudo descargar el archivo. URL no disponible.';
         }
       },
       error: (err) => {
         console.error('Error al obtener URL firmada:', err);
-        this.errorMensaje = 'Error al descargar el archivo. Por favor, intenta nuevamente.';
+        this.errorMensaje =
+          'Error al descargar el archivo. Por favor, intenta nuevamente.';
       },
     });
   }
