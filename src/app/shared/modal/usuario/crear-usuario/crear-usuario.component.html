@@ -3,25 +3,49 @@
   <div class="modal-content responsive-modal">
     <div class="modal-header">
       <h2 class="header-form">Añadir Usuario</h2>
-      <img src="/assets/svg/exit-button.svg" (click)="cerrar()" alt="exit_button" class="close-button">
+      <img
+        src="/assets/svg/exit-button.svg"
+        (click)="cerrar()"
+        alt="exit_button"
+        class="close-button"
+      />
     </div>
     <div class="modal-body">
-      <p class="description-form">Elige el rol correspondiente para el nuevo usuario y completa los campos para su creación.</p>
-      <form [formGroup]="cuentaForm" (ngSubmit)="onSubmit()" class="responsive-form">
-
+      <p class="description-form">
+        Elige el rol correspondiente para el nuevo usuario y completa los campos
+        para su creación.
+      </p>
+      <form
+        [formGroup]="cuentaForm"
+        (ngSubmit)="onSubmit()"
+        class="responsive-form"
+      >
         <div class="two-inputs">
           <!-- Campo rol -->
           <div class="form-group width-50">
             <label for="tipoCuentaId">Rol de la cuenta</label>
-            <select class="width-50" id="tipoCuentaId" (change)="changeSelectColor($event)" formControlName="tipoCuentaId">
-              <option value="" id="seleccionar" disabled selected>Seleccionar</option>
+            <select
+              class="width-50"
+              id="tipoCuentaId"
+              (change)="changeSelectColor($event)"
+              formControlName="tipoCuentaId"
+            >
+              <option value="" id="seleccionar" disabled selected>
+                Seleccionar
+              </option>
               <option value="1">Administrador</option>
               <option value="2">Técnico</option>
               <option value="3">Mesa de ayuda</option>
               <option value="4">Cliente</option>
               <option value="5">Comercial</option>
             </select>
-            <div *ngIf="cuentaForm.get('tipoCuentaId')?.invalid && cuentaForm.get('tipoCuentaId')?.touched" class="error">
+            <div
+              *ngIf="
+                cuentaForm.get('tipoCuentaId')?.invalid &&
+                cuentaForm.get('tipoCuentaId')?.touched
+              "
+              class="error"
+            >
               Seleccione un rol
             </div>
           </div>
@@ -29,8 +53,21 @@
           <!-- Campo nombre -->
           <div class="form-group width-50">
             <label for="name">Nombre completo</label>
-            <input class="width-50" id="name" formControlName="name" type="text" autocomplete="name" placeholder="Ingrese el nombre completo"/>
-            <div *ngIf="cuentaForm.get('name')?.invalid && cuentaForm.get('name')?.touched" class="error">
+            <input
+              class="width-50"
+              id="name"
+              formControlName="name"
+              type="text"
+              autocomplete="name"
+              placeholder="Ingrese el nombre completo"
+            />
+            <div
+              *ngIf="
+                cuentaForm.get('name')?.invalid &&
+                cuentaForm.get('name')?.touched
+              "
+              class="error"
+            >
               Ingrese un nombre válido
             </div>
           </div>
@@ -41,13 +78,39 @@
           <div class="form-group width-50">
             <label for="telefono">Teléfono</label>
             <div class="phone-input-container">
-              <input class="prefijo-telefono" type="text" disabled value="+56">
-              <input class="input-telefono" type="text" id="telefono" formControlName="telefono" autocomplete="tel" placeholder="Ingrese el teléfono" formatInputNumber>
+              <input
+                class="prefijo-telefono"
+                type="text"
+                disabled
+                value="+56"
+              />
+              <input
+                class="input-telefono"
+                type="text"
+                id="telefono"
+                formControlName="telefono"
+                autocomplete="tel"
+                placeholder="Ingrese el teléfono"
+                formatInputNumber
+              />
             </div>
-            <div *ngIf="cuentaForm.get('telefono')?.hasError('required') && cuentaForm.get('telefono')?.touched" class="error">
+            <div
+              *ngIf="
+                cuentaForm.get('telefono')?.hasError('required') &&
+                cuentaForm.get('telefono')?.touched
+              "
+              class="error"
+            >
               Ingrese un teléfono válido
             </div>
-            <div *ngIf="cuentaForm.get('telefono')?.hasError('pattern') && cuentaForm.get('telefono')?.touched && cuentaForm.get('telefono')?.invalid" class="error">
+            <div
+              *ngIf="
+                cuentaForm.get('telefono')?.hasError('pattern') &&
+                cuentaForm.get('telefono')?.touched &&
+                cuentaForm.get('telefono')?.invalid
+              "
+              class="error"
+            >
               El teléfono debe contener 9 números
             </div>
           </div>
@@ -55,11 +118,30 @@
           <!-- Campo email -->
           <div class="form-group width-50">
             <label for="email">Correo electrónico</label>
-            <input type="email" id="email" formControlName="email" placeholder="Ingrese el correo electrónico" (input)="validacionCampoCorreo($event)" autocomplete="email">
-            <div *ngIf="cuentaForm.get('email')?.hasError('required') && cuentaForm.get('email')?.touched" class="error">
+            <input
+              type="email"
+              id="email"
+              formControlName="email"
+              placeholder="Ingrese el correo electrónico"
+              (input)="validacionCampoCorreo($event)"
+              autocomplete="email"
+            />
+            <div
+              *ngIf="
+                cuentaForm.get('email')?.hasError('required') &&
+                cuentaForm.get('email')?.touched
+              "
+              class="error"
+            >
               Ingrese un correo electrónico
             </div>
-            <div *ngIf="cuentaForm.get('email')?.hasError('correoInvalido') && cuentaForm.get('email')?.touched" class="error">
+            <div
+              *ngIf="
+                cuentaForm.get('email')?.hasError('correoInvalido') &&
+                cuentaForm.get('email')?.touched
+              "
+              class="error"
+            >
               Ingrese un correo electrónico válido
             </div>
             <div *ngIf="correoExistente$ | async" class="error">
@@ -71,17 +153,26 @@
         <div class="form-group full-width" *ngIf="esRolAdminSeleccionado">
           <label class="checkbox-label">
             <span>Este administrador también realiza visitas técnicas.</span>
-            <input type="checkbox" id="checkbox-tecnico" formControlName="esTecnico"/>
+            <input
+              type="checkbox"
+              id="checkbox-tecnico"
+              formControlName="esTecnico"
+            />
           </label>
           <p class="helper-text">
-            Los administradores marcados aparecen disponibles en los selectores de técnicos.
+            Los administradores marcados aparecen disponibles en los selectores
+            de técnicos.
           </p>
         </div>
 
         <div class="form-group full-width" *ngIf="esRolClienteSeleccionado">
           <label class="checkbox-label">
             <span>Este cliente tiene acceso a Tickets.</span>
-            <input type="checkbox" id="checkbox-tickets" formControlName="haveTickets"/>
+            <input
+              type="checkbox"
+              id="checkbox-tickets"
+              formControlName="haveTickets"
+            />
           </label>
           <p class="helper-text">
             Habilita al cliente para usar el modulo de Tickets.
@@ -91,11 +182,27 @@
         <div class="form-group full-width" *ngIf="esRolClienteSeleccionado">
           <label for="clientesAutorizados">Clientes autorizados</label>
           <div class="clientes-dropdown" (click)="$event.stopPropagation()">
-            <button type="button" class="dropdown-button" (click)="toggleClientesDropdown($event)" [disabled]="clientesDisponibles.length === 0">
-              <ng-container *ngIf="clientesSeleccionados.length === 0">Selecciona clientes</ng-container>
-              <ng-container *ngIf="clientesSeleccionados.length === 1">{{ clientesSeleccionados[0].razonSocial }}</ng-container>
-              <ng-container *ngIf="clientesSeleccionados.length > 1">{{ clientesSeleccionados.length }} clientes seleccionados</ng-container>
-              <img src="/assets/svg/side-menu-arrow-down.svg" alt="toggle" class="dropdown-arrow" />
+            <button
+              type="button"
+              class="dropdown-button"
+              (click)="toggleClientesDropdown($event)"
+              [disabled]="clientesDisponibles.length === 0"
+            >
+              <ng-container *ngIf="clientesSeleccionados.length === 0"
+                >Selecciona clientes</ng-container
+              >
+              <ng-container *ngIf="clientesSeleccionados.length === 1">{{
+                clientesSeleccionados[0].razonSocial
+              }}</ng-container>
+              <ng-container *ngIf="clientesSeleccionados.length > 1"
+                >{{ clientesSeleccionados.length }} clientes
+                seleccionados</ng-container
+              >
+              <img
+                src="/assets/svg/side-menu-arrow-down.svg"
+                alt="toggle"
+                class="dropdown-arrow"
+              />
             </button>
             <div class="dropdown-panel" *ngIf="clientesDropdownAbierto">
               <button
@@ -103,14 +210,20 @@
                 class="dropdown-option"
                 *ngFor="let cliente of clientesDisponibles"
                 (click)="onToggleCliente(cliente, $event)"
-                [class.selected]="estaClienteSeleccionado(cliente.id)">
-                <span class="checkbox" [class.checked]="estaClienteSeleccionado(cliente.id)"></span>
+                [class.selected]="estaClienteSeleccionado(cliente.id)"
+              >
+                <span
+                  class="checkbox"
+                  [class.checked]="estaClienteSeleccionado(cliente.id)"
+                ></span>
                 <span>{{ cliente.razonSocial }}</span>
               </button>
             </div>
           </div>
           <div class="selected-chips" *ngIf="clientesSeleccionados.length > 0">
-            <span class="chip" *ngFor="let cliente of clientesSeleccionados">{{ cliente.razonSocial }}</span>
+            <span class="chip" *ngFor="let cliente of clientesSeleccionados">{{
+              cliente.razonSocial
+            }}</span>
           </div>
           <div class="helper-text" *ngIf="clientesDisponibles.length === 0">
             No hay clientes disponibles para asignar.
@@ -120,8 +233,20 @@
         <!-- Campo password -->
         <div class="form-group password-group">
           <label for="password">Contraseña</label>
-          <input type="password" id="password" formControlName="password" placeholder="Ingrese la contraseña" autocomplete="current-password">
-          <div *ngIf="cuentaForm.get('password')?.invalid && cuentaForm.get('password')?.touched" class="error">
+          <input
+            type="password"
+            id="password"
+            formControlName="password"
+            placeholder="Ingrese la contraseña"
+            autocomplete="new-password"
+          />
+          <div
+            *ngIf="
+              cuentaForm.get('password')?.invalid &&
+              cuentaForm.get('password')?.touched
+            "
+            class="error"
+          >
             Ingrese una contraseña temporal
           </div>
         </div>
@@ -132,11 +257,14 @@
         </div>
 
         <div class="form-actions">
-          <button [disabled]="verificarFormulario()" class="equiptment-button" type="submit">
+          <button
+            [disabled]="verificarFormulario()"
+            class="equiptment-button"
+            type="submit"
+          >
             Crear usuario
           </button>
         </div>
-
       </form>
     </div>
   </div>

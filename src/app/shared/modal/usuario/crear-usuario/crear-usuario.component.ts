@@ -1,5 +1,10 @@
 import { Component, EventEmitter, HostListener, Output } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  FormBuilder,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { ApiService } from '../../../../services/api.service';
 import { BehaviorSubject, debounceTime, switchMap } from 'rxjs';
@@ -12,14 +17,15 @@ import { FormatInputSoloNumerosDirective } from '../../../../directives/solo-num
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, FormatInputSoloNumerosDirective],
   templateUrl: './crear-usuario.component.html',
-  styleUrl: './crear-usuario.component.css'
+  styleUrl: './crear-usuario.component.css',
 })
 export class CrearUsuarioComponent {
   @Output() cerrarModal = new EventEmitter<void>();
   @Output() enviarFormulario = new EventEmitter<any>();
 
   public formError: boolean = true;
-  public correoExistente$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+  public correoExistente$: BehaviorSubject<boolean> =
+    new BehaviorSubject<boolean>(false);
   public cuentaForm: FormGroup;
 
   public isVisible: boolean = true;
@@ -29,10 +35,7 @@ export class CrearUsuarioComponent {
   public clientesSeleccionados: ClienteResumen[] = [];
   public clientesDropdownAbierto: boolean = false;
 
-  constructor(
-    private fb: FormBuilder,
-    private apiService: ApiService,
-  ) {
+  constructor(private fb: FormBuilder, private apiService: ApiService) {
     this.cuentaForm = this.fb.group({
       name: ['', Validators.required],
       tipoCuentaId: ['', Validators.required],
@@ -48,15 +51,18 @@ export class CrearUsuarioComponent {
   ngOnInit(): void {
     this.formError = true;
 
-    this.cuentaForm.get('email')!.valueChanges.pipe(
-      debounceTime(600),
-      switchMap((email) => {
-        return this.apiService.verificarCorreoExistente(email).pipe();
-      })
-    ).subscribe((isTaken) => {
-      this.correoExistente$.next(isTaken);
-      this.formError = isTaken;
-    });
+    this.cuentaForm
+      .get('email')!
+      .valueChanges.pipe(
+        debounceTime(600),
+        switchMap((email) => {
+          return this.apiService.verificarCorreoExistente(email).pipe();
+        })
+      )
+      .subscribe((isTaken) => {
+        this.correoExistente$.next(isTaken);
+        this.formError = isTaken;
+      });
 
     this.cargarClientesDisponibles();
 
@@ -95,7 +101,11 @@ export class CrearUsuarioComponent {
   }
 
   verificarFormulario(): boolean {
-    return this.cuentaForm.invalid || this.correoExistente$.getValue() || this.formError;
+    return (
+      this.cuentaForm.invalid ||
+      this.correoExistente$.getValue() ||
+      this.formError
+    );
   }
 
   validacionCampoCorreo(_: Event): void {
@@ -121,10 +131,12 @@ export class CrearUsuarioComponent {
 
   onSubmit(): void {
     if (!this.cuentaForm.valid) {
-      this.errorMessage = 'Por favor, completa todos los campos requeridos correctamente.';
+      this.errorMessage =
+        'Por favor, completa todos los campos requeridos correctamente.';
       return;
     }
 
+    console.log('Formulario enviado:', this.cuentaForm.value);
     this.enviarFormulario.emit(this.cuentaForm.value);
     this.cerrar();
   }
@@ -136,7 +148,10 @@ export class CrearUsuarioComponent {
 
   toggleClientesDropdown(event: MouseEvent): void {
     event.stopPropagation();
-    if (!this.esRolClienteSeleccionado || this.clientesDisponibles.length === 0) {
+    if (
+      !this.esRolClienteSeleccionado ||
+      this.clientesDisponibles.length === 0
+    ) {
       return;
     }
     this.clientesDropdownAbierto = !this.clientesDropdownAbierto;
@@ -144,7 +159,9 @@ export class CrearUsuarioComponent {
 
   onToggleCliente(cliente: ClienteResumen, event?: MouseEvent): void {
     event?.stopPropagation();
-    const index = this.clientesSeleccionados.findIndex((item) => item.id === cliente.id);
+    const index = this.clientesSeleccionados.findIndex(
+      (item) => item.id === cliente.id
+    );
     if (index >= 0) {
       this.clientesSeleccionados.splice(index, 1);
     } else {
