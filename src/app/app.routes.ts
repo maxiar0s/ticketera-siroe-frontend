@@ -5,46 +5,65 @@ import { NoClienteGuard } from './guards/no-cliente.guard';
 import { ClienteGuard } from './guards/cliente.guard';
 import { NoComercialGuard } from './guards/no-comercial.guard';
 import { AdminComercialGuard } from './guards/admin-comercial.guard';
+import { ModuleGuard } from './guards/module.guard';
 
 export const routes: Routes = [
   // Redireccionamiento
   {
-      path:'',
-      redirectTo: 'dashboard',
-      pathMatch: 'full'
+    path: '',
+    redirectTo: 'dashboard',
+    pathMatch: 'full',
   },
   // Inicio Sesión
   {
     path: 'auth',
-    loadChildren: () => import('./pages/auth/auth.module').then( m => m.routes),
+    loadChildren: () =>
+      import('./pages/auth/auth.module').then((m) => m.routes),
   },
 
   // Home
   {
     path: 'dashboard',
-    canActivate: [protegerRutaGuard, NoClienteGuard],
-    loadComponent: () => import('./pages/dashboard/dashboard.component').then( m => m.DashboardComponent ),
+    canActivate: [protegerRutaGuard, NoClienteGuard, ModuleGuard],
+    data: { module: 'dashboard' },
+    loadComponent: () =>
+      import('./pages/dashboard/dashboard.component').then(
+        (m) => m.DashboardComponent
+      ),
   },
   {
     path: 'dashboard-cliente',
-    canActivate: [protegerRutaGuard, ClienteGuard],
-    loadComponent: () => import('./pages/dashboard-cliente/client-dashboard.component').then( m => m.ClientDashboardComponent ),
+    canActivate: [protegerRutaGuard, ClienteGuard, ModuleGuard],
+    data: { module: 'dashboardCliente' },
+    loadComponent: () =>
+      import('./pages/dashboard-cliente/client-dashboard.component').then(
+        (m) => m.ClientDashboardComponent
+      ),
   },
 
   // Clientes
   {
     path: 'clientes',
-    canActivate: [protegerRutaGuard],
-    loadComponent: () => import('./pages/clientes/clientes.component').then( m => m.ClientesComponent ),
+    canActivate: [protegerRutaGuard, ModuleGuard],
+    data: { module: 'clientes' },
+    loadComponent: () =>
+      import('./pages/clientes/clientes.component').then(
+        (m) => m.ClientesComponent
+      ),
   },
   {
     path: 'clientes/:id',
-    canActivate: [protegerRutaGuard],
-    loadComponent: () => import('./pages/clientes/cliente/cliente.component').then( m => m.ClienteComponent ),
+    canActivate: [protegerRutaGuard, ModuleGuard],
+    data: { module: 'clientes' },
+    loadComponent: () =>
+      import('./pages/clientes/cliente/cliente.component').then(
+        (m) => m.ClienteComponent
+      ),
   },
   {
     path: 'documentacion',
-    canActivate: [protegerRutaGuard, AdminComercialGuard],
+    canActivate: [protegerRutaGuard, AdminComercialGuard, ModuleGuard],
+    data: { module: 'documentacion' },
     loadComponent: () =>
       import('./pages/documentacion/documentacion.component').then(
         (m) => m.DocumentacionComponent
@@ -54,34 +73,60 @@ export const routes: Routes = [
   // Sucursal
   {
     path: 'clientes/:idCliente/sucursal/:id',
-    canActivate: [protegerRutaGuard],
-    loadComponent: () => import('./pages/sucursal/sucursal.component').then( m => m.SucursalComponent ),
+    canActivate: [protegerRutaGuard, ModuleGuard],
+    data: { module: 'sucursal' },
+    loadComponent: () =>
+      import('./pages/sucursal/sucursal.component').then(
+        (m) => m.SucursalComponent
+      ),
   },
 
   // Bitacoras y Tickets
   {
     path: 'bitacora',
-    canActivate: [protegerRutaGuard],
-    loadComponent: () => import('./pages/bitacora/bitacora.component').then( m => m.BitacoraComponent ),
+    canActivate: [protegerRutaGuard, ModuleGuard],
+    data: { module: 'bitacora' },
+    loadComponent: () =>
+      import('./pages/bitacora/bitacora.component').then(
+        (m) => m.BitacoraComponent
+      ),
   },
   {
     path: 'bitacoras',
-    canActivate: [protegerRutaGuard],
-    loadComponent: () => import('./pages/bitacora/bitacora.component').then( m => m.BitacoraComponent ),
+    canActivate: [protegerRutaGuard, ModuleGuard],
+    data: { module: 'bitacora' },
+    loadComponent: () =>
+      import('./pages/bitacora/bitacora.component').then(
+        (m) => m.BitacoraComponent
+      ),
   },
   {
     path: 'tickets',
-    canActivate: [protegerRutaGuard],
-    loadComponent: () => import('./pages/tickets/tickets.component').then( m => m.TicketsComponent ),
+    canActivate: [protegerRutaGuard, ModuleGuard],
+    data: { module: 'tickets' },
+    loadComponent: () =>
+      import('./pages/tickets/tickets.component').then(
+        (m) => m.TicketsComponent
+      ),
   },
   {
     path: 'proyectos',
-    canActivate: [protegerRutaGuard],
-    loadComponent: () => import('./pages/proyectos/proyectos.component').then( m => m.ProyectosComponent ),
+    canActivate: [protegerRutaGuard, ModuleGuard],
+    data: { module: 'proyectos' },
+    loadComponent: () =>
+      import('./pages/proyectos/proyectos.component').then(
+        (m) => m.ProyectosComponent
+      ),
   },
   {
     path: 'vehiculos',
-    canActivate: [protegerRutaGuard, NoClienteGuard, NoComercialGuard],
+    canActivate: [
+      protegerRutaGuard,
+      NoClienteGuard,
+      NoComercialGuard,
+      ModuleGuard,
+    ],
+    data: { module: 'vehiculos' },
     loadComponent: () =>
       import('./pages/vehiculos/vehiculos.component').then(
         (m) => m.VehiculosComponent
@@ -91,23 +136,34 @@ export const routes: Routes = [
   // Config
   {
     path: 'opciones',
-    canActivate: [protegerRutaGuard],
-    loadComponent: () => import('./pages/opciones/opciones.component').then( m => m.OpcionesComponent ),
+    canActivate: [protegerRutaGuard, ModuleGuard],
+    data: { module: 'opciones' },
+    loadComponent: () =>
+      import('./pages/opciones/opciones.component').then(
+        (m) => m.OpcionesComponent
+      ),
   },
   {
     path: 'perfil',
-    canActivate: [protegerRutaGuard],
-    loadComponent: () => import('./pages/perfil/perfil.component').then( m => m.PerfilComponent ),
+    canActivate: [protegerRutaGuard, ModuleGuard],
+    data: { module: 'perfil' },
+    loadComponent: () =>
+      import('./pages/perfil/perfil.component').then((m) => m.PerfilComponent),
   },
   // Administrador
   {
     path: 'admin/usuarios',
-    canActivate: [protegerRutaGuard, AdminGuard],
-    loadComponent: () => import('./pages/admin/usuarios/usuarios.component').then( m => m.UsuariosComponent ),
+    canActivate: [protegerRutaGuard, AdminGuard, ModuleGuard],
+    data: { module: 'adminUsuarios' },
+    loadComponent: () =>
+      import('./pages/admin/usuarios/usuarios.component').then(
+        (m) => m.UsuariosComponent
+      ),
   },
   {
     path: 'admin/tipos-equipos',
-    canActivate: [protegerRutaGuard, AdminGuard],
+    canActivate: [protegerRutaGuard, AdminGuard, ModuleGuard],
+    data: { module: 'adminTiposEquipos' },
     loadComponent: () =>
       import('./pages/admin/tipos-equipos/tipos-equipos.component').then(
         (m) => m.TiposEquiposComponent

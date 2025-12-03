@@ -1,5 +1,12 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, DestroyRef, OnInit, inject } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  DestroyRef,
+  OnInit,
+  inject,
+} from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { CrearClienteComponent } from '../../shared/modal/cliente/crear-cliente/crear-cliente.component';
@@ -8,7 +15,7 @@ import { Cliente } from '../../interfaces/cliente.interface';
 import { ClienteFiltros } from '../../interfaces/cliente-filtros.interface';
 import { SignalService } from '../../services/signal.service';
 import { LoaderService } from '../../services/loader.service';
-import { NavegationComponent } from "../../shared/navegation/navegation.component";
+import { NavegationComponent } from '../../shared/navegation/navegation.component';
 import { SignedUrlPipe } from '../../pipes/generar-url.pipe';
 import { AuthService } from '../../services/auth.service';
 import { TelefonoPipe } from '../../pipes/telefono.pipe';
@@ -16,9 +23,10 @@ import { RutPipe } from '../../pipes/rut.pipe';
 import { OpcionesClienteComponent } from '../../shared/modal/cliente/opciones-cliente/opciones-cliente.component';
 import { normalizarServicios } from '../../utils/servicios.util';
 import { normalizarDatosBancarios } from '../../utils/datos-bancarios.util';
-import { DatosBancariosClienteComponent } from "../../shared/modal/cliente/datos-bancarios/datos-bancarios.component";
+import { DatosBancariosClienteComponent } from '../../shared/modal/cliente/datos-bancarios/datos-bancarios.component';
 import { Subject, catchError, of, switchMap, tap } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { MODULES } from '../../config/modules';
 
 @Component({
   selector: 'clientes',
@@ -33,19 +41,23 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
     TelefonoPipe,
     RutPipe,
     OpcionesClienteComponent,
-    DatosBancariosClienteComponent
+    DatosBancariosClienteComponent,
   ],
   templateUrl: './clientes.component.html',
   styleUrls: ['./clientes.component.css'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ClientesComponent implements OnInit {
   private readonly destroyRef = inject(DestroyRef);
   private readonly cdr = inject(ChangeDetectorRef);
-  private readonly cargarClientesTrigger$ = new Subject<{ pagina: number; filtros: ClienteFiltros }>();
+  private readonly cargarClientesTrigger$ = new Subject<{
+    pagina: number;
+    filtros: ClienteFiltros;
+  }>();
   public esAdministrador: boolean = false;
   public esCliente: boolean = false;
   public esComercial: boolean = false;
+  public sucursalEnabled: boolean = MODULES.sucursal;
   public filtroForm: FormGroup;
   public readonly serviciosDisponibles: string[] = [
     'Soporte TI',
@@ -57,16 +69,16 @@ export class ClientesComponent implements OnInit {
   ];
 
   // Elementos para el paginador
-  public paginaActual:    number = 1;
-  public paginas:         number = 1;
+  public paginaActual: number = 1;
+  public paginas: number = 1;
 
-  public casasMatricez:   Cliente[] | undefined = undefined;
+  public casasMatricez: Cliente[] | undefined = undefined;
   public obtainedClients: boolean = false;
 
   // Modal crear cliente
-  public isModalVisible:  boolean = false;
-  public successMessage:  string = '';
-  public errorMessage:    string = '';
+  public isModalVisible: boolean = false;
+  public successMessage: string = '';
+  public errorMessage: string = '';
   public clienteParaEditar: Cliente | null = null;
   public modoEdicion: boolean = false;
   public filtrosVisibles = false;
@@ -83,7 +95,7 @@ export class ClientesComponent implements OnInit {
     private signalService: SignalService,
     public loaderService: LoaderService,
     private authService: AuthService,
-    private fb: FormBuilder,
+    private fb: FormBuilder
   ) {
     this.filtroForm = this.fb.group({
       servicios: [[]],
@@ -147,7 +159,7 @@ export class ClientesComponent implements OnInit {
         // pero como estamos en un modal que se cierra, sería mejor usar un servicio de notificaciones
         // o un componente de toast para mostrar el error
         this.cerrarModalAjustesCliente();
-      }
+      },
     });
   }
 
@@ -163,20 +175,23 @@ export class ClientesComponent implements OnInit {
   guardarCliente(datos: any) {
     if (this.modoEdicion && this.clienteParaEditar) {
       // Estamos en modo edición, llamar a modificarCliente
-      this.apiService.modificarCliente(this.clienteParaEditar.id, datos).subscribe({
-        next: (respuesta) => {
-          console.log('Cliente modificado exitosamente:', respuesta);
-          this.successMessage = 'Cliente modificado exitosamente!';
-          this.cargarClientes();
-          this.cerrarModal();
-        },
-        error: (error) => {
-          console.error('Error al modificar cliente:', error);
-          this.errorMessage = 'Error al modificar cliente. Por favor, inténtalo de nuevo.';
-          // No cerramos el modal para que el usuario pueda ver el mensaje de error
-          // y volver a intentarlo si lo desea
-        }
-      });
+      this.apiService
+        .modificarCliente(this.clienteParaEditar.id, datos)
+        .subscribe({
+          next: (respuesta) => {
+            console.log('Cliente modificado exitosamente:', respuesta);
+            this.successMessage = 'Cliente modificado exitosamente!';
+            this.cargarClientes();
+            this.cerrarModal();
+          },
+          error: (error) => {
+            console.error('Error al modificar cliente:', error);
+            this.errorMessage =
+              'Error al modificar cliente. Por favor, inténtalo de nuevo.';
+            // No cerramos el modal para que el usuario pueda ver el mensaje de error
+            // y volver a intentarlo si lo desea
+          },
+        });
     } else {
       // Estamos en modo creación, llamar a createClient
       this.apiService.createClient(datos).subscribe({
@@ -188,9 +203,10 @@ export class ClientesComponent implements OnInit {
         },
         error: (error) => {
           console.error('Error al crear cliente:', error);
-          this.errorMessage = 'Error al crear cliente. Por favor, inténtalo de nuevo.';
+          this.errorMessage =
+            'Error al crear cliente. Por favor, inténtalo de nuevo.';
           // No cerramos el modal para que el usuario pueda ver el mensaje de error
-        }
+        },
       });
     }
   }
@@ -199,26 +215,26 @@ export class ClientesComponent implements OnInit {
     this.guardarCliente(datos);
   }
 
-  cargarClientes():void {
+  cargarClientes(): void {
     const filtros = this.obtenerFiltrosConsulta();
     this.cargarClientesTrigger$.next({ pagina: this.paginaActual, filtros });
   }
 
-  cambiarPagina(pagina: number):void {
+  cambiarPagina(pagina: number): void {
     if (pagina >= 1 && pagina <= this.paginas) {
       this.paginaActual = pagina;
       this.cargarClientes();
     }
   }
 
-  nextPage():void {
+  nextPage(): void {
     if (this.paginaActual < this.paginas) {
       this.paginaActual++;
       this.cargarClientes();
     }
   }
 
-  prevPage():void {
+  prevPage(): void {
     if (this.paginaActual > 1) {
       this.paginaActual--;
       this.cargarClientes();
@@ -238,7 +254,10 @@ export class ClientesComponent implements OnInit {
     return servicios.join(', ');
   }
 
-  obtenerClaseVisitas(asignadas?: number | null, realizadas?: number | null): string {
+  obtenerClaseVisitas(
+    asignadas?: number | null,
+    realizadas?: number | null
+  ): string {
     const totalAsignadas = Number(asignadas ?? 0);
     const totalRealizadas = Number(realizadas ?? 0);
 
@@ -390,11 +409,15 @@ export class ClientesComponent implements OnInit {
         }
 
         const { paginas, clientes } = respuesta;
-        this.casasMatricez = (clientes ?? []).map((cliente: Cliente & { servicios?: unknown; datosBancarios?: unknown }) => ({
-          ...cliente,
-          servicios: normalizarServicios(cliente.servicios),
-          datosBancarios: normalizarDatosBancarios(cliente.datosBancarios),
-        }));
+        this.casasMatricez = (clientes ?? []).map(
+          (
+            cliente: Cliente & { servicios?: unknown; datosBancarios?: unknown }
+          ) => ({
+            ...cliente,
+            servicios: normalizarServicios(cliente.servicios),
+            datosBancarios: normalizarDatosBancarios(cliente.datosBancarios),
+          })
+        );
         this.paginas = paginas ?? 1;
         this.cdr.markForCheck();
       });
@@ -419,5 +442,3 @@ export class ClientesComponent implements OnInit {
     return Number.isNaN(numero) ? null : numero;
   }
 }
-
-

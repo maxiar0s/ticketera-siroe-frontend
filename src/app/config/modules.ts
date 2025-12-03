@@ -1,0 +1,15 @@
+export const MODULES = {
+  dashboard: true,
+  dashboardCliente: true,
+  clientes: true,
+  documentacion: true,
+  sucursal: true,
+  bitacora: true,
+  tickets: true,
+  proyectos: true,
+  vehiculos: true,
+  opciones: true,
+  perfil: true,
+  adminUsuarios: true,
+  adminTiposEquipos: true,
+};

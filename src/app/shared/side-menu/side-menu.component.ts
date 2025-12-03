@@ -4,6 +4,7 @@ import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { ApiService } from '../../services/api.service';
 import { BRAND } from '../../config/branding';
+import { MODULES } from '../../config/modules';
 
 // Menus
 import menu_administrador from './menu-administrador.json';
@@ -81,7 +82,38 @@ export class SideMenuComponent {
   }
 
   private clonarMenu(base: any[]): any[] {
-    return JSON.parse(JSON.stringify(base ?? []));
+    const menu = JSON.parse(JSON.stringify(base ?? []));
+    return menu.filter((item: any) => {
+      // Si el item tiene una propiedad 'module' definida en el JSON (o inferida), filtramos
+      // Pero como los JSON de menú no tienen la propiedad 'module', podemos usar la ruta para mapear
+      // O mejor, podemos agregar la propiedad 'module' a los JSON de menú si fuera necesario.
+      // Por ahora, vamos a inferir el módulo basado en la ruta, similar a como lo hicimos en las rutas.
+
+      const route = this.normalizeRoute(item.route);
+      let moduleKey: keyof typeof MODULES | undefined;
+
+      // Mapeo simple de rutas a módulos (debe coincidir con app.routes.ts)
+      if (route === 'dashboard') moduleKey = 'dashboard';
+      else if (route === 'dashboard-cliente') moduleKey = 'dashboardCliente';
+      else if (route === 'clientes') moduleKey = 'clientes';
+      else if (route === 'documentacion') moduleKey = 'documentacion';
+      else if (route === 'bitacora' || route === 'bitacoras')
+        moduleKey = 'bitacora';
+      else if (route === 'tickets') moduleKey = 'tickets';
+      else if (route === 'proyectos') moduleKey = 'proyectos';
+      else if (route === 'vehiculos') moduleKey = 'vehiculos';
+      else if (route === 'opciones') moduleKey = 'opciones';
+      else if (route === 'perfil') moduleKey = 'perfil';
+      else if (route === 'admin/usuarios') moduleKey = 'adminUsuarios';
+      else if (route === 'admin/tipos-equipos') moduleKey = 'adminTiposEquipos';
+
+      // Si encontramos un key y el módulo está desactivado, lo filtramos
+      if (moduleKey && MODULES[moduleKey] === false) {
+        return false;
+      }
+
+      return true;
+    });
   }
 
   private sincronizarSeleccionConRuta(path: string): void {
@@ -128,7 +160,10 @@ export class SideMenuComponent {
     }
   }
 
-  private ajustarMenuPorTickets(tieneTickets: boolean, currentPath: string): void {
+  private ajustarMenuPorTickets(
+    tieneTickets: boolean,
+    currentPath: string
+  ): void {
     const ticketIndex = this.menu.findIndex(
       (item) => this.normalizeRoute(item.route) === 'tickets'
     );
@@ -161,7 +196,9 @@ export class SideMenuComponent {
   }
 
   activeGroup(route: any): boolean {
-    return this.normalizeRoute(this.currentGroup) === this.normalizeRoute(route);
+    return (
+      this.normalizeRoute(this.currentGroup) === this.normalizeRoute(route)
+    );
   }
 
   activeSubGroup(route: string): void {
