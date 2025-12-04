@@ -327,9 +327,13 @@ textarea {
 }
 
 .bitacora-table th.tipo-col,
-.bitacora-table td.tipo {
-  width: 140px;
-  text-align: center;
+.bitacora-table td.tipo,
+.bitacora-table th.fecha-col,
+.bitacora-table td:first-child {
+  width: 1%;
+  white-space: nowrap;
+  text-align: left;
+  padding-right: 1rem;
 }
 
 .tipo-chip {
@@ -369,7 +373,6 @@ textarea {
 .tipo-chip.prioridad {
   font-size: 0.75rem;
   padding: 0.25rem 0.6rem;
-  margin-right: 0.5rem;
 }
 
 .tipo-chip.prioridad-alta {

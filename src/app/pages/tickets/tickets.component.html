@@ -41,7 +41,7 @@
         </select>
       </label>
 
-      <label class="filter-field">
+      <label class="filter-field" *ngIf="modules.sucursal">
         <span class="label">Sucursal</span>
         <select
           formControlName="sucursalId"
@@ -126,12 +126,12 @@
     <table class="bitacora-table">
       <thead>
         <tr>
-          <th>Fecha</th>
-          <th>Prioridad</th>
-          <th>Tipo</th>
-          <th>Estado</th>
+          <th class="fecha-col">Fecha</th>
+          <th class="tipo-col">Prioridad</th>
+          <th class="tipo-col">Tipo</th>
+          <th class="tipo-col">Estado</th>
           <th>Cliente</th>
-          <th>Sucursal</th>
+          <th *ngIf="modules.sucursal">Sucursal</th>
           <th>Técnicos</th>
           <th class="nota">Nota</th>
           <th *ngIf="esAdmin" class="acciones">Acciones</th>
@@ -173,7 +173,9 @@
             </div>
           </td>
           <td>{{ ticket.casaMatriz?.razonSocial || "N/A" }}</td>
-          <td>{{ ticket.sucursal?.sucursal || "General" }}</td>
+          <td *ngIf="modules.sucursal">
+            {{ ticket.sucursal?.sucursal || "General" }}
+          </td>
           <td class="tecnicos">
             <ng-container *ngIf="ticket.tecnicos?.length; else sinTecnicos">
               <span *ngFor="let tecnico of ticket.tecnicos; let last = last">
@@ -324,7 +326,7 @@
             {{ ticketSeleccionado.casaMatriz?.razonSocial || "N/A" }}
           </span>
         </div>
-        <div>
+        <div *ngIf="modules.sucursal">
           <span class="label">Sucursal</span>
           <span class="value">
             {{ ticketSeleccionado.sucursal?.sucursal || "General" }}
