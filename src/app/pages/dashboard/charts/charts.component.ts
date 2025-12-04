@@ -8,6 +8,7 @@ import { Bitacora } from '../../../interfaces/bitacora.interface';
 import { forkJoin, map, of, switchMap, catchError, throwError } from 'rxjs';
 import { DashboardCalendarComponent } from './calendar/dashboard-calendar.component';
 import { TipoEquipo } from '../../../interfaces/TipoEquipo.interface';
+import { DASHBOARD_CONFIG } from '../../../config/dashboard';
 
 type ClienteConEquipos = { cliente: Cliente; equipos: Equipo[] };
 
@@ -16,11 +17,12 @@ type ClienteConEquipos = { cliente: Cliente; equipos: Equipo[] };
   standalone: true,
   imports: [CommonModule, SimpleBarChartComponent, DashboardCalendarComponent],
   templateUrl: './charts.component.html',
-  styleUrl: './charts.component.css'
+  styleUrl: './charts.component.css',
 })
 export class ChartsComponent implements OnInit {
   @Input() option: string = 'Todos los ingresos';
   @Input() modoCliente = false;
+  public dashboardConfig = DASHBOARD_CONFIG;
 
   equiposPorTipoData: { label: string; value: number }[] = [];
   equiposPorClienteData: { label: string; value: number }[] = [];
@@ -35,7 +37,20 @@ export class ChartsComponent implements OnInit {
   clientesError = '';
   bitacorasError = '';
 
-  private readonly mesesCortos = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
+  private readonly mesesCortos = [
+    'Ene',
+    'Feb',
+    'Mar',
+    'Abr',
+    'May',
+    'Jun',
+    'Jul',
+    'Ago',
+    'Sep',
+    'Oct',
+    'Nov',
+    'Dic',
+  ];
   private readonly maxClientesEnGrafico = 8;
   private tiposEquipoMapa = new Map<number, string>();
   private totalVisitasMensualesAsignadas = 0;
@@ -65,7 +80,7 @@ export class ChartsComponent implements OnInit {
       },
       complete: () => {
         this.cargarClientesConEquipos();
-      }
+      },
     });
   }
 
@@ -91,10 +106,16 @@ export class ChartsComponent implements OnInit {
                       sucursales: detalle.sucursales ?? cliente.sucursales,
                     } as Cliente)
                   : cliente;
-                return { cliente: clienteCombinado, equipos: respuesta.equipos } as ClienteConEquipos;
+                return {
+                  cliente: clienteCombinado,
+                  equipos: respuesta.equipos,
+                } as ClienteConEquipos;
               }),
               catchError((error) => {
-                console.error(`Error al cargar equipos del cliente ${cliente.id}`, error);
+                console.error(
+                  `Error al cargar equipos del cliente ${cliente.id}`,
+                  error
+                );
                 return of({ cliente, equipos: [] as Equipo[] });
               })
             )
@@ -104,9 +125,7 @@ export class ChartsComponent implements OnInit {
             return of({ detalles: [] as ClienteConEquipos[] });
           }
 
-          return forkJoin(peticiones).pipe(
-            map((detalles) => ({ detalles }))
-          );
+          return forkJoin(peticiones).pipe(map((detalles) => ({ detalles })));
         })
       )
       .subscribe({
@@ -119,8 +138,9 @@ export class ChartsComponent implements OnInit {
           this.equiposPorClienteData = [];
           this.equiposPorTipoData = [];
           this.loadingClientes = false;
-          this.clientesError = 'No fue posible cargar la informacion de clientes.';
-        }
+          this.clientesError =
+            'No fue posible cargar la informacion de clientes.';
+        },
       });
   }
 
@@ -128,27 +148,28 @@ export class ChartsComponent implements OnInit {
     this.loadingBitacoras = true;
     this.bitacorasError = '';
 
-    this.obtenerTodasLasBitacoras()
-      .subscribe({
-        next: (bitacoras) => {
-          this.bitacoras = bitacoras;
-          this.visitasPorMesData = this.calcularVisitasPorMes(bitacoras);
-          this.actualizarMetricasVisitas(bitacoras);
-          this.loadingBitacoras = false;
-        },
-        error: (error) => {
-          console.error('Error al cargar bitacoras para dashboard', error);
-          this.bitacoras = [];
-          this.visitasPorMesData = this.calcularVisitasPorMes([]);
-          this.actualizarMetricasVisitas([]);
-          this.loadingBitacoras = false;
-          if (error?.status === 403) {
-            this.bitacorasError = error?.error?.error ?? 'Tu cuenta no tiene acceso a Tickets.';
-          } else {
-            this.bitacorasError = 'No fue posible cargar las visitas registradas.';
-          }
+    this.obtenerTodasLasBitacoras().subscribe({
+      next: (bitacoras) => {
+        this.bitacoras = bitacoras;
+        this.visitasPorMesData = this.calcularVisitasPorMes(bitacoras);
+        this.actualizarMetricasVisitas(bitacoras);
+        this.loadingBitacoras = false;
+      },
+      error: (error) => {
+        console.error('Error al cargar bitacoras para dashboard', error);
+        this.bitacoras = [];
+        this.visitasPorMesData = this.calcularVisitasPorMes([]);
+        this.actualizarMetricasVisitas([]);
+        this.loadingBitacoras = false;
+        if (error?.status === 403) {
+          this.bitacorasError =
+            error?.error?.error ?? 'Tu cuenta no tiene acceso a Tickets.';
+        } else {
+          this.bitacorasError =
+            'No fue posible cargar las visitas registradas.';
         }
-      });
+      },
+    });
   }
 
   private obtenerTodosLosClientes() {
@@ -261,19 +282,31 @@ export class ChartsComponent implements OnInit {
       .map(([label, value]) => ({ label, value }));
 
     if (this.modoCliente) {
-      this.totalVisitasMensualesAsignadas = detalles.reduce((acumulado, { cliente }) => {
-        if ((cliente as Cliente)?.esLead) {
-          return acumulado;
-        }
-        return acumulado + this.normalizarCantidad((cliente as any)?.visitasMensuales);
-      }, 0);
+      this.totalVisitasMensualesAsignadas = detalles.reduce(
+        (acumulado, { cliente }) => {
+          if ((cliente as Cliente)?.esLead) {
+            return acumulado;
+          }
+          return (
+            acumulado +
+            this.normalizarCantidad((cliente as any)?.visitasMensuales)
+          );
+        },
+        0
+      );
 
-      this.visitasEmergenciaAsignadasAnuales = detalles.reduce((acumulado, { cliente }) => {
-        if ((cliente as Cliente)?.esLead) {
-          return acumulado;
-        }
-        return acumulado + this.normalizarCantidad((cliente as any)?.visitasEmergenciaAnuales);
-      }, 0);
+      this.visitasEmergenciaAsignadasAnuales = detalles.reduce(
+        (acumulado, { cliente }) => {
+          if ((cliente as Cliente)?.esLead) {
+            return acumulado;
+          }
+          return (
+            acumulado +
+            this.normalizarCantidad((cliente as any)?.visitasEmergenciaAnuales)
+          );
+        },
+        0
+      );
 
       this.actualizarMetricasVisitas(this.bitacoras);
     }
@@ -300,7 +333,8 @@ export class ChartsComponent implements OnInit {
     let registradasEmergenciaAnual = 0;
 
     bitacoras.forEach((bitacora) => {
-      const fechaBase = bitacora?.fechaVisita ?? bitacora?.createdAt ?? bitacora?.updatedAt;
+      const fechaBase =
+        bitacora?.fechaVisita ?? bitacora?.createdAt ?? bitacora?.updatedAt;
       if (!fechaBase) {
         return;
       }
@@ -331,20 +365,30 @@ export class ChartsComponent implements OnInit {
     this.visitasEmergenciaResumen = {
       asignadas: this.visitasEmergenciaAsignadasAnuales,
       registradas: registradasEmergenciaAnual,
-      restantes: Math.max(this.visitasEmergenciaAsignadasAnuales - registradasEmergenciaAnual, 0),
+      restantes: Math.max(
+        this.visitasEmergenciaAsignadasAnuales - registradasEmergenciaAnual,
+        0
+      ),
     };
   }
 
-  private compilarEquiposCliente(cliente: Cliente, equiposExternos: Equipo[] = []): { listado: Equipo[]; total: number } {
+  private compilarEquiposCliente(
+    cliente: Cliente,
+    equiposExternos: Equipo[] = []
+  ): { listado: Equipo[]; total: number } {
     const equiposMap = new Map<number | string, Equipo>();
     let fallbackTotal = 0;
 
-    equiposExternos.forEach((equipo) => this.registrarEquipoEnMapa(equiposMap, equipo));
+    equiposExternos.forEach((equipo) =>
+      this.registrarEquipoEnMapa(equiposMap, equipo)
+    );
 
     if (Array.isArray(cliente?.sucursales)) {
       cliente.sucursales.forEach((sucursal: any) => {
         if (Array.isArray(sucursal?.equipos) && sucursal.equipos.length) {
-          sucursal.equipos.forEach((equipo: Equipo) => this.registrarEquipoEnMapa(equiposMap, equipo));
+          sucursal.equipos.forEach((equipo: Equipo) =>
+            this.registrarEquipoEnMapa(equiposMap, equipo)
+          );
         } else if (typeof sucursal?.equiposCount === 'number') {
           const conteo = Number(sucursal.equiposCount);
           if (!Number.isNaN(conteo) && conteo > 0) {
@@ -357,10 +401,12 @@ export class ChartsComponent implements OnInit {
     const listadoAlternativo = Array.isArray((cliente as any)?.Equipos)
       ? (cliente as any).Equipos
       : Array.isArray((cliente as any)?.equipos)
-        ? (cliente as any).equipos
-        : [];
+      ? (cliente as any).equipos
+      : [];
 
-    listadoAlternativo.forEach((equipo: Equipo) => this.registrarEquipoEnMapa(equiposMap, equipo));
+    listadoAlternativo.forEach((equipo: Equipo) =>
+      this.registrarEquipoEnMapa(equiposMap, equipo)
+    );
 
     const listado = Array.from(equiposMap.values());
     const total = listado.length > 0 ? listado.length : fallbackTotal;
@@ -390,7 +436,10 @@ export class ChartsComponent implements OnInit {
     return 'Sin tipo';
   }
 
-  private registrarEquipoEnMapa(contenedor: Map<number | string, Equipo>, equipo: Equipo | null | undefined): void {
+  private registrarEquipoEnMapa(
+    contenedor: Map<number | string, Equipo>,
+    equipo: Equipo | null | undefined
+  ): void {
     if (!equipo) {
       return;
     }
@@ -398,7 +447,9 @@ export class ChartsComponent implements OnInit {
     const clave =
       equipo.id ??
       equipo.codigoId ??
-      (equipo.numeroSecuencial !== undefined ? `ns-${equipo.numeroSecuencial}` : undefined);
+      (equipo.numeroSecuencial !== undefined
+        ? `ns-${equipo.numeroSecuencial}`
+        : undefined);
 
     if (clave === undefined || clave === null) {
       return;
@@ -407,13 +458,16 @@ export class ChartsComponent implements OnInit {
     contenedor.set(clave, equipo);
   }
 
-  private calcularVisitasPorMes(bitacoras: Bitacora[]): { label: string; value: number }[] {
+  private calcularVisitasPorMes(
+    bitacoras: Bitacora[]
+  ): { label: string; value: number }[] {
     const ahora = new Date();
     const inicio = new Date(ahora.getFullYear(), ahora.getMonth() - 11, 1);
     const conteo = new Map<string, number>();
 
     bitacoras.forEach((bitacora) => {
-      const fechaBase = bitacora?.fechaVisita ?? bitacora?.createdAt ?? bitacora?.updatedAt;
+      const fechaBase =
+        bitacora?.fechaVisita ?? bitacora?.createdAt ?? bitacora?.updatedAt;
       if (!fechaBase) {
         return;
       }

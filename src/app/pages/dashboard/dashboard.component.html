@@ -1,7 +1,9 @@
 <div class="section">
   <dashboard-charts [option]="Option"></dashboard-charts>
-  <h2 class="title">Resumen</h2>
-  <shared-options (optionSelected)="selectedOption($event)"></shared-options>
-  <dashboard-summary [option]="Option"></dashboard-summary>
+  <ng-container *ngIf="dashboardConfig.summaryTable">
+    <h2 class="title">Resumen</h2>
+    <shared-options (optionSelected)="selectedOption($event)"></shared-options>
+    <dashboard-summary [option]="Option"></dashboard-summary>
+  </ng-container>
   <shared-navegation></shared-navegation>
 </div>

@@ -241,17 +241,40 @@
                   class="client-button"
                   >Seleccionar</a
                 >
-                <button
-                  *ngIf="esAdministrador"
-                  class="button-ajustes"
-                  (click)="abrirModalAjustesCliente(i)"
+                <ng-container
+                  *ngIf="
+                    sucursalEnabled || features.datosBancarios;
+                    else directActions
+                  "
                 >
-                  <img
-                    src="/assets/svg/ajustes.svg"
-                    alt="ajustes.svg"
-                    class="svg-ajustes-sucursal"
-                  />
-                </button>
+                  <button
+                    *ngIf="esAdministrador"
+                    class="button-ajustes"
+                    (click)="abrirModalAjustesCliente(i)"
+                  >
+                    <img
+                      src="/assets/svg/ajustes.svg"
+                      alt="ajustes.svg"
+                      class="svg-ajustes-sucursal"
+                    />
+                  </button>
+                </ng-container>
+                <ng-template #directActions>
+                  <button
+                    *ngIf="esAdministrador"
+                    class="client-button client-button--secondary"
+                    (click)="modificarCliente(casaMatriz)"
+                  >
+                    Modificar
+                  </button>
+                  <button
+                    *ngIf="esAdministrador"
+                    class="client-button client-button--danger"
+                    (click)="eliminarCliente(casaMatriz.id)"
+                  >
+                    Eliminar
+                  </button>
+                </ng-template>
               </div>
               <button
                 *ngIf="puedeVerDatosBancarios && features.datosBancarios"

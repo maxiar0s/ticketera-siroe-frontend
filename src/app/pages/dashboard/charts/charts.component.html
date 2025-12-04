@@ -1,5 +1,5 @@
 <div class="grid-tables">
-  <div class="calendar-card">
+  <div class="calendar-card" *ngIf="dashboardConfig.calendar">
     <dashboard-calendar
       [bitacoras]="bitacoras"
       [cargando]="loadingBitacoras"
@@ -8,13 +8,18 @@
     ></dashboard-calendar>
   </div>
 
-  <div class="dashboard-card card-equipos-tipo">
+  <div
+    class="dashboard-card card-equipos-tipo"
+    *ngIf="dashboardConfig.charts.equiposPorTipo"
+  >
     <div class="card-header">
       <h2 class="card-title">Equipos por tipo</h2>
       <span class="card-status" *ngIf="loadingClientes">Cargando...</span>
     </div>
 
-    <p class="card-error" *ngIf="!loadingClientes && clientesError">{{ clientesError }}</p>
+    <p class="card-error" *ngIf="!loadingClientes && clientesError">
+      {{ clientesError }}
+    </p>
 
     <ng-container *ngIf="!loadingClientes && !clientesError">
       <ng-container *ngIf="equiposPorTipoData.length; else sinEquiposPorTipo">
@@ -27,16 +32,23 @@
     </ng-template>
   </div>
 
-  <div class="dashboard-card card-equipos-cliente" *ngIf="!modoCliente">
+  <div
+    class="dashboard-card card-equipos-cliente"
+    *ngIf="!modoCliente && dashboardConfig.charts.equiposPorCliente"
+  >
     <div class="card-header">
       <h2 class="card-title">Equipos por cliente</h2>
       <span class="card-status" *ngIf="loadingClientes">Cargando...</span>
     </div>
 
-    <p class="card-error" *ngIf="!loadingClientes && clientesError">{{ clientesError }}</p>
+    <p class="card-error" *ngIf="!loadingClientes && clientesError">
+      {{ clientesError }}
+    </p>
 
     <ng-container *ngIf="!loadingClientes && !clientesError">
-      <ng-container *ngIf="equiposPorClienteData.length; else sinEquiposPorCliente">
+      <ng-container
+        *ngIf="equiposPorClienteData.length; else sinEquiposPorCliente"
+      >
         <simple-bar-chart [data]="equiposPorClienteData"></simple-bar-chart>
       </ng-container>
     </ng-container>
@@ -46,28 +58,42 @@
     </ng-template>
   </div>
 
-  <div class="dashboard-card card-visitas-historicas">
+  <div
+    class="dashboard-card card-visitas-historicas"
+    *ngIf="dashboardConfig.charts.visitasPorMes"
+  >
     <div class="card-header">
       <h2 class="card-title">Visitas registradas por mes</h2>
       <span class="card-status" *ngIf="loadingBitacoras">Cargando...</span>
     </div>
 
-    <p class="card-error" *ngIf="!loadingBitacoras && bitacorasError">{{ bitacorasError }}</p>
+    <p class="card-error" *ngIf="!loadingBitacoras && bitacorasError">
+      {{ bitacorasError }}
+    </p>
 
     <ng-container *ngIf="!loadingBitacoras && !bitacorasError">
       <simple-bar-chart [data]="visitasPorMesData"></simple-bar-chart>
     </ng-container>
   </div>
 
-  <div class="dashboard-card metric-card card-visitas-combinadas" *ngIf="modoCliente">
+  <div
+    class="dashboard-card metric-card card-visitas-combinadas"
+    *ngIf="modoCliente && dashboardConfig.charts.visitasResumen"
+  >
     <div class="card-header">
       <h2 class="card-title">Visitas</h2>
-      <span class="card-status" *ngIf="loadingClientes || loadingBitacoras">Cargando...</span>
+      <span class="card-status" *ngIf="loadingClientes || loadingBitacoras"
+        >Cargando...</span
+      >
     </div>
 
     <p
       class="card-error"
-      *ngIf="(clientesError || bitacorasError) && !loadingClientes && !loadingBitacoras"
+      *ngIf="
+        (clientesError || bitacorasError) &&
+        !loadingClientes &&
+        !loadingBitacoras
+      "
     >
       {{ clientesError || bitacorasError }}
     </p>
@@ -79,14 +105,20 @@
           <div class="metric-body">
             <div class="metric-item">
               <span class="metric-label">Registradas</span>
-              <span class="metric-value">{{ visitasMensualesResumen.registradas }}</span>
+              <span class="metric-value">{{
+                visitasMensualesResumen.registradas
+              }}</span>
             </div>
             <div class="metric-item metric-highlight">
               <span class="metric-label">Restantes</span>
-              <span class="metric-value">{{ visitasMensualesResumen.restantes }}</span>
+              <span class="metric-value">{{
+                visitasMensualesResumen.restantes
+              }}</span>
             </div>
           </div>
-          <p class="metric-caption">Cupo mensual asignado: {{ visitasMensualesResumen.asignadas }}</p>
+          <p class="metric-caption">
+            Cupo mensual asignado: {{ visitasMensualesResumen.asignadas }}
+          </p>
         </section>
 
         <section class="metric-section">
@@ -94,14 +126,20 @@
           <div class="metric-body">
             <div class="metric-item">
               <span class="metric-label">Registradas</span>
-              <span class="metric-value">{{ visitasEmergenciaResumen.registradas }}</span>
+              <span class="metric-value">{{
+                visitasEmergenciaResumen.registradas
+              }}</span>
             </div>
             <div class="metric-item metric-highlight">
               <span class="metric-label">Restantes</span>
-              <span class="metric-value">{{ visitasEmergenciaResumen.restantes }}</span>
+              <span class="metric-value">{{
+                visitasEmergenciaResumen.restantes
+              }}</span>
             </div>
           </div>
-          <p class="metric-caption">Total anual asignado: {{ visitasEmergenciaAsignadasAnuales }}</p>
+          <p class="metric-caption">
+            Total anual asignado: {{ visitasEmergenciaAsignadasAnuales }}
+          </p>
         </section>
       </div>
     </ng-container>
