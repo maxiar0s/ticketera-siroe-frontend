@@ -1,9 +1,46 @@
 <div class="section">
-  <dashboard-charts [option]="Option"></dashboard-charts>
+  <!-- Ticket Widgets -->
+  <ng-container *ngIf="dashboardConfig.tickets.estadoCards">
+    <app-ticket-status-cards [tickets]="tickets"></app-ticket-status-cards>
+  </ng-container>
+
+  <div class="ticket-charts-grid" *ngIf="hasTicketWidgets()">
+    <div class="chart-card" *ngIf="dashboardConfig.tickets.cantidadPorMes">
+      <app-ticket-count-by-month
+        [tickets]="tickets"
+      ></app-ticket-count-by-month>
+    </div>
+    <div class="chart-card" *ngIf="dashboardConfig.tickets.porFuente">
+      <app-ticket-by-source [tickets]="tickets"></app-ticket-by-source>
+    </div>
+    <div class="chart-card" *ngIf="dashboardConfig.tickets.tiempoRespuesta">
+      <app-ticket-response-time [tickets]="tickets"></app-ticket-response-time>
+    </div>
+    <div class="chart-card" *ngIf="dashboardConfig.tickets.porPrioridad">
+      <app-ticket-by-priority [tickets]="tickets"></app-ticket-by-priority>
+    </div>
+    <div class="chart-card" *ngIf="dashboardConfig.tickets.porTipo">
+      <app-ticket-by-type [tickets]="tickets"></app-ticket-by-type>
+    </div>
+  </div>
+
+  <!-- Legacy/Other Widgets -->
+  <dashboard-charts
+    [option]="Option"
+    *ngIf="
+      dashboardConfig.calendar ||
+      dashboardConfig.charts.equiposPorTipo ||
+      dashboardConfig.charts.equiposPorCliente ||
+      dashboardConfig.charts.visitasPorMes ||
+      dashboardConfig.charts.visitasResumen
+    "
+  ></dashboard-charts>
+
   <ng-container *ngIf="dashboardConfig.summaryTable">
     <h2 class="title">Resumen</h2>
     <shared-options (optionSelected)="selectedOption($event)"></shared-options>
     <dashboard-summary [option]="Option"></dashboard-summary>
   </ng-container>
+
   <shared-navegation></shared-navegation>
 </div>

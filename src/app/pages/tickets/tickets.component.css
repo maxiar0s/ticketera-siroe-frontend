@@ -366,6 +366,38 @@ textarea {
   border: 1px solid rgba(var(--color-primary-rgb), 0.25);
 }
 
+.tipo-chip.prioridad {
+  font-size: 0.75rem;
+  padding: 0.25rem 0.6rem;
+  margin-right: 0.5rem;
+}
+
+.tipo-chip.prioridad-alta {
+  background-color: #ffebee;
+  color: #c62828;
+  border: 1px solid #ffcdd2;
+}
+
+.tipo-chip.prioridad-media {
+  background-color: #fff3e0;
+  color: #ef6c00;
+  border: 1px solid #ffe0b2;
+}
+
+.tipo-chip.prioridad-baja {
+  background-color: #e8f5e9;
+  color: #2e7d32;
+  border: 1px solid #c8e6c9;
+}
+
+.tipo-chip.tipo-ticket {
+  background-color: #e3f2fd;
+  color: #1565c0;
+  border: 1px solid #bbdefb;
+  font-size: 0.75rem;
+  padding: 0.25rem 0.6rem;
+}
+
 .bitacora-table tbody tr.ticket {
   border-left-color: var(--color-info);
 }

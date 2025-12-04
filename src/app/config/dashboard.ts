@@ -7,4 +7,12 @@ export const DASHBOARD_CONFIG = {
     visitasPorMes: false,
     visitasResumen: false,
   },
+  tickets: {
+    cantidadPorMes: true,
+    porFuente: true,
+    tiempoRespuesta: true,
+    porPrioridad: true,
+    porTipo: true,
+    estadoCards: true,
+  },
 };

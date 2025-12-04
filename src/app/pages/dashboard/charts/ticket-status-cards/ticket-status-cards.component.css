@@ -1,0 +1,46 @@
+.status-cards-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.status-card {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  text-align: center;
+}
+
+.status-header {
+  padding: 1rem;
+  color: white;
+  font-weight: bold;
+  font-size: 1.5rem;
+}
+
+.status-label {
+  padding: 0.5rem;
+  font-weight: 500;
+  color: #666;
+}
+
+.bg-new {
+  background-color: #3b82f6;
+} /* Blue */
+.bg-open {
+  background-color: #f97316;
+} /* Orange */
+.bg-pending {
+  background-color: #eab308;
+} /* Yellow */
+.bg-waiting {
+  background-color: #a855f7;
+} /* Purple */
+.bg-resolved {
+  background-color: #22c55e;
+} /* Green */
+.bg-closed {
+  background-color: #ef4444;
+} /* Red */

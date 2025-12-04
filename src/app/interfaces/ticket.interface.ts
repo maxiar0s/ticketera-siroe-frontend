@@ -41,6 +41,11 @@ export interface Ticket {
     nombre: string;
     fotoPortada?: string | null;
   } | null;
+  prioridad: 'Baja' | 'Media' | 'Alta';
+  tipo: 'Incidente' | 'Problema' | 'Pregunta' | 'Peticion';
+  fuente: 'Web' | 'Email';
+  fechaRespuesta?: string | null;
+  historialEstados?: string[];
 }
 
 export interface TicketListadoResponse {

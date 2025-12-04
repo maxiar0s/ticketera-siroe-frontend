@@ -130,12 +130,27 @@ export class TicketsComponent implements OnInit {
       horaSalida: [''],
       tecnicos: [[], Validators.required],
       ticketEstado: ['Nuevo', Validators.required],
+      prioridad: ['Media', Validators.required],
+      tipo: ['Incidente', Validators.required],
       ticketFechaTermino: [''],
       ticketDetalleTermino: [''],
       descripcion: ['', [Validators.required, Validators.minLength(5)]],
       proyectoId: [null],
     });
   }
+
+  readonly prioridades = [
+    { value: 'Baja', label: 'Baja' },
+    { value: 'Media', label: 'Media' },
+    { value: 'Alta', label: 'Alta' },
+  ];
+
+  readonly tiposTicket = [
+    { value: 'Incidente', label: 'Incidente' },
+    { value: 'Problema', label: 'Problema' },
+    { value: 'Pregunta', label: 'Pregunta' },
+    { value: 'Peticion', label: 'Petición' },
+  ];
 
   ngOnInit(): void {
     this.signalService.updateData(this.tituloModulo);
@@ -432,6 +447,8 @@ export class TicketsComponent implements OnInit {
       horaSalida: '',
       tecnicos: [],
       ticketEstado: 'Nuevo',
+      prioridad: 'Media',
+      tipo: 'Incidente',
       ticketFechaTermino: '',
       ticketDetalleTermino: '',
       descripcion: '',
@@ -471,6 +488,8 @@ export class TicketsComponent implements OnInit {
       horaSalida: this.formatearParaInputFecha(ticket.horaSalida),
       tecnicos: Array.isArray(ticket.tecnicos) ? [...ticket.tecnicos] : [],
       ticketEstado: ticket.estadoTicket ?? 'Nuevo',
+      prioridad: ticket.prioridad ?? 'Media',
+      tipo: ticket.tipo ?? 'Incidente',
       ticketFechaTermino: this.formatearParaInputSoloFecha(ticket.fechaTermino),
       ticketDetalleTermino: ticket.detalleTermino ?? '',
       descripcion: ticket.descripcion,
@@ -789,6 +808,8 @@ export class TicketsComponent implements OnInit {
       titulo: formValue.titulo ? formValue.titulo.trim() : null,
       isEmergencia: false,
       estadoTicket,
+      prioridad: formValue.prioridad,
+      tipo: formValue.tipo,
       proyectoId,
       fechaTermino: null,
       detalleTermino: null,

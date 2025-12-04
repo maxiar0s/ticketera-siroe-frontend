@@ -1,0 +1,8 @@
+<div class="status-cards-container">
+  <div class="status-card" *ngFor="let status of statusCounts">
+    <div class="status-header" [ngClass]="status.class">
+      <span class="count">{{ status.count }}</span>
+    </div>
+    <div class="status-label">{{ status.label }}</div>
+  </div>
+</div>
