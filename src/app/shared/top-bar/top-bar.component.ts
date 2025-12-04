@@ -12,9 +12,13 @@ import { Router, RouterModule } from '@angular/router';
 import { SignalService } from '../../services/signal.service';
 import { ApiService } from '../../services/api.service';
 import { AuthService } from '../../services/auth.service';
-import { obtenerIniciales, generarColorDesdeTexto } from '../../utils/avatar.util';
+import {
+  obtenerIniciales,
+  generarColorDesdeTexto,
+} from '../../utils/avatar.util';
 import { NotificationService } from '../../services/notification.service';
 import { Notificacion } from '../../interfaces/notificacion.interface';
+import { FEATURES } from '../../config/features';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
@@ -38,6 +42,7 @@ export class TopBarComponent implements AfterViewInit, OnInit, OnDestroy {
   public popupVisible = false;
   public notificaciones: Notificacion[] = [];
   public loadingNotificaciones = false;
+  readonly features = FEATURES;
 
   private readonly destroyed$ = new Subject<void>();
 
@@ -76,12 +81,15 @@ export class TopBarComponent implements AfterViewInit, OnInit, OnDestroy {
 
   ngAfterViewInit(): void {
     if (this.searchLabel && this.searchLabel.nativeElement) {
-      this.searchLabel.nativeElement.addEventListener('click', (event: Event) => {
-        if (window.innerWidth <= 800 && !this.isExpanded) {
-          event.preventDefault();
-          this.toggleSearchBar();
+      this.searchLabel.nativeElement.addEventListener(
+        'click',
+        (event: Event) => {
+          if (window.innerWidth <= 800 && !this.isExpanded) {
+            event.preventDefault();
+            this.toggleSearchBar();
+          }
         }
-      });
+      );
     }
   }
 
@@ -130,8 +138,12 @@ export class TopBarComponent implements AfterViewInit, OnInit, OnDestroy {
 
     this.apiService.perfilActual().subscribe({
       next: (perfil) => {
-        this.avatarIniciales = obtenerIniciales(perfil?.name ?? perfil?.email ?? '');
-        this.avatarColor = generarColorDesdeTexto(perfil?.name ?? perfil?.email ?? '');
+        this.avatarIniciales = obtenerIniciales(
+          perfil?.name ?? perfil?.email ?? ''
+        );
+        this.avatarColor = generarColorDesdeTexto(
+          perfil?.name ?? perfil?.email ?? ''
+        );
       },
       error: () => {
         this.avatarIniciales = '?';
@@ -168,7 +180,8 @@ export class TopBarComponent implements AfterViewInit, OnInit, OnDestroy {
       notificacion.referenciaTipo === 'bitacora' &&
       (notificacion.referenciaId || notificacion.metadata?.bitacoraId)
     ) {
-      const destinoId = notificacion.referenciaId ?? notificacion.metadata?.bitacoraId;
+      const destinoId =
+        notificacion.referenciaId ?? notificacion.metadata?.bitacoraId;
       this.router.navigate(['/bitacoras'], {
         queryParams: { bitacoraId: destinoId },
         state: {
@@ -183,7 +196,8 @@ export class TopBarComponent implements AfterViewInit, OnInit, OnDestroy {
       notificacion.referenciaTipo === 'ticket' &&
       (notificacion.referenciaId || notificacion.metadata?.ticketId)
     ) {
-      const destinoId = notificacion.referenciaId ?? notificacion.metadata?.ticketId;
+      const destinoId =
+        notificacion.referenciaId ?? notificacion.metadata?.ticketId;
       this.router.navigate(['/tickets'], {
         queryParams: { ticketId: destinoId },
         state: {

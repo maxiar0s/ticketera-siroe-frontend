@@ -16,6 +16,7 @@ import { ApiService } from '../../services/api.service';
 import { AuthService } from '../../services/auth.service';
 import { SignalService } from '../../services/signal.service';
 import { FormatoFechaPipe } from '../../pipes/formato-fecha.pipe';
+import { MODULES } from '../../config/modules';
 
 interface SucursalOption {
   id: string;
@@ -73,14 +74,24 @@ export class TicketsComponent implements OnInit {
   readonly soloLectura: boolean;
 
   readonly estadosTicket = [
-    { value: 'ingresado', label: 'Abierto' },
-    { value: 'terminado', label: 'Cerrado' },
+    { value: 'Nuevo', label: 'Nuevo' },
+    { value: 'Abierto', label: 'Abierto' },
+    { value: 'Pendiente', label: 'Pendiente' },
+    { value: 'En espera', label: 'En espera' },
+    { value: 'Resuelto', label: 'Resuelto' },
+    { value: 'Cerrado', label: 'Cerrado' },
   ] as const;
   readonly filtrosEstado = [
     { value: 'todos', label: 'Todos' },
-    { value: 'ingresado', label: 'Abiertos' },
-    { value: 'terminado', label: 'Cerrados' },
+    { value: 'Nuevo', label: 'Nuevos' },
+    { value: 'Abierto', label: 'Abiertos' },
+    { value: 'Pendiente', label: 'Pendientes' },
+    { value: 'En espera', label: 'En espera' },
+    { value: 'Resuelto', label: 'Resueltos' },
+    { value: 'Cerrado', label: 'Cerrados' },
   ];
+
+  readonly modules = MODULES;
 
   tituloModulo = 'Tickets';
   tieneAccesoTickets = true;
@@ -118,7 +129,7 @@ export class TicketsComponent implements OnInit {
       horaLlegada: [''],
       horaSalida: [''],
       tecnicos: [[], Validators.required],
-      ticketEstado: ['ingresado', Validators.required],
+      ticketEstado: ['Nuevo', Validators.required],
       ticketFechaTermino: [''],
       ticketDetalleTermino: [''],
       descripcion: ['', [Validators.required, Validators.minLength(5)]],
@@ -141,7 +152,8 @@ export class TicketsComponent implements OnInit {
 
     this.apiService.perfilActual().subscribe({
       next: (perfil) => {
-        const rolTieneTickets = this.esAdmin || this.esTecnico || this.esComercial;
+        const rolTieneTickets =
+          this.esAdmin || this.esTecnico || this.esComercial;
         const clienteTieneTickets = !!perfil?.haveTickets;
         this.tieneAccesoTickets = rolTieneTickets || clienteTieneTickets;
         this.accesoDenegado = this.esCliente && !clienteTieneTickets;
@@ -153,11 +165,13 @@ export class TicketsComponent implements OnInit {
         this.inicializarDatos();
       },
       error: () => {
-        const rolTieneTickets = this.esAdmin || this.esTecnico || this.esComercial;
+        const rolTieneTickets =
+          this.esAdmin || this.esTecnico || this.esComercial;
         this.tieneAccesoTickets = rolTieneTickets;
         this.accesoDenegado = this.esCliente && !rolTieneTickets;
         if (!this.tieneAccesoTickets) {
-          this.errorMensaje = 'No se pudo verificar el acceso a Tickets para esta cuenta.';
+          this.errorMensaje =
+            'No se pudo verificar el acceso a Tickets para esta cuenta.';
           this.tickets = [];
           return;
         }
@@ -185,10 +199,13 @@ export class TicketsComponent implements OnInit {
     }
 
     const aplicarValidaciones = () => {
-      const estado = (estadoCtrl.value ?? 'ingresado') as 'ingresado' | 'terminado';
-      if (estado === 'terminado') {
+      const estado = (estadoCtrl.value ?? 'Nuevo') as string;
+      if (estado === 'Resuelto' || estado === 'Cerrado') {
         fechaTerminoCtrl.setValidators([Validators.required]);
-        detalleTerminoCtrl.setValidators([Validators.required, Validators.minLength(5)]);
+        detalleTerminoCtrl.setValidators([
+          Validators.required,
+          Validators.minLength(5),
+        ]);
       } else {
         fechaTerminoCtrl.setValue('', { emitEvent: false });
         fechaTerminoCtrl.clearValidators();
@@ -215,7 +232,10 @@ export class TicketsComponent implements OnInit {
 
         if (!clienteActual && this.clientes.length === 1) {
           const unico = this.clientes[0];
-          this.filtroForm.patchValue({ clienteId: unico.id }, { emitEvent: false });
+          this.filtroForm.patchValue(
+            { clienteId: unico.id },
+            { emitEvent: false }
+          );
           this.cargarSucursalesParaCliente(unico.id, 'filtro');
         } else if (clienteActual) {
           this.cargarSucursalesParaCliente(clienteActual, 'filtro');
@@ -246,16 +266,14 @@ export class TicketsComponent implements OnInit {
   }
 
   private cargarProyectos(): void {
-    this.apiService
-      .getProyectos({ pagina: 1, limite: 100 })
-      .subscribe({
-        next: (respuesta) => {
-          this.proyectos = Array.isArray(respuesta?.data) ? respuesta.data : [];
-        },
-        error: () => {
-          this.proyectos = [];
-        },
-      });
+    this.apiService.getProyectos({ pagina: 1, limite: 100 }).subscribe({
+      next: (respuesta) => {
+        this.proyectos = Array.isArray(respuesta?.data) ? respuesta.data : [];
+      },
+      error: () => {
+        this.proyectos = [];
+      },
+    });
   }
 
   buscarTickets(): void {
@@ -265,7 +283,8 @@ export class TicketsComponent implements OnInit {
 
   limpiarFiltros(): void {
     this.filtroForm.reset({
-      clienteId: this.esCliente && this.clientes.length === 1 ? this.clientes[0].id : '',
+      clienteId:
+        this.esCliente && this.clientes.length === 1 ? this.clientes[0].id : '',
       sucursalId: '',
       buscar: '',
       estado: 'todos',
@@ -339,7 +358,11 @@ export class TicketsComponent implements OnInit {
   }
 
   cambiarPagina(pagina: number): void {
-    if (pagina < 1 || pagina > this.paginasTotales || pagina === this.paginaActual) {
+    if (
+      pagina < 1 ||
+      pagina > this.paginasTotales ||
+      pagina === this.paginaActual
+    ) {
       return;
     }
     this.paginaActual = pagina;
@@ -408,7 +431,7 @@ export class TicketsComponent implements OnInit {
       horaLlegada: '',
       horaSalida: '',
       tecnicos: [],
-      ticketEstado: 'ingresado',
+      ticketEstado: 'Nuevo',
       ticketFechaTermino: '',
       ticketDetalleTermino: '',
       descripcion: '',
@@ -447,7 +470,7 @@ export class TicketsComponent implements OnInit {
       horaLlegada: this.formatearParaInputFecha(ticket.horaLlegada),
       horaSalida: this.formatearParaInputFecha(ticket.horaSalida),
       tecnicos: Array.isArray(ticket.tecnicos) ? [...ticket.tecnicos] : [],
-      ticketEstado: ticket.estadoTicket ?? 'ingresado',
+      ticketEstado: ticket.estadoTicket ?? 'Nuevo',
       ticketFechaTermino: this.formatearParaInputSoloFecha(ticket.fechaTermino),
       ticketDetalleTermino: ticket.detalleTermino ?? '',
       descripcion: ticket.descripcion,
@@ -473,7 +496,7 @@ export class TicketsComponent implements OnInit {
     this.guardando = false;
     this.ticketForm.reset({
       tecnicos: [],
-      ticketEstado: 'ingresado',
+      ticketEstado: 'Nuevo',
       ticketFechaTermino: '',
       ticketDetalleTermino: '',
       proyectoId: null,
@@ -501,18 +524,23 @@ export class TicketsComponent implements OnInit {
     return `${seleccionados.length} tecnicos seleccionados`;
   }
 
-  get estadoTicketSeleccionado(): 'ingresado' | 'terminado' {
+  get estadoTicketSeleccionado(): string {
     const control = this.ticketForm.get('ticketEstado');
-    const valor = control?.value;
-    return valor === 'terminado' ? 'terminado' : 'ingresado';
+    return control?.value ?? 'Nuevo';
   }
 
   get mostrarCamposTerminoTicket(): boolean {
-    return this.estadoTicketSeleccionado === 'terminado';
+    return (
+      this.estadoTicketSeleccionado === 'Resuelto' ||
+      this.estadoTicketSeleccionado === 'Cerrado'
+    );
   }
 
   get mostrarCamposHorarios(): boolean {
-    return this.estadoTicketSeleccionado === 'terminado';
+    return (
+      this.estadoTicketSeleccionado === 'Resuelto' ||
+      this.estadoTicketSeleccionado === 'Cerrado'
+    );
   }
 
   toggleTecnicosDropdown(event: MouseEvent): void {
@@ -591,31 +619,29 @@ export class TicketsComponent implements OnInit {
         : this.apiService.crearTicket(payload);
     }
 
-    solicitud$
-      .pipe(finalize(() => (this.guardando = false)))
-      .subscribe({
-        next: (respuesta) => {
-          this.exitoMensaje = esEdicion
-            ? 'Ticket actualizado correctamente.'
-            : 'Ticket registrado correctamente.';
-          this.cerrarFormulario();
-          if (esEdicion) {
-            this.cargarTickets(false);
-            this.refrescarTicket(formValue.id);
-          } else {
-            this.paginaActual = 1;
-            this.cargarTickets();
-            if (respuesta?.id) {
-              this.refrescarTicket(respuesta.id);
-            }
+    solicitud$.pipe(finalize(() => (this.guardando = false))).subscribe({
+      next: (respuesta) => {
+        this.exitoMensaje = esEdicion
+          ? 'Ticket actualizado correctamente.'
+          : 'Ticket registrado correctamente.';
+        this.cerrarFormulario();
+        if (esEdicion) {
+          this.cargarTickets(false);
+          this.refrescarTicket(formValue.id);
+        } else {
+          this.paginaActual = 1;
+          this.cargarTickets();
+          if (respuesta?.id) {
+            this.refrescarTicket(respuesta.id);
           }
-        },
-        error: (error) => {
-          console.error('Error al guardar ticket', error);
-          this.errorMensaje =
-            error?.error?.error ?? 'No se pudo guardar el ticket.';
-        },
-      });
+        }
+      },
+      error: (error) => {
+        console.error('Error al guardar ticket', error);
+        this.errorMensaje =
+          error?.error?.error ?? 'No se pudo guardar el ticket.';
+      },
+    });
   }
 
   onFilesSelected(event: Event, tipo: 'ingreso' | 'evidencia'): void {
@@ -626,7 +652,9 @@ export class TicketsComponent implements OnInit {
     }
 
     const destino =
-      tipo === 'evidencia' ? this.selectedEvidenceFiles : this.selectedIngresoFiles;
+      tipo === 'evidencia'
+        ? this.selectedEvidenceFiles
+        : this.selectedIngresoFiles;
     files.forEach((file) => destino.push(file));
     if (input) {
       input.value = '';
@@ -635,7 +663,9 @@ export class TicketsComponent implements OnInit {
 
   removeSelectedFile(index: number, tipo: 'ingreso' | 'evidencia'): void {
     const destino =
-      tipo === 'evidencia' ? this.selectedEvidenceFiles : this.selectedIngresoFiles;
+      tipo === 'evidencia'
+        ? this.selectedEvidenceFiles
+        : this.selectedIngresoFiles;
     if (index >= 0 && index < destino.length) {
       destino.splice(index, 1);
     }
@@ -765,9 +795,10 @@ export class TicketsComponent implements OnInit {
     };
     payload.tecnicosIds = this.obtenerIdsTecnicosSeleccionados(tecnicos);
 
-    if (estadoTicket === 'terminado') {
+    if (estadoTicket === 'Resuelto' || estadoTicket === 'Cerrado') {
       const fechaTerminoValor =
-        formValue.ticketFechaTermino && `${formValue.ticketFechaTermino}`.trim().length
+        formValue.ticketFechaTermino &&
+        `${formValue.ticketFechaTermino}`.trim().length
           ? `${formValue.ticketFechaTermino}`.trim()
           : this.obtenerFechaActual();
       payload.fechaTermino = fechaTerminoValor;
@@ -786,14 +817,21 @@ export class TicketsComponent implements OnInit {
     return payload;
   }
 
-  private normalizarEstadoTicket(valor: unknown): 'ingresado' | 'terminado' {
+  private normalizarEstadoTicket(valor: unknown): string {
     if (typeof valor === 'string') {
-      const normalizado = valor.trim().toLowerCase();
-      if (normalizado === 'terminado') {
-        return 'terminado';
-      }
+      const normalizado = valor.trim();
+      // Mapeo legacy
+      if (normalizado.toLowerCase() === 'ingresado') return 'Nuevo';
+      if (normalizado.toLowerCase() === 'terminado') return 'Cerrado';
+      return normalizado;
     }
-    return 'ingresado';
+    return 'Nuevo';
+  }
+
+  obtenerClaseEstado(estado: string): string {
+    if (!estado) return '';
+    const normalized = estado.toLowerCase().replace(/\s+/g, '-');
+    return `ticket-state-${normalized}`;
   }
 
   private obtenerIdsTecnicosSeleccionados(nombres: string[]): number[] {
@@ -811,7 +849,9 @@ export class TicketsComponent implements OnInit {
 
     const ids = nombres
       .map((nombre) => mapa.get(nombre.trim().toLowerCase()))
-      .filter((id): id is number => typeof id === 'number' && Number.isInteger(id));
+      .filter(
+        (id): id is number => typeof id === 'number' && Number.isInteger(id)
+      );
 
     return Array.from(new Set(ids));
   }
@@ -840,7 +880,9 @@ export class TicketsComponent implements OnInit {
     return local.toISOString().slice(0, 16);
   }
 
-  private formatearParaInputSoloFecha(value: string | null | undefined): string {
+  private formatearParaInputSoloFecha(
+    value: string | null | undefined
+  ): string {
     if (!value) {
       return '';
     }
@@ -957,12 +999,14 @@ export class TicketsComponent implements OnInit {
           document.body.removeChild(a);
         } else {
           console.error('URL firmada no disponible');
-          this.errorMensaje = 'No se pudo descargar el archivo. URL no disponible.';
+          this.errorMensaje =
+            'No se pudo descargar el archivo. URL no disponible.';
         }
       },
       error: (err) => {
         console.error('Error al obtener URL firmada:', err);
-        this.errorMensaje = 'Error al descargar el archivo. Por favor, intenta nuevamente.';
+        this.errorMensaje =
+          'Error al descargar el archivo. Por favor, intenta nuevamente.';
       },
     });
   }

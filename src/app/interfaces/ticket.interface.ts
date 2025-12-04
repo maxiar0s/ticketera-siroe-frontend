@@ -13,7 +13,13 @@ export interface Ticket {
   createdAt: string;
   updatedAt: string;
   isEmergencia: boolean;
-  estadoTicket: 'ingresado' | 'terminado';
+  estadoTicket:
+    | 'Nuevo'
+    | 'Abierto'
+    | 'Pendiente'
+    | 'En espera'
+    | 'Resuelto'
+    | 'Cerrado';
   fechaTermino: string | null;
   detalleTermino: string | null;
   adjuntos?: string[];

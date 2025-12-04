@@ -1,7 +1,7 @@
 <div class="flex">
   <h1 class="title">{{ title() }}</h1>
   <div class="flex-search">
-    <div class="search-bar" #searchBar>
+    <div class="search-bar" #searchBar *ngIf="features.barraBusqueda">
       <label for="search" #searchLabel>
         <img src="/assets/svg/search.svg" alt="search" class="svg" />
       </label>
@@ -15,10 +15,15 @@
       />
     </div>
     <button
+      *ngIf="features.notificaciones"
       type="button"
       class="notifications-button"
       (click)="toggleNotifications()"
-      [attr.aria-label]="unreadCount > 0 ? unreadCount + ' notificaciones sin leer' : 'Notificaciones'"
+      [attr.aria-label]="
+        unreadCount > 0
+          ? unreadCount + ' notificaciones sin leer'
+          : 'Notificaciones'
+      "
     >
       <img src="/assets/svg/notifications.svg" alt="notificaciones" />
       <span *ngIf="unreadCount > 0" class="notifications-badge">
@@ -27,7 +32,10 @@
     </button>
     <div class="avatar-wrapper">
       <a [routerLink]="['/perfil']" routerLinkActive="router-link-active">
-        <div class="user-avatar" [ngStyle]="{ 'background-color': avatarColor }">
+        <div
+          class="user-avatar"
+          [ngStyle]="{ 'background-color': avatarColor }"
+        >
           {{ avatarIniciales }}
         </div>
       </a>
@@ -71,8 +79,12 @@
       >
         <button type="button" (click)="onNotificationClick(notificacion)">
           <span class="titulo">{{ notificacion.titulo }}</span>
-          <span class="detalle">{{ obtenerDetalleNotificacion(notificacion) }}</span>
-          <span class="fecha">{{ notificacion.createdAt | date: 'dd/MM/yyyy HH:mm' }}</span>
+          <span class="detalle">{{
+            obtenerDetalleNotificacion(notificacion)
+          }}</span>
+          <span class="fecha">{{
+            notificacion.createdAt | date : "dd/MM/yyyy HH:mm"
+          }}</span>
         </button>
       </li>
     </ul>

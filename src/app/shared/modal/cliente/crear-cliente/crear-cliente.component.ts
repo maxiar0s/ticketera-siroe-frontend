@@ -1,25 +1,59 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, DestroyRef, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges, inject } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators, ValidatorFn } from '@angular/forms';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  DestroyRef,
+  EventEmitter,
+  Input,
+  OnChanges,
+  OnInit,
+  Output,
+  SimpleChanges,
+  inject,
+} from '@angular/core';
+import {
+  FormBuilder,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+  ValidatorFn,
+} from '@angular/forms';
 import { FormatInputRutDirective } from '../../../../directives/rut.directive';
 import { FormatInputTelefonoDirective } from '../../../../directives/telefono.directive';
 import { validarRut } from '../../../../validators/rut.validator';
 import { Cliente } from '../../../../interfaces/cliente.interface';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { FEATURES } from '../../../../config/features';
 
-type CampoBasico = 'rut' | 'razonSocial' | 'encargadoGeneral' | 'correo' | 'telefonoEncargado';
-type CampoValidador = CampoBasico | 'visitasMensuales' | 'visitasEmergenciaAnuales' | 'servicios';
+type CampoBasico =
+  | 'rut'
+  | 'tipoDocumento'
+  | 'razonSocial'
+  | 'encargadoGeneral'
+  | 'correo'
+  | 'telefonoEncargado';
+type CampoValidador =
+  | CampoBasico
+  | 'visitasMensuales'
+  | 'visitasEmergenciaAnuales'
+  | 'servicios';
 
 @Component({
   selector: 'shared-crear-cliente',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, FormatInputRutDirective, FormatInputTelefonoDirective],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    FormatInputRutDirective,
+    FormatInputTelefonoDirective,
+  ],
   templateUrl: './crear-cliente.component.html',
   styleUrl: './crear-cliente.component.css',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CrearClienteComponent implements OnInit, OnChanges {
   private readonly destroyRef = inject(DestroyRef);
+  readonly features = FEATURES;
 
   ngOnInit(): void {
     const esLeadControl = this.clientForm.get('esLead');
@@ -38,6 +72,14 @@ export class CrearClienteComponent implements OnInit, OnChanges {
       });
 
     this.aplicarModoLead(esLeadControl?.value ?? false);
+
+    this.clientForm
+      .get('tipoDocumento')
+      ?.valueChanges.pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((tipo) => {
+        this.actualizarValidadorRut(tipo);
+        this.clientForm.get('rut')?.setValue(''); // Clear value on type change
+      });
   }
   @Input() cliente: Cliente | null = null;
   @Input() modoEdicion: boolean = false;
@@ -48,6 +90,7 @@ export class CrearClienteComponent implements OnInit, OnChanges {
   public selectedFile: File | null = null;
   private readonly initialFormValues = {
     esLead: false,
+    tipoDocumento: 'Rut',
     rut: '',
     razonSocial: '',
     imagen: '',
@@ -65,15 +108,24 @@ export class CrearClienteComponent implements OnInit, OnChanges {
     correoNotificacion: '',
   };
   private readonly campoValidators: Record<CampoValidador, ValidatorFn[]> = {
-    rut: [Validators.required, validarRut()],
+    rut: [Validators.required, validarRut('Rut')],
+    tipoDocumento: [Validators.required],
     razonSocial: [Validators.required],
     encargadoGeneral: [Validators.required],
     correo: [Validators.required, Validators.email],
-    telefonoEncargado: [Validators.required, Validators.pattern('^[\\s\\S]{11,12}$')],
-    visitasMensuales: [Validators.required, Validators.min(0)],
-    visitasEmergenciaAnuales: [Validators.required, Validators.min(0)],
-    servicios: [Validators.required],
+    telefonoEncargado: [
+      Validators.required,
+      Validators.pattern('^[\\s\\S]{11,12}$'),
+    ],
+    visitasMensuales: FEATURES.visitasMensuales
+      ? [Validators.required, Validators.min(0)]
+      : [],
+    visitasEmergenciaAnuales: FEATURES.visitasAnuales
+      ? [Validators.required, Validators.min(0)]
+      : [],
+    servicios: FEATURES.servicios ? [Validators.required] : [],
   };
+  public readonly tiposDocumento = ['Rut', 'Ruc', 'Dni'];
   public readonly serviciosDisponibles: string[] = [
     'Soporte TI',
     'Web',
@@ -96,21 +148,46 @@ export class CrearClienteComponent implements OnInit, OnChanges {
   constructor(private fb: FormBuilder) {
     this.clientForm = this.fb.group({
       esLead: [this.initialFormValues.esLead],
+      tipoDocumento: [
+        this.initialFormValues.tipoDocumento,
+        this.campoValidators.tipoDocumento,
+      ],
       rut: [this.initialFormValues.rut, this.campoValidators.rut],
-      razonSocial: [this.initialFormValues.razonSocial, this.campoValidators.razonSocial],
+      razonSocial: [
+        this.initialFormValues.razonSocial,
+        this.campoValidators.razonSocial,
+      ],
       imagen: [this.initialFormValues.imagen],
-      encargadoGeneral: [this.initialFormValues.encargadoGeneral, this.campoValidators.encargadoGeneral],
+      encargadoGeneral: [
+        this.initialFormValues.encargadoGeneral,
+        this.campoValidators.encargadoGeneral,
+      ],
       correo: [this.initialFormValues.correo, this.campoValidators.correo],
-      telefonoEncargado: [this.initialFormValues.telefonoEncargado, this.campoValidators.telefonoEncargado],
-      visitasMensuales: [this.initialFormValues.visitasMensuales, this.campoValidators.visitasMensuales],
-      visitasEmergenciaAnuales: [this.initialFormValues.visitasEmergenciaAnuales, this.campoValidators.visitasEmergenciaAnuales],
-      servicios: [this.initialFormValues.servicios, this.campoValidators.servicios],
+      telefonoEncargado: [
+        this.initialFormValues.telefonoEncargado,
+        this.campoValidators.telefonoEncargado,
+      ],
+      visitasMensuales: [
+        this.initialFormValues.visitasMensuales,
+        this.campoValidators.visitasMensuales,
+      ],
+      visitasEmergenciaAnuales: [
+        this.initialFormValues.visitasEmergenciaAnuales,
+        this.campoValidators.visitasEmergenciaAnuales,
+      ],
+      servicios: [
+        this.initialFormValues.servicios,
+        this.campoValidators.servicios,
+      ],
       banco: [this.initialFormValues.banco],
       tipoCuenta: [this.initialFormValues.tipoCuenta],
       numeroCuenta: [this.initialFormValues.numeroCuenta],
       titular: [this.initialFormValues.titular],
       rutTitular: [this.initialFormValues.rutTitular],
-      correoNotificacion: [this.initialFormValues.correoNotificacion, Validators.email],
+      correoNotificacion: [
+        this.initialFormValues.correoNotificacion,
+        Validators.email,
+      ],
     });
   }
 
@@ -138,31 +215,39 @@ export class CrearClienteComponent implements OnInit, OnChanges {
       return;
     }
 
-    const telefonoFormateado = this.formatearTelefonoParaEdicion(this.cliente.telefonoEncargado);
+    const telefonoFormateado = this.formatearTelefonoParaEdicion(
+      this.cliente.telefonoEncargado
+    );
     const esLead = !!this.cliente.esLead;
 
-    this.clientForm.patchValue({
-      esLead,
-      rut: this.cliente.rut ?? '',
-      razonSocial: this.cliente.razonSocial ?? '',
-      encargadoGeneral: this.cliente.encargadoGeneral ?? '',
-      correo: this.cliente.correo ?? '',
-      telefonoEncargado: telefonoFormateado,
-      visitasMensuales: this.cliente.visitasMensuales ?? 0,
-      visitasEmergenciaAnuales: this.cliente.visitasEmergenciaAnuales ?? 0,
-      servicios: this.cliente.servicios ?? [],
-      banco: this.cliente.datosBancarios?.banco ?? '',
-      tipoCuenta: this.cliente.datosBancarios?.tipoCuenta ?? '',
-      numeroCuenta: this.cliente.datosBancarios?.numeroCuenta ?? '',
-      titular: this.cliente.datosBancarios?.titular ?? '',
-      rutTitular: this.cliente.datosBancarios?.rutTitular ?? '',
-      correoNotificacion: this.cliente.datosBancarios?.correoNotificacion ?? '',
-    }, { emitEvent: false });
+    this.clientForm.patchValue(
+      {
+        esLead,
+        rut: this.cliente.rut ?? '',
+        razonSocial: this.cliente.razonSocial ?? '',
+        encargadoGeneral: this.cliente.encargadoGeneral ?? '',
+        correo: this.cliente.correo ?? '',
+        telefonoEncargado: telefonoFormateado,
+        visitasMensuales: this.cliente.visitasMensuales ?? 0,
+        visitasEmergenciaAnuales: this.cliente.visitasEmergenciaAnuales ?? 0,
+        servicios: this.cliente.servicios ?? [],
+        banco: this.cliente.datosBancarios?.banco ?? '',
+        tipoCuenta: this.cliente.datosBancarios?.tipoCuenta ?? '',
+        numeroCuenta: this.cliente.datosBancarios?.numeroCuenta ?? '',
+        titular: this.cliente.datosBancarios?.titular ?? '',
+        rutTitular: this.cliente.datosBancarios?.rutTitular ?? '',
+        correoNotificacion:
+          this.cliente.datosBancarios?.correoNotificacion ?? '',
+      },
+      { emitEvent: false }
+    );
 
     this.leadValoresPrevios = {
       visitasMensuales: this.cliente.visitasMensuales ?? 0,
       visitasEmergenciaAnuales: this.cliente.visitasEmergenciaAnuales ?? 0,
-      servicios: Array.isArray(this.cliente.servicios) ? [...this.cliente.servicios] : [],
+      servicios: Array.isArray(this.cliente.servicios)
+        ? [...this.cliente.servicios]
+        : [],
     };
 
     this.aplicarModoLead(esLead);
@@ -202,7 +287,9 @@ export class CrearClienteComponent implements OnInit, OnChanges {
       const formData = new FormData();
       const formValue = this.clientForm.getRawValue();
       const esLead = !!formValue['esLead'];
-      const serviciosSeleccionados: string[] = Array.isArray(formValue['servicios'])
+      const serviciosSeleccionados: string[] = Array.isArray(
+        formValue['servicios']
+      )
         ? [...formValue['servicios']]
         : [];
 
@@ -210,7 +297,7 @@ export class CrearClienteComponent implements OnInit, OnChanges {
       let telefono = formValue['telefonoEncargado'] || '';
       telefono = telefono.replace(/\D/g, '').slice(0, 9);
 
-      Object.keys(formValue).forEach(key => {
+      Object.keys(formValue).forEach((key) => {
         let value = formValue[key];
         if (key === 'servicios') {
           return;
@@ -219,7 +306,10 @@ export class CrearClienteComponent implements OnInit, OnChanges {
           formData.append(key, value ? 'true' : 'false');
           return;
         }
-        if (esLead && (key === 'visitasMensuales' || key === 'visitasEmergenciaAnuales')) {
+        if (
+          esLead &&
+          (key === 'visitasMensuales' || key === 'visitasEmergenciaAnuales')
+        ) {
           return;
         }
         if (key === 'telefonoEncargado') {
@@ -227,7 +317,8 @@ export class CrearClienteComponent implements OnInit, OnChanges {
         }
         if (key === 'visitasMensuales' || key === 'visitasEmergenciaAnuales') {
           const parsedNumber = Number.parseInt(value, 10);
-          const sanitizedNumber = Number.isNaN(parsedNumber) || parsedNumber < 0 ? 0 : parsedNumber;
+          const sanitizedNumber =
+            Number.isNaN(parsedNumber) || parsedNumber < 0 ? 0 : parsedNumber;
           formData.append(key, sanitizedNumber.toString());
           return;
         }
@@ -256,16 +347,17 @@ export class CrearClienteComponent implements OnInit, OnChanges {
 
       // Imprimir los datos que se van a enviar para depuración
       console.log('Datos del formulario a enviar:');
-      Object.keys(formValue).forEach(field => {
+      Object.keys(formValue).forEach((field) => {
         console.log(`${field}: ${formData.get(field)}`);
       });
 
       this.enviarFormulario.emit(formData);
     } else {
-      this.errorMessage = 'Por favor, completa todos los campos requeridos correctamente.';
+      this.errorMessage =
+        'Por favor, completa todos los campos requeridos correctamente.';
 
       // Marcar todos los campos como touched para mostrar los errores
-      Object.keys(this.clientForm.controls).forEach(key => {
+      Object.keys(this.clientForm.controls).forEach((key) => {
         this.clientForm.get(key)?.markAsTouched();
       });
     }
@@ -277,7 +369,14 @@ export class CrearClienteComponent implements OnInit, OnChanges {
   }
 
   private actualizarValidadoresLead(esLead: boolean): void {
-    const camposBasicos: CampoBasico[] = ['rut', 'razonSocial', 'encargadoGeneral', 'correo', 'telefonoEncargado'];
+    const camposBasicos: CampoBasico[] = [
+      'rut',
+      'tipoDocumento',
+      'razonSocial',
+      'encargadoGeneral',
+      'correo',
+      'telefonoEncargado',
+    ];
     camposBasicos.forEach((campo) => {
       const control = this.clientForm.get(campo);
       if (!control) {
@@ -286,13 +385,20 @@ export class CrearClienteComponent implements OnInit, OnChanges {
       if (esLead) {
         control.clearValidators();
       } else {
-        control.setValidators(this.campoValidators[campo]);
+        if (campo === 'rut') {
+          const tipo = this.clientForm.get('tipoDocumento')?.value;
+          control.setValidators([Validators.required, validarRut(tipo)]);
+        } else {
+          control.setValidators(this.campoValidators[campo]);
+        }
       }
       control.updateValueAndValidity({ emitEvent: false });
     });
 
     const visitasMensualesCtrl = this.clientForm.get('visitasMensuales');
-    const visitasEmergenciaCtrl = this.clientForm.get('visitasEmergenciaAnuales');
+    const visitasEmergenciaCtrl = this.clientForm.get(
+      'visitasEmergenciaAnuales'
+    );
     const serviciosCtrl = this.clientForm.get('servicios');
 
     if (esLead) {
@@ -300,8 +406,12 @@ export class CrearClienteComponent implements OnInit, OnChanges {
       visitasEmergenciaCtrl?.clearValidators();
       serviciosCtrl?.clearValidators();
     } else {
-      visitasMensualesCtrl?.setValidators(this.campoValidators.visitasMensuales);
-      visitasEmergenciaCtrl?.setValidators(this.campoValidators.visitasEmergenciaAnuales);
+      visitasMensualesCtrl?.setValidators(
+        this.campoValidators.visitasMensuales
+      );
+      visitasEmergenciaCtrl?.setValidators(
+        this.campoValidators.visitasEmergenciaAnuales
+      );
       serviciosCtrl?.setValidators(this.campoValidators.servicios);
     }
 
@@ -310,9 +420,19 @@ export class CrearClienteComponent implements OnInit, OnChanges {
     serviciosCtrl?.updateValueAndValidity({ emitEvent: false });
   }
 
+  private actualizarValidadorRut(tipo: 'Rut' | 'Ruc' | 'Dni'): void {
+    const rutControl = this.clientForm.get('rut');
+    if (rutControl) {
+      rutControl.setValidators([Validators.required, validarRut(tipo)]);
+      rutControl.updateValueAndValidity();
+    }
+  }
+
   private toggleCamposLead(esLead: boolean): void {
     const visitasMensualesCtrl = this.clientForm.get('visitasMensuales');
-    const visitasEmergenciaCtrl = this.clientForm.get('visitasEmergenciaAnuales');
+    const visitasEmergenciaCtrl = this.clientForm.get(
+      'visitasEmergenciaAnuales'
+    );
     const serviciosCtrl = this.clientForm.get('servicios');
 
     if (esLead) {
@@ -320,7 +440,9 @@ export class CrearClienteComponent implements OnInit, OnChanges {
       this.leadValoresPrevios = {
         visitasMensuales: visitasMensualesCtrl?.value ?? 0,
         visitasEmergenciaAnuales: visitasEmergenciaCtrl?.value ?? 0,
-        servicios: Array.isArray(serviciosActuales) ? [...serviciosActuales] : [],
+        servicios: Array.isArray(serviciosActuales)
+          ? [...serviciosActuales]
+          : [],
       };
 
       visitasMensualesCtrl?.setValue(0, { emitEvent: false });
@@ -331,23 +453,38 @@ export class CrearClienteComponent implements OnInit, OnChanges {
       serviciosCtrl?.disable({ emitEvent: false });
     } else {
       visitasMensualesCtrl?.enable({ emitEvent: false });
-      visitasMensualesCtrl?.setValue(this.leadValoresPrevios.visitasMensuales ?? 0, { emitEvent: false });
+      visitasMensualesCtrl?.setValue(
+        this.leadValoresPrevios.visitasMensuales ?? 0,
+        { emitEvent: false }
+      );
       visitasEmergenciaCtrl?.enable({ emitEvent: false });
-      visitasEmergenciaCtrl?.setValue(this.leadValoresPrevios.visitasEmergenciaAnuales ?? 0, { emitEvent: false });
+      visitasEmergenciaCtrl?.setValue(
+        this.leadValoresPrevios.visitasEmergenciaAnuales ?? 0,
+        { emitEvent: false }
+      );
       serviciosCtrl?.enable({ emitEvent: false });
-      serviciosCtrl?.setValue([...this.leadValoresPrevios.servicios], { emitEvent: false });
+      serviciosCtrl?.setValue([...this.leadValoresPrevios.servicios], {
+        emitEvent: false,
+      });
     }
   }
 
-  private formatearTelefonoParaEdicion(telefono: string | number | null | undefined): string {
-    const soloDigitos = String(telefono ?? '').replace(/\D/g, '').slice(0, 9);
+  private formatearTelefonoParaEdicion(
+    telefono: string | number | null | undefined
+  ): string {
+    const soloDigitos = String(telefono ?? '')
+      .replace(/\D/g, '')
+      .slice(0, 9);
     if (soloDigitos.length <= 1) {
       return soloDigitos;
     }
     if (soloDigitos.length <= 5) {
       return `${soloDigitos.slice(0, 1)} ${soloDigitos.slice(1)}`;
     }
-    return `${soloDigitos.slice(0, 1)} ${soloDigitos.slice(1, 5)} ${soloDigitos.slice(5)}`;
+    return `${soloDigitos.slice(0, 1)} ${soloDigitos.slice(
+      1,
+      5
+    )} ${soloDigitos.slice(5)}`;
   }
 
   toggleServicio(servicio: string): void {
@@ -355,7 +492,9 @@ export class CrearClienteComponent implements OnInit, OnChanges {
     if (!control || control.disabled) {
       return;
     }
-    const seleccionados = Array.isArray(control.value) ? [...control.value] : [];
+    const seleccionados = Array.isArray(control.value)
+      ? [...control.value]
+      : [];
     const index = seleccionados.indexOf(servicio);
     if (index >= 0) {
       seleccionados.splice(index, 1);

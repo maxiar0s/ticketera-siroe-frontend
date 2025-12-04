@@ -3,7 +3,8 @@
     <div>
       <h1>{{ tituloModulo }}</h1>
       <p class="subtitle">
-        Gestiona los tickets asignados, actualiza su estado y registra el detalle de la atención.
+        Gestiona los tickets asignados, actualiza su estado y registra el
+        detalle de la atención.
       </p>
     </div>
     <button
@@ -34,10 +35,7 @@
           (change)="onClienteFiltroChange($any($event.target).value)"
         >
           <option value="">Todos los clientes</option>
-          <option
-            *ngFor="let cliente of clientes"
-            [value]="cliente.id"
-          >
+          <option *ngFor="let cliente of clientes" [value]="cliente.id">
             {{ cliente.razonSocial }}
           </option>
         </select>
@@ -45,7 +43,10 @@
 
       <label class="filter-field">
         <span class="label">Sucursal</span>
-        <select formControlName="sucursalId" [disabled]="sucursalesFiltro.length === 0">
+        <select
+          formControlName="sucursalId"
+          [disabled]="sucursalesFiltro.length === 0"
+        >
           <option value="">Todas</option>
           <option
             *ngFor="let sucursal of sucursalesFiltro"
@@ -59,10 +60,7 @@
       <label class="filter-field">
         <span class="label">Estado</span>
         <select formControlName="estado">
-          <option
-            *ngFor="let opcion of filtrosEstado"
-            [value]="opcion.value"
-          >
+          <option *ngFor="let opcion of filtrosEstado" [value]="opcion.value">
             {{ opcion.label }}
           </option>
         </select>
@@ -73,10 +71,7 @@
         <select formControlName="proyectoId">
           <option value="">Todos</option>
           <option value="sin-proyecto">Sin proyecto</option>
-          <option
-            *ngFor="let proyecto of proyectos"
-            [value]="proyecto.id"
-          >
+          <option *ngFor="let proyecto of proyectos" [value]="proyecto.id">
             {{ proyecto.nombre }}
           </option>
         </select>
@@ -93,8 +88,14 @@
     </div>
 
     <div class="filter-actions">
-      <button type="submit" class="primary-button small">Aplicar filtros</button>
-      <button type="button" class="ghost-button small" (click)="limpiarFiltros()">
+      <button type="submit" class="primary-button small">
+        Aplicar filtros
+      </button>
+      <button
+        type="button"
+        class="ghost-button small"
+        (click)="limpiarFiltros()"
+      >
         Limpiar
       </button>
     </div>
@@ -118,7 +119,10 @@
     No hay tickets registrados para los filtros seleccionados.
   </div>
 
-  <div *ngIf="!cargando && tieneAccesoTickets && tickets.length > 0" class="bitacora-table-wrapper">
+  <div
+    *ngIf="!cargando && tieneAccesoTickets && tickets.length > 0"
+    class="bitacora-table-wrapper"
+  >
     <table class="bitacora-table">
       <thead>
         <tr>
@@ -137,31 +141,26 @@
           (click)="seleccionarTicket(ticket)"
           [class.selected]="ticketSeleccionado?.id === ticket.id"
         >
-          <td>{{ ticket.fechaVisita | formatoFecha:'dd/MM/yyyy' }}</td>
+          <td>{{ ticket.fechaVisita | formatoFecha : "dd/MM/yyyy" }}</td>
           <td class="tipo">
             <div class="tipo-wrapper">
               <span class="tipo-chip ticket">Ticket</span>
               <span
                 class="tipo-chip ticket-estado-listado"
-                [ngClass]="ticket.estadoTicket === 'terminado' ? 'resuelto' : 'ingresado'"
+                [ngClass]="obtenerClaseEstado(ticket.estadoTicket)"
               >
-                {{ ticket.estadoTicket === 'terminado' ? 'Cerrado' : 'Abierto' }}
+                {{ ticket.estadoTicket }}
               </span>
-              <span
-                *ngIf="esTicketLead(ticket)"
-                class="tipo-chip lead"
-              >
+              <span *ngIf="esTicketLead(ticket)" class="tipo-chip lead">
                 Lead
               </span>
             </div>
           </td>
-          <td>{{ ticket.casaMatriz?.razonSocial || 'N/A' }}</td>
-          <td>{{ ticket.sucursal?.sucursal || 'General' }}</td>
+          <td>{{ ticket.casaMatriz?.razonSocial || "N/A" }}</td>
+          <td>{{ ticket.sucursal?.sucursal || "General" }}</td>
           <td class="tecnicos">
             <ng-container *ngIf="ticket.tecnicos?.length; else sinTecnicos">
-              <span
-                *ngFor="let tecnico of ticket.tecnicos; let last = last"
-              >
+              <span *ngFor="let tecnico of ticket.tecnicos; let last = last">
                 {{ tecnico }}<span *ngIf="!last">, </span>
               </span>
             </ng-container>
@@ -175,7 +174,9 @@
               <button
                 type="button"
                 class="ghost-button small"
-                (click)="abrirFormularioEditar(ticket); $event.stopPropagation()"
+                (click)="
+                  abrirFormularioEditar(ticket); $event.stopPropagation()
+                "
               >
                 Editar
               </button>
@@ -187,8 +188,8 @@
               >
                 {{
                   eliminandoTicketId === ticket.id
-                    ? 'Eliminando...'
-                    : 'Eliminar'
+                    ? "Eliminando..."
+                    : "Eliminar"
                 }}
               </button>
             </div>
@@ -227,7 +228,10 @@
   >
     <section
       class="bitacora-detail ticket"
-      [class.ticket-state-terminado]="ticketSeleccionado.estadoTicket === 'terminado'"
+      [class.ticket-state-cerrado]="
+        ticketSeleccionado.estadoTicket === 'Resuelto' ||
+        ticketSeleccionado.estadoTicket === 'Cerrado'
+      "
       (click)="$event.stopPropagation()"
       role="dialog"
       aria-modal="true"
@@ -244,7 +248,7 @@
       <header>
         <div class="detail-heading">
           <h2 id="ticketDetalleTitulo">
-            {{ ticketSeleccionado.titulo || 'Detalle del ticket' }}
+            {{ ticketSeleccionado.titulo || "Detalle del ticket" }}
           </h2>
           <span class="type-badge ticket">Ticket</span>
           <span
@@ -255,10 +259,9 @@
           </span>
           <span
             class="ticket-state-pill"
-            [class.ticket-state-terminado]="ticketSeleccionado.estadoTicket === 'terminado'"
-            [class.ticket-state-ingresado]="ticketSeleccionado.estadoTicket !== 'terminado'"
+            [ngClass]="obtenerClaseEstado(ticketSeleccionado.estadoTicket)"
           >
-            {{ ticketSeleccionado.estadoTicket === 'terminado' ? 'Cerrado' : 'Abierto' }}
+            {{ ticketSeleccionado.estadoTicket }}
           </span>
         </div>
         <div class="detail-actions">
@@ -279,8 +282,8 @@
           >
             {{
               eliminandoTicketId === ticketSeleccionado.id
-                ? 'Eliminando...'
-                : 'Eliminar'
+                ? "Eliminando..."
+                : "Eliminar"
             }}
           </button>
         </div>
@@ -290,37 +293,37 @@
         <div>
           <span class="label">Cliente</span>
           <span class="value">
-            {{ ticketSeleccionado.casaMatriz?.razonSocial || 'N/A' }}
+            {{ ticketSeleccionado.casaMatriz?.razonSocial || "N/A" }}
           </span>
         </div>
         <div>
           <span class="label">Sucursal</span>
           <span class="value">
-            {{ ticketSeleccionado.sucursal?.sucursal || 'General' }}
+            {{ ticketSeleccionado.sucursal?.sucursal || "General" }}
           </span>
         </div>
         <div>
           <span class="label">Proyecto</span>
           <span class="value">
-            {{ ticketSeleccionado.proyecto?.nombre || 'Sin proyecto' }}
+            {{ ticketSeleccionado.proyecto?.nombre || "Sin proyecto" }}
           </span>
         </div>
         <div>
           <span class="label">Fecha de ingreso</span>
           <span class="value">
-            {{ ticketSeleccionado.fechaVisita | formatoFecha:'fullDate' }}
+            {{ ticketSeleccionado.fechaVisita | formatoFecha : "fullDate" }}
           </span>
         </div>
         <div *ngIf="ticketSeleccionado.horaLlegada">
           <span class="label">Hora llegada</span>
           <span class="value">
-            {{ ticketSeleccionado.horaLlegada | formatoFecha:'short' }}
+            {{ ticketSeleccionado.horaLlegada | formatoFecha : "short" }}
           </span>
         </div>
         <div *ngIf="ticketSeleccionado.horaSalida">
           <span class="label">Hora salida</span>
           <span class="value">
-            {{ ticketSeleccionado.horaSalida | formatoFecha:'short' }}
+            {{ ticketSeleccionado.horaSalida | formatoFecha : "short" }}
           </span>
         </div>
         <div>
@@ -328,24 +331,29 @@
           <span class="value">
             {{
               ticketSeleccionado.tecnicos.length
-                ? ticketSeleccionado.tecnicos.join(', ')
-                : 'Sin registrar'
+                ? ticketSeleccionado.tecnicos.join(", ")
+                : "Sin registrar"
             }}
           </span>
         </div>
         <div>
           <span class="label">Estado</span>
           <span class="value">
-            {{ ticketSeleccionado.estadoTicket === 'terminado' ? 'Cerrado' : 'Abierto' }}
+            {{ ticketSeleccionado.estadoTicket }}
           </span>
         </div>
-        <div *ngIf="ticketSeleccionado.estadoTicket === 'terminado'">
+        <div
+          *ngIf="
+            ticketSeleccionado.estadoTicket === 'Resuelto' ||
+            ticketSeleccionado.estadoTicket === 'Cerrado'
+          "
+        >
           <span class="label">Fecha de termino</span>
           <span class="value">
             {{
               ticketSeleccionado.fechaTermino
-                ? (ticketSeleccionado.fechaTermino | formatoFecha:'fullDate')
-                : 'Sin registrar'
+                ? (ticketSeleccionado.fechaTermino | formatoFecha : "fullDate")
+                : "Sin registrar"
             }}
           </span>
         </div>
@@ -358,14 +366,21 @@
         </p>
         <div
           class="adjuntos ticket-ingreso"
-          *ngIf="ticketSeleccionado.adjuntos && ticketSeleccionado.adjuntos.length > 0"
+          *ngIf="
+            ticketSeleccionado.adjuntos &&
+            ticketSeleccionado.adjuntos.length > 0
+          "
         >
           <h4>Archivos adjuntos</h4>
           <ul class="adjuntos-list">
             <li *ngFor="let a of ticketSeleccionado.adjuntos">
-              <button type="button" class="link-button" (click)="downloadAdjunto(a)">
+              <button
+                type="button"
+                class="link-button"
+                (click)="downloadAdjunto(a)"
+              >
                 <i class="fas fa-download"></i>
-                {{ a.split('/').pop() }}
+                {{ a.split("/").pop() }}
               </button>
             </li>
           </ul>
@@ -374,12 +389,15 @@
 
       <section
         class="ticket-completion"
-        *ngIf="ticketSeleccionado.estadoTicket === 'terminado'"
+        *ngIf="
+          ticketSeleccionado.estadoTicket === 'Resuelto' ||
+          ticketSeleccionado.estadoTicket === 'Cerrado'
+        "
       >
         <article class="detail-note ticket-terminado">
           <h3>Detalle de lo realizado</h3>
           <p>
-            {{ ticketSeleccionado.detalleTermino || 'Sin detalle registrado.' }}
+            {{ ticketSeleccionado.detalleTermino || "Sin detalle registrado." }}
           </p>
           <div
             class="adjuntos ticket-evidencias"
@@ -391,9 +409,13 @@
             <h4>Evidencias</h4>
             <ul class="adjuntos-list">
               <li *ngFor="let a of ticketSeleccionado.adjuntosTermino">
-                <button type="button" class="link-button" (click)="downloadAdjunto(a)">
+                <button
+                  type="button"
+                  class="link-button"
+                  (click)="downloadAdjunto(a)"
+                >
                   <i class="fas fa-download"></i>
-                  {{ a.split('/').pop() }}
+                  {{ a.split("/").pop() }}
                 </button>
               </li>
             </ul>
@@ -405,14 +427,11 @@
 </div>
 
 <ng-container *ngIf="tieneAccesoTickets">
-  <div
-    class="bitacora-modal-backdrop"
-    *ngIf="formularioVisible"
-  >
+  <div class="bitacora-modal-backdrop" *ngIf="formularioVisible">
     <div class="bitacora-modal" role="dialog" aria-modal="true">
       <header class="modal-header">
         <div>
-          <h2>{{ modoEdicion ? 'Editar' : 'Registrar' }}</h2>
+          <h2>{{ modoEdicion ? "Editar" : "Registrar" }}</h2>
           <p class="subtitle">
             Completa los datos para dejar registro del ticket.
           </p>
@@ -429,23 +448,26 @@
             />
           </label>
 
-          <label [class.invalid]="ticketForm.get('clienteId')?.invalid && (ticketForm.get('clienteId')?.dirty || ticketForm.get('clienteId')?.touched)">
+          <label
+            [class.invalid]="
+              ticketForm.get('clienteId')?.invalid &&
+              (ticketForm.get('clienteId')?.dirty ||
+                ticketForm.get('clienteId')?.touched)
+            "
+          >
             <span class="label">Cliente</span>
             <select
               formControlName="clienteId"
               (change)="onClienteFormChange($any($event.target).value)"
             >
               <option value="" disabled>Selecciona un cliente</option>
-              <option
-                *ngFor="let cliente of clientes"
-                [value]="cliente.id"
-              >
+              <option *ngFor="let cliente of clientes" [value]="cliente.id">
                 {{ cliente.razonSocial }}
               </option>
             </select>
           </label>
 
-          <label>
+          <label *ngIf="modules.sucursal">
             <span class="label">Sucursal</span>
             <select formControlName="sucursalId">
               <option value="">General</option>
@@ -470,7 +492,7 @@
             </select>
           </label>
 
-          <label>
+          <label *ngIf="modules.proyectos">
             <span class="label">Proyecto</span>
             <select formControlName="proyectoId">
               <option [ngValue]="null">Sin proyecto</option>
@@ -483,12 +505,15 @@
             </select>
           </label>
 
-          <label [class.invalid]="ticketForm.get('fechaVisita')?.invalid && (ticketForm.get('fechaVisita')?.dirty || ticketForm.get('fechaVisita')?.touched)">
+          <label
+            [class.invalid]="
+              ticketForm.get('fechaVisita')?.invalid &&
+              (ticketForm.get('fechaVisita')?.dirty ||
+                ticketForm.get('fechaVisita')?.touched)
+            "
+          >
             <span class="label">Fecha de ingreso</span>
-            <input
-              type="date"
-              formControlName="fechaVisita"
-            />
+            <input type="date" formControlName="fechaVisita" />
           </label>
 
           <ng-container *ngIf="mostrarCamposHorarios">
@@ -504,15 +529,25 @@
           </ng-container>
 
           <div class="termino-ticket-fields" *ngIf="mostrarCamposTerminoTicket">
-            <label [class.invalid]="ticketForm.get('ticketFechaTermino')?.invalid && (ticketForm.get('ticketFechaTermino')?.dirty || ticketForm.get('ticketFechaTermino')?.touched)">
+            <label
+              [class.invalid]="
+                ticketForm.get('ticketFechaTermino')?.invalid &&
+                (ticketForm.get('ticketFechaTermino')?.dirty ||
+                  ticketForm.get('ticketFechaTermino')?.touched)
+              "
+            >
               <span class="label">Fecha de termino</span>
-              <input
-                type="date"
-                formControlName="ticketFechaTermino"
-              />
+              <input type="date" formControlName="ticketFechaTermino" />
             </label>
 
-            <label class="full" [class.invalid]="ticketForm.get('ticketDetalleTermino')?.invalid && (ticketForm.get('ticketDetalleTermino')?.dirty || ticketForm.get('ticketDetalleTermino')?.touched)">
+            <label
+              class="full"
+              [class.invalid]="
+                ticketForm.get('ticketDetalleTermino')?.invalid &&
+                (ticketForm.get('ticketDetalleTermino')?.dirty ||
+                  ticketForm.get('ticketDetalleTermino')?.touched)
+              "
+            >
               <span class="label">Detalle de lo realizado</span>
               <textarea
                 formControlName="ticketDetalleTermino"
@@ -522,18 +557,32 @@
             </label>
           </div>
 
-          <label class="full" [class.invalid]="ticketForm.get('tecnicos')?.invalid && (ticketForm.get('tecnicos')?.dirty || ticketForm.get('tecnicos')?.touched)">
+          <label
+            class="full"
+            [class.invalid]="
+              ticketForm.get('tecnicos')?.invalid &&
+              (ticketForm.get('tecnicos')?.dirty ||
+                ticketForm.get('tecnicos')?.touched)
+            "
+          >
             <span class="label">Técnicos</span>
             <div class="clientes-dropdown" (click)="$event.stopPropagation()">
               <button
                 type="button"
                 class="dropdown-button"
                 (click)="toggleTecnicosDropdown($event)"
-                [disabled]="tecnicosDisponibles.length === 0 || ticketForm.get('tecnicos')?.disabled"
+                [disabled]="
+                  tecnicosDisponibles.length === 0 ||
+                  ticketForm.get('tecnicos')?.disabled
+                "
                 [attr.aria-expanded]="tecnicosDropdownAbierto"
               >
                 {{ resumenTecnicosSeleccionados }}
-                <img src="/assets/svg/side-menu-arrow-down.svg" alt="toggle" class="dropdown-arrow" />
+                <img
+                  src="/assets/svg/side-menu-arrow-down.svg"
+                  alt="toggle"
+                  class="dropdown-arrow"
+                />
               </button>
               <div class="dropdown-panel" *ngIf="tecnicosDropdownAbierto">
                 <button
@@ -543,20 +592,35 @@
                   (click)="onToggleTecnico(tecnico, $event)"
                   [class.selected]="estaTecnicoSeleccionado(tecnico)"
                 >
-                  <span class="checkbox" [class.checked]="estaTecnicoSeleccionado(tecnico)"></span>
+                  <span
+                    class="checkbox"
+                    [class.checked]="estaTecnicoSeleccionado(tecnico)"
+                  ></span>
                   <span>{{ tecnico.name }}</span>
                 </button>
               </div>
             </div>
-            <div class="selected-chips" *ngIf="tecnicosSeleccionados.length > 0">
-              <span class="chip" *ngFor="let nombre of tecnicosSeleccionados">{{ nombre }}</span>
+            <div
+              class="selected-chips"
+              *ngIf="tecnicosSeleccionados.length > 0"
+            >
+              <span class="chip" *ngFor="let nombre of tecnicosSeleccionados">{{
+                nombre
+              }}</span>
             </div>
             <div class="helper-text" *ngIf="tecnicosDisponibles.length === 0">
               No hay tecnicos disponibles para seleccionar.
             </div>
           </label>
 
-          <label class="full" [class.invalid]="ticketForm.get('descripcion')?.invalid && (ticketForm.get('descripcion')?.dirty || ticketForm.get('descripcion')?.touched)">
+          <label
+            class="full"
+            [class.invalid]="
+              ticketForm.get('descripcion')?.invalid &&
+              (ticketForm.get('descripcion')?.dirty ||
+                ticketForm.get('descripcion')?.touched)
+            "
+          >
             <span class="label">Detalle</span>
             <textarea
               formControlName="descripcion"
@@ -565,9 +629,7 @@
             ></textarea>
           </label>
 
-          <label
-            class="full file-upload-field ticket-ingreso"
-          >
+          <label class="full file-upload-field ticket-ingreso">
             <span class="label">Archivos adjuntos</span>
             <input
               #fileIngresoInput
@@ -589,10 +651,10 @@
               <span class="file-status">
                 {{
                   selectedIngresoFiles.length === 0
-                    ? 'No se ha subido archivo.'
+                    ? "No se ha subido archivo."
                     : selectedIngresoFiles.length === 1
-                      ? selectedIngresoFiles[0].name
-                      : selectedIngresoFiles.length + ' archivos seleccionados'
+                    ? selectedIngresoFiles[0].name
+                    : selectedIngresoFiles.length + " archivos seleccionados"
                 }}
               </span>
             </div>
@@ -641,18 +703,22 @@
               <span class="file-status">
                 {{
                   selectedEvidenceFiles.length === 0
-                    ? 'No se ha subido archivo.'
+                    ? "No se ha subido archivo."
                     : selectedEvidenceFiles.length === 1
-                      ? selectedEvidenceFiles[0].name
-                      : selectedEvidenceFiles.length + ' archivos seleccionados'
+                    ? selectedEvidenceFiles[0].name
+                    : selectedEvidenceFiles.length + " archivos seleccionados"
                 }}
               </span>
             </div>
             <div class="helper-text">
-              Adjunta imagenes que respalden el trabajo realizado (JPG, PNG, HEIC).
+              Adjunta imagenes que respalden el trabajo realizado (JPG, PNG,
+              HEIC).
             </div>
 
-            <div class="selected-files" *ngIf="selectedEvidenceFiles.length > 0">
+            <div
+              class="selected-files"
+              *ngIf="selectedEvidenceFiles.length > 0"
+            >
               <ul>
                 <li *ngFor="let f of selectedEvidenceFiles; let i = index">
                   <span class="file-name">{{ f.name }}</span>
@@ -678,7 +744,13 @@
             Cancelar
           </button>
           <button type="submit" class="primary-button" [disabled]="guardando">
-            {{ guardando ? 'Guardando...' : (modoEdicion ? 'Actualizar' : 'Registrar') }}
+            {{
+              guardando
+                ? "Guardando..."
+                : modoEdicion
+                ? "Actualizar"
+                : "Registrar"
+            }}
           </button>
         </div>
       </form>

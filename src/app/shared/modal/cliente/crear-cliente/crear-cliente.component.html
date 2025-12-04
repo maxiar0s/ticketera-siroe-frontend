@@ -2,46 +2,107 @@
   <div class="modal-content">
     <div class="modal-header">
       <h2 class="header-form">{{ tituloModal }}</h2>
-      <img src="/assets/svg/exit-button.svg" (click)="cerrar()" alt="exit_button" class="close-button">
+      <img
+        src="/assets/svg/exit-button.svg"
+        (click)="cerrar()"
+        alt="exit_button"
+        class="close-button"
+      />
     </div>
     <div class="modal-body">
-      <p class="description-form">Rellena todos los campos con los datos requeridos. Asegúrate de que la información sea correcta antes de guardar.</p>
+      <p class="description-form">
+        Rellena todos los campos con los datos requeridos. Asegúrate de que la
+        información sea correcta antes de guardar.
+      </p>
 
       <form [formGroup]="clientForm" (ngSubmit)="onSubmit()">
-        <div class="lead-toggle">
-          <label class="lead-toggle__control">
-            <input type="checkbox" formControlName="esLead" />
-            <span>Marcar como cliente lead</span>
-          </label>
-          <p class="lead-toggle__hint">
-            Los leads solo requieren datos básicos. Cuando este cliente se convierta en uno real, se solicitará la información restante.
-          </p>
-        </div>
+        <ng-container *ngIf="features.clientesLead">
+          <div class="lead-toggle">
+            <label class="lead-toggle__control">
+              <input type="checkbox" formControlName="esLead" />
+              <span>Marcar como cliente lead</span>
+            </label>
+            <p class="lead-toggle__hint">
+              Los leads solo requieren datos básicos. Cuando este cliente se
+              convierta en uno real, se solicitará la información restante.
+            </p>
+          </div>
 
-        <div class="lead-alert" *ngIf="clientForm.get('esLead')?.value">
-          <strong>Lead en seguimiento:</strong>
-          <span>no necesita visitas, servicios ni datos de contacto completos todavía.</span>
-        </div>
-
+          <div class="lead-alert" *ngIf="clientForm.get('esLead')?.value">
+            <strong>Lead en seguimiento:</strong>
+            <span
+              >no necesita visitas, servicios ni datos de contacto completos
+              todavía.</span
+            >
+          </div>
+        </ng-container>
 
         <div class="two-inputs">
           <!-- Campo Rut -->
           <div class="form-group width-50">
-            <label for="rut">Rut</label>
-            <input class="width-50" formatInputRut id="rut" formControlName="rut" type="text" placeholder="Ingrese el rut" (input)="clientForm.markAsDirty()"/>
-            <div *ngIf="clientForm.get('rut')?.getError('required') && clientForm.get('rut')?.touched" class="error">
-              Rut es requerido
+            <label for="rut">Documento</label>
+            <div class="document-input-group">
+              <select
+                formControlName="tipoDocumento"
+                class="document-type-select"
+              >
+                <option *ngFor="let tipo of tiposDocumento" [value]="tipo">
+                  {{ tipo }}
+                </option>
+              </select>
+              <input
+                class="document-number-input"
+                formatInputRut
+                [documentType]="clientForm.get('tipoDocumento')?.value"
+                id="rut"
+                formControlName="rut"
+                type="text"
+                [placeholder]="
+                  'Ingrese ' + clientForm.get('tipoDocumento')?.value
+                "
+                (input)="clientForm.markAsDirty()"
+              />
             </div>
-            <div *ngIf="clientForm.get('rut')?.getError('invalidRutLength') && clientForm.get('rut')?.touched" class="error">
-              Rut ingresado es invalido
+            <div
+              *ngIf="
+                clientForm.get('rut')?.getError('required') &&
+                clientForm.get('rut')?.touched
+              "
+              class="error"
+            >
+              Documento es requerido
+            </div>
+            <div
+              *ngIf="
+                (clientForm.get('rut')?.getError('invalidRutLength') ||
+                  clientForm.get('rut')?.getError('invalidRucLength') ||
+                  clientForm.get('rut')?.getError('invalidDniLength')) &&
+                clientForm.get('rut')?.touched
+              "
+              class="error"
+            >
+              Documento inválido
             </div>
           </div>
 
           <!-- Campo Razón Social -->
           <div class="form-group width-50">
             <label for="razonSocial">Razón Social</label>
-            <input class="width-50" id="razonSocial" formControlName="razonSocial" type="text" placeholder="Ingresa la razón social" (input)="clientForm.markAsDirty()"/>
-            <div *ngIf="clientForm.get('razonSocial')?.invalid && clientForm.get('razonSocial')?.touched" class="error">
+            <input
+              class="width-50"
+              id="razonSocial"
+              formControlName="razonSocial"
+              type="text"
+              placeholder="Ingresa la razón social"
+              (input)="clientForm.markAsDirty()"
+            />
+            <div
+              *ngIf="
+                clientForm.get('razonSocial')?.invalid &&
+                clientForm.get('razonSocial')?.touched
+              "
+              class="error"
+            >
               Razón Social es requerida
             </div>
           </div>
@@ -53,20 +114,56 @@
             <label for="imagen">Imagen</label>
             <div class="custom-file-input">
               <div class="imagen-container">
-                <p *ngIf="!selectedFile && (!modoEdicion || !cliente?.imagen)" class="imagen-placeholder">Sube el logo o la imagen del cliente</p>
-                <p *ngIf="selectedFile" class="imagen-text">Imagen seleccionada</p>
-                <p *ngIf="modoEdicion && cliente?.imagen && !selectedFile" class="imagen-text">Imagen actual (click para cambiar)</p>
-                <img src="/assets/svg/camera.svg" alt="camera_svg" class="svg">
+                <p
+                  *ngIf="!selectedFile && (!modoEdicion || !cliente?.imagen)"
+                  class="imagen-placeholder"
+                >
+                  Sube el logo o la imagen del cliente
+                </p>
+                <p *ngIf="selectedFile" class="imagen-text">
+                  Imagen seleccionada
+                </p>
+                <p
+                  *ngIf="modoEdicion && cliente?.imagen && !selectedFile"
+                  class="imagen-text"
+                >
+                  Imagen actual (click para cambiar)
+                </p>
+                <img
+                  src="/assets/svg/camera.svg"
+                  alt="camera_svg"
+                  class="svg"
+                />
               </div>
-              <input class="inputs" (change)="onFileSelected($event)" type="file" accept="image/*" capture="environment" id="imagen" formControlName="imagen"/>
+              <input
+                class="inputs"
+                (change)="onFileSelected($event)"
+                type="file"
+                accept="image/*"
+                capture="environment"
+                id="imagen"
+                formControlName="imagen"
+              />
             </div>
           </div>
 
           <!-- Campo Encargado General -->
           <div class="form-group width-50">
             <label for="encargadoGeneral">Encargado General</label>
-            <input id="encargadoGeneral" formControlName="encargadoGeneral" type="text" placeholder="Ingresa el encargado general" (input)="clientForm.markAsDirty()"/>
-            <div *ngIf="clientForm.get('encargadoGeneral')?.invalid && clientForm.get('encargadoGeneral')?.touched" class="error">
+            <input
+              id="encargadoGeneral"
+              formControlName="encargadoGeneral"
+              type="text"
+              placeholder="Ingresa el encargado general"
+              (input)="clientForm.markAsDirty()"
+            />
+            <div
+              *ngIf="
+                clientForm.get('encargadoGeneral')?.invalid &&
+                clientForm.get('encargadoGeneral')?.touched
+              "
+              class="error"
+            >
               Encargado General es requerido
             </div>
           </div>
@@ -76,8 +173,20 @@
           <!-- Campo Correo -->
           <div class="form-group width-50">
             <label for="correo">Correo Electrónico</label>
-            <input id="correo" formControlName="correo" type="email" placeholder="Ingresa el correo electrónico" (input)="clientForm.markAsDirty()"/>
-            <div *ngIf="clientForm.get('correo')?.invalid && clientForm.get('correo')?.touched" class="error">
+            <input
+              id="correo"
+              formControlName="correo"
+              type="email"
+              placeholder="Ingresa el correo electrónico"
+              (input)="clientForm.markAsDirty()"
+            />
+            <div
+              *ngIf="
+                clientForm.get('correo')?.invalid &&
+                clientForm.get('correo')?.touched
+              "
+              class="error"
+            >
               Correo electrónico inválido
             </div>
           </div>
@@ -86,120 +195,242 @@
           <div class="form-group width-50">
             <label for="telefonoEncargado">Teléfono</label>
             <div class="telefono-container">
-              <input class="prefijo-telefono" disabled value="+56">
-              <input class="input-telefono" type="text" id="telefonoEncargado" formatInputTelefono formControlName="telefonoEncargado" autocomplete="tel" placeholder="Ingrese el teléfono" formatInputNumber (input)="clientForm.markAsDirty()">
+              <input class="prefijo-telefono" disabled value="+56" />
+              <input
+                class="input-telefono"
+                type="text"
+                id="telefonoEncargado"
+                formatInputTelefono
+                formControlName="telefonoEncargado"
+                autocomplete="tel"
+                placeholder="Ingrese el teléfono"
+                formatInputNumber
+                (input)="clientForm.markAsDirty()"
+              />
             </div>
-            <div *ngIf="clientForm.get('telefonoEncargado')?.hasError('required') && clientForm.get('telefonoEncargado')?.touched" class="error">
+            <div
+              *ngIf="
+                clientForm.get('telefonoEncargado')?.hasError('required') &&
+                clientForm.get('telefonoEncargado')?.touched
+              "
+              class="error"
+            >
               Ingrese un teléfono valido
             </div>
-            <div *ngIf="clientForm.get('telefonoEncargado')?.hasError('pattern') && clientForm.get('telefonoEncargado')?.touched && clientForm.get('telefonoEncargado')?.invalid" class="error">
+            <div
+              *ngIf="
+                clientForm.get('telefonoEncargado')?.hasError('pattern') &&
+                clientForm.get('telefonoEncargado')?.touched &&
+                clientForm.get('telefonoEncargado')?.invalid
+              "
+              class="error"
+            >
               El teléfono debe contener 9 números
+            </div>
+          </div>
         </div>
-      </div>
-    </div>
 
-    <div class="form-group servicios-group">
-      <label>Servicios</label>
-      <p class="lead-note" *ngIf="clientForm.get('servicios')?.disabled">
-        Los leads no tienen servicios asociados. Activa el cliente para definirlos.
-      </p>
-      <div class="servicios-options">
-        <label
-          class="servicio-option"
-          *ngFor="let servicio of serviciosDisponibles"
-          [class.servicio-option--selected]="estaServicioSeleccionado(servicio)"
-          [class.servicio-option--disabled]="clientForm.get('servicios')?.disabled"
-        >
-          <input
-            type="checkbox"
-            class="checkbox-servicio"
-            [checked]="estaServicioSeleccionado(servicio)"
-            (change)="toggleServicio(servicio)"
-          />
-          <span class="servicio-option__icon" aria-hidden="true">
-            <span class="servicio-option__icon-mark"></span>
-          </span>
-          <span class="servicio-option__label">{{ servicio }}</span>
-        </label>
-      </div>
-      <div
-        *ngIf="
-          clientForm.get('servicios')?.hasError('required') &&
-          clientForm.get('servicios')?.touched
-        "
-        class="error"
-      >
-        Selecciona al menos un servicio.
-      </div>
-    </div>
+        <div class="form-group servicios-group">
+          <label>Servicios</label>
+          <p class="lead-note" *ngIf="clientForm.get('servicios')?.disabled">
+            Los leads no tienen servicios asociados. Activa el cliente para
+            definirlos.
+          </p>
+          <div class="servicios-options">
+            <label
+              class="servicio-option"
+              *ngFor="let servicio of serviciosDisponibles"
+              [class.servicio-option--selected]="
+                estaServicioSeleccionado(servicio)
+              "
+              [class.servicio-option--disabled]="
+                clientForm.get('servicios')?.disabled
+              "
+            >
+              <input
+                type="checkbox"
+                class="checkbox-servicio"
+                [checked]="estaServicioSeleccionado(servicio)"
+                (change)="toggleServicio(servicio)"
+              />
+              <span class="servicio-option__icon" aria-hidden="true">
+                <span class="servicio-option__icon-mark"></span>
+              </span>
+              <span class="servicio-option__label">{{ servicio }}</span>
+            </label>
+          </div>
+          <div
+            *ngIf="
+              clientForm.get('servicios')?.hasError('required') &&
+              clientForm.get('servicios')?.touched
+            "
+            class="error"
+          >
+            Selecciona al menos un servicio.
+          </div>
+        </div>
 
-    <div class="two-inputs">
-      <!-- Campo Visitas Mensuales -->
-          <div class="form-group width-50">
+        <div class="two-inputs">
+          <!-- Campo Visitas Mensuales -->
+          <!-- Campo Visitas Mensuales -->
+          <div class="form-group width-50" *ngIf="features.visitasMensuales">
             <label for="visitasMensuales">Visitas mensuales (bitacoras)</label>
-            <input id="visitasMensuales" formControlName="visitasMensuales" type="number" min="0" placeholder="Ingresa la cantidad mensual" (input)="clientForm.markAsDirty()"/>
-            <div *ngIf="clientForm.get('visitasMensuales')?.hasError('required') && clientForm.get('visitasMensuales')?.touched" class="error">
+            <input
+              id="visitasMensuales"
+              formControlName="visitasMensuales"
+              type="number"
+              min="0"
+              placeholder="Ingresa la cantidad mensual"
+              (input)="clientForm.markAsDirty()"
+            />
+            <div
+              *ngIf="
+                clientForm.get('visitasMensuales')?.hasError('required') &&
+                clientForm.get('visitasMensuales')?.touched
+              "
+              class="error"
+            >
               Ingresa una cantidad de visitas mensuales.
             </div>
-            <div *ngIf="clientForm.get('visitasMensuales')?.hasError('min') && clientForm.get('visitasMensuales')?.touched" class="error">
+            <div
+              *ngIf="
+                clientForm.get('visitasMensuales')?.hasError('min') &&
+                clientForm.get('visitasMensuales')?.touched
+              "
+              class="error"
+            >
               Ingresa un numero mayor o igual a 0.
             </div>
-            <div *ngIf="clientForm.get('visitasMensuales')?.disabled" class="lead-note">
+            <div
+              *ngIf="clientForm.get('visitasMensuales')?.disabled"
+              class="lead-note"
+            >
               Se habilitará cuando el cliente deje de ser lead.
             </div>
           </div>
 
           <!-- Campo Visitas de Emergencia Anuales -->
-          <div class="form-group width-50">
-            <label for="visitasEmergenciaAnuales">Visitas de emergencia anuales</label>
-            <input id="visitasEmergenciaAnuales" formControlName="visitasEmergenciaAnuales" type="number" min="0" placeholder="Ingresa la cantidad anual" (input)="clientForm.markAsDirty()"/>
-            <div *ngIf="clientForm.get('visitasEmergenciaAnuales')?.hasError('required') && clientForm.get('visitasEmergenciaAnuales')?.touched" class="error">
+          <div class="form-group width-50" *ngIf="features.visitasAnuales">
+            <label for="visitasEmergenciaAnuales"
+              >Visitas de emergencia anuales</label
+            >
+            <input
+              id="visitasEmergenciaAnuales"
+              formControlName="visitasEmergenciaAnuales"
+              type="number"
+              min="0"
+              placeholder="Ingresa la cantidad anual"
+              (input)="clientForm.markAsDirty()"
+            />
+            <div
+              *ngIf="
+                clientForm
+                  .get('visitasEmergenciaAnuales')
+                  ?.hasError('required') &&
+                clientForm.get('visitasEmergenciaAnuales')?.touched
+              "
+              class="error"
+            >
               Ingresa una cantidad de visitas de emergencia anuales.
             </div>
-            <div *ngIf="clientForm.get('visitasEmergenciaAnuales')?.hasError('min') && clientForm.get('visitasEmergenciaAnuales')?.touched" class="error">
+            <div
+              *ngIf="
+                clientForm.get('visitasEmergenciaAnuales')?.hasError('min') &&
+                clientForm.get('visitasEmergenciaAnuales')?.touched
+              "
+              class="error"
+            >
               Ingresa un numero mayor o igual a 0.
             </div>
-            <div *ngIf="clientForm.get('visitasEmergenciaAnuales')?.disabled" class="lead-note">
+            <div
+              *ngIf="clientForm.get('visitasEmergenciaAnuales')?.disabled"
+              class="lead-note"
+            >
               Se habilitará cuando el cliente deje de ser lead.
             </div>
+          </div>
         </div>
-      </div>
 
-        <fieldset class="bank-section">
+        <fieldset class="bank-section" *ngIf="features.datosBancarios">
           <legend>Datos bancarios para pagos</legend>
-          <p class="bank-section__help">Esta información estará disponible para el equipo comercial y para el cliente asignado.</p>
+          <p class="bank-section__help">
+            Esta información estará disponible para el equipo comercial y para
+            el cliente asignado.
+          </p>
 
           <div class="two-inputs">
             <div class="form-group width-50">
               <label for="banco">Banco</label>
-              <input id="banco" type="text" formControlName="banco" placeholder="Ej. Banco Estado" (input)="clientForm.markAsDirty()" />
+              <input
+                id="banco"
+                type="text"
+                formControlName="banco"
+                placeholder="Ej. Banco Estado"
+                (input)="clientForm.markAsDirty()"
+              />
             </div>
             <div class="form-group width-50">
               <label for="tipoCuenta">Tipo de cuenta</label>
-              <input id="tipoCuenta" type="text" formControlName="tipoCuenta" placeholder="Ej. Cuenta corriente" (input)="clientForm.markAsDirty()" />
+              <input
+                id="tipoCuenta"
+                type="text"
+                formControlName="tipoCuenta"
+                placeholder="Ej. Cuenta corriente"
+                (input)="clientForm.markAsDirty()"
+              />
             </div>
           </div>
 
           <div class="two-inputs">
             <div class="form-group width-50">
               <label for="numeroCuenta">Número de cuenta</label>
-              <input id="numeroCuenta" type="text" formControlName="numeroCuenta" placeholder="Ingresa el número de cuenta" (input)="clientForm.markAsDirty()" />
+              <input
+                id="numeroCuenta"
+                type="text"
+                formControlName="numeroCuenta"
+                placeholder="Ingresa el número de cuenta"
+                (input)="clientForm.markAsDirty()"
+              />
             </div>
             <div class="form-group width-50">
               <label for="titular">Titular</label>
-              <input id="titular" type="text" formControlName="titular" placeholder="Nombre del titular" (input)="clientForm.markAsDirty()" />
+              <input
+                id="titular"
+                type="text"
+                formControlName="titular"
+                placeholder="Nombre del titular"
+                (input)="clientForm.markAsDirty()"
+              />
             </div>
           </div>
 
           <div class="two-inputs">
             <div class="form-group width-50">
               <label for="rutTitular">RUT titular</label>
-              <input id="rutTitular" type="text" formControlName="rutTitular" placeholder="RUT del titular" (input)="clientForm.markAsDirty()" />
+              <input
+                id="rutTitular"
+                type="text"
+                formControlName="rutTitular"
+                placeholder="RUT del titular"
+                (input)="clientForm.markAsDirty()"
+              />
             </div>
             <div class="form-group width-50">
               <label for="correoNotificacion">Correo para comprobantes</label>
-              <input id="correoNotificacion" type="email" formControlName="correoNotificacion" placeholder="correo@dominio.cl" (input)="clientForm.markAsDirty()" />
-              <div *ngIf="clientForm.get('correoNotificacion')?.invalid && clientForm.get('correoNotificacion')?.touched" class="error">
+              <input
+                id="correoNotificacion"
+                type="email"
+                formControlName="correoNotificacion"
+                placeholder="correo@dominio.cl"
+                (input)="clientForm.markAsDirty()"
+              />
+              <div
+                *ngIf="
+                  clientForm.get('correoNotificacion')?.invalid &&
+                  clientForm.get('correoNotificacion')?.touched
+                "
+                class="error"
+              >
                 Ingresa un correo válido.
               </div>
             </div>
@@ -213,12 +444,26 @@
 
         <!-- Botones -->
         <div class="form-actions">
-          <button *ngIf="!creating" class="btn form-size" type="submit"
-            [ngClass]="{'invalid-form': clientForm.invalid, 'valid-form': clientForm.valid }"
-            [disabled]="!clientForm.valid || (modoEdicion && !clientForm.dirty && !selectedFile)">
-            {{ modoEdicion ? 'Guardar cambios' : 'Añadir cliente' }}
+          <button
+            *ngIf="!creating"
+            class="btn form-size"
+            type="submit"
+            [ngClass]="{
+              'invalid-form': clientForm.invalid,
+              'valid-form': clientForm.valid
+            }"
+            [disabled]="
+              !clientForm.valid ||
+              (modoEdicion && !clientForm.dirty && !selectedFile)
+            "
+          >
+            {{ modoEdicion ? "Guardar cambios" : "Añadir cliente" }}
           </button>
-          <button *ngIf="creating" class="btn form-size"><div class="spinner-buttons spinner-size-buttons spinner-color"></div></button>
+          <button *ngIf="creating" class="btn form-size">
+            <div
+              class="spinner-buttons spinner-size-buttons spinner-color"
+            ></div>
+          </button>
         </div>
       </form>
     </div>

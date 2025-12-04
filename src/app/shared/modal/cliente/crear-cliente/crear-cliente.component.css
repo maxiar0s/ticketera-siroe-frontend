@@ -18,7 +18,7 @@
   width: 90%;
   max-width: 55rem;
   max-height: 90vh; /* Altura máxima del 90% de la ventana */
-  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
   position: relative;
   display: flex;
   flex-direction: column;
@@ -101,7 +101,8 @@
 }
 
 .form-actions {
-  padding-bottom: 1rem;}
+  padding-bottom: 1rem;
+}
 
 .two-inputs {
   display: flex;
@@ -177,7 +178,8 @@
   background-color: var(--color-surface);
   cursor: pointer;
   user-select: none;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease,
+    background-color 0.2s ease;
 }
 
 .servicio-option:focus-within {
@@ -294,7 +296,7 @@
     max-height: calc(90vh - 70px); /* Ajustar según la altura del header */
   }
 
-  .form-actions{
+  .form-actions {
     width: 100%;
     display: flex;
     justify-content: center;
@@ -310,4 +312,45 @@
     max-width: 100%;
     padding: 0.75rem 1rem;
   }
+}
+
+/* Estilos para el grupo de input de documento */
+.document-input-group {
+  display: flex;
+  width: 100%;
+  gap: 0;
+  align-items: stretch; /* Ensure equal height */
+}
+
+.document-type-select {
+  width: 80px;
+  min-width: 80px; /* Prevent shrinking */
+  flex-shrink: 0;
+  border-radius: 1.5rem 0 0 1.5rem;
+  border: 1px solid var(--color-border);
+  border-right: none;
+  background-color: var(--color-surface);
+  padding: 1.3rem 0.5rem 1.3rem 1rem;
+  font-size: 1.4rem;
+  color: var(--color-text);
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23666' d='M6 8.825L1.175 4 2.238 2.938 6 6.7l3.763-3.762L10.825 4z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.5rem center;
+}
+
+.document-number-input {
+  flex: 1; /* Grow and shrink */
+  min-width: 0; /* Allow shrinking below content size */
+  width: 100%; /* Ensure it tries to fill */
+  border-radius: 0 1.5rem 1.5rem 0 !important;
+  border-left: 1px solid var(--color-border);
+  padding: 1.3rem; /* Match padding of other inputs if needed */
+}
+
+.document-type-select:focus {
+  outline: none;
+  border: 2px solid var(--color-primary-strong);
+  z-index: 1;
 }

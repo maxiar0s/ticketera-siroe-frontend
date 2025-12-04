@@ -25,7 +25,7 @@
     (ngSubmit)="aplicarFiltros()"
   >
     <div class="filters-grid">
-      <div class="filter-field servicios-field">
+      <div class="filter-field" *ngIf="features.servicios">
         <label class="filter-label">Servicios</label>
         <div class="servicios-options">
           <label
@@ -43,7 +43,7 @@
         </div>
       </div>
 
-      <div class="filter-field">
+      <div class="filter-field" *ngIf="features.visitasMensuales">
         <label class="filter-label">Visitas mensuales (bitácoras)</label>
         <div class="range-inputs">
           <input
@@ -59,7 +59,7 @@
         </div>
       </div>
 
-      <div class="filter-field">
+      <div class="filter-field" *ngIf="features.visitasAnuales">
         <label class="filter-label">Visitas emergencia anuales</label>
         <div class="range-inputs">
           <input
@@ -75,7 +75,7 @@
         </div>
       </div>
 
-      <div class="filter-field">
+      <div class="filter-field" *ngIf="features.clientesLead">
         <label class="filter-label">Tipo de cliente</label>
         <select formControlName="esLead" class="filter-select">
           <option value="todos">Todos</option>
@@ -84,7 +84,7 @@
         </select>
       </div>
 
-      <div class="filter-field">
+      <div class="filter-field" *ngIf="features.datosBancarios">
         <label class="filter-label">Datos bancarios</label>
         <select formControlName="tieneDatosBancarios" class="filter-select">
           <option value="todos">Todos</option>
@@ -134,7 +134,11 @@
           class="card-body"
           [ngClass]="{ 'card-body--lead': casaMatriz.esLead }"
         >
-          <span class="client-badge" *ngIf="casaMatriz.esLead">Lead</span>
+          <span
+            class="client-badge"
+            *ngIf="casaMatriz.esLead && features.clientesLead"
+            >Lead</span
+          >
           <ng-container *ngIf="casaMatriz.imagen as imagen; else loading">
             <img
               *ngIf="imagen | signedUrl | async as signedUrl"
@@ -186,7 +190,7 @@
                     }}
                   </span>
                 </p>
-                <p>
+                <p *ngIf="features.visitasMensuales">
                   Visitas mensuales:
                   <ng-container *ngIf="!casaMatriz.esLead; else leadMensuales">
                     <span
@@ -202,7 +206,7 @@
                     </span>
                   </ng-container>
                 </p>
-                <p>
+                <p *ngIf="features.visitasAnuales">
                   Visitas emergencia anuales:
                   <ng-container
                     *ngIf="!casaMatriz.esLead; else leadEmergencias"
@@ -220,7 +224,7 @@
                     </span>
                   </ng-container>
                 </p>
-                <p>
+                <p *ngIf="features.servicios">
                   Servicios:
                   <span>
                     {{ serviciosCliente(casaMatriz) }}
@@ -250,7 +254,7 @@
                 </button>
               </div>
               <button
-                *ngIf="puedeVerDatosBancarios"
+                *ngIf="puedeVerDatosBancarios && features.datosBancarios"
                 type="button"
                 class="client-button client-button--secondary"
                 (click)="abrirModalDatosBancarios(casaMatriz)"

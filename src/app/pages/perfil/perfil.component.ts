@@ -1,20 +1,32 @@
 import { normalizarServicios } from '../../utils/servicios.util';
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  FormBuilder,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { ApiService } from '../../services/api.service';
 import { SignalService } from '../../services/signal.service';
 import { Cuenta } from '../../interfaces/Cuenta.interface';
 import { ClienteResumen } from '../../interfaces/cliente-resumen.interface';
-import { obtenerIniciales, generarColorDesdeTexto } from '../../utils/avatar.util';
-import { normalizarDatosBancarios, tieneDatosBancarios } from '../../utils/datos-bancarios.util';
+import { FEATURES } from '../../config/features';
+import {
+  obtenerIniciales,
+  generarColorDesdeTexto,
+} from '../../utils/avatar.util';
+import {
+  normalizarDatosBancarios,
+  tieneDatosBancarios,
+} from '../../utils/datos-bancarios.util';
 
 @Component({
   selector: 'perfil',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './perfil.component.html',
-  styleUrl: './perfil.component.css'
+  styleUrl: './perfil.component.css',
 })
 export class PerfilComponent implements OnInit {
   usuario: Cuenta | null = null;
@@ -27,6 +39,7 @@ export class PerfilComponent implements OnInit {
   avatarIniciales = '?';
   avatarColor = 'var(--color-primary)';
   esCliente = false;
+  readonly features = FEATURES;
 
   constructor(
     private fb: FormBuilder,
@@ -36,7 +49,10 @@ export class PerfilComponent implements OnInit {
     this.perfilForm = this.fb.group({
       name: ['', [Validators.required, Validators.minLength(3)]],
       email: ['', [Validators.required, Validators.email]],
-      telefono: ['', [Validators.required, Validators.pattern(/^[0-9]{7,15}$/)]],
+      telefono: [
+        '',
+        [Validators.required, Validators.pattern(/^[0-9]{7,15}$/)],
+      ],
     });
 
     this.passwordForm = this.fb.group({
@@ -58,9 +74,13 @@ export class PerfilComponent implements OnInit {
     }
 
     const nuevoPassword = this.passwordForm.get('nuevoPassword')?.value?.trim();
-    const confirmarPassword = this.passwordForm.get('confirmarPassword')?.value?.trim();
+    const confirmarPassword = this.passwordForm
+      .get('confirmarPassword')
+      ?.value?.trim();
 
-    const passwordActual = this.passwordForm.get('passwordActual')?.value?.trim();
+    const passwordActual = this.passwordForm
+      .get('passwordActual')
+      ?.value?.trim();
     const estaCambiandoPassword =
       !!nuevoPassword || !!confirmarPassword || !!passwordActual;
 
@@ -71,11 +91,13 @@ export class PerfilComponent implements OnInit {
 
     if (nuevoPassword || confirmarPassword) {
       if (nuevoPassword !== confirmarPassword) {
-        this.mensajeError = 'La nueva contrasena y la confirmacion no coinciden.';
+        this.mensajeError =
+          'La nueva contrasena y la confirmacion no coinciden.';
         return;
       }
       if (!passwordActual) {
-        this.mensajeError = 'Debes ingresar la contrasena actual para realizar el cambio.';
+        this.mensajeError =
+          'Debes ingresar la contrasena actual para realizar el cambio.';
         return;
       }
     }
@@ -90,7 +112,11 @@ export class PerfilComponent implements OnInit {
     if (!this.esCliente) {
       payload.name = perfilValue.name?.trim();
       payload.email = perfilValue.email?.trim();
-      if (perfilValue.telefono !== undefined && perfilValue.telefono !== null && perfilValue.telefono !== '') {
+      if (
+        perfilValue.telefono !== undefined &&
+        perfilValue.telefono !== null &&
+        perfilValue.telefono !== ''
+      ) {
         payload.telefono = Number(perfilValue.telefono);
       } else {
         payload.telefono = null;
@@ -120,12 +146,15 @@ export class PerfilComponent implements OnInit {
           });
           this.actualizarAvatar(perfilActualizado);
         }
-        this.mensajeExito = respuesta?.mensaje ?? 'Perfil actualizado correctamente.';
+        this.mensajeExito =
+          respuesta?.mensaje ?? 'Perfil actualizado correctamente.';
         this.passwordForm.reset();
         this.guardando = false;
       },
       error: (error) => {
-        const mensaje = error?.error?.error ?? 'No fue posible actualizar el perfil. Intenta nuevamente.';
+        const mensaje =
+          error?.error?.error ??
+          'No fue posible actualizar el perfil. Intenta nuevamente.';
         this.mensajeError = mensaje;
         this.guardando = false;
       },
@@ -135,11 +164,13 @@ export class PerfilComponent implements OnInit {
   private cargarPerfil(): void {
     this.apiService.perfilActual().subscribe({
       next: (perfil) => {
-        const clientesAutorizados = (perfil.clientesAutorizados ?? []).map((cliente) => ({
-          ...cliente,
-          servicios: normalizarServicios(cliente.servicios),
-          datosBancarios: normalizarDatosBancarios(cliente.datosBancarios),
-        }));
+        const clientesAutorizados = (perfil.clientesAutorizados ?? []).map(
+          (cliente) => ({
+            ...cliente,
+            servicios: normalizarServicios(cliente.servicios),
+            datosBancarios: normalizarDatosBancarios(cliente.datosBancarios),
+          })
+        );
         const perfilNormalizado: Cuenta = {
           ...perfil,
           clientesAutorizados,
@@ -175,7 +206,9 @@ export class PerfilComponent implements OnInit {
     return servicios.join(', ');
   }
 
-  clienteTieneDatosBancarios(cliente: ClienteResumen | null | undefined): boolean {
+  clienteTieneDatosBancarios(
+    cliente: ClienteResumen | null | undefined
+  ): boolean {
     return tieneDatosBancarios(cliente?.datosBancarios);
   }
 
@@ -189,7 +222,3 @@ export class PerfilComponent implements OnInit {
     this.avatarColor = generarColorDesdeTexto(referencia);
   }
 }
-
-
-
-

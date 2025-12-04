@@ -1,12 +1,15 @@
 <div class="perfil-contenedor" *ngIf="!loading; else perfilCargando">
   <ng-container *ngIf="usuario as user; else perfilError">
     <section class="perfil-resumen">
-      <div class="perfil-avatar" [ngStyle]="{ 'background-color': avatarColor }">
+      <div
+        class="perfil-avatar"
+        [ngStyle]="{ 'background-color': avatarColor }"
+      >
         {{ avatarIniciales }}
       </div>
       <div class="perfil-identidad">
         <h1>{{ user.name }}</h1>
-        <p class="perfil-rol">{{ user.tipoCuenta?.name ?? 'Usuario' }}</p>
+        <p class="perfil-rol">{{ user.tipoCuenta?.name ?? "Usuario" }}</p>
         <p class="perfil-email">{{ user.email }}</p>
         <p class="perfil-telefono">{{ user.telefono }}</p>
       </div>
@@ -15,9 +18,12 @@
     <section class="perfil-clientes" *ngIf="esCliente">
       <h2>Mis datos</h2>
       <p class="perfil-clientes__ayuda">
-        Visualiza la información de tu organización y los servicios asociados a tu cuenta.
+        Visualiza la información de tu organización y los servicios asociados a
+        tu cuenta.
       </p>
-      <ng-container *ngIf="user.clientesAutorizados?.length; else sinClientesAsignados">
+      <ng-container
+        *ngIf="user.clientesAutorizados?.length; else sinClientesAsignados"
+      >
         <div class="perfil-clientes__lista">
           <article
             class="perfil-clientes__item"
@@ -40,47 +46,84 @@
       </ng-template>
     </section>
 
-    <section class="perfil-bancario" *ngIf="esCliente && user.clientesAutorizados?.length">
+    <section
+      class="perfil-bancario"
+      *ngIf="
+        esCliente && user.clientesAutorizados?.length && features.datosBancarios
+      "
+    >
       <h2>Mis datos bancarios</h2>
       <p class="perfil-bancario__ayuda">
         Consulta la información bancaria registrada para tu cuenta.
       </p>
       <div class="perfil-bancario__lista">
-        <article class="perfil-bancario__item" *ngFor="let cliente of user.clientesAutorizados">
+        <article
+          class="perfil-bancario__item"
+          *ngFor="let cliente of user.clientesAutorizados"
+        >
           <header class="perfil-bancario__encabezado">
             <div>
               <p class="perfil-bancario__cliente">Cliente asociado</p>
               <h3>{{ cliente.razonSocial }}</h3>
             </div>
-            <span class="perfil-bancario__estado" [class.perfil-bancario__estado--warning]="!clienteTieneDatosBancarios(cliente)">
-              {{ clienteTieneDatosBancarios(cliente) ? 'Información disponible' : 'Pendiente' }}
+            <span
+              class="perfil-bancario__estado"
+              [class.perfil-bancario__estado--warning]="
+                !clienteTieneDatosBancarios(cliente)
+              "
+            >
+              {{
+                clienteTieneDatosBancarios(cliente)
+                  ? "Información disponible"
+                  : "Pendiente"
+              }}
             </span>
           </header>
 
-          <div class="perfil-bancario__grid" *ngIf="clienteTieneDatosBancarios(cliente); else perfilBancarioSinDatos">
+          <div
+            class="perfil-bancario__grid"
+            *ngIf="
+              clienteTieneDatosBancarios(cliente);
+              else perfilBancarioSinDatos
+            "
+          >
             <div class="perfil-bancario__field">
               <span class="perfil-bancario__label">Banco</span>
-              <span class="perfil-bancario__value">{{ mostrarDatoBancario(cliente.datosBancarios?.banco) }}</span>
+              <span class="perfil-bancario__value">{{
+                mostrarDatoBancario(cliente.datosBancarios?.banco)
+              }}</span>
             </div>
             <div class="perfil-bancario__field">
               <span class="perfil-bancario__label">Tipo de cuenta</span>
-              <span class="perfil-bancario__value">{{ mostrarDatoBancario(cliente.datosBancarios?.tipoCuenta) }}</span>
+              <span class="perfil-bancario__value">{{
+                mostrarDatoBancario(cliente.datosBancarios?.tipoCuenta)
+              }}</span>
             </div>
             <div class="perfil-bancario__field">
               <span class="perfil-bancario__label">Número de cuenta</span>
-              <span class="perfil-bancario__value">{{ mostrarDatoBancario(cliente.datosBancarios?.numeroCuenta) }}</span>
+              <span class="perfil-bancario__value">{{
+                mostrarDatoBancario(cliente.datosBancarios?.numeroCuenta)
+              }}</span>
             </div>
             <div class="perfil-bancario__field">
               <span class="perfil-bancario__label">Titular</span>
-              <span class="perfil-bancario__value">{{ mostrarDatoBancario(cliente.datosBancarios?.titular) }}</span>
+              <span class="perfil-bancario__value">{{
+                mostrarDatoBancario(cliente.datosBancarios?.titular)
+              }}</span>
             </div>
             <div class="perfil-bancario__field">
               <span class="perfil-bancario__label">RUT titular</span>
-              <span class="perfil-bancario__value">{{ mostrarDatoBancario(cliente.datosBancarios?.rutTitular) }}</span>
+              <span class="perfil-bancario__value">{{
+                mostrarDatoBancario(cliente.datosBancarios?.rutTitular)
+              }}</span>
             </div>
             <div class="perfil-bancario__field">
-              <span class="perfil-bancario__label">Correo para comprobantes</span>
-              <span class="perfil-bancario__value">{{ mostrarDatoBancario(cliente.datosBancarios?.correoNotificacion) }}</span>
+              <span class="perfil-bancario__label"
+                >Correo para comprobantes</span
+              >
+              <span class="perfil-bancario__value">{{
+                mostrarDatoBancario(cliente.datosBancarios?.correoNotificacion)
+              }}</span>
             </div>
           </div>
           <ng-template #perfilBancarioSinDatos>
@@ -93,35 +136,72 @@
     </section>
 
     <section class="perfil-contenido">
-      <form class="perfil-formulario" [formGroup]="perfilForm" (ngSubmit)="guardarPerfil()">
+      <form
+        class="perfil-formulario"
+        [formGroup]="perfilForm"
+        (ngSubmit)="guardarPerfil()"
+      >
         <header class="perfil-formulario__encabezado">
           <h2>Datos personales</h2>
           <p>Actualiza tu informacion de contacto y credenciales.</p>
           <p class="perfil-restriccion" *ngIf="esCliente">
-            Como cliente solo puedes actualizar tu contrasena. Si necesitas modificar tus datos, contacta a un administrador.
+            Como cliente solo puedes actualizar tu contrasena. Si necesitas
+            modificar tus datos, contacta a un administrador.
           </p>
         </header>
 
         <div class="perfil-formulario__grupo">
           <label for="name">Nombre completo</label>
-          <input id="name" type="text" formControlName="name" placeholder="Ingresa tu nombre" />
-          <span class="perfil-error" *ngIf="perfilForm.get('name')?.invalid && perfilForm.get('name')?.touched">
+          <input
+            id="name"
+            type="text"
+            formControlName="name"
+            placeholder="Ingresa tu nombre"
+          />
+          <span
+            class="perfil-error"
+            *ngIf="
+              perfilForm.get('name')?.invalid && perfilForm.get('name')?.touched
+            "
+          >
             El nombre es obligatorio y debe tener al menos 3 caracteres.
           </span>
         </div>
 
         <div class="perfil-formulario__grupo">
           <label for="email">Correo electronico</label>
-          <input id="email" type="email" formControlName="email" placeholder="nombre@dominio.com" />
-          <span class="perfil-error" *ngIf="perfilForm.get('email')?.invalid && perfilForm.get('email')?.touched">
+          <input
+            id="email"
+            type="email"
+            formControlName="email"
+            placeholder="nombre@dominio.com"
+          />
+          <span
+            class="perfil-error"
+            *ngIf="
+              perfilForm.get('email')?.invalid &&
+              perfilForm.get('email')?.touched
+            "
+          >
             Ingresa un correo electronico valido.
           </span>
         </div>
 
         <div class="perfil-formulario__grupo">
           <label for="telefono">Telefono</label>
-          <input id="telefono" type="tel" formControlName="telefono" placeholder="Ej. 56912345678" />
-          <span class="perfil-error" *ngIf="perfilForm.get('telefono')?.invalid && perfilForm.get('telefono')?.touched">
+          <input
+            id="telefono"
+            type="tel"
+            formControlName="telefono"
+            placeholder="Ej. 56912345678"
+          />
+          <span
+            class="perfil-error"
+            *ngIf="
+              perfilForm.get('telefono')?.invalid &&
+              perfilForm.get('telefono')?.touched
+            "
+          >
             Ingresa un numero de contacto valido (solo digitos).
           </span>
         </div>
@@ -129,25 +209,47 @@
         <fieldset [formGroup]="passwordForm" class="perfil-formulario__seccion">
           <legend>Cambiar contrasena</legend>
           <p class="perfil-ayuda">
-            Este paso es opcional. Completa los tres campos solo si deseas actualizar tu contrasena.
+            Este paso es opcional. Completa los tres campos solo si deseas
+            actualizar tu contrasena.
           </p>
 
           <div class="perfil-formulario__grupo">
             <label for="passwordActual">Contrasena actual</label>
-            <input id="passwordActual" type="password" formControlName="passwordActual" placeholder="Contrasena actual" />
+            <input
+              id="passwordActual"
+              type="password"
+              formControlName="passwordActual"
+              placeholder="Contrasena actual"
+            />
           </div>
 
           <div class="perfil-formulario__grupo">
             <label for="nuevoPassword">Nueva contrasena</label>
-            <input id="nuevoPassword" type="password" formControlName="nuevoPassword" placeholder="Nueva contrasena" />
-            <span class="perfil-error" *ngIf="passwordForm.get('nuevoPassword')?.invalid && passwordForm.get('nuevoPassword')?.touched">
+            <input
+              id="nuevoPassword"
+              type="password"
+              formControlName="nuevoPassword"
+              placeholder="Nueva contrasena"
+            />
+            <span
+              class="perfil-error"
+              *ngIf="
+                passwordForm.get('nuevoPassword')?.invalid &&
+                passwordForm.get('nuevoPassword')?.touched
+              "
+            >
               La Nueva contrasena debe tener al menos 8 caracteres.
             </span>
           </div>
 
           <div class="perfil-formulario__grupo">
             <label for="confirmarPassword">Confirmar contrasena</label>
-            <input id="confirmarPassword" type="password" formControlName="confirmarPassword" placeholder="Repite la Nueva contrasena" />
+            <input
+              id="confirmarPassword"
+              type="password"
+              formControlName="confirmarPassword"
+              placeholder="Repite la Nueva contrasena"
+            />
           </div>
         </fieldset>
 
@@ -159,7 +261,7 @@
         </div>
 
         <button type="submit" class="perfil-submit" [disabled]="guardando">
-          {{ guardando ? 'Guardando...' : 'Guardar cambios' }}
+          {{ guardando ? "Guardando..." : "Guardar cambios" }}
         </button>
       </form>
     </section>
@@ -178,4 +280,3 @@
     <h2>Cargando perfil...</h2>
   </div>
 </ng-template>
-

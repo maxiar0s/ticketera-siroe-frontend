@@ -7,7 +7,11 @@
 }
 
 :host {
-  --btn-primary-bg: linear-gradient(90deg, var(--color-primary) 0%, var(--color-primary) 100%);
+  --btn-primary-bg: linear-gradient(
+    90deg,
+    var(--color-primary) 0%,
+    var(--color-primary) 100%
+  );
   --btn-primary-padding: 0.75rem 1.5rem;
   --btn-primary-shadow: none;
   --btn-primary-shadow-hover: 0 10px 24px rgba(196, 0, 107, 0.25);
@@ -84,14 +88,34 @@
   letter-spacing: 0.02em;
 }
 
-.ticket-state-ingresado {
+.ticket-state-nuevo {
   background-color: rgba(255, 193, 7, 0.2);
   color: #a87400;
 }
 
-.ticket-state-terminado {
+.ticket-state-abierto {
+  background-color: rgba(33, 150, 243, 0.2);
+  color: #0d47a1;
+}
+
+.ticket-state-pendiente {
+  background-color: rgba(255, 152, 0, 0.2);
+  color: #e65100;
+}
+
+.ticket-state-en-espera {
+  background-color: rgba(156, 39, 176, 0.2);
+  color: #4a148c;
+}
+
+.ticket-state-resuelto {
   background-color: rgba(76, 175, 80, 0.2);
-  color: var(--color-success);
+  color: #1b5e20;
+}
+
+.ticket-state-cerrado {
+  background-color: rgba(96, 125, 139, 0.2);
+  color: #263238;
 }
 
 .bitacora-header {
@@ -382,7 +406,6 @@ textarea {
   text-align: center;
 }
 
-
 .bitacora-table td.nota {
   width: auto;
 }
@@ -513,11 +536,9 @@ textarea {
   box-shadow: 0 18px 45px rgba(174, 27, 144, 0.18);
 }
 
-
 .bitacora-detail.ticket .detail-note h3 {
   color: var(--color-info);
 }
-
 
 .bitacora-detail header {
   display: flex;
@@ -526,8 +547,6 @@ textarea {
   gap: 1rem;
   padding-right: 3.25rem;
 }
-
-
 
 .detail-actions {
   display: flex;
@@ -657,7 +676,6 @@ textarea {
   color: var(--color-info);
 }
 
-
 .detail-note h3 {
   margin: 0 0 0.75rem;
   color: var(--color-primary-strong);
@@ -699,7 +717,11 @@ textarea {
   gap: 1rem;
   /* igualar border-radius del header con el contenedor blanco para que no sobresalga */
   padding: 1.5rem 1.75rem 1.25rem;
-  background: linear-gradient(90deg, var(--color-primary-strong) 0%, #e10880 100%);
+  background: linear-gradient(
+    90deg,
+    var(--color-primary-strong) 0%,
+    #e10880 100%
+  );
   color: var(--color-surface);
   border-top-left-radius: 1.5rem;
   border-top-right-radius: 1.5rem;

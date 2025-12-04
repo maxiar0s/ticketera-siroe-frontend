@@ -27,6 +27,7 @@ import { DatosBancariosClienteComponent } from '../../shared/modal/cliente/datos
 import { Subject, catchError, of, switchMap, tap } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MODULES } from '../../config/modules';
+import { FEATURES } from '../../config/features';
 
 @Component({
   selector: 'clientes',
@@ -58,6 +59,7 @@ export class ClientesComponent implements OnInit {
   public esCliente: boolean = false;
   public esComercial: boolean = false;
   public sucursalEnabled: boolean = MODULES.sucursal;
+  public features = FEATURES;
   public filtroForm: FormGroup;
   public readonly serviciosDisponibles: string[] = [
     'Soporte TI',
