@@ -26,4 +26,9 @@
   --color-info: #1d62b0;
   --color-warning: #facc15;
   --color-danger: #d7393b;
+
+  /* Estado "Nuevo" - Color llamativo */
+  --color-nuevo: #ff6b35;
+  --color-nuevo-bg: rgba(255, 107, 53, 0.15);
+  --color-nuevo-border: rgba(255, 107, 53, 0.4);
 }

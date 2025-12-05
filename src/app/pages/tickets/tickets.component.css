@@ -89,8 +89,20 @@
 }
 
 .ticket-state-nuevo {
-  background-color: rgba(255, 193, 7, 0.2);
-  color: #a87400;
+  background-color: var(--color-nuevo-bg);
+  color: var(--color-nuevo);
+  border: 1px solid var(--color-nuevo-border);
+  animation: pulse-nuevo 2s ease-in-out infinite;
+}
+
+@keyframes pulse-nuevo {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.75;
+  }
 }
 
 .ticket-state-abierto {
@@ -404,6 +416,20 @@ textarea {
   border: 1px solid #bbdefb;
   font-size: 0.75rem;
   padding: 0.25rem 0.6rem;
+}
+
+/* Fila de tickets en estado "Nuevo" - destacada */
+.bitacora-table tbody tr.ticket-nuevo {
+  border-left: 4px solid var(--color-nuevo);
+  background-color: var(--color-nuevo-bg);
+}
+
+.bitacora-table tbody tr.ticket-nuevo:hover {
+  background-color: rgba(255, 107, 53, 0.18);
+}
+
+.bitacora-table tbody tr.ticket-nuevo.selected {
+  background-color: rgba(255, 107, 53, 0.25);
 }
 
 .bitacora-table tbody tr.ticket {
@@ -726,6 +752,7 @@ textarea {
   margin: 0;
   color: #454545;
   line-height: 1.5;
+  white-space: pre-wrap;
 }
 
 .bitacora-modal-backdrop {

@@ -177,6 +177,7 @@
           *ngFor="let ticket of tickets"
           (click)="seleccionarTicket(ticket)"
           [class.selected]="ticketSeleccionado?.id === ticket.id"
+          [class.ticket-nuevo]="ticket.estadoTicket === 'Nuevo'"
         >
           <td>{{ ticket.fechaVisita | formatoFecha : "dd/MM/yyyy" }}</td>
           <td class="tipo">

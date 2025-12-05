@@ -106,6 +106,7 @@ export class SideMenuComponent {
       else if (route === 'perfil') moduleKey = 'perfil';
       else if (route === 'admin/usuarios') moduleKey = 'adminUsuarios';
       else if (route === 'admin/tipos-equipos') moduleKey = 'adminTiposEquipos';
+      else if (route === 'reportes') moduleKey = 'reportes';
 
       // Si encontramos un key y el módulo está desactivado, lo filtramos
       if (moduleKey && MODULES[moduleKey] === false) {
