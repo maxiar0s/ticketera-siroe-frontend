@@ -218,24 +218,37 @@ export class TicketsComponent implements OnInit {
     const estadoCtrl = this.ticketForm.get('ticketEstado');
     const fechaTerminoCtrl = this.ticketForm.get('ticketFechaTermino');
     const detalleTerminoCtrl = this.ticketForm.get('ticketDetalleTermino');
+    const descripcionCtrl = this.ticketForm.get('descripcion');
 
-    if (!estadoCtrl || !fechaTerminoCtrl || !detalleTerminoCtrl) {
+    if (
+      !estadoCtrl ||
+      !fechaTerminoCtrl ||
+      !detalleTerminoCtrl ||
+      !descripcionCtrl
+    ) {
       return;
     }
 
     const aplicarValidaciones = () => {
       const estado = (estadoCtrl.value ?? 'Nuevo') as string;
       if (estado === 'Resuelto' || estado === 'Cerrado') {
+        if (!this.modules.bitacora) {
+          fechaTerminoCtrl.setValue(this.obtenerFechaActual(), {
+            emitEvent: false,
+          });
+        }
         fechaTerminoCtrl.setValidators([Validators.required]);
         detalleTerminoCtrl.setValidators([
           Validators.required,
           Validators.minLength(5),
         ]);
+        descripcionCtrl.disable({ emitEvent: false });
       } else {
         fechaTerminoCtrl.setValue('', { emitEvent: false });
         fechaTerminoCtrl.clearValidators();
         detalleTerminoCtrl.setValue('', { emitEvent: false });
         detalleTerminoCtrl.clearValidators();
+        descripcionCtrl.enable({ emitEvent: false });
         if (this.selectedEvidenceFiles.length) {
           this.selectedEvidenceFiles = [];
         }
@@ -627,8 +640,9 @@ export class TicketsComponent implements OnInit {
 
   get mostrarCamposHorarios(): boolean {
     return (
-      this.estadoTicketSeleccionado === 'Resuelto' ||
-      this.estadoTicketSeleccionado === 'Cerrado'
+      this.modules.bitacora &&
+      (this.estadoTicketSeleccionado === 'Resuelto' ||
+        this.estadoTicketSeleccionado === 'Cerrado')
     );
   }
 
