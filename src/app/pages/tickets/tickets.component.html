@@ -696,19 +696,66 @@
                 <input
                   type="number"
                   formControlName="tiempoResolucionHoras"
-                  placeholder="0"
+                  placeholder="0 - 24"
                   min="0"
+                  max="24"
                 />
+                <div
+                  class="field-error"
+                  *ngIf="
+                    ticketForm.get('tiempoResolucionHoras')?.invalid &&
+                    (ticketForm.get('tiempoResolucionHoras')?.dirty ||
+                      ticketForm.get('tiempoResolucionHoras')?.touched)
+                  "
+                >
+                  <span
+                    *ngIf="
+                      ticketForm.get('tiempoResolucionHoras')?.hasError('min')
+                    "
+                  >
+                    Mínimo 0 horas.
+                  </span>
+                  <span
+                    *ngIf="
+                      ticketForm.get('tiempoResolucionHoras')?.hasError('max')
+                    "
+                  >
+                    Máximo 24 horas.
+                  </span>
+                </div>
               </label>
               <label>
                 <span class="label">Tiempo Resolución (Minutos)</span>
                 <input
                   type="number"
                   formControlName="tiempoResolucionMinutos"
-                  placeholder="0"
+                  placeholder="0 - 60"
                   min="0"
                   max="59"
                 />
+                <div
+                  class="field-error"
+                  *ngIf="
+                    ticketForm.get('tiempoResolucionMinutos')?.invalid &&
+                    (ticketForm.get('tiempoResolucionMinutos')?.dirty ||
+                      ticketForm.get('tiempoResolucionMinutos')?.touched)
+                  "
+                >
+                  <span
+                    *ngIf="
+                      ticketForm.get('tiempoResolucionMinutos')?.hasError('min')
+                    "
+                  >
+                    Mínimo 0 minutos.
+                  </span>
+                  <span
+                    *ngIf="
+                      ticketForm.get('tiempoResolucionMinutos')?.hasError('max')
+                    "
+                  >
+                    Máximo 59 minutos.
+                  </span>
+                </div>
               </label>
             </div>
           </div>

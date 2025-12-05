@@ -143,8 +143,8 @@ export class TicketsComponent implements OnInit {
       descripcion: ['', [Validators.required, Validators.minLength(5)]],
       proyectoId: [null],
       comentarioInterno: [''],
-      tiempoResolucionHoras: [0, [Validators.min(0)]],
-      tiempoResolucionMinutos: [0, [Validators.min(0), Validators.max(59)]],
+      tiempoResolucionHoras: [null, [Validators.min(0), Validators.max(24)]],
+      tiempoResolucionMinutos: [null, [Validators.min(0), Validators.max(59)]],
     });
   }
 
@@ -472,8 +472,8 @@ export class TicketsComponent implements OnInit {
       descripcion: '',
       proyectoId: null,
       comentarioInterno: '',
-      tiempoResolucionHoras: 0,
-      tiempoResolucionMinutos: 0,
+      tiempoResolucionHoras: null,
+      tiempoResolucionMinutos: null,
     });
 
     this.formularioVisible = true;
@@ -521,12 +521,12 @@ export class TicketsComponent implements OnInit {
       comentarioInterno: ticket.comentarioInterno ?? '',
       tiempoResolucionHoras: ticket.tiempoResolucion
         ? Math.floor(ticket.tiempoResolucion)
-        : 0,
+        : null,
       tiempoResolucionMinutos: ticket.tiempoResolucion
         ? Math.round(
             (ticket.tiempoResolucion - Math.floor(ticket.tiempoResolucion)) * 60
           )
-        : 0,
+        : null,
     });
 
     this.formularioVisible = true;
@@ -586,8 +586,8 @@ export class TicketsComponent implements OnInit {
       ticketDetalleTermino: '',
       proyectoId: null,
       comentarioInterno: '',
-      tiempoResolucionHoras: 0,
-      tiempoResolucionMinutos: 0,
+      tiempoResolucionHoras: null,
+      tiempoResolucionMinutos: null,
     });
     this.estadosTicketFormulario = [...this.estadosTicket];
     this.sucursalesFormulario = [];

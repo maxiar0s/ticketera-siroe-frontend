@@ -186,6 +186,7 @@ select,
 input[type="text"],
 input[type="date"],
 input[type="datetime-local"],
+input[type="number"],
 textarea {
   width: 100%;
   border-radius: 0.9rem;
