@@ -66,13 +66,48 @@
         </select>
       </label>
 
-      <label class="filter-field">
+      <label class="filter-field" *ngIf="modules.proyectos">
         <span class="label">Proyecto</span>
         <select formControlName="proyectoId">
           <option value="">Todos</option>
           <option value="sin-proyecto">Sin proyecto</option>
           <option *ngFor="let proyecto of proyectos" [value]="proyecto.id">
             {{ proyecto.nombre }}
+          </option>
+        </select>
+      </label>
+
+      <label class="filter-field">
+        <span class="label">Prioridad</span>
+        <select formControlName="prioridad">
+          <option value="">Todas</option>
+          <option *ngFor="let p of prioridades" [value]="p.value">
+            {{ p.label }}
+          </option>
+        </select>
+      </label>
+
+      <label class="filter-field">
+        <span class="label">Tipo</span>
+        <select formControlName="tipo">
+          <option value="">Todos</option>
+          <option *ngFor="let t of tiposTicket" [value]="t.value">
+            {{ t.label }}
+          </option>
+        </select>
+      </label>
+
+      <label class="filter-field">
+        <span class="label">Fecha</span>
+        <input type="date" formControlName="fecha" />
+      </label>
+
+      <label class="filter-field">
+        <span class="label">Técnico</span>
+        <select formControlName="tecnicoId">
+          <option value="">Todos</option>
+          <option *ngFor="let tec of tecnicosDisponibles" [value]="tec.id">
+            {{ tec.name }}
           </option>
         </select>
       </label>
@@ -130,9 +165,9 @@
           <th class="tipo-col">Prioridad</th>
           <th class="tipo-col">Tipo</th>
           <th class="tipo-col">Estado</th>
-          <th>Cliente</th>
+          <th class="cliente-col">Cliente</th>
+          <th class="tecnico-col">Técnico Asignado</th>
           <th *ngIf="modules.sucursal">Sucursal</th>
-          <th>Técnicos</th>
           <th class="nota">Nota</th>
           <th *ngIf="esAdmin" class="acciones">Acciones</th>
         </tr>
@@ -172,17 +207,19 @@
               </span>
             </div>
           </td>
-          <td>{{ ticket.casaMatriz?.razonSocial || "N/A" }}</td>
-          <td *ngIf="modules.sucursal">
-            {{ ticket.sucursal?.sucursal || "General" }}
+          <td class="cliente-col">
+            {{ ticket.casaMatriz?.razonSocial || "N/A" }}
           </td>
-          <td class="tecnicos">
+          <td class="tecnicos tecnico-col">
             <ng-container *ngIf="ticket.tecnicos?.length; else sinTecnicos">
               <span *ngFor="let tecnico of ticket.tecnicos; let last = last">
                 {{ tecnico }}<span *ngIf="!last">, </span>
               </span>
             </ng-container>
             <ng-template #sinTecnicos>Sin registrar</ng-template>
+          </td>
+          <td *ngIf="modules.sucursal">
+            {{ ticket.sucursal?.sucursal || "General" }}
           </td>
           <td class="nota">
             {{ ticket.descripcion }}
@@ -332,7 +369,7 @@
             {{ ticketSeleccionado.sucursal?.sucursal || "General" }}
           </span>
         </div>
-        <div>
+        <div *ngIf="modules.proyectos">
           <span class="label">Proyecto</span>
           <span class="value">
             {{ ticketSeleccionado.proyecto?.nombre || "Sin proyecto" }}
@@ -357,7 +394,7 @@
           </span>
         </div>
         <div>
-          <span class="label">Técnicos</span>
+          <span class="label">Técnico Asignado</span>
           <span class="value">
             {{
               ticketSeleccionado.tecnicos.length
@@ -365,6 +402,21 @@
                 : "Sin registrar"
             }}
           </span>
+        </div>
+        <div
+          *ngIf="
+            ticketSeleccionado.historialTransferencias &&
+            ticketSeleccionado.historialTransferencias.length > 0
+          "
+          class="historial-transferencias"
+        >
+          <span class="label">Historial de Transferencias</span>
+          <ul class="transfer-history-list">
+            <li *ngFor="let h of ticketSeleccionado.historialTransferencias">
+              {{ h.date | formatoFecha : "short" }} - Asignado a:
+              {{ getNombreTecnico(h.toId) }} (por {{ getNombreTecnico(h.by) }})
+            </li>
+          </ul>
         </div>
         <div>
           <span class="label">Estado</span>
@@ -385,6 +437,20 @@
                 ? (ticketSeleccionado.fechaTermino | formatoFecha : "fullDate")
                 : "Sin registrar"
             }}
+          </span>
+        </div>
+        <div
+          *ngIf="(esAdmin || esTecnico) && ticketSeleccionado.comentarioInterno"
+        >
+          <span class="label">Comentario Interno</span>
+          <span class="value">
+            {{ ticketSeleccionado.comentarioInterno }}
+          </span>
+        </div>
+        <div *ngIf="ticketSeleccionado.tiempoResolucion">
+          <span class="label">Tiempo Resolución</span>
+          <span class="value">
+            {{ ticketSeleccionado.tiempoResolucion }} Horas
           </span>
         </div>
       </div>
@@ -514,7 +580,7 @@
             <span class="label">Estado del ticket</span>
             <select formControlName="ticketEstado">
               <option
-                *ngFor="let estado of estadosTicket"
+                *ngFor="let estado of estadosTicketFormulario"
                 [value]="estado.value"
               >
                 {{ estado.label }}
@@ -603,18 +669,73 @@
                 placeholder="Describe el trabajo realizado para cerrar el ticket."
               ></textarea>
             </label>
+
+            <!-- Nuevos campos para Cierre: Comentario Interno y Tiempo Resolucion -->
+            <div
+              class="form-row"
+              *ngIf="mostrarCamposTerminoTicket || esAdmin || esTecnico"
+            >
+              <label class="full">
+                <span class="label"
+                  >Comentario Interno (Visible solo para Staff)</span
+                >
+                <textarea
+                  formControlName="comentarioInterno"
+                  rows="3"
+                  placeholder="Información relevante para administración o técnicos..."
+                ></textarea>
+              </label>
+            </div>
+
+            <div
+              class="form-row"
+              *ngIf="mostrarCamposTerminoTicket || esAdmin || esTecnico"
+            >
+              <label>
+                <span class="label">Tiempo Resolución (Horas)</span>
+                <input
+                  type="number"
+                  formControlName="tiempoResolucionHoras"
+                  placeholder="0"
+                  min="0"
+                />
+              </label>
+              <label>
+                <span class="label">Tiempo Resolución (Minutos)</span>
+                <input
+                  type="number"
+                  formControlName="tiempoResolucionMinutos"
+                  placeholder="0"
+                  min="0"
+                  max="59"
+                />
+              </label>
+            </div>
           </div>
 
           <label
-            class="full"
+            [class.full]="tecnicoActual.length === 0"
             [class.invalid]="
               ticketForm.get('tecnicos')?.invalid &&
               (ticketForm.get('tecnicos')?.dirty ||
                 ticketForm.get('tecnicos')?.touched)
             "
           >
-            <span class="label">Técnicos</span>
-            <div class="clientes-dropdown" (click)="$event.stopPropagation()">
+            <span class="label">Técnico Asignado</span>
+
+            <!-- CASO 1: TICKET YA ASIGNADO (Solo Visualización) -->
+            <div class="clientes-dropdown" *ngIf="tecnicoActual.length > 0">
+              <button type="button" class="dropdown-button" disabled>
+                {{ tecnicoActual[0] }}
+              </button>
+            </div>
+
+            <!-- CASO 2: TICKET SIN ASIGNAR (Dropdown Normal) -->
+            <div
+              class="clientes-dropdown"
+              *ngIf="tecnicoActual.length === 0"
+              (click)="$event.stopPropagation()"
+            >
               <button
                 type="button"
                 class="dropdown-button"
@@ -648,16 +769,50 @@
                 </button>
               </div>
             </div>
+
             <div
-              class="selected-chips"
-              *ngIf="tecnicosSeleccionados.length > 0"
+              class="helper-text"
+              *ngIf="
+                tecnicoActual.length === 0 && tecnicosDisponibles.length === 0
+              "
             >
-              <span class="chip" *ngFor="let nombre of tecnicosSeleccionados">{{
-                nombre
-              }}</span>
-            </div>
-            <div class="helper-text" *ngIf="tecnicosDisponibles.length === 0">
               No hay tecnicos disponibles para seleccionar.
+            </div>
+          </label>
+
+          <!-- SECCION TRANSFERIR (Solo Visible si hay tecnico asignado) -->
+          <label *ngIf="tecnicoActual.length > 0">
+            <span class="label">Transferir ticket</span>
+            <div class="clientes-dropdown" (click)="$event.stopPropagation()">
+              <button
+                type="button"
+                class="dropdown-button"
+                (click)="toggleTecnicosDropdown($event)"
+                [disabled]="ticketForm.get('tecnicos')?.disabled"
+                [attr.aria-expanded]="tecnicosDropdownAbierto"
+              >
+                {{ resumenTecnicosSeleccionados }}
+                <img
+                  src="/assets/svg/side-menu-arrow-down.svg"
+                  alt="toggle"
+                  class="dropdown-arrow"
+                />
+              </button>
+              <div class="dropdown-panel" *ngIf="tecnicosDropdownAbierto">
+                <button
+                  type="button"
+                  class="dropdown-option"
+                  *ngFor="let tecnico of tecnicosDisponibles"
+                  (click)="onToggleTecnico(tecnico, $event)"
+                  [class.selected]="estaTecnicoSeleccionado(tecnico)"
+                >
+                  <span
+                    class="checkbox"
+                    [class.checked]="estaTecnicoSeleccionado(tecnico)"
+                  ></span>
+                  <span>{{ tecnico.name }}</span>
+                </button>
+              </div>
             </div>
           </label>
 

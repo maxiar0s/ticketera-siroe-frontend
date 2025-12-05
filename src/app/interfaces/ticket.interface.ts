@@ -46,6 +46,15 @@ export interface Ticket {
   fuente: 'Web' | 'Email';
   fechaRespuesta?: string | null;
   historialEstados?: string[];
+  tecnicoAsignadoId?: number;
+  historialTransferencias?: {
+    fromId: number;
+    toId: number;
+    date: string;
+    by: number;
+  }[];
+  comentarioInterno?: string | null;
+  tiempoResolucion?: number | null;
 }
 
 export interface TicketListadoResponse {

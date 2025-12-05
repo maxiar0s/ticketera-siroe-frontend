@@ -64,6 +64,8 @@ export class TicketsComponent implements OnInit {
   eliminandoTicketId: number | null = null;
   tecnicosDropdownAbierto = false;
   detalleVisible = false;
+  tecnicoActual: string[] = []; // Para mostrar quien era el tecnico original en el dropdown deshabilitado
+  estadosTicketFormulario: { value: string; label: string }[] = [];
 
   readonly esAdmin: boolean;
   readonly esTecnico: boolean;
@@ -118,6 +120,10 @@ export class TicketsComponent implements OnInit {
       buscar: [''],
       estado: ['todos'],
       proyectoId: [''],
+      tipo: [''],
+      prioridad: [''],
+      tecnicoId: [''],
+      fecha: [''],
     });
 
     this.ticketForm = this.fb.group({
@@ -136,6 +142,9 @@ export class TicketsComponent implements OnInit {
       ticketDetalleTermino: [''],
       descripcion: ['', [Validators.required, Validators.minLength(5)]],
       proyectoId: [null],
+      comentarioInterno: [''],
+      tiempoResolucionHoras: [0, [Validators.min(0)]],
+      tiempoResolucionMinutos: [0, [Validators.min(0), Validators.max(59)]],
     });
   }
 
@@ -202,6 +211,7 @@ export class TicketsComponent implements OnInit {
     this.cargarClientes();
     this.cargarTecnicosDisponibles();
     this.cargarProyectos();
+    this.estadosTicketFormulario = [...this.estadosTicket];
   }
 
   private configurarValidacionesDinamicas(): void {
@@ -304,6 +314,10 @@ export class TicketsComponent implements OnInit {
       buscar: '',
       estado: 'todos',
       proyectoId: '',
+      tipo: '',
+      prioridad: '',
+      tecnicoId: '',
+      fecha: '',
     });
     const clienteId = this.filtroForm.value.clienteId;
     if (clienteId) {
@@ -343,6 +357,10 @@ export class TicketsComponent implements OnInit {
         params['proyectoId'] = filtros.proyectoId;
       }
     }
+    if (filtros.tipo) params['tipo'] = filtros.tipo;
+    if (filtros.prioridad) params['prioridad'] = filtros.prioridad;
+    if (filtros.tecnicoId) params['tecnicoId'] = filtros.tecnicoId;
+    if (filtros.fecha) params['fecha'] = filtros.fecha;
 
     this.apiService
       .tickets(params)
@@ -445,7 +463,7 @@ export class TicketsComponent implements OnInit {
       fechaVisita: this.obtenerFechaActual(),
       horaLlegada: '',
       horaSalida: '',
-      tecnicos: [],
+      tecnicos: [], // En Nuevo no se asigna tecnico
       ticketEstado: 'Nuevo',
       prioridad: 'Media',
       tipo: 'Incidente',
@@ -453,6 +471,9 @@ export class TicketsComponent implements OnInit {
       ticketDetalleTermino: '',
       descripcion: '',
       proyectoId: null,
+      comentarioInterno: '',
+      tiempoResolucionHoras: 0,
+      tiempoResolucionMinutos: 0,
     });
 
     this.formularioVisible = true;
@@ -465,6 +486,9 @@ export class TicketsComponent implements OnInit {
     } else {
       this.sucursalesFormulario = [];
     }
+    // Deshabilitar tecnicos al crear, ya que estado es Nuevo
+    this.ticketForm.get('tecnicos')?.disable({ emitEvent: false });
+    this.estadosTicketFormulario = [...this.estadosTicket];
   }
 
   abrirFormularioEditar(ticket: Ticket, event?: Event): void {
@@ -494,6 +518,15 @@ export class TicketsComponent implements OnInit {
       ticketDetalleTermino: ticket.detalleTermino ?? '',
       descripcion: ticket.descripcion,
       proyectoId: ticket.proyectoId ?? null,
+      comentarioInterno: ticket.comentarioInterno ?? '',
+      tiempoResolucionHoras: ticket.tiempoResolucion
+        ? Math.floor(ticket.tiempoResolucion)
+        : 0,
+      tiempoResolucionMinutos: ticket.tiempoResolucion
+        ? Math.round(
+            (ticket.tiempoResolucion - Math.floor(ticket.tiempoResolucion)) * 60
+          )
+        : 0,
     });
 
     this.formularioVisible = true;
@@ -507,6 +540,39 @@ export class TicketsComponent implements OnInit {
         sucursalId: ticket.sucursalId ?? '',
       });
     });
+
+    // Logica de visualizacion de tecnicos
+    this.tecnicoActual = Array.isArray(ticket.tecnicos)
+      ? [...ticket.tecnicos]
+      : [];
+
+    const estado = ticket.estadoTicket ?? 'Nuevo';
+    if (estado === 'Nuevo') {
+      // Si es Nuevo, no hay tecnico asignado y no se puede asignar aun
+      this.ticketForm.get('tecnicos')?.disable({ emitEvent: false });
+    } else {
+      // Si no es Nuevo (Abierto, etc), DEBE haber un tecnico asignado.
+      // Permitimos editar (Transferir) directamente mediante el segundo dropdown.
+      this.ticketForm.get('tecnicos')?.enable({ emitEvent: false });
+
+      // Filtrar estados: Si ya no es Nuevo, no puede volver a ser Nuevo.
+      this.estadosTicketFormulario = this.estadosTicket.filter(
+        (e) => e.value !== 'Nuevo'
+      );
+    }
+
+    // Validar permisos de edicion para tecnico asignado
+    if (!this.esAdmin && this.esTecnico) {
+      const usuario = this.authService.decodificarToken();
+      if (
+        ticket.tecnicoAsignadoId &&
+        usuario?.id !== ticket.tecnicoAsignadoId
+      ) {
+        this.ticketForm.disable({ emitEvent: false });
+        this.exitoMensaje =
+          'No tienes permisos para editar este ticket (asignado a otro técnico).';
+      }
+    }
   }
 
   cerrarFormulario(): void {
@@ -519,7 +585,11 @@ export class TicketsComponent implements OnInit {
       ticketFechaTermino: '',
       ticketDetalleTermino: '',
       proyectoId: null,
+      comentarioInterno: '',
+      tiempoResolucionHoras: 0,
+      tiempoResolucionMinutos: 0,
     });
+    this.estadosTicketFormulario = [...this.estadosTicket];
     this.sucursalesFormulario = [];
     this.selectedIngresoFiles = [];
     this.selectedEvidenceFiles = [];
@@ -570,23 +640,30 @@ export class TicketsComponent implements OnInit {
   onToggleTecnico(tecnico: Tecnico, event?: MouseEvent): void {
     event?.stopPropagation();
     const actuales = this.tecnicosSeleccionados;
-    const index = actuales.indexOf(tecnico.name);
-    let actualizados: string[];
-    if (index >= 0) {
-      actualizados = [
-        ...actuales.slice(0, index),
-        ...actuales.slice(index + 1),
-      ];
+    const estaSeleccionado = actuales.includes(tecnico.name);
+
+    // Logica de seleccion unica (Radio behavior)
+    if (estaSeleccionado) {
+      // Si ya esta seleccionado, permitimos deseleccionar?
+      // Generalmente si, para dejar vacio.
+      this.ticketForm.get('tecnicos')?.setValue([]);
     } else {
-      actualizados = [...actuales, tecnico.name];
+      // Si no esta seleccionado, reemplazamos cualquier seleccion previa
+      this.ticketForm.get('tecnicos')?.setValue([tecnico.name]);
     }
-    this.ticketForm.get('tecnicos')?.setValue(actualizados);
+
     this.ticketForm.get('tecnicos')?.markAsDirty();
     this.ticketForm.get('tecnicos')?.markAsTouched();
+    this.tecnicosDropdownAbierto = false; // Cerrar al seleccionar para UX mas rapida? O mantener abierto? Mantener abierto es mejor si fuera multi. Single -> Cerrar.
   }
 
   estaTecnicoSeleccionado(tecnico: Tecnico): boolean {
     return this.tecnicosSeleccionados.includes(tecnico.name);
+  }
+
+  getNombreTecnico(id: number): string {
+    const found = this.tecnicosDisponibles.find((t) => t.id === id);
+    return found ? found.name : `ID: ${id}`;
   }
 
   @HostListener('document:click')
@@ -833,6 +910,28 @@ export class TicketsComponent implements OnInit {
           : payload.descripcion && payload.descripcion.length >= 5
           ? payload.descripcion
           : 'Ticket cerrado por el técnico.';
+    }
+
+    // Comentario Interno y Tiempo Resolucion
+    if (
+      formValue.comentarioInterno &&
+      `${formValue.comentarioInterno}`.trim()
+    ) {
+      payload.comentarioInterno = `${formValue.comentarioInterno}`.trim();
+    }
+
+    const horas = formValue.tiempoResolucionHoras
+      ? Number(formValue.tiempoResolucionHoras)
+      : 0;
+    const minutos = formValue.tiempoResolucionMinutos
+      ? Number(formValue.tiempoResolucionMinutos)
+      : 0;
+    if (
+      (horas > 0 || minutos > 0) &&
+      !Number.isNaN(horas) &&
+      !Number.isNaN(minutos)
+    ) {
+      payload.tiempoResolucion = horas + minutos / 60;
     }
 
     return payload;
