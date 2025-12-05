@@ -1,6 +1,18 @@
-﻿import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http';
+﻿import {
+  HttpClient,
+  HttpErrorResponse,
+  HttpParams,
+} from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { catchError, forkJoin, map, Observable, of, shareReplay, throwError } from 'rxjs';
+import {
+  catchError,
+  forkJoin,
+  map,
+  Observable,
+  of,
+  shareReplay,
+  throwError,
+} from 'rxjs';
 import { Cliente } from '../interfaces/cliente.interface';
 import { ClienteResumen } from '../interfaces/cliente-resumen.interface';
 import { ClienteFiltros } from '../interfaces/cliente-filtros.interface';
@@ -9,7 +21,11 @@ import { VisitaProgramada } from '../interfaces/visita-programada.interface';
 import { Tecnico } from '../interfaces/tecnico.interface';
 import { Cuenta } from '../interfaces/Cuenta.interface';
 import { TipoEquipo } from '../interfaces/TipoEquipo.interface';
-import { Campo, CampoPresetOption, CampoStandard } from '../interfaces/campo.interface';
+import {
+  Campo,
+  CampoPresetOption,
+  CampoStandard,
+} from '../interfaces/campo.interface';
 import { DepartamentoEquipo } from '../interfaces/departamento-equipo.interface';
 import { EquipoFiltros } from '../interfaces/equipo-filtros.interface';
 import {
@@ -18,7 +34,10 @@ import {
 } from '../interfaces/vehiculo.interface';
 import { VehiculoSalida } from '../interfaces/vehiculo-salida.interface';
 import { NotificacionListadoRespuesta } from '../interfaces/notificacion.interface';
-import { DocumentoCliente, DocumentoClienteListado } from '../interfaces/documento-cliente.interface';
+import {
+  DocumentoCliente,
+  DocumentoClienteListado,
+} from '../interfaces/documento-cliente.interface';
 import { EstadoSucursal } from '../interfaces/estado-sucursal.interface';
 import { environment } from '../../environments/environment';
 
@@ -35,7 +54,10 @@ export class ApiService {
   private url = environment.apiBaseUrl;
   //private url = 'https://api.soportesiroe.cl'
 
-  private readonly equiposClienteCache = new Map<string, ClienteEquiposDetalle>();
+  private readonly equiposClienteCache = new Map<
+    string,
+    ClienteEquiposDetalle
+  >();
   private estadosSucursalCache$?: Observable<EstadoSucursal[]>;
 
   constructor(private http: HttpClient) {}
@@ -149,8 +171,14 @@ export class ApiService {
 
     setNumberParam('visitasMensualesMin', filtros.visitasMensualesMin ?? null);
     setNumberParam('visitasMensualesMax', filtros.visitasMensualesMax ?? null);
-    setNumberParam('visitasEmergenciaMin', filtros.visitasEmergenciaMin ?? null);
-    setNumberParam('visitasEmergenciaMax', filtros.visitasEmergenciaMax ?? null);
+    setNumberParam(
+      'visitasEmergenciaMin',
+      filtros.visitasEmergenciaMin ?? null
+    );
+    setNumberParam(
+      'visitasEmergenciaMax',
+      filtros.visitasEmergenciaMax ?? null
+    );
 
     const setBooleanParam = (key: string, value?: boolean | null) => {
       if (value === null || value === undefined) {
@@ -190,13 +218,15 @@ export class ApiService {
     return this.getInformation(endpoint);
   }
 
-  documentacionClientes(params: {
-    pagina?: number;
-    limite?: number;
-    clienteId?: string;
-    tipo?: string;
-    buscar?: string;
-  } = {}): Observable<DocumentoClienteListado> {
+  documentacionClientes(
+    params: {
+      pagina?: number;
+      limite?: number;
+      clienteId?: string;
+      tipo?: string;
+      buscar?: string;
+    } = {}
+  ): Observable<DocumentoClienteListado> {
     let httpParams = new HttpParams();
 
     if (params.pagina) {
@@ -216,7 +246,9 @@ export class ApiService {
     }
 
     return this.http
-      .get<DocumentoClienteListado>(`${this.url}/documentacion`, { params: httpParams })
+      .get<DocumentoClienteListado>(`${this.url}/documentacion`, {
+        params: httpParams,
+      })
       .pipe(
         catchError((error: HttpErrorResponse) => {
           console.error('Error al obtener documentación de clientes:', error);
@@ -226,21 +258,25 @@ export class ApiService {
   }
 
   crearDocumentoCliente(payload: FormData): Observable<DocumentoCliente> {
-    return this.http.post<DocumentoCliente>(`${this.url}/documentacion`, payload).pipe(
-      catchError((error: HttpErrorResponse) => {
-        console.error('Error al crear documento de cliente:', error);
-        return throwError(() => error);
-      })
-    );
+    return this.http
+      .post<DocumentoCliente>(`${this.url}/documentacion`, payload)
+      .pipe(
+        catchError((error: HttpErrorResponse) => {
+          console.error('Error al crear documento de cliente:', error);
+          return throwError(() => error);
+        })
+      );
   }
 
   eliminarDocumentoCliente(id: number): Observable<{ mensaje: string }> {
-    return this.http.delete<{ mensaje: string }>(`${this.url}/documentacion/${id}`).pipe(
-      catchError((error: HttpErrorResponse) => {
-        console.error('Error al eliminar documento de cliente:', error);
-        return throwError(() => error);
-      })
-    );
+    return this.http
+      .delete<{ mensaje: string }>(`${this.url}/documentacion/${id}`)
+      .pipe(
+        catchError((error: HttpErrorResponse) => {
+          console.error('Error al eliminar documento de cliente:', error);
+          return throwError(() => error);
+        })
+      );
   }
 
   client(id: string, pagina: number, option: string): Observable<any> {
@@ -296,7 +332,12 @@ export class ApiService {
   }
 
   // Sucursal
-  sucursal(id: string, pagina: number, option: string, filtros?: EquipoFiltros): Observable<any> {
+  sucursal(
+    id: string,
+    pagina: number,
+    option: string,
+    filtros?: EquipoFiltros
+  ): Observable<any> {
     let params = new HttpParams()
       .set('pagina', String(pagina))
       .set('sort', 'asc');
@@ -351,18 +392,19 @@ export class ApiService {
       }
 
       if (typeof conRegistroFotografico === 'boolean') {
-        params = params.set('conRegistroFotografico', String(conRegistroFotografico));
+        params = params.set(
+          'conRegistroFotografico',
+          String(conRegistroFotografico)
+        );
       }
     }
 
-    return this.http
-      .get<any>(`${this.url}/sucursal/${id}`, { params })
-      .pipe(
-        catchError((error: HttpErrorResponse) => {
-          console.error('Error en la solicitud GET:', error);
-          return throwError(() => error);
-        })
-      );
+    return this.http.get<any>(`${this.url}/sucursal/${id}`, { params }).pipe(
+      catchError((error: HttpErrorResponse) => {
+        console.error('Error en la solicitud GET:', error);
+        return throwError(() => error);
+      })
+    );
   }
 
   // Crear o modificar usuario
@@ -474,7 +516,9 @@ export class ApiService {
     return this.getInformation(endpoint);
   }
 
-  createDepartamentoEquipo(payload: { name: string }): Observable<DepartamentoEquipo> {
+  createDepartamentoEquipo(payload: {
+    name: string;
+  }): Observable<DepartamentoEquipo> {
     const endpoint = 'departamentos-equipos';
     return this.postInformation(payload, endpoint);
   }
@@ -545,23 +589,40 @@ export class ApiService {
       map(({ detalle, equipos }) => {
         const clienteBase = detalle?.cliente as Cliente | undefined;
         const clienteDetalle: Cliente | null = clienteBase
-          ? ({ ...clienteBase, sucursales: Array.isArray(clienteBase.sucursales) ? clienteBase.sucursales.map((sucursal: any) => ({ ...sucursal })) : [] } as Cliente)
+          ? ({
+              ...clienteBase,
+              sucursales: Array.isArray(clienteBase.sucursales)
+                ? clienteBase.sucursales.map((sucursal: any) => ({
+                    ...sucursal,
+                  }))
+                : [],
+            } as Cliente)
           : null;
 
-        const equiposDesdeDetalle = this.extraerEquiposDeDetalle(clienteDetalle);
-        const equiposNormalizados = this.unificarEquiposListas([equiposDesdeDetalle, equipos]);
+        const equiposDesdeDetalle =
+          this.extraerEquiposDeDetalle(clienteDetalle);
+        const equiposNormalizados = this.unificarEquiposListas([
+          equiposDesdeDetalle,
+          equipos,
+        ]);
 
         if (clienteDetalle && Array.isArray(clienteDetalle.sucursales)) {
-          const conteoPorSucursal = this.contarEquiposPorSucursal(equiposNormalizados);
-          clienteDetalle.sucursales = clienteDetalle.sucursales.map((sucursal: any) => {
-            const clave = String(sucursal.id ?? '');
-            const conteo = conteoPorSucursal.get(clave);
-            const existente = typeof sucursal.equiposCount === 'number' ? Number(sucursal.equiposCount) : undefined;
-            return {
-              ...sucursal,
-              equiposCount: existente !== undefined ? existente : (conteo ?? 0),
-            };
-          });
+          const conteoPorSucursal =
+            this.contarEquiposPorSucursal(equiposNormalizados);
+          clienteDetalle.sucursales = clienteDetalle.sucursales.map(
+            (sucursal: any) => {
+              const clave = String(sucursal.id ?? '');
+              const conteo = conteoPorSucursal.get(clave);
+              const existente =
+                typeof sucursal.equiposCount === 'number'
+                  ? Number(sucursal.equiposCount)
+                  : undefined;
+              return {
+                ...sucursal,
+                equiposCount: existente !== undefined ? existente : conteo ?? 0,
+              };
+            }
+          );
         }
 
         const resultado: ClienteEquiposDetalle = {
@@ -614,8 +675,8 @@ export class ApiService {
     const listadoAlternativo = Array.isArray(cliente?.Equipos)
       ? cliente.Equipos
       : Array.isArray(cliente?.equipos)
-        ? cliente.equipos
-        : [];
+      ? cliente.equipos
+      : [];
 
     listadoAlternativo.forEach((equipo: Equipo) => {
       const key = this.normalizarClaveEquipo(equipo);
@@ -627,7 +688,9 @@ export class ApiService {
     return Array.from(equiposMap.values());
   }
 
-  private unificarEquiposListas(listados: Array<Equipo[] | null | undefined>): Equipo[] {
+  private unificarEquiposListas(
+    listados: Array<Equipo[] | null | undefined>
+  ): Equipo[] {
     const mapa = new Map<string, Equipo>();
 
     listados.forEach((lista) => {
@@ -653,7 +716,8 @@ export class ApiService {
     const conteo = new Map<string, number>();
 
     listado.forEach((equipo) => {
-      const sucursalId = (equipo as any)?.sucursalId ?? (equipo as any)?.sucursal?.id;
+      const sucursalId =
+        (equipo as any)?.sucursalId ?? (equipo as any)?.sucursal?.id;
       if (sucursalId === undefined || sucursalId === null) {
         return;
       }
@@ -664,14 +728,18 @@ export class ApiService {
     return conteo;
   }
 
-  private normalizarClaveEquipo(equipo: Equipo | null | undefined): string | null {
+  private normalizarClaveEquipo(
+    equipo: Equipo | null | undefined
+  ): string | null {
     if (!equipo) {
       return null;
     }
 
     const clave =
       (equipo.id !== undefined && equipo.id !== null ? equipo.id : undefined) ??
-      (equipo.codigoId && String(equipo.codigoId).trim() !== '' ? equipo.codigoId : undefined) ??
+      (equipo.codigoId && String(equipo.codigoId).trim() !== ''
+        ? equipo.codigoId
+        : undefined) ??
       (equipo.numeroSecuencial !== undefined && equipo.numeroSecuencial !== null
         ? `ns-${equipo.numeroSecuencial}`
         : undefined);
@@ -690,7 +758,8 @@ export class ApiService {
       if (value === undefined || value === null) {
         return;
       }
-      const stringValue = typeof value === 'string' ? value.trim() : String(value);
+      const stringValue =
+        typeof value === 'string' ? value.trim() : String(value);
       if (stringValue !== '') {
         searchParams.append(key, stringValue);
       }
@@ -712,7 +781,8 @@ export class ApiService {
       if (value === undefined || value === null) {
         return;
       }
-      const stringValue = typeof value === 'string' ? value.trim() : String(value);
+      const stringValue =
+        typeof value === 'string' ? value.trim() : String(value);
       if (stringValue !== '') {
         searchParams.append(key, stringValue);
       }
@@ -773,7 +843,9 @@ export class ApiService {
     return this.putInformation(payload, endpoint);
   }
 
-  notificacionesListado(params: { soloNoLeidas?: boolean; limite?: number } = {}): Observable<NotificacionListadoRespuesta> {
+  notificacionesListado(
+    params: { soloNoLeidas?: boolean; limite?: number } = {}
+  ): Observable<NotificacionListadoRespuesta> {
     let httpParams = new HttpParams();
     if (params.soloNoLeidas) {
       httpParams = httpParams.set('soloNoLeidas', 'true');
@@ -783,7 +855,9 @@ export class ApiService {
     }
 
     return this.http
-      .get<NotificacionListadoRespuesta>(`${this.url}/notificaciones`, { params: httpParams })
+      .get<NotificacionListadoRespuesta>(`${this.url}/notificaciones`, {
+        params: httpParams,
+      })
       .pipe(
         catchError((error: HttpErrorResponse) => {
           console.error('Error al obtener notificaciones:', error);
@@ -792,10 +866,15 @@ export class ApiService {
       );
   }
 
-  marcarNotificacionesLeidas(ids: number[]): Observable<{ actualizadas: number }> {
+  marcarNotificacionesLeidas(
+    ids: number[]
+  ): Observable<{ actualizadas: number }> {
     const payload = Array.isArray(ids) && ids.length ? { ids } : { ids: [] };
     return this.http
-      .patch<{ actualizadas: number }>(`${this.url}/notificaciones/leidas`, payload)
+      .patch<{ actualizadas: number }>(
+        `${this.url}/notificaciones/leidas`,
+        payload
+      )
       .pipe(
         catchError((error: HttpErrorResponse) => {
           console.error('Error al marcar notificaciones como leidas:', error);
@@ -806,16 +885,23 @@ export class ApiService {
 
   marcarTodasNotificaciones(): Observable<{ actualizadas: number }> {
     return this.http
-      .patch<{ actualizadas: number }>(`${this.url}/notificaciones/leidas`, { marcarTodas: true })
+      .patch<{ actualizadas: number }>(`${this.url}/notificaciones/leidas`, {
+        marcarTodas: true,
+      })
       .pipe(
         catchError((error: HttpErrorResponse) => {
-          console.error('Error al marcar todas las notificaciones como leidas:', error);
+          console.error(
+            'Error al marcar todas las notificaciones como leidas:',
+            error
+          );
           return throwError(() => error);
         })
       );
   }
 
-  getProyectos(params: { pagina?: number; limite?: number; buscar?: string } = {}): Observable<any> {
+  getProyectos(
+    params: { pagina?: number; limite?: number; buscar?: string } = {}
+  ): Observable<any> {
     let httpParams = new HttpParams();
     if (params.pagina) {
       httpParams = httpParams.set('pagina', params.pagina.toString());
@@ -882,7 +968,9 @@ export class ApiService {
   }
 
   // Vehículos
-  getVehiculos(params: { pagina?: number; limite?: number; buscar?: string } = {}): Observable<VehiculoListadoResponse> {
+  getVehiculos(
+    params: { pagina?: number; limite?: number; buscar?: string } = {}
+  ): Observable<VehiculoListadoResponse> {
     let httpParams = new HttpParams();
     if (params.pagina) {
       httpParams = httpParams.set('pagina', params.pagina.toString());
@@ -895,7 +983,9 @@ export class ApiService {
     }
 
     return this.http
-      .get<VehiculoListadoResponse>(`${this.url}/vehiculos`, { params: httpParams })
+      .get<VehiculoListadoResponse>(`${this.url}/vehiculos`, {
+        params: httpParams,
+      })
       .pipe(
         catchError((error: HttpErrorResponse) => {
           console.error('Error al obtener vehículos:', error);
@@ -922,7 +1012,10 @@ export class ApiService {
     );
   }
 
-  actualizarVehiculo(id: number, payload: FormData | any): Observable<Vehiculo> {
+  actualizarVehiculo(
+    id: number,
+    payload: FormData | any
+  ): Observable<Vehiculo> {
     return this.http.put<Vehiculo>(`${this.url}/vehiculos/${id}`, payload).pipe(
       catchError((error: HttpErrorResponse) => {
         console.error('Error al actualizar vehículo:', error);
@@ -945,7 +1038,10 @@ export class ApiService {
     payload: FormData | any
   ): Observable<VehiculoSalida> {
     return this.http
-      .post<VehiculoSalida>(`${this.url}/vehiculos/${vehiculoId}/salidas`, payload)
+      .post<VehiculoSalida>(
+        `${this.url}/vehiculos/${vehiculoId}/salidas`,
+        payload
+      )
       .pipe(
         catchError((error: HttpErrorResponse) => {
           console.error('Error al registrar salida:', error);
@@ -972,7 +1068,10 @@ export class ApiService {
       );
   }
 
-  eliminarVehiculoSalida(vehiculoId: number, salidaId: number): Observable<any> {
+  eliminarVehiculoSalida(
+    vehiculoId: number,
+    salidaId: number
+  ): Observable<any> {
     return this.http
       .delete<any>(`${this.url}/vehiculos/${vehiculoId}/salidas/${salidaId}`)
       .pipe(
@@ -1107,7 +1206,9 @@ export class ApiService {
         })
       );
   }
+
+  getLogs(): Observable<any[]> {
+    const endpoint = 'logs';
+    return this.getInformation(endpoint);
+  }
 }
-
-
-

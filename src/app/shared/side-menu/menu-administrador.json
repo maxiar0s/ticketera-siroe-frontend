@@ -70,5 +70,13 @@
     "svg": "tipo-de-equipo",
     "subItem": [],
     "isOpen": false
+  },
+  {
+    "id": 10,
+    "nombre": "Reportes",
+    "route": "/reportes",
+    "svg": "reportes",
+    "subItem": [],
+    "isOpen": false
   }
 ]

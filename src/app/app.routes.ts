@@ -169,4 +169,13 @@ export const routes: Routes = [
         (m) => m.TiposEquiposComponent
       ),
   },
+  {
+    path: 'reportes',
+    canActivate: [protegerRutaGuard, AdminGuard, ModuleGuard],
+    data: { module: 'reportes' },
+    loadComponent: () =>
+      import('./pages/reportes/reportes.component').then(
+        (m) => m.ReportesComponent
+      ),
+  },
 ];

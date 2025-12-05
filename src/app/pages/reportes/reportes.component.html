@@ -1,0 +1,107 @@
+<div class="reportes-container">
+  <!-- Header -->
+  <div class="reportes-header">
+    <div>
+      <h1>Reportes del Sistema</h1>
+      <p class="subtitle">Historial de actividades y acciones de usuarios</p>
+    </div>
+  </div>
+
+  <!-- Filtros -->
+  <div class="reportes-filters">
+    <div class="filters-grid">
+      <div class="filter-field">
+        <span class="label">Usuario</span>
+        <input
+          type="text"
+          [(ngModel)]="filtroUsuario"
+          (input)="aplicarFiltros()"
+          placeholder="Buscar por nombre o email"
+          class="filter-input"
+        />
+      </div>
+      <div class="filter-field">
+        <span class="label">Acción</span>
+        <input
+          type="text"
+          [(ngModel)]="filtroAccion"
+          (input)="aplicarFiltros()"
+          placeholder="Ej: LOGIN, CREAR_TICKET"
+          class="filter-input"
+        />
+      </div>
+      <div class="filter-field">
+        <span class="label">Fecha Inicio</span>
+        <input
+          type="date"
+          [(ngModel)]="filtroFechaInicio"
+          (change)="aplicarFiltros()"
+          class="filter-input"
+        />
+      </div>
+      <div class="filter-field">
+        <span class="label">Fecha Fin</span>
+        <input
+          type="date"
+          [(ngModel)]="filtroFechaFin"
+          (change)="aplicarFiltros()"
+          class="filter-input"
+        />
+      </div>
+    </div>
+    <div class="filter-actions">
+      <button (click)="limpiarFiltros()" class="ghost-button">
+        Limpiar Filtros
+      </button>
+    </div>
+  </div>
+
+  <!-- Tabla -->
+  <div class="reportes-table-wrapper">
+    <table class="reportes-table">
+      <thead>
+        <tr>
+          <th>Fecha</th>
+          <th>Usuario</th>
+          <th>Acción</th>
+          <th>Método / Ruta</th>
+          <th>Detalles</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let log of filteredLogs">
+          <td class="date-cell">
+            {{ log.fecha | date : "dd/MM/yyyy HH:mm" }}
+          </td>
+          <td>
+            <div class="user-cell">
+              <span class="user-name">{{
+                log.usuario?.name || "Sistema"
+              }}</span>
+              <span class="user-email">{{ log.usuario?.email }}</span>
+            </div>
+          </td>
+          <td>
+            <span
+              class="action-chip"
+              [class.login]="log.accion === 'LOGIN'"
+              [class.logout]="log.accion === 'LOGOUT'"
+              [class.crear]="log.accion.startsWith('CREAR')"
+              [class.modificar]="log.accion.startsWith('MODIFICAR')"
+              [class.eliminar]="log.accion.startsWith('ELIMINAR')"
+            >
+              {{ log.accion }}
+            </span>
+          </td>
+          <td class="route-cell">{{ log.metodo }} {{ log.ruta }}</td>
+          <td class="details-cell" [title]="getDetallesString(log.detalles)">
+            {{ getDetallesString(log.detalles) }}
+          </td>
+        </tr>
+        <tr *ngIf="filteredLogs.length === 0" class="empty-row">
+          <td colspan="5">No se encontraron registros.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
