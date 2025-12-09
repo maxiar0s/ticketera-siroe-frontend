@@ -1,9 +1,10 @@
-import { Component, Inject, Renderer2 } from '@angular/core';
+import { Component, Inject, OnInit, Renderer2 } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { SideMenuComponent } from './shared/side-menu/side-menu.component';
 import { TopBarComponent } from './shared/top-bar/top-bar.component';
 import { CommonModule } from '@angular/common';
 import { AuthService } from './services/auth.service';
+import { UserPreferencesService } from './services/user-preferences.service';
 import { Title } from '@angular/platform-browser';
 import { BRAND } from './config/branding';
 import { DOCUMENT } from '@angular/common';
@@ -13,19 +14,27 @@ import { DOCUMENT } from '@angular/common';
   standalone: true,
   imports: [RouterOutlet, SideMenuComponent, TopBarComponent, CommonModule],
   templateUrl: './app.component.html',
-  styleUrl: './app.component.css'
+  styleUrl: './app.component.css',
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
   title = BRAND.appTitle;
 
   constructor(
     public authService: AuthService,
     private titleService: Title,
     private renderer: Renderer2,
+    private preferenciasService: UserPreferencesService,
     @Inject(DOCUMENT) private document: Document
   ) {
     this.titleService.setTitle(BRAND.appTitle);
     this.setFavicon(BRAND.favicon);
+  }
+
+  ngOnInit(): void {
+    // Initialize theme based on user preferences
+    const token = this.authService.decodificarToken();
+    const userId = token?.id ?? null;
+    this.preferenciasService.inicializarTema(userId);
   }
 
   private setFavicon(faviconUrl: string): void {

@@ -4,7 +4,10 @@ import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
 import { ApiService } from '../../services/api.service';
 import { SignalService } from '../../services/signal.service';
-import { UserPreferencesService, PreferenciasUsuario } from '../../services/user-preferences.service';
+import {
+  UserPreferencesService,
+  PreferenciasUsuario,
+} from '../../services/user-preferences.service';
 import { Cuenta } from '../../interfaces/Cuenta.interface';
 
 type SeccionOpciones = 'general' | 'backups';
@@ -80,7 +83,9 @@ export class OpcionesComponent implements OnInit {
     }
 
     if (this.usuarioId !== null) {
-      const preferencias = this.preferenciasService.obtenerPreferencias(this.usuarioId);
+      const preferencias = this.preferenciasService.obtenerPreferencias(
+        this.usuarioId
+      );
       this.preferenciasForm.patchValue(preferencias);
     }
 
@@ -114,12 +119,17 @@ export class OpcionesComponent implements OnInit {
 
     const preferencias: PreferenciasUsuario = this.preferenciasForm.value;
     this.preferenciasService.guardarPreferencias(this.usuarioId, preferencias);
+
+    // Apply theme immediately
+    this.preferenciasService.aplicarTema(preferencias.tema);
+
     this.mensajeGeneral = 'Preferencias guardadas correctamente.';
   }
 
   descargarRespaldo(): void {
     if (!this.perfilActual || this.usuarioId === null) {
-      this.mensajeErrorRespaldo = 'No hay informacion disponible para generar el respaldo.';
+      this.mensajeErrorRespaldo =
+        'No hay informacion disponible para generar el respaldo.';
       return;
     }
 
@@ -135,7 +145,9 @@ export class OpcionesComponent implements OnInit {
       preferencias: this.preferenciasForm.value as PreferenciasUsuario,
     };
 
-    const blob = new Blob([JSON.stringify(respaldo, null, 2)], { type: 'application/json' });
+    const blob = new Blob([JSON.stringify(respaldo, null, 2)], {
+      type: 'application/json',
+    });
     const url = URL.createObjectURL(blob);
     const enlace = document.createElement('a');
     enlace.href = url;
@@ -162,13 +174,17 @@ export class OpcionesComponent implements OnInit {
         }
 
         const preferencias = contenido.preferencias as PreferenciasUsuario;
-        this.preferenciasService.guardarPreferencias(this.usuarioId as number, preferencias);
+        this.preferenciasService.guardarPreferencias(
+          this.usuarioId as number,
+          preferencias
+        );
         this.preferenciasForm.patchValue(preferencias);
         this.mensajeRespaldo = 'Preferencias restauradas correctamente.';
         this.mensajeErrorRespaldo = '';
       } catch (_error) {
         this.mensajeRespaldo = '';
-        this.mensajeErrorRespaldo = 'No se pudo procesar el archivo seleccionado.';
+        this.mensajeErrorRespaldo =
+          'No se pudo procesar el archivo seleccionado.';
       } finally {
         input.value = '';
       }

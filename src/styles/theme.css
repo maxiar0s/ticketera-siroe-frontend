@@ -1,3 +1,6 @@
+/* ========================================
+   LIGHT THEME (default)
+   ======================================== */
 :root {
   /* Colores base (2 principales + 2 secundarios) */
   --color-primary: #b71653;
@@ -31,4 +34,42 @@
   --color-nuevo: #ff6b35;
   --color-nuevo-bg: rgba(255, 107, 53, 0.15);
   --color-nuevo-border: rgba(255, 107, 53, 0.4);
+}
+
+/* ========================================
+   DARK THEME
+   ======================================== */
+[data-theme="dark"] {
+  /* Colores base (mantener primarios) */
+  --color-primary: #d1286d;
+  --color-primary-strong: #e63d7f;
+  --color-primary-bright: #f04d8e;
+  --color-primary-rgb: 209, 40, 109;
+  --color-primary-bright-rgb: 240, 77, 142;
+  --color-secondary: #1a2340;
+  --color-secondary-alt: #141b2d;
+  --color-secondary-rgb: 26, 35, 64;
+
+  /* Neutros y apoyo (invertidos para dark mode) */
+  --color-surface: #1a1d24;
+  --color-surface-alt: #22262f;
+  --color-surface-soft: #282c36;
+  --color-primary-soft: rgba(209, 40, 109, 0.15);
+  --color-border: #2e333d;
+  --color-border-strong: #3d424f;
+  --color-text: #e8eaed;
+  --color-text-alt: #9aa0ab;
+  --color-disabled: #3d424f;
+  --color-disabled-border: #2e333d;
+
+  /* Estados (ajustados para mejor contraste en dark) */
+  --color-success: #2ed573;
+  --color-info: #3498db;
+  --color-warning: #f1c40f;
+  --color-danger: #e74c3c;
+
+  /* Estado "Nuevo" */
+  --color-nuevo: #ff7f50;
+  --color-nuevo-bg: rgba(255, 127, 80, 0.2);
+  --color-nuevo-border: rgba(255, 127, 80, 0.5);
 }
