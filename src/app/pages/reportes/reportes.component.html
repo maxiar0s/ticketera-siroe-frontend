@@ -1,107 +1,509 @@
 <div class="reportes-container">
-  <!-- Header -->
-  <div class="reportes-header">
-    <div>
-      <h1>Reportes del Sistema</h1>
-      <p class="subtitle">Historial de actividades y acciones de usuarios</p>
-    </div>
+  <!-- Header Actions -->
+  <div class="reportes-header-actions">
+    <button
+      class="refresh-btn"
+      (click)="cargarDatosIniciales()"
+      title="Actualizar datos"
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="18"
+        height="18"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <polyline points="23 4 23 10 17 10"></polyline>
+        <polyline points="1 20 1 14 7 14"></polyline>
+        <path
+          d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"
+        ></path>
+      </svg>
+    </button>
+    <button
+      *ngIf="tabActiva === 'tickets'"
+      class="excel-btn"
+      (click)="descargarExcel()"
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="18"
+        height="18"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+        <polyline points="7 10 12 15 17 10"></polyline>
+        <line x1="12" y1="15" x2="12" y2="3"></line>
+      </svg>
+      Descargar Excel
+    </button>
   </div>
 
-  <!-- Filtros -->
-  <div class="reportes-filters">
-    <div class="filters-grid">
-      <div class="filter-field">
-        <span class="label">Usuario</span>
-        <input
-          type="text"
-          [(ngModel)]="filtroUsuario"
-          (input)="aplicarFiltros()"
-          placeholder="Buscar por nombre o email"
-          class="filter-input"
-        />
-      </div>
-      <div class="filter-field">
-        <span class="label">Acción</span>
-        <input
-          type="text"
-          [(ngModel)]="filtroAccion"
-          (input)="aplicarFiltros()"
-          placeholder="Ej: LOGIN, CREAR_TICKET"
-          class="filter-input"
-        />
-      </div>
-      <div class="filter-field">
-        <span class="label">Fecha Inicio</span>
-        <input
-          type="date"
-          [(ngModel)]="filtroFechaInicio"
-          (change)="aplicarFiltros()"
-          class="filter-input"
-        />
-      </div>
-      <div class="filter-field">
-        <span class="label">Fecha Fin</span>
-        <input
-          type="date"
-          [(ngModel)]="filtroFechaFin"
-          (change)="aplicarFiltros()"
-          class="filter-input"
-        />
-      </div>
-    </div>
-    <div class="filter-actions">
-      <button (click)="limpiarFiltros()" class="ghost-button">
-        Limpiar Filtros
-      </button>
-    </div>
+  <!-- Tabs -->
+  <div class="tabs-container">
+    <button
+      class="tab-btn"
+      [class.active]="tabActiva === 'tickets'"
+      (click)="tabActiva = 'tickets'"
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="18"
+        height="18"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+        <polyline points="22 4 12 14.01 9 11.01"></polyline>
+      </svg>
+      Tickets SLA
+    </button>
+    <button
+      class="tab-btn"
+      [class.active]="tabActiva === 'logs'"
+      (click)="tabActiva = 'logs'"
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="18"
+        height="18"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <polyline points="12 8 12 12 14 14"></polyline>
+        <circle cx="12" cy="12" r="10"></circle>
+      </svg>
+      Logs del Sistema
+    </button>
   </div>
 
-  <!-- Tabla -->
-  <div class="reportes-table-wrapper">
-    <table class="reportes-table">
-      <thead>
-        <tr>
-          <th>Fecha</th>
-          <th>Usuario</th>
-          <th>Acción</th>
-          <th>Método / Ruta</th>
-          <th>Detalles</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let log of filteredLogs">
-          <td class="date-cell">
-            {{ log.fecha | date : "dd/MM/yyyy HH:mm" }}
-          </td>
-          <td>
-            <div class="user-cell">
-              <span class="user-name">{{
-                log.usuario?.name || "Sistema"
+  <!-- Tickets SLA Tab Content -->
+  <ng-container *ngIf="tabActiva === 'tickets'">
+    <!-- Summary Cards -->
+    <div class="summary-cards">
+      <div class="summary-card primary">
+        <div class="card-icon">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="22"
+            height="22"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+            <polyline points="22 4 12 14.01 9 11.01"></polyline>
+          </svg>
+        </div>
+        <div class="card-content">
+          <span class="card-label">Total Tickets</span>
+          <span class="card-value">{{ totalTickets }}</span>
+        </div>
+      </div>
+
+      <div class="summary-card success">
+        <div class="card-icon">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="22"
+            height="22"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <circle cx="12" cy="12" r="10"></circle>
+            <polyline points="16 12 12 8 8 12"></polyline>
+            <line x1="12" y1="16" x2="12" y2="8"></line>
+          </svg>
+        </div>
+        <div class="card-content">
+          <span class="card-label">Cerrados</span>
+          <span class="card-value">{{ ticketsCerrados }}</span>
+        </div>
+      </div>
+
+      <div class="summary-card warning">
+        <div class="card-icon">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="22"
+            height="22"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="12" y1="8" x2="12" y2="12"></line>
+            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+          </svg>
+        </div>
+        <div class="card-content">
+          <span class="card-label">En Curso</span>
+          <span class="card-value">{{ ticketsEnCurso }}</span>
+        </div>
+      </div>
+
+      <div class="summary-card info">
+        <div class="card-icon">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="22"
+            height="22"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <circle cx="12" cy="12" r="10"></circle>
+            <polyline points="12 6 12 12 16 14"></polyline>
+          </svg>
+        </div>
+        <div class="card-content">
+          <span class="card-label">SLA Promedio</span>
+          <span class="card-value">{{ formatTiempoSLA(promedioSLA) }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Filters -->
+    <div class="reportes-filters">
+      <div class="filters-grid tickets-filters">
+        <div class="filter-field">
+          <span class="label">Mes</span>
+          <select
+            [(ngModel)]="filtroMes"
+            (change)="aplicarFiltrosTickets()"
+            class="filter-input"
+          >
+            <option value="">Todos los meses</option>
+            <option *ngFor="let mes of meses" [value]="mes.value">
+              {{ mes.label }}
+            </option>
+          </select>
+        </div>
+
+        <div class="filter-field">
+          <span class="label">Año</span>
+          <select
+            [(ngModel)]="filtroAnio"
+            (change)="aplicarFiltrosTickets()"
+            class="filter-input"
+          >
+            <option *ngFor="let anio of anios" [value]="anio">
+              {{ anio }}
+            </option>
+          </select>
+        </div>
+
+        <div class="filter-field">
+          <span class="label">Cliente</span>
+          <select
+            [(ngModel)]="filtroCliente"
+            (change)="aplicarFiltrosTickets()"
+            class="filter-input"
+          >
+            <option value="">Todos los clientes</option>
+            <option *ngFor="let cliente of clientes" [value]="cliente.id">
+              {{ cliente.razonSocial }}
+            </option>
+          </select>
+        </div>
+
+        <div class="filter-field">
+          <span class="label">Estado</span>
+          <select
+            [(ngModel)]="filtroStatus"
+            (change)="aplicarFiltrosTickets()"
+            class="filter-input"
+          >
+            <option value="">Todos los estados</option>
+            <option *ngFor="let estado of estados" [value]="estado">
+              {{ estado }}
+            </option>
+          </select>
+        </div>
+
+        <div class="filter-field">
+          <span class="label">Técnico</span>
+          <select
+            [(ngModel)]="filtroTecnico"
+            (change)="aplicarFiltrosTickets()"
+            class="filter-input"
+          >
+            <option value="">Todos los técnicos</option>
+            <option *ngFor="let tecnico of tecnicos" [value]="tecnico.id">
+              {{ tecnico.name }}
+            </option>
+          </select>
+        </div>
+      </div>
+      <div class="filter-actions">
+        <button (click)="limpiarFiltrosTickets()" class="ghost-button">
+          Limpiar Filtros
+        </button>
+      </div>
+    </div>
+
+    <!-- Table Info -->
+    <div class="table-info">
+      <span class="results-count">{{ filteredTickets.length }} elementos</span>
+      <span class="selection-info" *ngIf="selectedTickets.size > 0">
+        {{ selectedTickets.size }} seleccionados
+      </span>
+    </div>
+
+    <!-- Tickets Table -->
+    <div class="reportes-table-wrapper">
+      <table class="reportes-table tickets-table">
+        <thead>
+          <tr>
+            <th class="checkbox-col">
+              <input
+                type="checkbox"
+                [(ngModel)]="selectAll"
+                (change)="toggleSelectAll()"
+                class="custom-checkbox"
+              />
+            </th>
+            <th class="num-col">#</th>
+            <th>Ticket</th>
+            <th>Cliente</th>
+            <th>Técnico</th>
+            <th>Fecha Creación</th>
+            <th>Fecha Cierre</th>
+            <th>Estado</th>
+            <th class="sla-col">Tiempo SLA</th>
+            <th class="progress-col">Progreso</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr
+            *ngFor="let ticket of filteredTickets; let i = index"
+            [class.selected]="isTicketSelected(ticket.id)"
+          >
+            <td class="checkbox-col">
+              <input
+                type="checkbox"
+                [checked]="isTicketSelected(ticket.id)"
+                (change)="toggleTicketSelection(ticket.id)"
+                class="custom-checkbox"
+              />
+            </td>
+            <td class="num-col">{{ i + 1 }}</td>
+            <td>
+              <div class="ticket-info">
+                <span class="ticket-title">{{
+                  ticket.titulo || "Ticket #" + ticket.id
+                }}</span>
+                <span class="ticket-type"
+                  >{{ ticket.tipo }} · {{ ticket.prioridad }}</span
+                >
+              </div>
+            </td>
+            <td>
+              <span class="cliente-name">{{
+                ticket.casaMatriz?.razonSocial || "-"
               }}</span>
-              <span class="user-email">{{ log.usuario?.email }}</span>
-            </div>
-          </td>
-          <td>
-            <span
-              class="action-chip"
-              [class.login]="log.accion === 'LOGIN'"
-              [class.logout]="log.accion === 'LOGOUT'"
-              [class.crear]="log.accion.startsWith('CREAR')"
-              [class.modificar]="log.accion.startsWith('MODIFICAR')"
-              [class.eliminar]="log.accion.startsWith('ELIMINAR')"
-            >
-              {{ log.accion }}
-            </span>
-          </td>
-          <td class="route-cell">{{ log.metodo }} {{ log.ruta }}</td>
-          <td class="details-cell" [title]="getDetallesString(log.detalles)">
-            {{ getDetallesString(log.detalles) }}
-          </td>
-        </tr>
-        <tr *ngIf="filteredLogs.length === 0" class="empty-row">
-          <td colspan="5">No se encontraron registros.</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
+            </td>
+            <td>
+              <span
+                class="tecnico-name"
+                [class.sin-asignar]="!ticket.tecnicoAsignado"
+              >
+                {{ ticket.tecnicoAsignado?.name || "Sin asignar" }}
+              </span>
+            </td>
+            <td class="date-cell">{{ formatDateTime(ticket.createdAt) }}</td>
+            <td class="date-cell">
+              <span [class.pending]="!ticket.fechaTermino">
+                {{
+                  ticket.fechaTermino
+                    ? formatDate(ticket.fechaTermino)
+                    : "Pendiente"
+                }}
+              </span>
+            </td>
+            <td>
+              <span
+                class="ticket-state-pill"
+                [class.ticket-state-nuevo]="ticket.estadoTicket === 'Nuevo'"
+                [class.ticket-state-abierto]="ticket.estadoTicket === 'Abierto'"
+                [class.ticket-state-pendiente]="
+                  ticket.estadoTicket === 'Pendiente'
+                "
+                [class.ticket-state-en-espera]="
+                  ticket.estadoTicket === 'En espera'
+                "
+                [class.ticket-state-resuelto]="
+                  ticket.estadoTicket === 'Resuelto'
+                "
+                [class.ticket-state-cerrado]="ticket.estadoTicket === 'Cerrado'"
+              >
+                {{ ticket.estadoTicket }}
+              </span>
+            </td>
+            <td class="sla-col">
+              <span
+                class="sla-badge"
+                [class.excelente]="ticket.slaStatus === 'excelente'"
+                [class.bueno]="ticket.slaStatus === 'bueno'"
+                [class.advertencia]="ticket.slaStatus === 'advertencia'"
+                [class.critico]="ticket.slaStatus === 'critico'"
+                [title]="getTransferenciasTooltip(ticket)"
+              >
+                {{ formatTiempoSLA(ticket.tiempoResolucionHoras) }}
+              </span>
+            </td>
+            <td class="progress-col">
+              <div class="progress-container">
+                <div
+                  class="progress-bar"
+                  [class.excelente]="ticket.slaStatus === 'excelente'"
+                  [class.bueno]="ticket.slaStatus === 'bueno'"
+                  [class.advertencia]="ticket.slaStatus === 'advertencia'"
+                  [class.critico]="ticket.slaStatus === 'critico'"
+                  [style.width.%]="ticket.progreso"
+                ></div>
+                <span class="progress-text">{{ ticket.progreso }}%</span>
+              </div>
+            </td>
+          </tr>
+          <tr *ngIf="filteredTickets.length === 0" class="empty-row">
+            <td colspan="10">
+              No se encontraron tickets con los filtros aplicados.
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </ng-container>
+
+  <!-- Logs Tab Content -->
+  <ng-container *ngIf="tabActiva === 'logs'">
+    <!-- Filters -->
+    <div class="reportes-filters">
+      <div class="filters-grid">
+        <div class="filter-field">
+          <span class="label">Usuario</span>
+          <input
+            type="text"
+            [(ngModel)]="filtroUsuario"
+            (input)="aplicarFiltros()"
+            placeholder="Buscar por nombre o email"
+            class="filter-input"
+          />
+        </div>
+        <div class="filter-field">
+          <span class="label">Acción</span>
+          <input
+            type="text"
+            [(ngModel)]="filtroAccion"
+            (input)="aplicarFiltros()"
+            placeholder="Ej: LOGIN, CREAR_TICKET"
+            class="filter-input"
+          />
+        </div>
+        <div class="filter-field">
+          <span class="label">Fecha Inicio</span>
+          <input
+            type="date"
+            [(ngModel)]="filtroFechaInicio"
+            (change)="aplicarFiltros()"
+            class="filter-input"
+          />
+        </div>
+        <div class="filter-field">
+          <span class="label">Fecha Fin</span>
+          <input
+            type="date"
+            [(ngModel)]="filtroFechaFin"
+            (change)="aplicarFiltros()"
+            class="filter-input"
+          />
+        </div>
+      </div>
+      <div class="filter-actions">
+        <button (click)="limpiarFiltros()" class="ghost-button">
+          Limpiar Filtros
+        </button>
+      </div>
+    </div>
+
+    <!-- Logs Table -->
+    <div class="reportes-table-wrapper">
+      <table class="reportes-table">
+        <thead>
+          <tr>
+            <th>Fecha</th>
+            <th>Usuario</th>
+            <th>Acción</th>
+            <th>Método / Ruta</th>
+            <th>Detalles</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let log of filteredLogs">
+            <td class="date-cell">
+              {{ log.fecha | date : "dd/MM/yyyy HH:mm" }}
+            </td>
+            <td>
+              <div class="user-cell">
+                <span class="user-name">{{
+                  log.usuario?.name || "Sistema"
+                }}</span>
+                <span class="user-email">{{ log.usuario?.email }}</span>
+              </div>
+            </td>
+            <td>
+              <span
+                class="action-chip"
+                [class.login]="log.accion === 'LOGIN'"
+                [class.logout]="log.accion === 'LOGOUT'"
+                [class.crear]="log.accion.startsWith('CREAR')"
+                [class.modificar]="log.accion.startsWith('MODIFICAR')"
+                [class.eliminar]="log.accion.startsWith('ELIMINAR')"
+              >
+                {{ log.accion }}
+              </span>
+            </td>
+            <td class="route-cell">{{ log.metodo }} {{ log.ruta }}</td>
+            <td class="details-cell" [title]="getDetallesString(log.detalles)">
+              {{ getDetallesString(log.detalles) }}
+            </td>
+          </tr>
+          <tr *ngIf="filteredLogs.length === 0" class="empty-row">
+            <td colspan="5">No se encontraron registros.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </ng-container>
 </div>

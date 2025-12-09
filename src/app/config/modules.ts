@@ -12,5 +12,5 @@ export const MODULES = {
   perfil: true,
   adminUsuarios: true,
   adminTiposEquipos: false,
-  reportes: false,
+  reportes: true,
 };

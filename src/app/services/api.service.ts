@@ -1207,7 +1207,7 @@ export class ApiService {
       );
   }
 
-  getLogs(): Observable<any[]> {
+  getLogs(): Observable<any> {
     const endpoint = 'logs';
     return this.getInformation(endpoint);
   }
