@@ -72,6 +72,7 @@ export class TicketsComponent implements OnInit {
   detalleVisible = false;
   tecnicoActual: string[] = []; // Para mostrar quien era el tecnico original en el dropdown deshabilitado
   estadosTicketFormulario: { value: string; label: string }[] = [];
+  mensajesNoLeidosPorTicket: Record<number, number> = {};
 
   readonly esAdmin: boolean;
   readonly esTecnico: boolean;
@@ -217,6 +218,7 @@ export class TicketsComponent implements OnInit {
     this.cargarClientes();
     this.cargarTecnicosDisponibles();
     this.cargarProyectos();
+    this.cargarMensajesNoLeidos();
     this.estadosTicketFormulario = [...this.estadosTicket];
   }
 
@@ -225,18 +227,33 @@ export class TicketsComponent implements OnInit {
     const fechaTerminoCtrl = this.ticketForm.get('ticketFechaTermino');
     const detalleTerminoCtrl = this.ticketForm.get('ticketDetalleTermino');
     const descripcionCtrl = this.ticketForm.get('descripcion');
+    const tecnicosCtrl = this.ticketForm.get('tecnicos');
 
     if (
       !estadoCtrl ||
       !fechaTerminoCtrl ||
       !detalleTerminoCtrl ||
-      !descripcionCtrl
+      !descripcionCtrl ||
+      !tecnicosCtrl
     ) {
       return;
     }
 
     const aplicarValidaciones = () => {
       const estado = (estadoCtrl.value ?? 'Nuevo') as string;
+
+      // Lógica para técnicos: Si el estado NO es "Nuevo", habilitar y requerir técnico
+      if (estado === 'Nuevo') {
+        // Si es Nuevo, deshabilitar el control de técnicos (no se puede asignar aún)
+        tecnicosCtrl.disable({ emitEvent: false });
+        tecnicosCtrl.clearValidators();
+      } else {
+        // Si no es Nuevo, habilitar y requerir selección de técnico
+        tecnicosCtrl.enable({ emitEvent: false });
+        tecnicosCtrl.setValidators([Validators.required]);
+      }
+      tecnicosCtrl.updateValueAndValidity({ emitEvent: false });
+
       if (estado === 'Resuelto' || estado === 'Cerrado') {
         if (!this.modules.bitacora) {
           fechaTerminoCtrl.setValue(this.obtenerFechaActual(), {
@@ -318,6 +335,21 @@ export class TicketsComponent implements OnInit {
         this.proyectos = [];
       },
     });
+  }
+
+  private cargarMensajesNoLeidos(): void {
+    this.apiService.getMensajesNoLeidosPorTicket().subscribe({
+      next: (respuesta) => {
+        this.mensajesNoLeidosPorTicket = respuesta?.data || {};
+      },
+      error: () => {
+        this.mensajesNoLeidosPorTicket = {};
+      },
+    });
+  }
+
+  getMensajesNoLeidos(ticketId: number): number {
+    return this.mensajesNoLeidosPorTicket[ticketId] || 0;
   }
 
   buscarTickets(): void {
@@ -448,6 +480,10 @@ export class TicketsComponent implements OnInit {
   seleccionarTicket(ticket: Ticket): void {
     this.ticketSeleccionado = ticket;
     this.detalleVisible = true;
+    // Limpiar el badge de mensajes no leídos para este ticket
+    if (this.mensajesNoLeidosPorTicket[ticket.id]) {
+      delete this.mensajesNoLeidosPorTicket[ticket.id];
+    }
   }
 
   cerrarDetalle(): void {
@@ -707,7 +743,7 @@ export class TicketsComponent implements OnInit {
     const payload = this.construirPayloadCompleto(formValue);
     if (!payload) {
       this.errorMensaje =
-        'Debes ingresar al menos un tecnico responsable para el ticket.';
+        'Debes asignar un técnico responsable antes de cambiar el estado del ticket.';
       return;
     }
 
@@ -877,7 +913,10 @@ export class TicketsComponent implements OnInit {
       .map((item: string) => `${item}`.trim())
       .filter((item: string) => item.length > 0);
 
-    if (tecnicos.length === 0) {
+    const estadoTicket = this.normalizarEstadoTicket(formValue.ticketEstado);
+
+    // Si el estado NO es "Nuevo", se requiere al menos un técnico
+    if (estadoTicket !== 'Nuevo' && tecnicos.length === 0) {
       return null;
     }
 
@@ -891,8 +930,6 @@ export class TicketsComponent implements OnInit {
         }
       }
     }
-
-    const estadoTicket = this.normalizarEstadoTicket(formValue.ticketEstado);
 
     const payload: any = {
       casaMatrizId: formValue.clienteId,

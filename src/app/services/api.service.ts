@@ -1261,7 +1261,29 @@ export class ApiService {
       );
   }
 
-  enviarMensajeTicket(ticketId: number, mensaje: string): Observable<any> {
+  enviarMensajeTicket(
+    ticketId: number,
+    mensaje: string,
+    archivos?: File[]
+  ): Observable<any> {
+    const tieneArchivos = archivos && archivos.length > 0;
+
+    if (tieneArchivos) {
+      const formData = new FormData();
+      formData.append('mensaje', mensaje);
+      archivos.forEach((archivo) => {
+        formData.append('files', archivo, archivo.name);
+      });
+      return this.http
+        .post<any>(`${this.url}/tickets/${ticketId}/chat`, formData)
+        .pipe(
+          catchError((error: HttpErrorResponse) => {
+            console.error('Error al enviar mensaje:', error);
+            return throwError(() => error);
+          })
+        );
+    }
+
     return this.http
       .post<any>(`${this.url}/tickets/${ticketId}/chat`, { mensaje })
       .pipe(
@@ -1302,6 +1324,19 @@ export class ApiService {
       .pipe(
         catchError((error: HttpErrorResponse) => {
           console.error('Error al obtener actividad del ticket:', error);
+          return throwError(() => error);
+        })
+      );
+  }
+
+  getMensajesNoLeidosPorTicket(): Observable<{ data: Record<number, number> }> {
+    return this.http
+      .get<{ data: Record<number, number> }>(
+        `${this.url}/tickets/mensajes-no-leidos`
+      )
+      .pipe(
+        catchError((error: HttpErrorResponse) => {
+          console.error('Error al obtener mensajes no leídos:', error);
           return throwError(() => error);
         })
       );

@@ -1,89 +1,144 @@
-<div class="ticket-chat-container">
+<div class="ticket-messages-container">
   <!-- Header -->
-  <div class="chat-header">
-    <span class="chat-title">💬 Chat del Ticket</span>
-    <span
-      class="connection-status"
-      [class.connected]="chatService.isConnected$ | async"
+  <div class="messages-header">
+    <div class="header-info">
+      <span class="messages-title">📧 Mensajes del Ticket</span>
+      @if (fechaInicioConversacion) {
+      <span class="conversation-start">
+        Conversación iniciada el
+        {{ formatearFechaCompleta(fechaInicioConversacion) }}
+      </span>
+      }
+    </div>
+    <button
+      class="refresh-button"
+      (click)="recargarMensajes()"
+      [disabled]="loading"
     >
-      {{
-        (chatService.isConnected$ | async) ? "🟢 Conectado" : "🔴 Desconectado"
-      }}
-    </span>
+      🔄 Actualizar
+    </button>
   </div>
 
-  <!-- Timeline Container -->
-  <div class="chat-messages" #chatContainer>
+  <!-- Messages List -->
+  <div class="messages-list" #chatContainer>
     @if (loading) {
     <div class="loading-state">
       <div class="spinner"></div>
-      <span>Cargando conversación...</span>
+      <span>Cargando mensajes...</span>
     </div>
     } @else if (timeline.length === 0) {
     <div class="empty-state">
-      <span class="empty-icon">💬</span>
+      <span class="empty-icon">📭</span>
       <p>No hay mensajes aún</p>
-      <p class="empty-hint">Sé el primero en enviar un mensaje</p>
+      <p class="empty-hint">Envía el primer mensaje de este ticket</p>
     </div>
     } @else { @for (item of timeline; track item.id) { @if (item.itemType ===
     'mensaje') {
-    <!-- Mensaje de chat -->
-    <div
-      class="message-bubble"
-      [class.own-message]="esMensajePropio(item)"
-      [class.other-message]="!esMensajePropio(item)"
-    >
-      <div class="message-header">
-        <span class="sender-name">{{ getNombreRemitente(item) }}</span>
-        <span class="message-time">{{ formatearFecha(item.createdAt) }}</span>
+    <!-- Mensaje -->
+    <div class="message-card" [class.own-message]="esMensajePropio(item)">
+      <div class="message-card-header">
+        <div class="sender-info">
+          <span class="sender-avatar" [class.own]="esMensajePropio(item)">
+            {{ getNombreRemitente(item).charAt(0).toUpperCase() }}
+          </span>
+          <div class="sender-details">
+            <span class="sender-name">{{ getNombreRemitente(item) }}</span>
+            <span class="message-date">{{
+              formatearFechaCompleta(item.createdAt)
+            }}</span>
+          </div>
+        </div>
+        @if (esMensajePropio(item)) {
+        <span class="own-badge">Tú</span>
+        }
       </div>
-      <div class="message-content">{{ $any(item).mensaje }}</div>
+      <div class="message-card-body">
+        <p class="message-text">{{ $any(item).mensaje }}</p>
+        @if (getAdjuntos(item).length > 0) {
+        <div class="message-attachments">
+          <span class="attachments-title">📎 Archivos adjuntos:</span>
+          <ul class="attachments-list">
+            @for (adjunto of getAdjuntos(item); track adjunto) {
+            <li>
+              <a [href]="adjunto" target="_blank" class="attachment-link">{{
+                adjunto | slice : -30
+              }}</a>
+            </li>
+            }
+          </ul>
+        </div>
+        }
+      </div>
     </div>
     } @else {
     <!-- Actividad del ticket -->
-    <div class="activity-item">
+    <div class="activity-entry">
       <span class="activity-icon">{{
         getActividadIcono($any(item).tipo)
       }}</span>
       <span class="activity-text">{{ getActividadTexto($any(item)) }}</span>
-      <span class="activity-time">{{ formatearFecha(item.createdAt) }}</span>
+      <span class="activity-date">{{
+        formatearFechaCompleta(item.createdAt)
+      }}</span>
     </div>
     } } }
   </div>
 
-  <!-- Typing Indicator -->
-  @if (typingUsersArray.length > 0) {
-  <div class="typing-indicator">
-    <span class="typing-dots"> <span></span><span></span><span></span> </span>
-    <span class="typing-text">
-      {{ typingUsersArray.join(", ") }}
-      {{ typingUsersArray.length > 1 ? "están" : "está" }} escribiendo...
-    </span>
-  </div>
-  }
-
-  <!-- Input Area -->
-  <div class="chat-input-area">
+  <!-- New Message Form -->
+  <div class="new-message-form">
+    <div class="form-header">
+      <span>📝 Nuevo mensaje</span>
+    </div>
     <textarea
-      class="chat-input"
+      class="message-textarea"
       [(ngModel)]="nuevoMensaje"
-      (input)="onInputChange()"
       (keydown)="onKeyDown($event)"
-      placeholder="Escribe un mensaje..."
+      placeholder="Escribe tu mensaje aquí..."
       [disabled]="enviando"
-      rows="1"
-    >
-    </textarea>
-    <button
-      class="send-button"
-      (click)="enviarMensaje()"
-      [disabled]="!nuevoMensaje.trim() || enviando"
-    >
-      @if (enviando) {
-      <span class="sending-spinner"></span>
-      } @else {
-      <span>Enviar</span>
+      rows="3"
+    ></textarea>
+
+    <!-- File Input (hidden) -->
+    <input
+      type="file"
+      #fileInput
+      (change)="onFileSelected($event)"
+      multiple
+      style="display: none"
+    />
+
+    <!-- Selected Files Preview -->
+    @if (selectedFiles.length > 0) {
+    <div class="selected-files">
+      @for (file of selectedFiles; track file.name; let i = $index) {
+      <div class="file-chip">
+        <span class="file-name">📎 {{ file.name }}</span>
+        <button class="remove-file" (click)="removeFile(i)">✕</button>
+      </div>
       }
-    </button>
+    </div>
+    }
+
+    <div class="form-actions">
+      <button
+        type="button"
+        class="attach-btn"
+        (click)="abrirSelectorArchivos()"
+        [disabled]="enviando"
+      >
+        📎 Adjuntar archivo
+      </button>
+      <button
+        class="send-btn"
+        (click)="enviarMensaje()"
+        [disabled]="
+          (!nuevoMensaje.trim() && selectedFiles.length === 0) || enviando
+        "
+      >
+        @if (enviando) {
+        <span class="sending-spinner"></span>
+        Enviando... } @else { 📤 Enviar mensaje }
+      </button>
+    </div>
   </div>
 </div>

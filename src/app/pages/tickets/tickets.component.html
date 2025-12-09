@@ -223,7 +223,15 @@
             {{ ticket.sucursal?.sucursal || "General" }}
           </td>
           <td class="nota">
-            {{ ticket.descripcion }}
+            <div class="nota-contenedor">
+              <span class="nota-texto">{{ ticket.descripcion }}</span>
+              <span
+                *ngIf="getMensajesNoLeidos(ticket.id) > 0"
+                class="chat-badge"
+              >
+                {{ getMensajesNoLeidos(ticket.id) }}
+              </span>
+            </div>
           </td>
           <td *ngIf="esAdmin" class="acciones">
             <div class="acciones-wrapper">

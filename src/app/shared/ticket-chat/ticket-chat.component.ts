@@ -12,13 +12,11 @@ import { FormsModule } from '@angular/forms';
 import { Subject, takeUntil } from 'rxjs';
 
 import { ApiService } from '../../services/api.service';
-import { ChatService } from '../../services/chat.service';
 import { AuthService } from '../../services/auth.service';
 import {
   MensajeTicket,
   ActividadTicket,
   ChatItem,
-  TypingIndicator,
 } from '../../interfaces/chat.interface';
 
 @Component({
@@ -33,29 +31,27 @@ export class TicketChatComponent
 {
   @Input() ticketId!: number;
   @ViewChild('chatContainer') chatContainer!: ElementRef<HTMLDivElement>;
+  @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>;
 
   timeline: ChatItem[] = [];
   nuevoMensaje = '';
   loading = true;
   enviando = false;
-  isTyping = false;
-  typingUsers: Map<number, string> = new Map();
   currentUserId: number | null = null;
+  selectedFiles: File[] = [];
+  fechaInicioConversacion: Date | null = null;
 
   private destroy$ = new Subject<void>();
   private shouldScrollToBottom = true;
 
   constructor(
     private apiService: ApiService,
-    public chatService: ChatService,
     private authService: AuthService
   ) {}
 
   ngOnInit(): void {
     this.currentUserId = this.authService.decodificarToken()?.id ?? null;
     this.cargarTimeline();
-    this.conectarSocket();
-    this.suscribirEventos();
   }
 
   ngAfterViewChecked(): void {
@@ -66,7 +62,6 @@ export class TicketChatComponent
   }
 
   ngOnDestroy(): void {
-    this.chatService.leaveTicket(this.ticketId);
     this.destroy$.next();
     this.destroy$.complete();
   }
@@ -81,6 +76,12 @@ export class TicketChatComponent
           this.timeline = response.data || [];
           this.loading = false;
           this.shouldScrollToBottom = true;
+
+          // Obtener fecha del primer mensaje/actividad
+          if (this.timeline.length > 0) {
+            this.fechaInicioConversacion = new Date(this.timeline[0].createdAt);
+          }
+
           // Marcar mensajes como leídos
           this.apiService.marcarMensajesLeidosTicket(this.ticketId).subscribe();
         },
@@ -91,88 +92,67 @@ export class TicketChatComponent
       });
   }
 
-  private conectarSocket(): void {
-    const token = localStorage.getItem('token');
-    if (token) {
-      this.chatService.connect(token);
-      this.chatService.joinTicket(this.ticketId);
+  recargarMensajes(): void {
+    this.cargarTimeline();
+  }
+
+  onFileSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (input.files) {
+      this.selectedFiles = Array.from(input.files);
     }
   }
 
-  private suscribirEventos(): void {
-    // Nuevos mensajes en tiempo real
-    this.chatService.onNewMessage$
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((mensaje) => {
-        if (mensaje.ticketId === this.ticketId) {
-          this.timeline.push({ ...mensaje, itemType: 'mensaje' });
-          this.shouldScrollToBottom = true;
-          // Marcar como leído si no es nuestro mensaje
-          if (mensaje.cuentaId !== this.currentUserId) {
-            this.apiService
-              .marcarMensajesLeidosTicket(this.ticketId)
-              .subscribe();
-          }
-        }
-      });
+  removeFile(index: number): void {
+    this.selectedFiles.splice(index, 1);
+    if (this.fileInput?.nativeElement) {
+      this.fileInput.nativeElement.value = '';
+    }
+  }
 
-    // Nueva actividad en tiempo real
-    this.chatService.onNewActivity$
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((actividad) => {
-        if (actividad.ticketId === this.ticketId) {
-          this.timeline.push({ ...actividad, itemType: 'actividad' });
-          this.shouldScrollToBottom = true;
-        }
-      });
-
-    // Indicador de escritura
-    this.chatService.onTyping$
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((data: TypingIndicator) => {
-        if (data.cuentaId !== this.currentUserId) {
-          if (data.isTyping) {
-            this.typingUsers.set(data.cuentaId, data.nombre);
-          } else {
-            this.typingUsers.delete(data.cuentaId);
-          }
-        }
-      });
+  abrirSelectorArchivos(): void {
+    if (this.fileInput?.nativeElement) {
+      this.fileInput.nativeElement.click();
+    }
   }
 
   enviarMensaje(): void {
-    if (!this.nuevoMensaje.trim() || this.enviando) {
+    if (
+      (!this.nuevoMensaje.trim() && this.selectedFiles.length === 0) ||
+      this.enviando
+    ) {
       return;
     }
 
     this.enviando = true;
     const mensaje = this.nuevoMensaje.trim();
+    const archivos = [...this.selectedFiles];
     this.nuevoMensaje = '';
 
+    // Enviar mensaje con archivos adjuntos si los hay
     this.apiService
-      .enviarMensajeTicket(this.ticketId, mensaje)
+      .enviarMensajeTicket(
+        this.ticketId,
+        mensaje || '(Archivo adjunto)',
+        archivos.length > 0 ? archivos : undefined
+      )
       .pipe(takeUntil(this.destroy$))
       .subscribe({
-        next: () => {
+        next: (respuesta) => {
+          this.timeline.push(respuesta);
+          this.shouldScrollToBottom = true;
           this.enviando = false;
-          this.chatService.sendTypingIndicator(this.ticketId, false);
+          this.selectedFiles = [];
+          if (this.fileInput?.nativeElement) {
+            this.fileInput.nativeElement.value = '';
+          }
         },
         error: (err) => {
           console.error('Error al enviar mensaje:', err);
-          this.nuevoMensaje = mensaje; // Restaurar mensaje
+          this.nuevoMensaje = mensaje;
           this.enviando = false;
         },
       });
-  }
-
-  onInputChange(): void {
-    if (!this.isTyping && this.nuevoMensaje.length > 0) {
-      this.isTyping = true;
-      this.chatService.sendTypingIndicator(this.ticketId, true);
-    } else if (this.isTyping && this.nuevoMensaje.length === 0) {
-      this.isTyping = false;
-      this.chatService.sendTypingIndicator(this.ticketId, false);
-    }
   }
 
   onKeyDown(event: KeyboardEvent): void {
@@ -233,28 +213,21 @@ export class TicketChatComponent
     }
   }
 
-  formatearFecha(fecha: string | Date): string {
+  formatearFechaCompleta(fecha: string | Date): string {
     const date = new Date(fecha);
-    const ahora = new Date();
-    const diff = ahora.getTime() - date.getTime();
-    const minutos = Math.floor(diff / 60000);
-    const horas = Math.floor(diff / 3600000);
-    const dias = Math.floor(diff / 86400000);
-
-    if (minutos < 1) return 'Ahora';
-    if (minutos < 60) return `Hace ${minutos} min`;
-    if (horas < 24) return `Hace ${horas}h`;
-    if (dias < 7) return `Hace ${dias}d`;
-
     return date.toLocaleDateString('es-CL', {
       day: '2-digit',
-      month: 'short',
+      month: 'long',
+      year: 'numeric',
       hour: '2-digit',
       minute: '2-digit',
     });
   }
 
-  get typingUsersArray(): string[] {
-    return Array.from(this.typingUsers.values());
+  getAdjuntos(item: ChatItem): string[] {
+    if (item.itemType === 'mensaje') {
+      return (item as MensajeTicket).adjuntos || [];
+    }
+    return [];
   }
 }

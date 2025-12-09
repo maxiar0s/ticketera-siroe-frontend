@@ -1,5 +1,5 @@
 /**
- * Interfaces para el sistema de chat de tickets.
+ * Interfaces para el sistema de mensajes de tickets.
  */
 
 export interface MensajeTicket {
@@ -64,10 +64,4 @@ export interface ActividadTicketResponse {
 export interface TimelineTicketResponse {
   data: ChatItem[];
   total: number;
-}
-
-export interface TypingIndicator {
-  cuentaId: number;
-  nombre: string;
-  isTyping: boolean;
 }
