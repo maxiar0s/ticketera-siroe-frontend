@@ -89,9 +89,9 @@
 }
 
 .ticket-state-nuevo {
-  background-color: var(--color-nuevo-bg);
-  color: var(--color-nuevo);
-  border: 1px solid var(--color-nuevo-border);
+  background-color: rgba(59, 130, 246, 0.18);
+  color: #1e40af;
+  border: 1px solid rgba(59, 130, 246, 0.4);
   animation: pulse-nuevo 2s ease-in-out infinite;
 }
 
@@ -106,28 +106,33 @@
 }
 
 .ticket-state-abierto {
-  background-color: rgba(33, 150, 243, 0.2);
-  color: #0d47a1;
+  background-color: rgba(249, 115, 22, 0.18);
+  color: #c2410c;
+  border: 1px solid rgba(249, 115, 22, 0.4);
 }
 
 .ticket-state-pendiente {
-  background-color: rgba(255, 152, 0, 0.2);
-  color: #e65100;
+  background-color: rgba(234, 179, 8, 0.18);
+  color: #a16207;
+  border: 1px solid rgba(234, 179, 8, 0.4);
 }
 
 .ticket-state-en-espera {
-  background-color: rgba(156, 39, 176, 0.2);
-  color: #4a148c;
+  background-color: rgba(168, 85, 247, 0.18);
+  color: #6b21a8;
+  border: 1px solid rgba(168, 85, 247, 0.4);
 }
 
 .ticket-state-resuelto {
-  background-color: rgba(76, 175, 80, 0.2);
-  color: #1b5e20;
+  background-color: rgba(34, 197, 94, 0.18);
+  color: #15803d;
+  border: 1px solid rgba(34, 197, 94, 0.4);
 }
 
 .ticket-state-cerrado {
-  background-color: rgba(96, 125, 139, 0.2);
-  color: #263238;
+  background-color: rgba(239, 68, 68, 0.18);
+  color: #b91c1c;
+  border: 1px solid rgba(239, 68, 68, 0.4);
 }
 
 .bitacora-header {
@@ -1089,15 +1094,48 @@ textarea {
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.02em;
-  color: #a87400;
-  background-color: rgba(255, 193, 7, 0.14);
-  border: 1px solid rgba(255, 193, 7, 0.4);
 }
 
-.ticket-estado-listado.resuelto {
-  color: var(--color-success);
-  background-color: rgba(76, 175, 80, 0.18);
-  border-color: rgba(76, 175, 80, 0.4);
+/* Estados para la tabla - Nuevo (azul) */
+.ticket-estado-listado.ticket-state-nuevo {
+  background-color: rgba(59, 130, 246, 0.18);
+  color: #1e40af;
+  border: 1px solid rgba(59, 130, 246, 0.4);
+}
+
+/* Abierto (naranja) */
+.ticket-estado-listado.ticket-state-abierto {
+  background-color: rgba(249, 115, 22, 0.18);
+  color: #c2410c;
+  border: 1px solid rgba(249, 115, 22, 0.4);
+}
+
+/* Pendiente (amarillo) */
+.ticket-estado-listado.ticket-state-pendiente {
+  background-color: rgba(234, 179, 8, 0.18);
+  color: #a16207;
+  border: 1px solid rgba(234, 179, 8, 0.4);
+}
+
+/* En espera (púrpura) */
+.ticket-estado-listado.ticket-state-en-espera {
+  background-color: rgba(168, 85, 247, 0.18);
+  color: #6b21a8;
+  border: 1px solid rgba(168, 85, 247, 0.4);
+}
+
+/* Resuelto (verde) */
+.ticket-estado-listado.ticket-state-resuelto {
+  background-color: rgba(34, 197, 94, 0.18);
+  color: #15803d;
+  border: 1px solid rgba(34, 197, 94, 0.4);
+}
+
+/* Cerrado (rojo) */
+.ticket-estado-listado.ticket-state-cerrado {
+  background-color: rgba(239, 68, 68, 0.18);
+  color: #b91c1c;
+  border: 1px solid rgba(239, 68, 68, 0.4);
 }
 
 .form-row {
