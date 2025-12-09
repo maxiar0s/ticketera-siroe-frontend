@@ -17,6 +17,7 @@ import { AuthService } from '../../services/auth.service';
 import { SignalService } from '../../services/signal.service';
 import { FormatoFechaPipe } from '../../pipes/formato-fecha.pipe';
 import { MODULES } from '../../config/modules';
+import { TicketChatComponent } from '../../shared/ticket-chat/ticket-chat.component';
 
 interface SucursalOption {
   id: string;
@@ -27,7 +28,12 @@ interface SucursalOption {
 @Component({
   selector: 'app-tickets',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, FormatoFechaPipe],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    FormatoFechaPipe,
+    TicketChatComponent,
+  ],
   templateUrl: './tickets.component.html',
   styleUrl: './tickets.component.css',
 })

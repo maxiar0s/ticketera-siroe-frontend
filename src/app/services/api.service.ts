@@ -1211,4 +1211,99 @@ export class ApiService {
     const endpoint = 'logs';
     return this.getInformation(endpoint);
   }
+
+  // =====================================================
+  // Chat de Tickets
+  // =====================================================
+
+  getTicketTimeline(
+    ticketId: number,
+    params: { limite?: number } = {}
+  ): Observable<any> {
+    let httpParams = new HttpParams();
+    if (params.limite) {
+      httpParams = httpParams.set('limite', params.limite.toString());
+    }
+
+    return this.http
+      .get<any>(`${this.url}/tickets/${ticketId}/timeline`, {
+        params: httpParams,
+      })
+      .pipe(
+        catchError((error: HttpErrorResponse) => {
+          console.error('Error al obtener timeline del ticket:', error);
+          return throwError(() => error);
+        })
+      );
+  }
+
+  getTicketMensajes(
+    ticketId: number,
+    params: { pagina?: number; limite?: number } = {}
+  ): Observable<any> {
+    let httpParams = new HttpParams();
+    if (params.pagina) {
+      httpParams = httpParams.set('pagina', params.pagina.toString());
+    }
+    if (params.limite) {
+      httpParams = httpParams.set('limite', params.limite.toString());
+    }
+
+    return this.http
+      .get<any>(`${this.url}/tickets/${ticketId}/chat`, {
+        params: httpParams,
+      })
+      .pipe(
+        catchError((error: HttpErrorResponse) => {
+          console.error('Error al obtener mensajes del ticket:', error);
+          return throwError(() => error);
+        })
+      );
+  }
+
+  enviarMensajeTicket(ticketId: number, mensaje: string): Observable<any> {
+    return this.http
+      .post<any>(`${this.url}/tickets/${ticketId}/chat`, { mensaje })
+      .pipe(
+        catchError((error: HttpErrorResponse) => {
+          console.error('Error al enviar mensaje:', error);
+          return throwError(() => error);
+        })
+      );
+  }
+
+  marcarMensajesLeidosTicket(ticketId: number): Observable<any> {
+    return this.http
+      .post<any>(`${this.url}/tickets/${ticketId}/chat/leidos`, {})
+      .pipe(
+        catchError((error: HttpErrorResponse) => {
+          console.error('Error al marcar mensajes como leídos:', error);
+          return throwError(() => error);
+        })
+      );
+  }
+
+  getTicketActividad(
+    ticketId: number,
+    params: { pagina?: number; limite?: number } = {}
+  ): Observable<any> {
+    let httpParams = new HttpParams();
+    if (params.pagina) {
+      httpParams = httpParams.set('pagina', params.pagina.toString());
+    }
+    if (params.limite) {
+      httpParams = httpParams.set('limite', params.limite.toString());
+    }
+
+    return this.http
+      .get<any>(`${this.url}/tickets/${ticketId}/actividad`, {
+        params: httpParams,
+      })
+      .pipe(
+        catchError((error: HttpErrorResponse) => {
+          console.error('Error al obtener actividad del ticket:', error);
+          return throwError(() => error);
+        })
+      );
+  }
 }

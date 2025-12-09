@@ -1114,3 +1114,14 @@ textarea {
 .form-row textarea {
   width: 100%;
 }
+
+/* Chat del Ticket */
+.ticket-chat-section {
+  margin-top: 1.5rem;
+  border-top: 1px solid #eee;
+  padding-top: 1.5rem;
+}
+
+.ticket-chat-section ::ng-deep .ticket-chat-container {
+  max-height: 450px;
+}
