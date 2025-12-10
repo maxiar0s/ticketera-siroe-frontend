@@ -1,14 +1,14 @@
 import { Injectable } from '@angular/core';
 
 export interface PreferenciasUsuario {
-  tema: 'claro' | 'oscuro' | 'sistema';
+  tema: 'claro' | 'oscuro';
   idioma: 'es' | 'en';
   notificaciones: boolean;
   newsletter: boolean;
 }
 
 const PREFERENCIAS_POR_DEFECTO: PreferenciasUsuario = {
-  tema: 'sistema',
+  tema: 'claro',
   idioma: 'es',
   notificaciones: true,
   newsletter: false,
@@ -50,29 +50,23 @@ export class UserPreferencesService {
 
   /**
    * Applies theme to the document based on preference.
-   * @param tema - 'claro', 'oscuro', or 'sistema'
+   * @param tema - 'claro' or 'oscuro'
    */
-  aplicarTema(tema: 'claro' | 'oscuro' | 'sistema'): void {
+  aplicarTema(tema: 'claro' | 'oscuro'): void {
     // Remove previous listener if exists
     if (this.mediaQuery) {
       this.mediaQuery.removeEventListener(
         'change',
         this.handleSystemThemeChange
       );
+      this.mediaQuery = null;
     }
 
-    if (tema === 'sistema') {
-      // Follow system preference
-      this.mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-      this.aplicarTemaDelSistema(this.mediaQuery.matches);
-      this.mediaQuery.addEventListener('change', this.handleSystemThemeChange);
-    } else {
-      // Apply user-selected theme
-      document.documentElement.setAttribute(
-        'data-theme',
-        tema === 'oscuro' ? 'dark' : 'light'
-      );
-    }
+    // Apply user-selected theme
+    document.documentElement.setAttribute(
+      'data-theme',
+      tema === 'oscuro' ? 'dark' : 'light'
+    );
   }
 
   /**
@@ -84,8 +78,8 @@ export class UserPreferencesService {
       const preferencias = this.obtenerPreferencias(userId);
       this.aplicarTema(preferencias.tema);
     } else {
-      // No user, apply system default
-      this.aplicarTema('sistema');
+      // No user, apply light theme as default
+      this.aplicarTema('claro');
     }
   }
 

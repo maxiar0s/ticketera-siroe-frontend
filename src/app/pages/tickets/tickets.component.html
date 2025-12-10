@@ -161,6 +161,7 @@
     <table class="bitacora-table">
       <thead>
         <tr>
+          <th class="mensajes-col"></th>
           <th class="fecha-col">Fecha</th>
           <th class="tipo-col">Prioridad</th>
           <th class="tipo-col">Tipo</th>
@@ -179,6 +180,11 @@
           [class.selected]="ticketSeleccionado?.id === ticket.id"
           [class.ticket-nuevo]="ticket.estadoTicket === 'Nuevo'"
         >
+          <td class="mensajes-col">
+            <span *ngIf="getMensajesNoLeidos(ticket.id) > 0" class="chat-badge">
+              {{ getMensajesNoLeidos(ticket.id) }}
+            </span>
+          </td>
           <td>{{ ticket.fechaVisita | formatoFecha : "dd/MM/yyyy" }}</td>
           <td class="tipo">
             <span
@@ -223,15 +229,7 @@
             {{ ticket.sucursal?.sucursal || "General" }}
           </td>
           <td class="nota">
-            <div class="nota-contenedor">
-              <span class="nota-texto">{{ ticket.descripcion }}</span>
-              <span
-                *ngIf="getMensajesNoLeidos(ticket.id) > 0"
-                class="chat-badge"
-              >
-                {{ getMensajesNoLeidos(ticket.id) }}
-              </span>
-            </div>
+            <span class="nota-texto">{{ ticket.descripcion }}</span>
           </td>
           <td *ngIf="esAdmin" class="acciones">
             <div class="acciones-wrapper">

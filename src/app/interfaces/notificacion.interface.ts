@@ -5,6 +5,8 @@ export interface NotificacionMetadata {
   bitacoraId?: number | null;
   ticketId?: number | null;
   titulo?: string | null;
+  remitenteNombre?: string;
+  ticketTitulo?: string;
   [key: string]: unknown;
 }
 

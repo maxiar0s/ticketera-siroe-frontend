@@ -407,11 +407,14 @@ export class ApiService {
     );
   }
 
-  // Crear o modificar usuario
-  users(pagina: number, option: string): Observable<any> {
+  // Obtener usuarios con filtros
+  users(pagina: number, option?: string, buscar?: string): Observable<any> {
     let endpoint = `usuarios` + `?pagina=${pagina}`;
     if (option) {
       endpoint = endpoint + `&option=${option}`;
+    }
+    if (buscar) {
+      endpoint = endpoint + `&buscar=${encodeURIComponent(buscar)}`;
     }
     return this.getInformation(endpoint);
   }

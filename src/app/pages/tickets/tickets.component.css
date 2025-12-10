@@ -293,7 +293,7 @@ textarea {
 
 .bitacora-table-wrapper {
   border-radius: 1.25rem;
-  overflow: hidden;
+  overflow-x: auto;
   background-color: var(--color-surface);
   box-shadow: 0 20px 45px rgba(0, 0, 0, 0.08);
 }
@@ -1165,14 +1165,24 @@ textarea {
 }
 
 /* Chat Badge */
-.nota-contenedor {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
+.mensajes-col {
+  width: 40px;
+  min-width: 40px;
+  max-width: 40px;
+  text-align: center;
+  padding: 0.5rem !important;
+}
+
+.bitacora-table th.mensajes-col,
+.bitacora-table td.mensajes-col {
+  width: 40px;
+  min-width: 40px;
+  max-width: 40px;
+  text-align: center;
+  padding: 0.5rem !important;
 }
 
 .nota-texto {
-  flex: 1;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;

@@ -2,8 +2,16 @@
   <!-- Logo Siroe -->
   <div>
     <a [routerLink]="[logoRoute]">
-      <img [src]="brand.logoMain" [alt]="brand.appTitle + ' logo'" class="logo logo-main" />
-      <img [src]="brand.logoCompact" [alt]="brand.appTitle + ' logo compacto'" class="logo logo-compact" />
+      <img
+        [src]="brand.logoMain"
+        [alt]="brand.appTitle + ' logo'"
+        class="logo logo-main"
+      />
+      <img
+        [src]="brand.logoCompact"
+        [alt]="brand.appTitle + ' logo compacto'"
+        class="logo logo-compact"
+      />
     </a>
   </div>
 
@@ -26,11 +34,19 @@
           ></span>
           <span
             class="icon-mask icon-mask--active"
-            [style.-webkit-mask-image]="'url(/assets/svg/' + item.svg + '-routed.svg)'"
+            [style.-webkit-mask-image]="
+              'url(/assets/svg/' + item.svg + '-routed.svg)'
+            "
             [style.mask-image]="'url(/assets/svg/' + item.svg + '-routed.svg)'"
           ></span>
         </div>
         <p class="color-option">{{ item.nombre }}</p>
+        <span
+          *ngIf="item.route === '/tickets' && unreadTicketMessages > 0"
+          class="menu-badge"
+        >
+          {{ unreadTicketMessages }}
+        </span>
         <div>
           <img
             *ngIf="item.subItem.length > 0"
@@ -56,7 +72,9 @@
         >
           <span
             class="icon-mask"
-            [style.-webkit-mask-image]="'url(/assets/svg/' + subItem.svg + '.svg)'"
+            [style.-webkit-mask-image]="
+              'url(/assets/svg/' + subItem.svg + '.svg)'
+            "
             [style.mask-image]="'url(/assets/svg/' + subItem.svg + '.svg)'"
           ></span>
           <p class="color-option">{{ subItem.nombre }}</p>

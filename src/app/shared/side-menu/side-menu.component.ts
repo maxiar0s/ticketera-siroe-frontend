@@ -1,10 +1,12 @@
 import { CommonModule, Location } from '@angular/common';
-import { Component, Renderer2 } from '@angular/core';
+import { Component, Renderer2, OnInit, OnDestroy } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { ApiService } from '../../services/api.service';
 import { BRAND } from '../../config/branding';
 import { MODULES } from '../../config/modules';
+import { Subject, interval } from 'rxjs';
+import { takeUntil, startWith, switchMap } from 'rxjs/operators';
 
 // Menus
 import menu_administrador from './menu-administrador.json';
@@ -20,7 +22,7 @@ import menu_config from './menu-config.json';
   templateUrl: './side-menu.component.html',
   styleUrl: './side-menu.component.css',
 })
-export class SideMenuComponent {
+export class SideMenuComponent implements OnInit, OnDestroy {
   public currentGroup: string = '';
   public currentSubGroup: string = '';
 
@@ -29,6 +31,10 @@ export class SideMenuComponent {
   public menuConfig = menu_config;
   public logoRoute: string = '/dashboard';
   public brand = BRAND;
+
+  // Unread ticket messages count
+  public unreadTicketMessages = 0;
+  private readonly destroyed$ = new Subject<void>();
 
   constructor(
     private authService: AuthService,
@@ -77,6 +83,29 @@ export class SideMenuComponent {
           this.authService.esTecnico() ||
           this.authService.esComercial();
         this.ajustarMenuPorTickets(fallbackTickets, this.location.path());
+      },
+    });
+
+    // Load unread ticket messages count and refresh periodically
+    this.cargarMensajesNoLeidos();
+  }
+
+  ngOnDestroy(): void {
+    this.destroyed$.next();
+    this.destroyed$.complete();
+  }
+
+  private cargarMensajesNoLeidos(): void {
+    this.apiService.getMensajesNoLeidosPorTicket().subscribe({
+      next: (resp) => {
+        const conteo = resp?.data || {};
+        this.unreadTicketMessages = Object.values(conteo).reduce(
+          (sum: number, val: any) => sum + (typeof val === 'number' ? val : 0),
+          0
+        );
+      },
+      error: () => {
+        this.unreadTicketMessages = 0;
       },
     });
   }

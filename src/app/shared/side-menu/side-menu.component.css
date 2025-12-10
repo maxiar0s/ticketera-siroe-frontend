@@ -30,7 +30,6 @@
   display: none;
 }
 
-
 .item {
   display: grid;
   grid-template-columns: 5% 20% 55% 20%;
@@ -217,5 +216,40 @@ img[src="/assets/svg/side-menu-arrow-up.svg"],
     padding: 0;
     place-self: center;
     margin: 2rem 0;
+  }
+}
+
+/* Menu badge for unread messages */
+.menu-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: white;
+  background: linear-gradient(135deg, #e91e63, #c2185b);
+  border-radius: 9px;
+  animation: pulse-badge 2s ease-in-out infinite;
+  margin-left: auto;
+  margin-right: 0.5rem;
+}
+
+@keyframes pulse-badge {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+}
+
+/* Hide badge on small screens */
+@media (max-width: 1100px) {
+  .menu-badge {
+    display: none !important;
   }
 }

@@ -63,7 +63,7 @@ export class OpcionesComponent implements OnInit {
     private preferenciasService: UserPreferencesService
   ) {
     this.preferenciasForm = this.fb.group({
-      tema: ['sistema'],
+      tema: ['claro'],
       idioma: ['es'],
       notificaciones: [true],
       newsletter: [false],

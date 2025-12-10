@@ -6,16 +6,24 @@ import { Component, EventEmitter, Output } from '@angular/core';
   standalone: true,
   imports: [CommonModule],
   templateUrl: './options.component.html',
-  styleUrl: './options.component.css'
+  styleUrl: './options.component.css',
 })
 export class OptionsComponent {
   @Output() optionSelected = new EventEmitter<string>();
-  public Option:string = 'Todos los ingresos';
+  public searchTerm: string = '';
 
   constructor() {}
 
-  changeDesign(option: string) {
-    this.Option = option;
-    this.optionSelected.emit(option);
+  onSearchInput(event: Event): void {
+    this.searchTerm = (event.target as HTMLInputElement).value;
+  }
+
+  onSearch(): void {
+    this.optionSelected.emit(this.searchTerm);
+  }
+
+  onClear(): void {
+    this.searchTerm = '';
+    this.optionSelected.emit('');
   }
 }

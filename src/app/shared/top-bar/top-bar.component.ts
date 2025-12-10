@@ -210,6 +210,19 @@ export class TopBarComponent implements AfterViewInit, OnInit, OnDestroy {
   }
 
   obtenerDetalleNotificacion(notificacion: Notificacion): string {
+    // For chat messages, show sender and ticket info
+    if (notificacion.tipo === 'chat_mensaje') {
+      const remitente = notificacion.metadata?.remitenteNombre;
+      const ticketTitulo = notificacion.metadata?.ticketTitulo;
+      if (remitente && ticketTitulo) {
+        return `${remitente} · ${ticketTitulo}`;
+      }
+      if (remitente) {
+        return `De: ${remitente}`;
+      }
+      return notificacion.mensaje;
+    }
+
     const cliente = notificacion.metadata?.cliente;
     const titulo = notificacion.metadata?.titulo ?? null;
     if (cliente && titulo) {

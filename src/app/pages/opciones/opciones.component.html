@@ -7,7 +7,12 @@
       (click)="seleccionarSeccion(tarjeta.id)"
     >
       <div class="opcion-icono">
-        <img [src]="tarjeta.icono" [alt]="tarjeta.titulo" width="32" height="32" />
+        <img
+          [src]="tarjeta.icono"
+          [alt]="tarjeta.titulo"
+          width="32"
+          height="32"
+        />
       </div>
       <div class="opcion-info">
         <h2>{{ tarjeta.titulo }}</h2>
@@ -35,7 +40,6 @@
           <select id="tema" formControlName="tema">
             <option value="claro">Claro</option>
             <option value="oscuro">Oscuro</option>
-            <option value="sistema">Seguir configuracion del sistema</option>
           </select>
         </div>
 
@@ -65,25 +69,40 @@
           {{ mensajeGeneral }}
         </div>
 
-        <button type="submit" class="preferencias-submit">Guardar preferencias</button>
+        <button type="submit" class="preferencias-submit">
+          Guardar preferencias
+        </button>
       </form>
 
       <div *ngSwitchCase="'backups'" class="respaldo-panel">
         <header>
           <h1>Datos y respaldos</h1>
-          <p>Genera una copia de tus datos o restaura una configuracion previa.</p>
+          <p>
+            Genera una copia de tus datos o restaura una configuracion previa.
+          </p>
         </header>
 
         <div class="respaldo-acciones">
-          <button type="button" (click)="descargarRespaldo()">Descargar respaldo</button>
+          <button type="button" (click)="descargarRespaldo()">
+            Descargar respaldo
+          </button>
           <label class="respaldo-subir">
             Restaurar desde archivo
-            <input type="file" accept="application/json" (change)="restaurarPreferencias($event)" />
+            <input
+              type="file"
+              accept="application/json"
+              (change)="restaurarPreferencias($event)"
+            />
           </label>
         </div>
 
-        <div class="respaldo-alerta" *ngIf="mensajeRespaldo">{{ mensajeRespaldo }}</div>
-        <div class="respaldo-alerta respaldo-alerta--error" *ngIf="mensajeErrorRespaldo">
+        <div class="respaldo-alerta" *ngIf="mensajeRespaldo">
+          {{ mensajeRespaldo }}
+        </div>
+        <div
+          class="respaldo-alerta respaldo-alerta--error"
+          *ngIf="mensajeErrorRespaldo"
+        >
           {{ mensajeErrorRespaldo }}
         </div>
 
@@ -92,7 +111,10 @@
           <ul>
             <li><strong>Nombre:</strong> {{ perfilActual.name }}</li>
             <li><strong>Correo:</strong> {{ perfilActual.email }}</li>
-            <li><strong>Rol:</strong> {{ perfilActual.tipoCuenta?.name ?? 'Usuario' }}</li>
+            <li>
+              <strong>Rol:</strong>
+              {{ perfilActual.tipoCuenta?.name ?? "Usuario" }}
+            </li>
           </ul>
         </section>
       </div>
@@ -105,4 +127,3 @@
     <p>Cargando configuracion...</p>
   </div>
 </ng-template>
-

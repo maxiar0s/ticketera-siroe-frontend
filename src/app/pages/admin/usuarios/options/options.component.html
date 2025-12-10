@@ -1,8 +1,21 @@
-<div class="options">
-  <button (click)="changeDesign('Todos los ingresos')" class="color-button" [ngClass]="{'options-buttons-border': Option === 'Todos los ingresos' }">Todos los usuarios</button>
-  <button (click)="changeDesign('Técnico de soporte')" class="color-button" [ngClass]="{'options-buttons-border': Option === 'Técnico de soporte' }">Técnico de soporte</button>
-  <button (click)="changeDesign('Mesa de ayuda')" class="color-button" [ngClass]="{'options-buttons-border': Option === 'Mesa de ayuda' }">Mesa de ayuda</button>
-  <button (click)="changeDesign('Comercial')" class="color-button" [ngClass]="{'options-buttons-border': Option === 'Comercial' }">Comercial</button>
-  <button (click)="changeDesign('Cliente')" class="color-button" [ngClass]="{'options-buttons-border': Option === 'Cliente' }">Cliente</button>
-  <button (click)="changeDesign('Administrador')" class="color-button" [ngClass]="{'options-buttons-border': Option === 'Administrador' }">Administrador</button>
+<div class="search-container">
+  <input
+    type="text"
+    class="search-input"
+    placeholder="Buscar por nombre..."
+    [value]="searchTerm"
+    (input)="onSearchInput($event)"
+    (keyup.enter)="onSearch()"
+  />
+  <button type="button" class="search-button" (click)="onSearch()">
+    <img src="/assets/svg/search.svg" alt="Buscar" class="search-icon" />
+  </button>
+  <button
+    *ngIf="searchTerm"
+    type="button"
+    class="clear-button"
+    (click)="onClear()"
+  >
+    ✕
+  </button>
 </div>
