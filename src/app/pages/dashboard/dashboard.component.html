@@ -1,4 +1,18 @@
 <div class="section">
+  <!-- Filtro de técnicos para admin -->
+  <div class="dashboard-filter" *ngIf="esAdmin && hasTicketWidgets()">
+    <label class="filter-label">
+      <span>Ver tickets de:</span>
+      <select [(ngModel)]="filtroTecnicoId" (change)="onFiltroChange()">
+        <option value="">Todos</option>
+        <option [value]="usuarioActualId">Mis tickets</option>
+        <option *ngFor="let tec of tecnicosDisponibles" [value]="tec.id">
+          {{ tec.name }}
+        </option>
+      </select>
+    </label>
+  </div>
+
   <!-- Ticket Widgets -->
   <ng-container *ngIf="dashboardConfig.tickets.estadoCards">
     <app-ticket-status-cards [tickets]="tickets"></app-ticket-status-cards>

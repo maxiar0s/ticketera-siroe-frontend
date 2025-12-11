@@ -106,6 +106,7 @@
         <span class="label">Técnico</span>
         <select formControlName="tecnicoId">
           <option value="">Todos</option>
+          <option value="sinAsignar">Sin asignar</option>
           <option *ngFor="let tec of tecnicosDisponibles" [value]="tec.id">
             {{ tec.name }}
           </option>

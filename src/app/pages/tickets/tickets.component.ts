@@ -73,6 +73,7 @@ export class TicketsComponent implements OnInit {
   tecnicoActual: string[] = []; // Para mostrar quien era el tecnico original en el dropdown deshabilitado
   estadosTicketFormulario: { value: string; label: string }[] = [];
   mensajesNoLeidosPorTicket: Record<number, number> = {};
+  usuarioActualId: number | null = null;
 
   readonly esAdmin: boolean;
   readonly esTecnico: boolean;
@@ -120,6 +121,10 @@ export class TicketsComponent implements OnInit {
     this.esCliente = this.authService.esCliente();
     this.puedeCrear = this.esAdmin || this.esTecnico;
     this.soloLectura = this.esMesaAyuda || this.esComercial;
+
+    // Inicializar usuarioActualId inmediatamente para que puedeEditarTicket funcione
+    const tokenData = this.authService.decodificarToken();
+    this.usuarioActualId = tokenData?.id ?? null;
 
     this.filtroForm = this.fb.group({
       clienteId: [''],
@@ -215,6 +220,21 @@ export class TicketsComponent implements OnInit {
 
   private inicializarDatos(): void {
     this.errorMensaje = '';
+
+    // Obtener ID del usuario actual
+    const tokenData = this.authService.decodificarToken();
+    this.usuarioActualId = tokenData?.id ?? null;
+
+    // Establecer filtro por defecto según el rol
+    if (this.esTecnico && this.usuarioActualId) {
+      // Para técnicos: filtrar por su ID por defecto
+      this.filtroForm.patchValue(
+        { tecnicoId: this.usuarioActualId.toString() },
+        { emitEvent: false }
+      );
+    }
+    // Para admin: dejar vacío (todos)
+
     this.cargarClientes();
     this.cargarTecnicosDisponibles();
     this.cargarProyectos();
@@ -358,6 +378,12 @@ export class TicketsComponent implements OnInit {
   }
 
   limpiarFiltros(): void {
+    // Para técnicos: mantener su ID como filtro por defecto
+    const tecnicoIdDefault =
+      this.esTecnico && this.usuarioActualId
+        ? this.usuarioActualId.toString()
+        : '';
+
     this.filtroForm.reset({
       clienteId:
         this.esCliente && this.clientes.length === 1 ? this.clientes[0].id : '',
@@ -367,7 +393,7 @@ export class TicketsComponent implements OnInit {
       proyectoId: '',
       tipo: '',
       prioridad: '',
-      tecnicoId: '',
+      tecnicoId: tecnicoIdDefault,
       fecha: '',
     });
     const clienteId = this.filtroForm.value.clienteId;
@@ -410,7 +436,13 @@ export class TicketsComponent implements OnInit {
     }
     if (filtros.tipo) params['tipo'] = filtros.tipo;
     if (filtros.prioridad) params['prioridad'] = filtros.prioridad;
-    if (filtros.tecnicoId) params['tecnicoId'] = filtros.tecnicoId;
+    if (filtros.tecnicoId) {
+      if (filtros.tecnicoId === 'sinAsignar') {
+        params['sinAsignar'] = 'true';
+      } else {
+        params['tecnicoId'] = filtros.tecnicoId;
+      }
+    }
     if (filtros.fecha) params['fecha'] = filtros.fecha;
 
     this.apiService
@@ -491,8 +523,41 @@ export class TicketsComponent implements OnInit {
     this.ticketSeleccionado = undefined;
   }
 
-  puedeEditarTicket(_ticket: Ticket): boolean {
-    return this.esAdmin || this.esTecnico;
+  puedeEditarTicket(ticket: Ticket): boolean {
+    // Admin siempre puede editar
+    if (this.esAdmin) {
+      return true;
+    }
+
+    // Técnico: verificar permisos específicos
+    if (this.esTecnico && this.usuarioActualId) {
+      // Tickets nuevos (sin asignar) pueden ser editados por cualquier técnico
+      if (ticket.estadoTicket === 'Nuevo' || !ticket.tecnicoAsignadoId) {
+        return true;
+      }
+
+      // Técnico asignado actualmente
+      if (ticket.tecnicoAsignadoId === this.usuarioActualId) {
+        return true;
+      }
+
+      // Verificar historial de transferencias
+      const historial = ticket.historialTransferencias ?? [];
+      if (Array.isArray(historial)) {
+        for (const transferencia of historial) {
+          if (
+            transferencia.fromId === this.usuarioActualId ||
+            transferencia.toId === this.usuarioActualId
+          ) {
+            return true;
+          }
+        }
+      }
+
+      return false;
+    }
+
+    return false;
   }
 
   abrirFormularioCrear(): void {
@@ -603,8 +668,12 @@ export class TicketsComponent implements OnInit {
 
     const estado = ticket.estadoTicket ?? 'Nuevo';
     if (estado === 'Nuevo') {
-      // Si es Nuevo, no hay tecnico asignado y no se puede asignar aun
-      this.ticketForm.get('tecnicos')?.disable({ emitEvent: false });
+      // Si es Nuevo, permitir asignar técnico (primera asignación)
+      // El técnico se puede asignar junto con el cambio de estado
+      this.tecnicoActual = []; // Limpiar para mostrar dropdown de selección
+      this.ticketForm.get('tecnicos')?.enable({ emitEvent: false });
+      // Mantener todos los estados disponibles para tickets nuevos
+      this.estadosTicketFormulario = [...this.estadosTicket];
     } else {
       // Si no es Nuevo (Abierto, etc), DEBE haber un tecnico asignado.
       // Permitimos editar (Transferir) directamente mediante el segundo dropdown.
