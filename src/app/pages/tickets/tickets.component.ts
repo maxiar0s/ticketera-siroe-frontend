@@ -186,6 +186,10 @@ export class TicketsComponent implements OnInit {
       const parsed = Number.parseInt(idParam, 10);
       if (!Number.isNaN(parsed)) {
         this.ticketDestinoId = parsed;
+        // If tickets already loaded, process immediately
+        if (this.tickets.length > 0 || !this.cargando) {
+          this.procesarTicketDestino();
+        }
       }
     });
 
@@ -498,15 +502,29 @@ export class TicketsComponent implements OnInit {
     const objetivo = this.tickets.find(
       (item: Ticket) => item.id === this.ticketDestinoId
     );
-    if (!objetivo) {
-      return;
-    }
-    this.ticketSeleccionado = objetivo;
-    if (this.puedeEditarTicket(objetivo)) {
-      this.abrirFormularioEditar(objetivo);
-    } else {
+    if (objetivo) {
+      // Found in current list, show detail
+      this.ticketSeleccionado = objetivo;
       this.detalleVisible = true;
+      this.limpiarTicketDestinoId();
+    } else {
+      // Not in current list, fetch from API
+      this.apiService.ticket(this.ticketDestinoId).subscribe({
+        next: (ticket) => {
+          if (ticket) {
+            this.ticketSeleccionado = ticket;
+            this.detalleVisible = true;
+          }
+          this.limpiarTicketDestinoId();
+        },
+        error: () => {
+          this.limpiarTicketDestinoId();
+        },
+      });
     }
+  }
+
+  private limpiarTicketDestinoId(): void {
     this.ticketDestinoId = null;
     this.router.navigate([], {
       queryParams: { ticketId: null },
