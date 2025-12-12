@@ -3,18 +3,18 @@
     <button
       *ngIf="puedeCrearClientes"
       type="button"
-      class="option-button header-button"
+      class="primary-button"
       (click)="abrirModal()"
     >
-      <span>Añadir cliente</span>
+      Añadir cliente
     </button>
 
     <button
       type="button"
-      class="option-button header-button header-button--secondary"
+      class="ghost-button"
       (click)="filtrosVisibles = !filtrosVisibles"
     >
-      <span>{{ filtrosVisibles ? "Ocultar filtros" : "Mostrar filtros" }}</span>
+      {{ filtrosVisibles ? "Ocultar filtros" : "Mostrar filtros" }}
     </button>
   </div>
 

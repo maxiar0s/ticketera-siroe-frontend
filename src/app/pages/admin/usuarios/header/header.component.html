@@ -1,13 +1,11 @@
 <div class="flex">
   <h2 class="title">Lista de usuarios</h2>
-  <button class="option-button" (click)="abrirModal()">
-    <span>Añadir usuario</span>
-  </button>
+  <button class="primary-button" (click)="abrirModal()">Añadir usuario</button>
 </div>
 
-
-<shared-crear-usuario class="size-modal"
-*ngIf="isModalVisible"
-(cerrarModal)="cerrarModal()"
-(enviarFormulario)="crearUsuario($event)"
+<shared-crear-usuario
+  class="size-modal"
+  *ngIf="isModalVisible"
+  (cerrarModal)="cerrarModal()"
+  (enviarFormulario)="crearUsuario($event)"
 ></shared-crear-usuario>

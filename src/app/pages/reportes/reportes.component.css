@@ -38,8 +38,8 @@
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  padding: 0.65rem 1.25rem;
-  border-radius: 12px;
+  padding: 0.65rem 1.6rem;
+  border-radius: 999px;
   border: none;
   background: linear-gradient(
     135deg,
@@ -48,15 +48,15 @@
   );
   color: white;
   font-weight: 600;
-  font-size: 0.95rem;
+  font-size: 1rem;
   cursor: pointer;
   transition: all 0.2s ease;
-  box-shadow: 0 4px 12px rgba(var(--color-primary-rgb), 0.3);
+  box-shadow: 0 10px 26px rgba(var(--color-primary-rgb), 0.22);
 }
 
 .excel-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(var(--color-primary-rgb), 0.4);
+  transform: translateY(-1px);
+  box-shadow: 0 14px 30px rgba(var(--color-primary-rgb), 0.3);
 }
 
 /* Ticket State Pills (matching tickets module) */
