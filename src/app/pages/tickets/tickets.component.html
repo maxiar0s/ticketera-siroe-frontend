@@ -113,6 +113,23 @@
         </select>
       </label>
 
+      <div class="filter-field tags-filter" *ngIf="tagsDisponibles.length > 0">
+        <span class="label">Tags</span>
+        <div class="tags-chips">
+          <button
+            type="button"
+            *ngFor="let tag of tagsDisponibles"
+            class="tag-filter-chip"
+            [class.selected]="isTagSelected(tag.id)"
+            [style.--tag-color]="tag.color"
+            (click)="toggleTagFilter(tag.id)"
+          >
+            <span class="tag-dot" [style.background-color]="tag.color"></span>
+            {{ tag.nombre }}
+          </button>
+        </div>
+      </div>
+
       <label class="filter-field grow">
         <span class="label">Buscar</span>
         <input
@@ -169,6 +186,7 @@
           <th class="tipo-col">Estado</th>
           <th class="cliente-col">Cliente</th>
           <th class="tecnico-col">Técnico Asignado</th>
+          <th class="tags-col">Tags</th>
           <th *ngIf="modules.sucursal">Sucursal</th>
           <th class="nota">Nota</th>
           <th *ngIf="esAdmin" class="acciones">Acciones</th>
@@ -225,6 +243,19 @@
               </span>
             </ng-container>
             <ng-template #sinTecnicos>Sin registrar</ng-template>
+          </td>
+          <td class="tags-col">
+            <div class="tags-cell">
+              <span
+                *ngFor="let tag of ticket.tags"
+                class="tag-chip"
+                [style.background-color]="tag.color + '22'"
+                [style.color]="tag.color"
+                [style.border-color]="tag.color + '55'"
+              >
+                {{ tag.nombre }}
+              </span>
+            </div>
           </td>
           <td *ngIf="modules.sucursal">
             {{ ticket.sucursal?.sucursal || "General" }}
@@ -873,6 +904,27 @@
                   <span>{{ tecnico.name }}</span>
                 </button>
               </div>
+            </div>
+          </label>
+
+          <!-- Selector de Tags -->
+          <label class="full" *ngIf="tagsDisponibles.length > 0 && modoEdicion">
+            <span class="label">Tags</span>
+            <div class="tags-selector">
+              <button
+                type="button"
+                *ngFor="let tag of tagsDisponibles"
+                class="tag-selector-chip"
+                [class.selected]="isTagSelectedInForm(tag.id)"
+                [style.--tag-color]="tag.color"
+                (click)="toggleTagInForm(tag.id)"
+              >
+                <span
+                  class="tag-dot"
+                  [style.background-color]="tag.color"
+                ></span>
+                {{ tag.nombre }}
+              </button>
             </div>
           </label>
 

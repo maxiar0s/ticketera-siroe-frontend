@@ -1,5 +1,5 @@
-import { Sucursal } from "./Sucursal.interface";
-import { DatosBancarios } from "./datos-bancarios.interface";
+import { Sucursal } from './Sucursal.interface';
+import { DatosBancarios } from './datos-bancarios.interface';
 export interface Cliente {
   id: string;
   imagen?: string | null;
@@ -18,4 +18,9 @@ export interface Cliente {
   sucursales?: Sucursal[];
   datosBancarios?: DatosBancarios | null;
   esLead?: boolean;
+  tags?: {
+    id: number;
+    nombre: string;
+    color: string;
+  }[];
 }

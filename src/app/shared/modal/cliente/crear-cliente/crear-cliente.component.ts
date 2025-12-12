@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import {
   ChangeDetectionStrategy,
+  ChangeDetectorRef,
   Component,
   DestroyRef,
   EventEmitter,
@@ -14,6 +15,7 @@ import {
 import {
   FormBuilder,
   FormGroup,
+  FormsModule,
   ReactiveFormsModule,
   Validators,
   ValidatorFn,
@@ -24,6 +26,7 @@ import { validarRut } from '../../../../validators/rut.validator';
 import { Cliente } from '../../../../interfaces/cliente.interface';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FEATURES } from '../../../../config/features';
+import { ApiService } from '../../../../services/api.service';
 
 type CampoBasico =
   | 'rut'
@@ -44,6 +47,7 @@ type CampoValidador =
   imports: [
     CommonModule,
     ReactiveFormsModule,
+    FormsModule,
     FormatInputRutDirective,
     FormatInputTelefonoDirective,
   ],
@@ -53,6 +57,7 @@ type CampoValidador =
 })
 export class CrearClienteComponent implements OnInit, OnChanges {
   private readonly destroyRef = inject(DestroyRef);
+  private readonly cdr = inject(ChangeDetectorRef);
   readonly features = FEATURES;
 
   ngOnInit(): void {
@@ -139,13 +144,36 @@ export class CrearClienteComponent implements OnInit, OnChanges {
   clientForm: FormGroup;
   errorMessage: string = '';
   tituloModal: string = 'Crear Cliente';
+
+  // Tags
+  tags: { id: number; nombre: string; color: string; editando?: boolean }[] =
+    [];
+  nuevoTagNombre: string = '';
+  nuevoTagColor: string = '#6366f1';
+  tagEditandoId: number | null = null;
+  tagEditandoNombre: string = '';
+  tagEditandoColor: string = '';
+  guardandoTag: boolean = false;
+  readonly coloresPredefinidos = [
+    '#ef4444',
+    '#f97316',
+    '#eab308',
+    '#22c55e',
+    '#14b8a6',
+    '#3b82f6',
+    '#6366f1',
+    '#8b5cf6',
+    '#ec4899',
+    '#6b7280',
+  ];
+
   private leadValoresPrevios = {
     visitasMensuales: this.initialFormValues.visitasMensuales,
     visitasEmergenciaAnuales: this.initialFormValues.visitasEmergenciaAnuales,
     servicios: [...this.initialFormValues.servicios],
   };
 
-  constructor(private fb: FormBuilder) {
+  constructor(private fb: FormBuilder, private apiService: ApiService) {
     this.clientForm = this.fb.group({
       esLead: [this.initialFormValues.esLead],
       tipoDocumento: [
@@ -252,6 +280,11 @@ export class CrearClienteComponent implements OnInit, OnChanges {
 
     this.aplicarModoLead(esLead);
     this.clientForm.markAsPristine();
+
+    // Cargar tags si estamos editando
+    if (this.cliente?.id) {
+      this.cargarTags(this.cliente.id);
+    }
   }
 
   abrirModal() {
@@ -531,5 +564,122 @@ export class CrearClienteComponent implements OnInit, OnChanges {
       rutTitular: limpiar(valores['rutTitular']),
       correoNotificacion: limpiar(valores['correoNotificacion']),
     };
+  }
+
+  // ===============================================
+  // Métodos de Tags
+  // ===============================================
+
+  private cargarTags(clienteId: string): void {
+    this.apiService.getTagsCliente(clienteId).subscribe({
+      next: (tags) => {
+        this.tags = Array.isArray(tags)
+          ? tags.map((t) => ({ ...t, editando: false }))
+          : [];
+        this.cdr.markForCheck();
+      },
+      error: () => {
+        this.tags = [];
+        this.cdr.markForCheck();
+      },
+    });
+  }
+
+  agregarTag(): void {
+    if (!this.nuevoTagNombre.trim() || !this.cliente?.id || this.guardandoTag) {
+      return;
+    }
+    this.guardandoTag = true;
+    this.apiService
+      .crearTag(this.cliente.id, {
+        nombre: this.nuevoTagNombre.trim(),
+        color: this.nuevoTagColor,
+      })
+      .subscribe({
+        next: (nuevoTag) => {
+          this.tags.push({ ...nuevoTag, editando: false });
+          this.nuevoTagNombre = '';
+          this.nuevoTagColor = '#6366f1';
+          this.guardandoTag = false;
+          this.cdr.markForCheck();
+        },
+        error: () => {
+          this.guardandoTag = false;
+          this.cdr.markForCheck();
+        },
+      });
+  }
+
+  iniciarEdicionTag(tag: { id: number; nombre: string; color: string }): void {
+    this.tagEditandoId = tag.id;
+    this.tagEditandoNombre = tag.nombre;
+    this.tagEditandoColor = tag.color;
+  }
+
+  guardarEdicionTag(): void {
+    if (
+      !this.tagEditandoNombre.trim() ||
+      !this.cliente?.id ||
+      !this.tagEditandoId ||
+      this.guardandoTag
+    ) {
+      return;
+    }
+    this.guardandoTag = true;
+    this.apiService
+      .actualizarTag(this.cliente.id, this.tagEditandoId, {
+        nombre: this.tagEditandoNombre.trim(),
+        color: this.tagEditandoColor,
+      })
+      .subscribe({
+        next: (tagActualizado) => {
+          const index = this.tags.findIndex((t) => t.id === this.tagEditandoId);
+          if (index >= 0) {
+            this.tags[index] = { ...tagActualizado, editando: false };
+          }
+          this.cancelarEdicionTag();
+          this.guardandoTag = false;
+          this.cdr.markForCheck();
+        },
+        error: () => {
+          this.guardandoTag = false;
+          this.cdr.markForCheck();
+        },
+      });
+  }
+
+  cancelarEdicionTag(): void {
+    this.tagEditandoId = null;
+    this.tagEditandoNombre = '';
+    this.tagEditandoColor = '';
+  }
+
+  eliminarTag(tag: { id: number; nombre: string }): void {
+    if (!this.cliente?.id || this.guardandoTag) {
+      return;
+    }
+    if (!confirm(`¿Eliminar el tag "${tag.nombre}"?`)) {
+      return;
+    }
+    this.guardandoTag = true;
+    this.apiService.eliminarTag(this.cliente.id, tag.id).subscribe({
+      next: () => {
+        this.tags = this.tags.filter((t) => t.id !== tag.id);
+        this.guardandoTag = false;
+        this.cdr.markForCheck();
+      },
+      error: () => {
+        this.guardandoTag = false;
+        this.cdr.markForCheck();
+      },
+    });
+  }
+
+  seleccionarColorNuevoTag(color: string): void {
+    this.nuevoTagColor = color;
+  }
+
+  seleccionarColorEdicion(color: string): void {
+    this.tagEditandoColor = color;
   }
 }

@@ -1344,4 +1344,57 @@ export class ApiService {
         })
       );
   }
+
+  // ===============================================
+  // Tags de clientes
+  // ===============================================
+
+  getTagsCliente(clienteId: string): Observable<any[]> {
+    return this.http.get<any[]>(`${this.url}/clientes/${clienteId}/tags`).pipe(
+      catchError((error: HttpErrorResponse) => {
+        console.error('Error al obtener tags del cliente:', error);
+        return of([]);
+      })
+    );
+  }
+
+  crearTag(
+    clienteId: string,
+    tag: { nombre: string; color: string }
+  ): Observable<any> {
+    return this.http
+      .post<any>(`${this.url}/clientes/${clienteId}/tags`, tag)
+      .pipe(
+        catchError((error: HttpErrorResponse) => {
+          console.error('Error al crear tag:', error);
+          return throwError(() => error);
+        })
+      );
+  }
+
+  actualizarTag(
+    clienteId: string,
+    tagId: number,
+    tag: { nombre?: string; color?: string }
+  ): Observable<any> {
+    return this.http
+      .put<any>(`${this.url}/clientes/${clienteId}/tags/${tagId}`, tag)
+      .pipe(
+        catchError((error: HttpErrorResponse) => {
+          console.error('Error al actualizar tag:', error);
+          return throwError(() => error);
+        })
+      );
+  }
+
+  eliminarTag(clienteId: string, tagId: number): Observable<any> {
+    return this.http
+      .delete<any>(`${this.url}/clientes/${clienteId}/tags/${tagId}`)
+      .pipe(
+        catchError((error: HttpErrorResponse) => {
+          console.error('Error al eliminar tag:', error);
+          return throwError(() => error);
+        })
+      );
+  }
 }

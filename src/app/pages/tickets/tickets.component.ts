@@ -51,6 +51,7 @@ export class TicketsComponent implements OnInit {
   private sucursalesCache = new Map<string, SucursalOption[]>();
   tecnicosDisponibles: Tecnico[] = [];
   proyectos: Proyecto[] = [];
+  tagsDisponibles: { id: number; nombre: string; color: string }[] = [];
   private clientesLeadMap = new Map<string, boolean>();
 
   paginaActual = 1;
@@ -136,6 +137,7 @@ export class TicketsComponent implements OnInit {
       prioridad: [''],
       tecnicoId: [''],
       fecha: [''],
+      tagIds: [[]],
     });
 
     this.ticketForm = this.fb.group({
@@ -157,6 +159,7 @@ export class TicketsComponent implements OnInit {
       comentarioInterno: [''],
       tiempoResolucionHoras: [null, [Validators.min(0), Validators.max(24)]],
       tiempoResolucionMinutos: [null, [Validators.min(0), Validators.max(59)]],
+      tagIds: [[]],
     });
   }
 
@@ -444,6 +447,9 @@ export class TicketsComponent implements OnInit {
       }
     }
     if (filtros.fecha) params['fecha'] = filtros.fecha;
+    if (filtros.tagIds?.length) {
+      params['tagIds'] = filtros.tagIds.join(',');
+    }
 
     this.apiService
       .tickets(params)
@@ -647,6 +653,7 @@ export class TicketsComponent implements OnInit {
             (ticket.tiempoResolucion - Math.floor(ticket.tiempoResolucion)) * 60
           )
         : null,
+      tagIds: Array.isArray(ticket.tags) ? ticket.tags.map((t) => t.id) : [],
     });
 
     this.formularioVisible = true;
@@ -660,6 +667,7 @@ export class TicketsComponent implements OnInit {
         sucursalId: ticket.sucursalId ?? '',
       });
     });
+    this.cargarTagsCliente(clienteId);
 
     // Logica de visualizacion de tecnicos
     this.tecnicoActual = Array.isArray(ticket.tecnicos)
@@ -893,21 +901,77 @@ export class TicketsComponent implements OnInit {
   }
 
   onClienteFiltroChange(clienteId: string): void {
-    this.filtroForm.patchValue({ sucursalId: '' }, { emitEvent: false });
+    this.filtroForm.patchValue(
+      { sucursalId: '', tagIds: [] },
+      { emitEvent: false }
+    );
     if (!clienteId) {
       this.sucursalesFiltro = [];
+      this.tagsDisponibles = [];
       return;
     }
     this.cargarSucursalesParaCliente(clienteId, 'filtro');
+    this.cargarTagsCliente(clienteId);
   }
 
   onClienteFormChange(clienteId: string): void {
-    this.ticketForm.patchValue({ sucursalId: '' });
+    this.ticketForm.patchValue({ sucursalId: '', tagIds: [] });
     if (!clienteId) {
       this.sucursalesFormulario = [];
+      this.tagsDisponibles = [];
       return;
     }
     this.cargarSucursalesParaCliente(clienteId, 'form');
+    this.cargarTagsCliente(clienteId);
+  }
+
+  private cargarTagsCliente(clienteId: string): void {
+    if (!clienteId) {
+      this.tagsDisponibles = [];
+      return;
+    }
+    this.apiService.getTagsCliente(clienteId).subscribe({
+      next: (tags) => {
+        this.tagsDisponibles = Array.isArray(tags) ? tags : [];
+      },
+      error: () => {
+        this.tagsDisponibles = [];
+      },
+    });
+  }
+
+  // ====== Métodos para Tags en Filtro ======
+  isTagSelected(tagId: number): boolean {
+    const tagIds = this.filtroForm.get('tagIds')?.value || [];
+    return tagIds.includes(tagId);
+  }
+
+  toggleTagFilter(tagId: number): void {
+    const tagIds = [...(this.filtroForm.get('tagIds')?.value || [])];
+    const index = tagIds.indexOf(tagId);
+    if (index >= 0) {
+      tagIds.splice(index, 1);
+    } else {
+      tagIds.push(tagId);
+    }
+    this.filtroForm.get('tagIds')?.setValue(tagIds);
+  }
+
+  // ====== Métodos para Tags en Formulario ======
+  isTagSelectedInForm(tagId: number): boolean {
+    const tagIds = this.ticketForm.get('tagIds')?.value || [];
+    return tagIds.includes(tagId);
+  }
+
+  toggleTagInForm(tagId: number): void {
+    const tagIds = [...(this.ticketForm.get('tagIds')?.value || [])];
+    const index = tagIds.indexOf(tagId);
+    if (index >= 0) {
+      tagIds.splice(index, 1);
+    } else {
+      tagIds.push(tagId);
+    }
+    this.ticketForm.get('tagIds')?.setValue(tagIds);
   }
 
   private cargarSucursalesParaCliente(
@@ -1058,6 +1122,11 @@ export class TicketsComponent implements OnInit {
       !Number.isNaN(minutos)
     ) {
       payload.tiempoResolucion = horas + minutos / 60;
+    }
+
+    // Tags
+    if (Array.isArray(formValue.tagIds) && formValue.tagIds.length > 0) {
+      payload.tagIds = formValue.tagIds;
     }
 
     return payload;

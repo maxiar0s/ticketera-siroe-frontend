@@ -989,9 +989,16 @@ textarea {
   padding: 0.5rem !important;
 }
 .nota-texto {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
-  white-space: nowrap;
+  max-width: 350px;
+  line-height: 1.4;
+}
+.bitacora-table td.nota {
+  max-width: 350px;
 }
 .chat-badge {
   display: inline-flex;
@@ -1016,4 +1023,98 @@ textarea {
   50% {
     transform: scale(1.1);
   }
+}
+
+/* ===============================================
+   Tags Styles
+   =============================================== */
+
+/* Tags column in table */
+.bitacora-table th.tags-col,
+.bitacora-table td.tags-col {
+  width: 120px;
+  min-width: 80px;
+  max-width: 160px;
+}
+
+.tags-cell {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.tag-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.2rem 0.55rem;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  border: 1px solid;
+  white-space: nowrap;
+}
+
+/* Tags filter chips */
+.tags-filter {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.tags-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.tag-filter-chip,
+.tag-selector-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.35rem 0.75rem;
+  border-radius: 999px;
+  border: 1px solid var(--color-border, #ddd);
+  background-color: var(--color-surface, #fff);
+  color: var(--color-text, #333);
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.tag-filter-chip:hover,
+.tag-selector-chip:hover {
+  border-color: var(--tag-color, #6366f1);
+  background-color: color-mix(
+    in srgb,
+    var(--tag-color, #6366f1) 8%,
+    transparent
+  );
+}
+
+.tag-filter-chip.selected,
+.tag-selector-chip.selected {
+  background-color: color-mix(
+    in srgb,
+    var(--tag-color, #6366f1) 18%,
+    transparent
+  );
+  border-color: var(--tag-color, #6366f1);
+  color: var(--tag-color, #6366f1);
+}
+
+.tag-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* Tags selector in form */
+.tags-selector {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  padding: 0.5rem 0;
 }

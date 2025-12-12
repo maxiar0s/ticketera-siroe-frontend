@@ -55,6 +55,11 @@ export interface Ticket {
   }[];
   comentarioInterno?: string | null;
   tiempoResolucion?: number | null;
+  tags?: {
+    id: number;
+    nombre: string;
+    color: string;
+  }[];
 }
 
 export interface TicketListadoResponse {

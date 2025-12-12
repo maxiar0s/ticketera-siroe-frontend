@@ -351,6 +351,126 @@
           </div>
         </div>
 
+        <!-- Sección de Tags (solo en modo edición) -->
+        <fieldset class="tags-section" *ngIf="modoEdicion && cliente?.id">
+          <legend>Etiquetas (Tags)</legend>
+          <p class="tags-section__help">
+            Crea tags para clasificar tickets de este cliente por proyecto o
+            área.
+          </p>
+
+          <!-- Lista de tags existentes -->
+          <div class="tags-list" *ngIf="tags.length > 0">
+            <div
+              class="tag-item"
+              *ngFor="let tag of tags"
+              [style.border-left-color]="tag.color"
+            >
+              <ng-container *ngIf="tagEditandoId !== tag.id">
+                <span
+                  class="tag-color-dot"
+                  [style.background-color]="tag.color"
+                ></span>
+                <span class="tag-nombre">{{ tag.nombre }}</span>
+                <div class="tag-acciones">
+                  <button
+                    type="button"
+                    class="tag-btn edit"
+                    (click)="iniciarEdicionTag(tag)"
+                    [disabled]="guardandoTag"
+                  >
+                    Editar
+                  </button>
+                  <button
+                    type="button"
+                    class="tag-btn delete"
+                    (click)="eliminarTag(tag)"
+                    [disabled]="guardandoTag"
+                  >
+                    Eliminar
+                  </button>
+                </div>
+              </ng-container>
+
+              <!-- Modo edición inline -->
+              <ng-container *ngIf="tagEditandoId === tag.id">
+                <div class="tag-edit-form">
+                  <input
+                    type="text"
+                    [(ngModel)]="tagEditandoNombre"
+                    [ngModelOptions]="{ standalone: true }"
+                    placeholder="Nombre del tag"
+                    class="tag-input"
+                  />
+                  <div class="color-palette">
+                    <button
+                      type="button"
+                      *ngFor="let color of coloresPredefinidos"
+                      class="color-btn"
+                      [style.background-color]="color"
+                      [class.selected]="tagEditandoColor === color"
+                      (click)="seleccionarColorEdicion(color)"
+                    ></button>
+                  </div>
+                  <div class="tag-edit-actions">
+                    <button
+                      type="button"
+                      class="tag-btn save"
+                      (click)="guardarEdicionTag()"
+                      [disabled]="guardandoTag || !tagEditandoNombre.trim()"
+                    >
+                      Guardar
+                    </button>
+                    <button
+                      type="button"
+                      class="tag-btn cancel"
+                      (click)="cancelarEdicionTag()"
+                      [disabled]="guardandoTag"
+                    >
+                      Cancelar
+                    </button>
+                  </div>
+                </div>
+              </ng-container>
+            </div>
+          </div>
+
+          <div class="tags-empty" *ngIf="tags.length === 0">
+            No hay tags creados para este cliente.
+          </div>
+
+          <!-- Formulario para agregar nuevo tag -->
+          <div class="new-tag-form">
+            <div class="new-tag-row">
+              <input
+                type="text"
+                [(ngModel)]="nuevoTagNombre"
+                [ngModelOptions]="{ standalone: true }"
+                placeholder="Nombre del nuevo tag"
+                class="tag-input"
+              />
+              <div class="color-palette">
+                <button
+                  type="button"
+                  *ngFor="let color of coloresPredefinidos"
+                  class="color-btn"
+                  [style.background-color]="color"
+                  [class.selected]="nuevoTagColor === color"
+                  (click)="seleccionarColorNuevoTag(color)"
+                ></button>
+              </div>
+              <button
+                type="button"
+                class="tag-btn add"
+                (click)="agregarTag()"
+                [disabled]="guardandoTag || !nuevoTagNombre.trim()"
+              >
+                Agregar Tag
+              </button>
+            </div>
+          </div>
+        </fieldset>
+
         <fieldset class="bank-section" *ngIf="features.datosBancarios">
           <legend>Datos bancarios para pagos</legend>
           <p class="bank-section__help">
