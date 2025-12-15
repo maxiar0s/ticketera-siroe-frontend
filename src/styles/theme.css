@@ -36,8 +36,7 @@
   --color-nuevo-border: rgba(255, 107, 53, 0.4);
 
   /* ========================================
-     TIPOGRAFÍA - Sistema de tamaños accesibles
-     Base: 62.5% (1rem = 10px), mínimo 12px
+     TIPOGRAFÍA
      ======================================== */
   --font-size-xs: 1.2rem; /* 12px - Mínimo accesible */
   --font-size-sm: 1.3rem; /* 13px - Pequeño */
