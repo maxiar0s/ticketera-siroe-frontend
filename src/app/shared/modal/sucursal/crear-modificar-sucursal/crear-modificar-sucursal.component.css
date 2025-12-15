@@ -1,4 +1,4 @@
-.modal-overlay {
+﻿.modal-overlay {
   position: fixed;
   top: 0;
   left: 0;
@@ -63,7 +63,7 @@
   all: unset;
   height: 42px;
   color: var(--color-text);
-  font-size: 12px;
+  font-size: var(--font-size-xs);
   width: 55px;
   color: var(--color-disabled);
   padding: 1.3rem;
@@ -77,7 +77,7 @@
 .input-telefono {
   min-width: 0%;
   color: var(--color-text);
-  font-size: 12px;
+  font-size: var(--font-size-xs);
   width: 100%;
   padding: 1.3rem;
   box-sizing: border-box;
@@ -89,7 +89,7 @@
 .estado-select {
   width: 100%;
   color: var(--color-text);
-  font-size: 12px;
+  font-size: var(--font-size-xs);
   padding: 1.3rem;
   box-sizing: border-box;
   border-radius: 1.5rem;

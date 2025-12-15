@@ -3,7 +3,7 @@
   border-radius: 2rem;
   width: 90%;
   max-width: 55rem;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
   position: relative;
   margin: 0 10px;
 }
@@ -27,7 +27,7 @@
   all: unset;
   height: 42px;
   color: var(--color-text);
-  font-size: 12px;
+  font-size: var(--font-size-xs);
   width: 55px;
   color: var(--color-disabled);
   padding: 1.3rem;
@@ -41,7 +41,7 @@
 .input-telefono {
   min-width: 0%;
   color: var(--color-text);
-  font-size: 12px;
+  font-size: var(--font-size-xs);
   width: 100%;
   padding: 1.3rem;
   box-sizing: border-box;
@@ -120,7 +120,8 @@
     margin-bottom: 10px;
   }
 
-  .width-50, .form-group:not(.width-50):not(.full-width):not(.password-group) {
+  .width-50,
+  .form-group:not(.width-50):not(.full-width):not(.password-group) {
     width: 100%;
     max-width: 100%;
   }
@@ -149,7 +150,7 @@
   }
 
   .description-form {
-    font-size: 1.1rem;
+    font-size: var(--font-size-xs);
     margin-bottom: 10px;
   }
 
@@ -245,7 +246,7 @@
   border: 1px solid var(--color-border);
   background-color: var(--color-surface);
   color: var(--color-text);
-  font-size: 12px;
+  font-size: var(--font-size-xs);
   cursor: pointer;
   transition: border-color 0.2s ease;
 }
@@ -291,7 +292,7 @@
   gap: 0.8rem;
   cursor: pointer;
   color: var(--color-text);
-  font-size: 12px;
+  font-size: var(--font-size-xs);
   text-align: left;
 }
 
@@ -317,7 +318,7 @@
 }
 
 .checkbox.checked::after {
-  content: '';
+  content: "";
   width: 6px;
   height: 6px;
   background-color: var(--color-surface);
@@ -337,13 +338,13 @@
   border-radius: 1.2rem;
   background-color: #f0d9e2;
   color: #6a2a47;
-  font-size: 11px;
+  font-size: var(--font-size-xs);
 }
 
 .helper-text {
   margin-top: 0.6rem;
   margin-bottom: 1rem;
-  font-size: 11px;
+  font-size: var(--font-size-xs);
   color: #a0a0a0;
 }
 
@@ -357,11 +358,11 @@
   grid-template-columns: 3fr 1fr;
   gap: 0.6rem;
   margin: 0 0 0.4rem;
-  font-size: 12px;
+  font-size: var(--font-size-xs);
   color: var(--color-text);
 }
 
-.checkbox-label input[type='checkbox'] {
+.checkbox-label input[type="checkbox"] {
   width: 16px;
   height: 16px;
   margin: 0;
@@ -372,4 +373,3 @@
   display: inline-block;
   line-height: 1.3;
 }
-

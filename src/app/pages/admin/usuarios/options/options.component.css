@@ -1,4 +1,4 @@
-.search-container {
+﻿.search-container {
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -60,7 +60,7 @@
   border: 1px solid var(--color-border);
   border-radius: 50%;
   color: var(--color-text-alt);
-  font-size: 1rem;
+  font-size: var(--font-size-xs);
   cursor: pointer;
   transition: background-color 0.2s ease, color 0.2s ease;
 }

@@ -1,4 +1,4 @@
-.modal-overlay {
+﻿.modal-overlay {
   position: fixed;
   top: 0;
   left: 0;
@@ -127,14 +127,14 @@
 }
 
 .device-component {
-  font-size: 12px;
+  font-size: var(--font-size-xs);
   color: var(--color-text);
   font-weight: 600;
   margin-bottom: 5px;
 }
 
 .device-value {
-  font-size: 12px;
+  font-size: var(--font-size-xs);
   color: var(--color-text);
   font-weight: 400;
   word-break: break-word; /* Evita que el texto se desborde */
@@ -185,7 +185,7 @@
   border: none;
   border-radius: 20px;
   padding: 10px 20px;
-  font-size: 12px;
+  font-size: var(--font-size-xs);
   font-weight: 600;
   cursor: pointer;
   transition: background-color 0.3s;

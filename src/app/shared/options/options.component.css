@@ -1,4 +1,4 @@
-.options {
+﻿.options {
   display: flex;
   border-bottom: 1px solid var(--color-border);
   width: 100%;
@@ -51,7 +51,7 @@
 @media (max-width: 450px) {
   .options button {
     padding: 0.5rem 0.8rem;
-    font-size: 1rem;
+    font-size: var(--font-size-xs);
   }
 }
 

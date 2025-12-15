@@ -1,4 +1,4 @@
-.login-page {
+﻿.login-page {
   width: 35rem;
   min-height: 38rem;
   background-color: var(--color-surface-alt);
@@ -54,7 +54,7 @@
 
 .error-header {
   width: 27rem;
-  font-size: 10px;
+  font-size: var(--font-size-xs);
   margin: 0 auto;
   text-align: left;
   margin-bottom: 1rem;

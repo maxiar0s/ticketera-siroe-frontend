@@ -1,4 +1,4 @@
-.modal-overlay {
+﻿.modal-overlay {
   position: fixed;
   top: 0;
   left: 0;
@@ -67,7 +67,7 @@
   all: unset;
   height: 42px;
   color: var(--color-text);
-  font-size: 12px;
+  font-size: var(--font-size-xs);
   width: 55px;
   color: var(--color-disabled);
   padding: 1.3rem;
@@ -81,7 +81,7 @@
 .input-telefono {
   min-width: 0%;
   color: var(--color-text);
-  font-size: 12px;
+  font-size: var(--font-size-xs);
   width: 100%;
   padding: 1.3rem;
   box-sizing: border-box;
@@ -143,7 +143,7 @@
 
 .lead-toggle__hint {
   margin: 0;
-  font-size: 0.95rem;
+  font-size: var(--font-size-xs);
   color: #6f6f6f;
 }
 
@@ -157,7 +157,7 @@
   border-radius: 1.25rem;
   padding: 0.75rem 1rem;
   margin-bottom: 1rem;
-  font-size: 0.95rem;
+  font-size: var(--font-size-xs);
 }
 
 .servicios-options {
@@ -247,7 +247,7 @@
 }
 
 .lead-note {
-  font-size: 0.85rem;
+  font-size: var(--font-size-xs);
   color: #7a7a7a;
   margin-top: 0.3rem;
 }
@@ -273,7 +273,7 @@
 .bank-section__help {
   margin: 0;
   color: var(--color-text-alt);
-  font-size: 0.95rem;
+  font-size: var(--font-size-xs);
 }
 
 /* Media queries para pantallas medianas */
@@ -380,7 +380,7 @@
 .tags-section__help {
   margin: 0;
   color: var(--color-text-alt);
-  font-size: 0.95rem;
+  font-size: var(--font-size-xs);
 }
 
 .tags-list {
@@ -420,7 +420,7 @@
 .tag-btn {
   padding: 0.35rem 0.75rem;
   border-radius: 0.5rem;
-  font-size: 0.85rem;
+  font-size: var(--font-size-xs);
   font-weight: 500;
   cursor: pointer;
   border: none;
@@ -503,7 +503,7 @@
   padding: 0.5rem 0.75rem;
   border: 1px solid var(--color-border);
   border-radius: 0.5rem;
-  font-size: 0.95rem;
+  font-size: var(--font-size-xs);
   background-color: var(--color-surface);
 }
 

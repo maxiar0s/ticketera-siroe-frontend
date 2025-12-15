@@ -1,4 +1,4 @@
-.flex {
+﻿.flex {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -168,12 +168,12 @@
   .select label {
     width: 100%;
     padding: 0.6rem 1.5rem 0.6rem 1rem;
-    font-size: 13px;
+    font-size: var(--font-size-sm);
   }
 
   .search {
     padding: 0.6rem 1.5rem;
-    font-size: 13px;
+    font-size: var(--font-size-sm);
   }
 
   .add-clients-button {

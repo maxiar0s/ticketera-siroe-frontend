@@ -1,4 +1,4 @@
-.section {
+﻿.section {
   padding: 20px;
   background-color: #f3f4f6;
   min-height: 100vh;
@@ -33,14 +33,14 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  font-size: 14px;
+  font-size: var(--font-size-base);
   font-weight: 500;
   color: #4b5563;
 }
 
 .dashboard-filter select {
   padding: 8px 12px;
-  font-size: 14px;
+  font-size: var(--font-size-base);
   border: 1px solid #d1d5db;
   border-radius: 6px;
   background-color: #fff;

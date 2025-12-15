@@ -1,4 +1,4 @@
-:host {
+﻿:host {
   display: block;
 }
 
@@ -25,7 +25,7 @@
 .tipos-descripcion {
   margin: 0.35rem 0 0;
   color: var(--color-text-alt);
-  font-size: 1rem;
+  font-size: var(--font-size-xs);
 }
 
 .card {
@@ -52,7 +52,7 @@
 
 .card header span,
 .card header p {
-  font-size: 0.95rem;
+  font-size: var(--font-size-xs);
   color: var(--color-text-alt);
 }
 
@@ -111,7 +111,7 @@
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
   cursor: pointer;
   color: var(--color-secondary);
-  font-size: 0.9rem;
+  font-size: var(--font-size-xs);
 }
 
 .campos-iniciales-grid__item:hover {
@@ -130,7 +130,7 @@
 .campos-iniciales-grid__item span {
   flex: 1;
   line-height: 1.25;
-  font-size: 1.1rem;
+  font-size: var(--font-size-xs);
   padding: 0.5rem;
 }
 
@@ -172,18 +172,18 @@
 
 .fieldset__header h3 {
   margin: 0;
-  font-size: 1.05rem;
+  font-size: var(--font-size-xs);
   color: var(--color-secondary);
 }
 
 .fieldset__header p {
   margin: 0.15rem 0 0;
-  font-size: 0.9rem;
+  font-size: var(--font-size-xs);
   color: var(--color-text-alt);
 }
 
 .fieldset__empty {
-  font-size: 0.9rem;
+  font-size: var(--font-size-xs);
   color: var(--color-text-alt);
 }
 
@@ -200,7 +200,7 @@
   border: 1px solid var(--color-border-strong);
   border-radius: 8px;
   padding: 0.6rem 0.75rem;
-  font-size: 0.95rem;
+  font-size: var(--font-size-xs);
   background: var(--color-surface);
 }
 
@@ -249,7 +249,7 @@
   background: rgba(255, 82, 82, 0.08);
   color: var(--color-danger);
   font-weight: 700;
-  font-size: 0.95rem;
+  font-size: var(--font-size-xs);
   cursor: pointer;
   padding: 0.45rem 0.9rem;
   border-radius: 999px;
@@ -261,7 +261,7 @@
 }
 
 .btn-standard-remove__icon {
-  font-size: 1rem;
+  font-size: var(--font-size-xs);
   line-height: 1;
 }
 
@@ -291,7 +291,7 @@
 }
 
 .form-error {
-  font-size: 0.8rem;
+  font-size: var(--font-size-xs);
   color: var(--color-danger);
 }
 
@@ -402,7 +402,7 @@ button:not(:disabled):hover {
 
 .departamento-form h3 {
   margin: 0;
-  font-size: 1rem;
+  font-size: var(--font-size-xs);
   color: var(--color-secondary);
 }
 
@@ -463,11 +463,11 @@ button:not(:disabled):hover {
 .tipo-info h3 {
   margin: 0;
   color: var(--color-secondary);
-  font-size: 1.1rem;
+  font-size: var(--font-size-xs);
 }
 
 .tipo-codigo {
-  font-size: 1rem;
+  font-size: var(--font-size-xs);
   color: var(--color-text-alt);
 }
 
@@ -489,18 +489,18 @@ button:not(:disabled):hover {
 .lista-campos h3 {
   margin: 0;
   color: var(--color-secondary);
-  font-size: 1.1rem;
+  font-size: var(--font-size-xs);
 }
 
 .lista-campos p {
   margin: 0.25rem 0 0;
   color: var(--color-text-alt);
-  font-size: 1rem;
+  font-size: var(--font-size-xs);
 }
 
 .lista-campos small {
   color: var(--color-text-alt);
-  font-size: 1rem;
+  font-size: var(--font-size-xs);
 }
 
 .campo-metadata {
@@ -515,7 +515,7 @@ button:not(:disabled):hover {
   color: #4338ca;
   padding: 0.2rem 0.65rem;
   border-radius: 999px;
-  font-size: 0.85rem;
+  font-size: var(--font-size-xs);
   font-weight: 500;
 }
 
@@ -526,7 +526,7 @@ button:not(:disabled):hover {
 }
 
 .mensaje {
-  font-size: 0.9rem;
+  font-size: var(--font-size-xs);
   border-radius: 10px;
   padding: 0.75rem 1rem;
 }
@@ -585,7 +585,7 @@ button:not(:disabled):hover {
 }
 
 .campo-meta {
-  font-size: 0.85rem;
+  font-size: var(--font-size-xs);
   color: var(--color-text-alt);
 }
 
@@ -630,7 +630,7 @@ button:not(:disabled):hover {
 
 .modal-etiqueta {
   margin: 0;
-  font-size: 0.85rem;
+  font-size: var(--font-size-xs);
   text-transform: uppercase;
   letter-spacing: 0.08em;
   color: rgba(255, 255, 255, 0.82);
@@ -660,7 +660,7 @@ button:not(:disabled):hover {
 .modal-ayuda {
   margin: 0;
   color: var(--color-text-alt);
-  font-size: 1rem;
+  font-size: var(--font-size-xs);
 }
 
 .modal-actions {
@@ -671,7 +671,7 @@ button:not(:disabled):hover {
 }
 
 .modal-mensaje {
-  font-size: 1rem;
+  font-size: var(--font-size-xs);
   border-radius: 10px;
   padding: 0.75rem 1rem;
 }

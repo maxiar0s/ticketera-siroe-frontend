@@ -1,4 +1,4 @@
-/* Estilos base */
+﻿/* Estilos base */
 .clients {
   display: flex;
   flex-direction: column;
@@ -96,7 +96,7 @@
   right: 1.2rem;
   background: linear-gradient(135deg, var(--color-primary), #d83a7d);
   color: var(--color-surface);
-  font-size: 0.85rem;
+  font-size: var(--font-size-xs);
   font-weight: 600;
   padding: 0.3rem 0.9rem;
   border-radius: 999px;
@@ -129,7 +129,7 @@
 .information p {
   margin: 0;
   font-weight: 700;
-  font-size: 14px;
+  font-size: var(--font-size-base);
   line-height: 1.4;
 }
 
@@ -170,7 +170,7 @@
   transition: all 350ms;
   text-align: center;
   text-decoration: none;
-  font-size: 13px; /* Reducido el tamaño de fuente base */
+  font-size: var(--font-size-sm); /* Reducido el tamaño de fuente base */
   width: fit-content; /* Ajustar al contenido */
   max-width: 100%; /* Asegurar que no se salga */
   box-sizing: border-box; /* Incluir padding y border en el ancho */
@@ -216,7 +216,7 @@
   background-color: #ffe5f0;
   color: var(--color-primary);
   font-weight: 600;
-  font-size: 0.9rem;
+  font-size: var(--font-size-xs);
   text-transform: capitalize;
 }
 
@@ -264,7 +264,7 @@
 .filter-label {
   font-weight: 600;
   color: #444;
-  font-size: 0.95rem;
+  font-size: var(--font-size-xs);
 }
 
 .servicios-options {
@@ -281,7 +281,7 @@
   border-radius: 999px;
   border: 1px solid var(--color-disabled);
   background-color: var(--color-surface);
-  font-size: 0.9rem;
+  font-size: var(--font-size-xs);
   color: #444;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -310,7 +310,7 @@
   border: 1px solid var(--color-disabled);
   border-radius: 12px;
   padding: 0.5rem 0.75rem;
-  font-size: 0.95rem;
+  font-size: var(--font-size-xs);
   width: 100%;
   box-sizing: border-box;
 }
@@ -463,7 +463,7 @@
     max-width: 100%;
     text-align: center;
     padding: 0.5rem 1rem;
-    font-size: 13px;
+    font-size: var(--font-size-sm);
   }
 
   .option-button {
@@ -471,7 +471,7 @@
   }
 
   .option-button span {
-    font-size: 14px;
+    font-size: var(--font-size-base);
   }
 }
 
@@ -505,11 +505,11 @@
     max-width: 100%;
     justify-content: center;
     padding: 0.5rem 0.8rem;
-    font-size: 12px;
+    font-size: var(--font-size-xs);
   }
 
   .option-button span {
-    font-size: 12px;
+    font-size: var(--font-size-xs);
   }
 
   .card-information {
@@ -555,7 +555,7 @@
     min-width: 120px;
     text-align: center;
     padding: 0.55rem 1rem;
-    font-size: 13px;
+    font-size: var(--font-size-sm);
     flex: 0 1 auto;
   }
 
@@ -572,7 +572,7 @@
   }
 
   .information p {
-    font-size: 12px;
+    font-size: var(--font-size-xs);
   }
 
   .option-button {
@@ -580,7 +580,7 @@
   }
 
   .option-button span {
-    font-size: 12px;
+    font-size: var(--font-size-xs);
   }
 
   .button-container {

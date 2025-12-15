@@ -1,4 +1,4 @@
-.main-grid {
+﻿.main-grid {
   display: grid;
   box-sizing: border-box;
   grid-template-columns: 0.8fr 2fr;
@@ -97,7 +97,7 @@
   background-color: #ffe5f0;
   color: var(--color-primary);
   font-weight: 600;
-  font-size: 0.85rem;
+  font-size: var(--font-size-xs);
 }
 
 .lead-pill {
@@ -108,7 +108,7 @@
   background-color: #fff0f6;
   color: var(--color-primary);
   font-weight: 600;
-  font-size: 0.85rem;
+  font-size: var(--font-size-xs);
 }
 
 /* Grid con 3 columnas por defecto */
@@ -140,7 +140,7 @@
 
   text-overflow: ellipsis;
   margin: 0;
-  font-size: 14px;
+  font-size: var(--font-size-base);
   line-height: 1.4;
 }
 

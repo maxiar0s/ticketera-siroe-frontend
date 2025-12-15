@@ -1,4 +1,4 @@
-.documentacion-layout {
+﻿.documentacion-layout {
   display: grid;
   grid-template-columns: 1fr;
   gap: 1rem;
@@ -32,7 +32,7 @@
 }
 
 .eyebrow {
-  font-size: 1.05rem;
+  font-size: var(--font-size-xs);
   text-transform: uppercase;
   letter-spacing: 0.08em;
   color: #a2acc7;
@@ -116,7 +116,7 @@
   border-radius: 14px;
   border: 1px solid rgba(161, 168, 197, 0.7);
   padding: 0.65rem 0.9rem;
-  font-size: 1.1rem;
+  font-size: var(--font-size-xs);
   background-color: var(--color-surface);
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
   width: 100%;
@@ -303,7 +303,7 @@
 .tabla-documentos {
   width: 100%;
   border-collapse: collapse;
-  font-size: 1rem;
+  font-size: var(--font-size-xs);
   min-width: min(760px, 100%);
   table-layout: auto;
 }
@@ -338,7 +338,7 @@
 }
 
 .mobile-doc-name {
-  font-size: 1.05rem;
+  font-size: var(--font-size-xs);
   margin: 0;
   flex: 1;
 }
@@ -361,13 +361,13 @@
 .mobile-row small,
 .mobile-row p,
 .mobile-inline p {
-  font-size: 1rem;
+  font-size: var(--font-size-xs);
   margin: 0;
   color: var(--color-secondary);
 }
 
 .mobile-row small {
-  font-size: 0.95rem;
+  font-size: var(--font-size-xs);
   color: #5b6182;
 }
 
@@ -415,7 +415,7 @@
 
 .tabla-documentos thead {
   background: #f4f6fb;
-  font-size: 1.1rem;
+  font-size: var(--font-size-xs);
   letter-spacing: 0.04em;
   text-transform: uppercase;
   color: #7a809b;
@@ -437,7 +437,7 @@
 .archivo-nombre .descripcion {
   margin: 0.2rem 0 0;
   color: #60698d;
-  font-size: 1.1rem;
+  font-size: var(--font-size-xs);
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
@@ -452,7 +452,7 @@
 
 .cliente-rut {
   margin: 0.2rem 0 0;
-  font-size: 1.05rem;
+  font-size: var(--font-size-xs);
   color: #7f84a6;
 }
 
@@ -462,7 +462,7 @@
   justify-content: center;
   padding: 0.25rem 0.8rem;
   border-radius: 999px;
-  font-size: 0.95rem;
+  font-size: var(--font-size-xs);
   font-weight: 600;
   text-transform: capitalize;
 }
@@ -484,7 +484,7 @@
 
 .tabla-documentos td small {
   color: #8a8faf;
-  font-size: 1.05rem;
+  font-size: var(--font-size-xs);
 }
 
 .tabla-documentos td.acciones {
@@ -649,7 +649,7 @@
   .tabla-documentos th,
   .tabla-documentos td {
     padding: 0.75rem 0.7rem;
-    font-size: 0.9rem;
+    font-size: var(--font-size-xs);
   }
 
   .col-tamano {

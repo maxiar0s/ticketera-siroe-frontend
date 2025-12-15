@@ -227,7 +227,7 @@ img[src="/assets/svg/side-menu-arrow-up.svg"],
   min-width: 18px;
   height: 18px;
   padding: 0 5px;
-  font-size: 0.65rem;
+  font-size: var(--font-size-xs);
   font-weight: 700;
   color: white;
   background: linear-gradient(135deg, #e91e63, #c2185b);
