@@ -1162,21 +1162,54 @@ textarea {
   background-color: var(--color-nuevo-bg);
 }
 
-/* Ticket Card Header */
+/* Ticket Card Content - Main Layout */
+.ticket-card-content {
+  display: flex;
+  align-items: center;
+  gap: 2.5rem;
+  padding: 2rem 2.5rem;
+  background: var(--color-surface);
+}
+
+/* Contenedor 1: ID + Estado en columna */
+.ticket-id-estado-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.8rem;
+  flex-shrink: 0;
+}
+
+/* Contenedor 2: Info del ticket (2 filas) */
+.ticket-info-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  flex: 1;
+  min-width: 0;
+}
+
+/* Fila 1: Título + Tiempo + Ver detalle */
+.ticket-info-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+/* Ticket Card Header (deprecated, kept for compat) */
 .ticket-card-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0.85rem 1.25rem;
+  padding: 2rem 2.2rem 0 2.2rem;
   background: var(--color-surface);
-  border-bottom: 1px solid var(--color-border);
   gap: 1rem;
 }
 
 .ticket-card-header-left {
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: 2.5rem;
   flex: 1;
   min-width: 0;
 }
@@ -1350,7 +1383,15 @@ textarea {
 
 /* Ticket Card Body */
 .ticket-card-body {
-  padding: 1rem 1.25rem;
+  display: flex;
+  align-items: center;
+  gap: 2.2rem;
+  padding: 0.5rem 2.2rem 1rem 2.2rem;
+}
+
+.ticket-card-body .ticket-estado-small {
+  flex-shrink: 0;
+  margin-top: 0.1rem;
 }
 
 .ticket-titulo {
@@ -1400,7 +1441,13 @@ textarea {
   justify-content: center;
   padding: 0.6rem 1rem;
   gap: 0.15rem;
-  flex-shrink: 0;
+  flex: 1;
+  min-width: 0;
+}
+
+/* Secciones de iconos no crecen */
+.ticket-footer-section-icon {
+  flex: 0 0 auto;
 }
 
 .ticket-footer-section-tags {
@@ -1412,14 +1459,13 @@ textarea {
   width: 1px;
   background-color: var(--color-border);
   align-self: stretch;
+  flex-shrink: 0;
 }
 
 .ticket-footer-label {
   font-size: var(--font-size-xs);
   color: var(--color-text-alt);
   font-weight: 500;
-  text-transform: uppercase;
-  letter-spacing: 0.03em;
   white-space: nowrap;
 }
 
@@ -1516,9 +1562,33 @@ textarea {
   font-weight: 700;
   flex-shrink: 0;
 }
+/* Layout para secciones con avatar + info en columna */
+.ticket-footer-section-user {
+  flex-direction: row;
+  align-items: center;
+  gap: 0.6rem;
+}
 
-.ticket-cliente-icon {
-  font-size: var(--font-size-sm);
+.ticket-footer-user-info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.15rem;
+}
+
+.ticket-cliente-avatar {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #059669, #047857);
+  color: #fff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--font-size-xs);
+  font-weight: 700;
+  flex-shrink: 0;
+  text-transform: uppercase;
 }
 
 .ticket-prioridad-chip {
@@ -1562,6 +1632,13 @@ textarea {
   font-size: var(--font-size-xs);
   font-weight: 500;
   border: 1px solid;
+}
+
+/* Tag por defecto "Sin asignar" */
+.ticket-tag-default {
+  background-color: var(--color-surface-alt);
+  color: var(--color-text-alt);
+  border-color: var(--color-border);
 }
 
 /* Admin Actions */
