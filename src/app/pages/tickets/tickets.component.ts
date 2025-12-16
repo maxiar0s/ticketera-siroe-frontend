@@ -1345,4 +1345,56 @@ export class TicketsComponent implements OnInit {
       },
     });
   }
+
+  /**
+   * Calcula el tiempo transcurrido desde una fecha hasta ahora
+   * y lo devuelve en formato legible (Hace X días, horas, etc.)
+   */
+  calcularTiempoTranscurrido(fecha: string | Date | undefined): string {
+    if (!fecha) {
+      return '';
+    }
+
+    const fechaTicket = new Date(fecha);
+    const ahora = new Date();
+    const diffMs = ahora.getTime() - fechaTicket.getTime();
+    const diffMins = Math.floor(diffMs / (1000 * 60));
+    const diffHoras = Math.floor(diffMs / (1000 * 60 * 60));
+    const diffDias = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+    const diffSemanas = Math.floor(diffDias / 7);
+    const diffMeses = Math.floor(diffDias / 30);
+
+    if (diffMins < 1) {
+      return 'Hace un momento';
+    }
+    if (diffMins < 60) {
+      return `Hace ${diffMins} min`;
+    }
+    if (diffHoras < 24) {
+      return `Hace ${diffHoras} ${diffHoras === 1 ? 'hora' : 'horas'}`;
+    }
+    if (diffDias === 1) {
+      return 'Hace 1 día';
+    }
+    if (diffDias < 7) {
+      return `Hace ${diffDias} días`;
+    }
+    if (diffSemanas === 1) {
+      return 'Hace 1 semana';
+    }
+    if (diffSemanas < 4) {
+      return `Hace ${diffSemanas} semanas`;
+    }
+    if (diffMeses === 1) {
+      return 'Hace 1 mes';
+    }
+    return `Hace ${diffMeses} meses`;
+  }
+
+  /**
+   * Formatea el ID del ticket con ceros a la izquierda (8 dígitos)
+   */
+  formatTicketId(id: number): string {
+    return id.toString().padStart(8, '0');
+  }
 }

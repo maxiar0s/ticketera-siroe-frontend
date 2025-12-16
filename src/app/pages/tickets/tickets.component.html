@@ -174,123 +174,152 @@
 
   <div
     *ngIf="!cargando && tieneAccesoTickets && tickets.length > 0"
-    class="bitacora-table-wrapper"
+    class="ticket-cards-container"
   >
-    <table class="bitacora-table">
-      <thead>
-        <tr>
-          <th class="mensajes-col"></th>
-          <th class="fecha-col">Fecha</th>
-          <th class="tipo-col">Prioridad</th>
-          <th class="tipo-col">Tipo</th>
-          <th class="tipo-col">Estado</th>
-          <th class="cliente-col">Cliente</th>
-          <th class="tecnico-col">Técnico Asignado</th>
-          <th class="tags-col">Tags</th>
-          <th *ngIf="modules.sucursal">Sucursal</th>
-          <th class="nota">Nota</th>
-          <th *ngIf="esAdmin" class="acciones">Acciones</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr
-          *ngFor="let ticket of tickets"
-          (click)="seleccionarTicket(ticket)"
-          [class.selected]="ticketSeleccionado?.id === ticket.id"
-          [class.ticket-nuevo]="ticket.estadoTicket === 'Nuevo'"
-        >
-          <td class="mensajes-col">
-            <span *ngIf="getMensajesNoLeidos(ticket.id) > 0" class="chat-badge">
-              {{ getMensajesNoLeidos(ticket.id) }}
-            </span>
-          </td>
-          <td>{{ ticket.fechaVisita | formatoFecha : "dd/MM/yyyy" }}</td>
-          <td class="tipo">
+    <article
+      *ngFor="let ticket of tickets"
+      class="ticket-card"
+      [class.selected]="ticketSeleccionado?.id === ticket.id"
+      [class.ticket-nuevo]="ticket.estadoTicket === 'Nuevo'"
+      (click)="seleccionarTicket(ticket)"
+    >
+      <!-- Card Header Row -->
+      <div class="ticket-card-header">
+        <div class="ticket-card-header-left">
+          <span class="ticket-id">#{{ formatTicketId(ticket.id) }}</span>
+          <h3 class="ticket-titulo-header">
+            {{ ticket.titulo || "Sin título" }}
             <span
-              class="tipo-chip prioridad"
-              [ngClass]="
-                'prioridad-' + (ticket.prioridad || 'Media').toLowerCase()
-              "
+              *ngIf="getMensajesNoLeidos(ticket.id) > 0"
+              class="ticket-mensajes-count"
             >
-              {{ ticket.prioridad || "Media" }}
+              ({{ getMensajesNoLeidos(ticket.id) }})
             </span>
-          </td>
-          <td class="tipo">
-            <span class="tipo-chip tipo-ticket">
-              {{ ticket.tipo || "Incidente" }}
-            </span>
-          </td>
-          <td class="tipo">
-            <div class="tipo-wrapper">
-              <span
-                class="tipo-chip ticket-estado-listado"
-                [ngClass]="obtenerClaseEstado(ticket.estadoTicket)"
-              >
-                {{ ticket.estadoTicket }}
-              </span>
-              <span *ngIf="esTicketLead(ticket)" class="tipo-chip lead">
-                Lead
-              </span>
-            </div>
-          </td>
-          <td class="cliente-col">
+          </h3>
+        </div>
+        <div class="ticket-card-header-right">
+          <span class="ticket-tiempo">{{
+            calcularTiempoTranscurrido(ticket.fechaVisita)
+          }}</span>
+          <span
+            class="ticket-estado-small"
+            [ngClass]="obtenerClaseEstado(ticket.estadoTicket)"
+          >
+            {{ ticket.estadoTicket }}
+          </span>
+          <button
+            type="button"
+            class="ticket-ver-detalle-btn"
+            (click)="seleccionarTicket(ticket); $event.stopPropagation()"
+          >
+            Ver detalle
+          </button>
+        </div>
+      </div>
+
+      <!-- Card Body - Description -->
+      <div class="ticket-card-body">
+        <p class="ticket-descripcion">
+          {{ ticket.descripcion || "" | slice : 0 : 150
+          }}{{ (ticket.descripcion || "").length > 150 ? "..." : "" }}
+        </p>
+      </div>
+
+      <!-- Card Footer - Full width with dividers -->
+      <div class="ticket-card-footer-full">
+        <!-- Actions con separadores -->
+        <div class="ticket-footer-section">
+          <button type="button" class="ticket-action-btn" title="Fijar">
+            <img
+              src="/assets/svg/pin.svg"
+              alt="Pin"
+              class="ticket-action-icon"
+            />
+          </button>
+        </div>
+        <div class="ticket-footer-divider"></div>
+        <div class="ticket-footer-section">
+          <button type="button" class="ticket-action-btn" title="Destacar">
+            <img
+              src="/assets/svg/star.svg"
+              alt="Favorito"
+              class="ticket-action-icon"
+            />
+          </button>
+        </div>
+        <div class="ticket-footer-divider"></div>
+
+        <!-- Asignado a -->
+        <div class="ticket-footer-section" *ngIf="ticket.tecnicos?.length">
+          <span class="ticket-footer-label">Asignado a</span>
+          <span class="ticket-footer-value">
+            <span class="ticket-tecnico-avatar">{{
+              ticket.tecnicos[0].charAt(0) || "T"
+            }}</span>
+            {{ ticket.tecnicos[0] }}
+          </span>
+        </div>
+        <div
+          class="ticket-footer-divider"
+          *ngIf="ticket.tecnicos?.length"
+        ></div>
+
+        <!-- Creado por -->
+        <div class="ticket-footer-section">
+          <span class="ticket-footer-label">Creado por</span>
+          <span class="ticket-footer-value">
+            <span class="ticket-cliente-icon">🏢</span>
             {{ ticket.casaMatriz?.razonSocial || "N/A" }}
-          </td>
-          <td class="tecnicos tecnico-col">
-            <ng-container *ngIf="ticket.tecnicos?.length; else sinTecnicos">
-              <span *ngFor="let tecnico of ticket.tecnicos; let last = last">
-                {{ tecnico }}<span *ngIf="!last">, </span>
-              </span>
-            </ng-container>
-            <ng-template #sinTecnicos>Sin registrar</ng-template>
-          </td>
-          <td class="tags-col">
-            <div class="tags-cell">
-              <span
-                *ngFor="let tag of ticket.tags"
-                class="tag-chip"
-                [style.background-color]="tag.color + '22'"
-                [style.color]="tag.color"
-                [style.border-color]="tag.color + '55'"
-              >
-                {{ tag.nombre }}
-              </span>
-            </div>
-          </td>
-          <td *ngIf="modules.sucursal">
-            {{ ticket.sucursal?.sucursal || "General" }}
-          </td>
-          <td class="nota">
-            <span class="nota-texto">{{ ticket.descripcion }}</span>
-          </td>
-          <td *ngIf="esAdmin" class="acciones">
-            <div class="acciones-wrapper">
-              <button
-                type="button"
-                class="ghost-button small"
-                (click)="
-                  abrirFormularioEditar(ticket); $event.stopPropagation()
-                "
-              >
-                Editar
-              </button>
-              <button
-                type="button"
-                class="delete-button"
-                [disabled]="eliminandoTicketId === ticket.id"
-                (click)="eliminarTicket($event, ticket)"
-              >
-                {{
-                  eliminandoTicketId === ticket.id
-                    ? "Eliminando..."
-                    : "Eliminar"
-                }}
-              </button>
-            </div>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+          </span>
+        </div>
+        <div class="ticket-footer-divider"></div>
+
+        <!-- Prioridad -->
+        <div class="ticket-footer-section">
+          <span class="ticket-footer-label">Prioridad</span>
+          <span
+            class="ticket-prioridad-chip"
+            [ngClass]="
+              'prioridad-' + (ticket.prioridad || 'Media').toLowerCase()
+            "
+          >
+            {{ ticket.prioridad || "Media" }}
+          </span>
+        </div>
+        <div class="ticket-footer-divider"></div>
+
+        <!-- Tags -->
+        <div
+          class="ticket-footer-section ticket-footer-section-tags"
+          *ngIf="(ticket.tags?.length ?? 0) > 0"
+        >
+          <span class="ticket-footer-label">Tags</span>
+          <div class="ticket-tags-list">
+            <span
+              *ngFor="let tag of ticket.tags"
+              class="ticket-tag-chip"
+              [style.background-color]="tag.color + '22'"
+              [style.color]="tag.color"
+              [style.border-color]="tag.color + '55'"
+            >
+              {{ tag.nombre }}
+            </span>
+          </div>
+        </div>
+        <div
+          class="ticket-footer-divider"
+          *ngIf="(ticket.tags?.length ?? 0) > 0"
+        ></div>
+
+        <!-- Fecha de creación -->
+        <div class="ticket-footer-section">
+          <span class="ticket-footer-label">Fecha de creación</span>
+          <span class="ticket-footer-value">
+            {{ ticket.fechaVisita | formatoFecha : "dd MMMM yyyy" }}
+          </span>
+        </div>
+      </div>
+    </article>
   </div>
 
   <div class="pagination" *ngIf="tieneAccesoTickets && paginasTotales > 1">
