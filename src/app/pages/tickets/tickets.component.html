@@ -482,9 +482,10 @@
           *ngIf="(esAdmin || esTecnico) && ticketSeleccionado.comentarioInterno"
         >
           <span class="label">Comentario Interno</span>
-          <span class="value">
-            {{ ticketSeleccionado.comentarioInterno }}
-          </span>
+          <div
+            class="value ticket-content"
+            [innerHTML]="ticketSeleccionado.comentarioInterno"
+          ></div>
         </div>
         <div *ngIf="ticketSeleccionado.tiempoResolucion">
           <span class="label">Tiempo Resolución</span>
@@ -496,9 +497,10 @@
 
       <article class="detail-note ticket-detail">
         <h3>Detalle del ticket</h3>
-        <p>
-          {{ ticketSeleccionado.descripcion }}
-        </p>
+        <div
+          class="ticket-content"
+          [innerHTML]="ticketSeleccionado.descripcion"
+        ></div>
         <div
           class="adjuntos ticket-ingreso"
           *ngIf="
@@ -531,9 +533,12 @@
       >
         <article class="detail-note ticket-terminado">
           <h3>Detalle de lo realizado</h3>
-          <p>
-            {{ ticketSeleccionado.detalleTermino || "Sin detalle registrado." }}
-          </p>
+          <div
+            class="ticket-content"
+            [innerHTML]="
+              ticketSeleccionado.detalleTermino || 'Sin detalle registrado.'
+            "
+          ></div>
           <div
             class="adjuntos ticket-evidencias"
             *ngIf="
@@ -707,11 +712,10 @@
               "
             >
               <span class="label">Detalle de lo realizado</span>
-              <textarea
+              <app-rich-text-editor
                 formControlName="ticketDetalleTermino"
-                rows="4"
                 placeholder="Describe el trabajo realizado para cerrar el ticket."
-              ></textarea>
+              ></app-rich-text-editor>
             </label>
 
             <!-- Nuevos campos para Cierre: Comentario Interno y Tiempo Resolucion -->
@@ -723,11 +727,10 @@
                 <span class="label"
                   >Comentario Interno (Visible solo para Staff)</span
                 >
-                <textarea
+                <app-rich-text-editor
                   formControlName="comentarioInterno"
-                  rows="3"
                   placeholder="Información relevante para administración o técnicos..."
-                ></textarea>
+                ></app-rich-text-editor>
               </label>
             </div>
 
@@ -937,11 +940,10 @@
             "
           >
             <span class="label">Detalle</span>
-            <textarea
+            <app-rich-text-editor
               formControlName="descripcion"
-              rows="4"
               placeholder="Describe el requerimiento o los hallazgos."
-            ></textarea>
+            ></app-rich-text-editor>
           </label>
 
           <label class="full file-upload-field ticket-ingreso">

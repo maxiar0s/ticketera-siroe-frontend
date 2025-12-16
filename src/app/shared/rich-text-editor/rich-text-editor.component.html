@@ -1,0 +1,11 @@
+<div class="rich-text-editor-wrapper" [style.--min-height]="minHeight">
+  <quill-editor
+    [(ngModel)]="content"
+    [placeholder]="placeholder"
+    [modules]="quillModules"
+    [readOnly]="disabled"
+    (onContentChanged)="onContentChange($event)"
+    (onBlur)="onEditorBlur()"
+    theme="snow"
+  ></quill-editor>
+</div>

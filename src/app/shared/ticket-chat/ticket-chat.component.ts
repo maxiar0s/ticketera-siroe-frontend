@@ -18,11 +18,12 @@ import {
   ActividadTicket,
   ChatItem,
 } from '../../interfaces/chat.interface';
+import { RichTextEditorComponent } from '../rich-text-editor/rich-text-editor.component';
 
 @Component({
   selector: 'app-ticket-chat',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, RichTextEditorComponent],
   templateUrl: './ticket-chat.component.html',
   styleUrls: ['./ticket-chat.component.css'],
 })
@@ -117,15 +118,18 @@ export class TicketChatComponent
   }
 
   enviarMensaje(): void {
-    if (
-      (!this.nuevoMensaje.trim() && this.selectedFiles.length === 0) ||
-      this.enviando
-    ) {
+    // Strip HTML tags to check if there's actual text content
+    const textContent = this.nuevoMensaje
+      .replace(/<[^>]*>/g, '')
+      .replace(/&nbsp;/g, ' ')
+      .trim();
+
+    if ((!textContent && this.selectedFiles.length === 0) || this.enviando) {
       return;
     }
 
     this.enviando = true;
-    const mensaje = this.nuevoMensaje.trim();
+    const mensaje = this.nuevoMensaje; // Keep HTML content
     const archivos = [...this.selectedFiles];
     this.nuevoMensaje = '';
 

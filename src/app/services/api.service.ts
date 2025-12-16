@@ -889,7 +889,7 @@ export class ApiService {
   marcarTodasNotificaciones(): Observable<{ actualizadas: number }> {
     return this.http
       .patch<{ actualizadas: number }>(`${this.url}/notificaciones/leidas`, {
-        marcarTodas: true,
+        todas: true,
       })
       .pipe(
         catchError((error: HttpErrorResponse) => {

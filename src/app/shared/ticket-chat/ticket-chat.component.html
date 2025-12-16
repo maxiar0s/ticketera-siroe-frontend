@@ -53,7 +53,7 @@
         }
       </div>
       <div class="message-card-body">
-        <p class="message-text">{{ $any(item).mensaje }}</p>
+        <div class="message-text" [innerHTML]="$any(item).mensaje"></div>
         @if (getAdjuntos(item).length > 0) {
         <div class="message-attachments">
           <span class="attachments-title">📎 Archivos adjuntos:</span>
@@ -89,14 +89,12 @@
     <div class="form-header">
       <span>📝 Nuevo mensaje</span>
     </div>
-    <textarea
-      class="message-textarea"
+    <app-rich-text-editor
       [(ngModel)]="nuevoMensaje"
-      (keydown)="onKeyDown($event)"
       placeholder="Escribe tu mensaje aquí..."
       [disabled]="enviando"
-      rows="3"
-    ></textarea>
+      minHeight="80px"
+    ></app-rich-text-editor>
 
     <!-- File Input (hidden) -->
     <input

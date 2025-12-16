@@ -18,6 +18,7 @@ import { SignalService } from '../../services/signal.service';
 import { FormatoFechaPipe } from '../../pipes/formato-fecha.pipe';
 import { MODULES } from '../../config/modules';
 import { TicketChatComponent } from '../../shared/ticket-chat/ticket-chat.component';
+import { RichTextEditorComponent } from '../../shared/rich-text-editor/rich-text-editor.component';
 
 interface SucursalOption {
   id: string;
@@ -33,6 +34,7 @@ interface SucursalOption {
     ReactiveFormsModule,
     FormatoFechaPipe,
     TicketChatComponent,
+    RichTextEditorComponent,
   ],
   templateUrl: './tickets.component.html',
   styleUrl: './tickets.component.css',
