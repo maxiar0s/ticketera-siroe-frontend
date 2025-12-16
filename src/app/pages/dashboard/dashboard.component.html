@@ -18,17 +18,22 @@
     <app-ticket-status-cards [tickets]="tickets"></app-ticket-status-cards>
   </ng-container>
 
-  <div class="ticket-charts-grid" *ngIf="hasTicketWidgets()">
+  <!-- Primera fila: 2 columnas (Tickets por Mes + Tiempo de Respuesta) -->
+  <div class="ticket-charts-row-2" *ngIf="hasTicketWidgets()">
     <div class="chart-card" *ngIf="dashboardConfig.tickets.cantidadPorMes">
       <app-ticket-count-by-month
         [tickets]="tickets"
       ></app-ticket-count-by-month>
     </div>
-    <div class="chart-card" *ngIf="dashboardConfig.tickets.porFuente">
-      <app-ticket-by-source [tickets]="tickets"></app-ticket-by-source>
-    </div>
     <div class="chart-card" *ngIf="dashboardConfig.tickets.tiempoRespuesta">
       <app-ticket-response-time [tickets]="tickets"></app-ticket-response-time>
+    </div>
+  </div>
+
+  <!-- Segunda fila: 3 columnas (Fuente, Prioridad, Tipo) -->
+  <div class="ticket-charts-row-3" *ngIf="hasTicketWidgets()">
+    <div class="chart-card" *ngIf="dashboardConfig.tickets.porFuente">
+      <app-ticket-by-source [tickets]="tickets"></app-ticket-by-source>
     </div>
     <div class="chart-card" *ngIf="dashboardConfig.tickets.porPrioridad">
       <app-ticket-by-priority [tickets]="tickets"></app-ticket-by-priority>

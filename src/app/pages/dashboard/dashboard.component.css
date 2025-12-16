@@ -1,7 +1,8 @@
 ﻿.section {
-  padding: 20px;
+  padding: 2rem;
   background-color: #f3f4f6;
   min-height: 100vh;
+  gap: 1rem;
 }
 
 .title {
@@ -11,22 +12,43 @@
   margin-bottom: 20px;
 }
 
-.ticket-charts-grid {
+/* Primera fila: 2 columnas */
+.ticket-charts-row-2 {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 20px;
-  margin-bottom: 20px;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+}
+
+/* Segunda fila: 3 columnas */
+.ticket-charts-row-3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
 }
 
 .chart-card {
-  height: 300px;
+  height: 250px;
+}
+
+/* Responsive: en pantallas pequeñas, apilar en columnas */
+@media (max-width: 1024px) {
+  .ticket-charts-row-2,
+  .ticket-charts-row-3 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .ticket-charts-row-2,
+  .ticket-charts-row-3 {
+    grid-template-columns: 1fr;
+  }
 }
 
 /* Filtro de técnicos */
 .dashboard-filter {
   display: flex;
   justify-content: flex-end;
-  margin-bottom: 16px;
 }
 
 .dashboard-filter .filter-label {
@@ -58,4 +80,10 @@
   outline: none;
   border-color: #6366f1;
   box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+}
+
+@media (max-width: 1440px) {
+  .section {
+    padding: 2rem 2rem 2rem 3rem;
+  }
 }
