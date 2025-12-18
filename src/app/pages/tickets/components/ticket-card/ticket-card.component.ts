@@ -17,6 +17,7 @@ export class TicketCardComponent {
 
   @Output() onSelect = new EventEmitter<Ticket>();
   @Output() onVerDetalle = new EventEmitter<Ticket>();
+  @Output() onCerrar = new EventEmitter<Ticket>();
 
   formatTicketId(id: number): string {
     return id.toString().padStart(8, '0');
@@ -50,6 +51,11 @@ export class TicketCardComponent {
   handleVerDetalle(event: Event): void {
     event.stopPropagation();
     this.onVerDetalle.emit(this.ticket);
+  }
+
+  handleCerrar(event: Event): void {
+    event.stopPropagation();
+    this.onCerrar.emit(this.ticket);
   }
 
   /**

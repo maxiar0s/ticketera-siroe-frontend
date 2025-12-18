@@ -731,6 +731,28 @@ export class TicketsComponent implements OnInit {
     }
   }
 
+  /**
+   * Abre el formulario de edición con el estado ya configurado en "Cerrado"
+   * para facilitar el cierre rápido de tickets.
+   */
+  abrirFormularioCerrar(ticket: Ticket, event?: Event): void {
+    event?.stopPropagation();
+    if (!this.puedeEditarTicket(ticket)) {
+      return;
+    }
+
+    // Usar el método de edición existente para cargar el formulario
+    this.abrirFormularioEditar(ticket, event);
+
+    // Sobrescribir el estado a "Cerrado" para facilitar el cierre
+    setTimeout(() => {
+      this.ticketForm.patchValue(
+        { ticketEstado: 'Cerrado' },
+        { emitEvent: true }
+      );
+    }, 0);
+  }
+
   cerrarFormulario(): void {
     this.formularioVisible = false;
     this.modoEdicion = false;

@@ -153,6 +153,24 @@
   box-shadow: 0 4px 12px rgba(var(--color-primary-rgb), 0.3);
 }
 
+.ticket-cerrar-btn {
+  padding: 0.5rem 1rem;
+  background: linear-gradient(90deg, #dc2626 0%, #b91c1c 100%);
+  color: #fff;
+  border: none;
+  border-radius: 999px;
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  white-space: nowrap;
+}
+
+.ticket-cerrar-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
+}
+
 .ticket-descripcion {
   margin: 0;
   font-size: var(--font-size-sm);

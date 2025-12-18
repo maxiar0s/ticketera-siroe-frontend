@@ -19,7 +19,7 @@
 
     <!-- Contenedor 2: Info del ticket (2 filas) -->
     <div class="ticket-info-group">
-      <!-- Fila 1: Título + Tiempo + Ver detalle -->
+      <!-- Fila 1: Título + Tiempo + Acciones -->
       <div class="ticket-info-row">
         <h3 class="ticket-titulo-header">
           {{ ticket.titulo || "Sin título" }}
@@ -30,6 +30,17 @@
         <span class="ticket-tiempo">{{
           calcularTiempoTranscurrido(ticket.fechaVisita)
         }}</span>
+        <button
+          type="button"
+          class="ticket-cerrar-btn"
+          *ngIf="
+            ticket.estadoTicket !== 'Cerrado' &&
+            ticket.estadoTicket !== 'Resuelto'
+          "
+          (click)="handleCerrar($event)"
+        >
+          Cerrar ticket
+        </button>
         <button
           type="button"
           class="ticket-ver-detalle-btn"

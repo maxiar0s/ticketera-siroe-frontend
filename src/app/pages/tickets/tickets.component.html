@@ -67,6 +67,7 @@
       [mensajesNoLeidos]="getMensajesNoLeidos(ticket.id)"
       (onSelect)="seleccionarTicket($event)"
       (onVerDetalle)="seleccionarTicket($event)"
+      (onCerrar)="abrirFormularioCerrar($event)"
     ></app-ticket-card>
   </div>
 
