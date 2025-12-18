@@ -2,10 +2,14 @@
 .rich-text-editor-wrapper {
   width: 100%;
   font-family: "Inter", serif;
+  position: relative;
+  display: flex;
+  flex-direction: column;
 }
 
 .rich-text-editor-wrapper quill-editor {
-  display: block;
+  display: flex;
+  flex-direction: column;
   width: 100%;
 }
 
@@ -22,6 +26,8 @@
   padding: 8px;
   display: flex;
   flex-wrap: wrap;
+  position: relative;
+  z-index: 1;
 }
 
 .rich-text-editor-wrapper .ql-container.ql-snow {
@@ -34,6 +40,8 @@
   font-size: var(--font-size-base);
   color: var(--color-text);
   min-height: 120px;
+  position: relative;
+  z-index: 2;
 }
 
 .rich-text-editor-wrapper .ql-editor {

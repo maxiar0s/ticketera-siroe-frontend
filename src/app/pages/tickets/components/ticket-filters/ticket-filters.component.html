@@ -1,0 +1,109 @@
+<form
+  class="bitacora-filters"
+  [formGroup]="filtroForm"
+  (ngSubmit)="handleSubmit()"
+>
+  <div class="filters-grid">
+    <label class="filter-field">
+      <span class="label">Cliente</span>
+      <select
+        formControlName="clienteId"
+        (change)="handleClienteChange($any($event.target).value)"
+      >
+        <option value="">Todos los clientes</option>
+        <option *ngFor="let cliente of clientes" [value]="cliente.id">
+          {{ cliente.razonSocial }}
+        </option>
+      </select>
+    </label>
+
+    <label class="filter-field" *ngIf="modules.sucursal">
+      <span class="label">Sucursal</span>
+      <select formControlName="sucursalId" [disabled]="sucursales.length === 0">
+        <option value="">Todas</option>
+        <option *ngFor="let sucursal of sucursales" [value]="sucursal.id">
+          {{ sucursal.sucursal }}
+        </option>
+      </select>
+    </label>
+
+    <label class="filter-field">
+      <span class="label">Estado</span>
+      <select formControlName="estado">
+        <option *ngFor="let opcion of filtrosEstado" [value]="opcion.value">
+          {{ opcion.label }}
+        </option>
+      </select>
+    </label>
+
+    <label class="filter-field" *ngIf="modules.proyectos">
+      <span class="label">Proyecto</span>
+      <select formControlName="proyectoId">
+        <option value="">Todos</option>
+        <option value="sin-proyecto">Sin proyecto</option>
+        <option *ngFor="let proyecto of proyectos" [value]="proyecto.id">
+          {{ proyecto.nombre }}
+        </option>
+      </select>
+    </label>
+
+    <label class="filter-field">
+      <span class="label">Prioridad</span>
+      <select formControlName="prioridad">
+        <option value="">Todas</option>
+        <option *ngFor="let p of prioridades" [value]="p.value">
+          {{ p.label }}
+        </option>
+      </select>
+    </label>
+
+    <label class="filter-field">
+      <span class="label">Fecha</span>
+      <input type="date" formControlName="fecha" />
+    </label>
+
+    <label class="filter-field">
+      <span class="label">Técnico</span>
+      <select formControlName="tecnicoId">
+        <option value="">Todos</option>
+        <option value="sinAsignar">Sin asignar</option>
+        <option *ngFor="let tec of tecnicosDisponibles" [value]="tec.id">
+          {{ tec.name }}
+        </option>
+      </select>
+    </label>
+
+    <div class="filter-field tags-filter" *ngIf="tagsDisponibles.length > 0">
+      <span class="label">Tags</span>
+      <div class="tags-chips">
+        <button
+          type="button"
+          *ngFor="let tag of tagsDisponibles"
+          class="tag-filter-chip"
+          [class.selected]="isTagSelected(tag.id)"
+          [style.--tag-color]="tag.color"
+          (click)="toggleTag(tag.id)"
+        >
+          <span class="tag-dot" [style.background-color]="tag.color"></span>
+          {{ tag.nombre }}
+        </button>
+      </div>
+    </div>
+
+    <label class="filter-field grow">
+      <span class="label">Buscar</span>
+      <input
+        type="text"
+        formControlName="buscar"
+        placeholder="Buscar por titulo o nota"
+      />
+    </label>
+  </div>
+
+  <div class="filter-actions">
+    <button type="submit" class="primary-button small">Aplicar filtros</button>
+    <button type="button" class="ghost-button small" (click)="handleClear()">
+      Limpiar
+    </button>
+  </div>
+</form>

@@ -19,6 +19,8 @@ import { FormatoFechaPipe } from '../../pipes/formato-fecha.pipe';
 import { MODULES } from '../../config/modules';
 import { TicketChatComponent } from '../../shared/ticket-chat/ticket-chat.component';
 import { RichTextEditorComponent } from '../../shared/rich-text-editor/rich-text-editor.component';
+import { TicketCardComponent } from './components/ticket-card/ticket-card.component';
+import { TicketFiltersComponent } from './components/ticket-filters/ticket-filters.component';
 
 interface SucursalOption {
   id: string;
@@ -35,6 +37,8 @@ interface SucursalOption {
     FormatoFechaPipe,
     TicketChatComponent,
     RichTextEditorComponent,
+    TicketCardComponent,
+    TicketFiltersComponent,
   ],
   templateUrl: './tickets.component.html',
   styleUrl: './tickets.component.css',

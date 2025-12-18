@@ -21,139 +21,22 @@
     Esta cuenta no tiene acceso al módulo de tickets.
   </div>
 
-  <form
-    class="bitacora-filters"
-    [formGroup]="filtroForm"
-    (ngSubmit)="buscarTickets()"
+  <app-ticket-filters
     *ngIf="tieneAccesoTickets"
-  >
-    <div class="filters-grid">
-      <label class="filter-field">
-        <span class="label">Cliente</span>
-        <select
-          formControlName="clienteId"
-          (change)="onClienteFiltroChange($any($event.target).value)"
-        >
-          <option value="">Todos los clientes</option>
-          <option *ngFor="let cliente of clientes" [value]="cliente.id">
-            {{ cliente.razonSocial }}
-          </option>
-        </select>
-      </label>
-
-      <label class="filter-field" *ngIf="modules.sucursal">
-        <span class="label">Sucursal</span>
-        <select
-          formControlName="sucursalId"
-          [disabled]="sucursalesFiltro.length === 0"
-        >
-          <option value="">Todas</option>
-          <option
-            *ngFor="let sucursal of sucursalesFiltro"
-            [value]="sucursal.id"
-          >
-            {{ sucursal.sucursal }}
-          </option>
-        </select>
-      </label>
-
-      <label class="filter-field">
-        <span class="label">Estado</span>
-        <select formControlName="estado">
-          <option *ngFor="let opcion of filtrosEstado" [value]="opcion.value">
-            {{ opcion.label }}
-          </option>
-        </select>
-      </label>
-
-      <label class="filter-field" *ngIf="modules.proyectos">
-        <span class="label">Proyecto</span>
-        <select formControlName="proyectoId">
-          <option value="">Todos</option>
-          <option value="sin-proyecto">Sin proyecto</option>
-          <option *ngFor="let proyecto of proyectos" [value]="proyecto.id">
-            {{ proyecto.nombre }}
-          </option>
-        </select>
-      </label>
-
-      <label class="filter-field">
-        <span class="label">Prioridad</span>
-        <select formControlName="prioridad">
-          <option value="">Todas</option>
-          <option *ngFor="let p of prioridades" [value]="p.value">
-            {{ p.label }}
-          </option>
-        </select>
-      </label>
-
-      <!--      <label class="filter-field">
-        <span class="label">Tipo</span>
-        <select formControlName="tipo">
-          <option value="">Todos</option>
-          <option *ngFor="let t of tiposTicket" [value]="t.value">
-            {{ t.label }}
-          </option>
-        </select>
-      </label>
--->
-
-      <label class="filter-field">
-        <span class="label">Fecha</span>
-        <input type="date" formControlName="fecha" />
-      </label>
-
-      <label class="filter-field">
-        <span class="label">Técnico</span>
-        <select formControlName="tecnicoId">
-          <option value="">Todos</option>
-          <option value="sinAsignar">Sin asignar</option>
-          <option *ngFor="let tec of tecnicosDisponibles" [value]="tec.id">
-            {{ tec.name }}
-          </option>
-        </select>
-      </label>
-
-      <div class="filter-field tags-filter" *ngIf="tagsDisponibles.length > 0">
-        <span class="label">Tags</span>
-        <div class="tags-chips">
-          <button
-            type="button"
-            *ngFor="let tag of tagsDisponibles"
-            class="tag-filter-chip"
-            [class.selected]="isTagSelected(tag.id)"
-            [style.--tag-color]="tag.color"
-            (click)="toggleTagFilter(tag.id)"
-          >
-            <span class="tag-dot" [style.background-color]="tag.color"></span>
-            {{ tag.nombre }}
-          </button>
-        </div>
-      </div>
-
-      <label class="filter-field grow">
-        <span class="label">Buscar</span>
-        <input
-          type="text"
-          formControlName="buscar"
-          placeholder="Buscar por titulo o nota"
-        />
-      </label>
-    </div>
-
-    <div class="filter-actions">
-      <button type="submit" class="primary-button small">
-        Aplicar filtros
-      </button>
-      <button
-        type="button"
-        class="ghost-button small"
-        (click)="limpiarFiltros()"
-      >
-        Limpiar
-      </button>
-    </div>
-  </form>
+    [filtroForm]="filtroForm"
+    [clientes]="clientes"
+    [sucursales]="sucursalesFiltro"
+    [proyectos]="proyectos"
+    [tecnicosDisponibles]="tecnicosDisponibles"
+    [tagsDisponibles]="tagsDisponibles"
+    [filtrosEstado]="filtrosEstado"
+    [prioridades]="prioridades"
+    [modules]="modules"
+    (onFilter)="buscarTickets()"
+    (onClear)="limpiarFiltros()"
+    (onClienteChange)="onClienteFiltroChange($event)"
+    (onTagToggle)="toggleTagFilter($event)"
+  ></app-ticket-filters>
 
   <div *ngIf="errorMensaje" class="alert alert-error">
     {{ errorMensaje }}
@@ -177,171 +60,14 @@
     *ngIf="!cargando && tieneAccesoTickets && tickets.length > 0"
     class="ticket-cards-container"
   >
-    <article
+    <app-ticket-card
       *ngFor="let ticket of tickets"
-      class="ticket-card"
-      [class.selected]="ticketSeleccionado?.id === ticket.id"
-      [class.ticket-nuevo]="ticket.estadoTicket === 'Nuevo'"
-      (click)="seleccionarTicket(ticket)"
-    >
-      <!-- Card Content - 2 Main Containers -->
-      <div class="ticket-card-content">
-        <!-- Contenedor 1: ID + Estado (columna) -->
-        <div class="ticket-id-estado-group">
-          <span class="ticket-id">#{{ formatTicketId(ticket.id) }}</span>
-          <span
-            class="ticket-estado-small"
-            [ngClass]="obtenerClaseEstado(ticket.estadoTicket)"
-          >
-            {{ ticket.estadoTicket }}
-          </span>
-        </div>
-
-        <!-- Contenedor 2: Info del ticket (2 filas) -->
-        <div class="ticket-info-group">
-          <!-- Fila 1: Título + Tiempo + Ver detalle -->
-          <div class="ticket-info-row">
-            <h3 class="ticket-titulo-header">
-              {{ ticket.titulo || "Sin título" }}
-              <span
-                *ngIf="getMensajesNoLeidos(ticket.id) > 0"
-                class="ticket-mensajes-count"
-              >
-                ({{ getMensajesNoLeidos(ticket.id) }})
-              </span>
-            </h3>
-            <span class="ticket-tiempo">{{
-              calcularTiempoTranscurrido(ticket.fechaVisita)
-            }}</span>
-            <button
-              type="button"
-              class="ticket-ver-detalle-btn"
-              (click)="seleccionarTicket(ticket); $event.stopPropagation()"
-            >
-              Ver detalle
-            </button>
-          </div>
-          <!-- Fila 2: Descripción -->
-          <p class="ticket-descripcion">
-            {{ ticket.descripcion || "" | slice : 0 : 200
-            }}{{ (ticket.descripcion || "").length > 200 ? "..." : "" }}
-          </p>
-        </div>
-      </div>
-
-      <!-- Card Footer - Full width with dividers -->
-      <div class="ticket-card-footer-full">
-        <!-- Actions con separadores -->
-        <div class="ticket-footer-section ticket-footer-section-icon">
-          <button type="button" class="ticket-action-btn" title="Fijar">
-            <img
-              src="/assets/svg/pin.svg"
-              alt="Pin"
-              class="ticket-action-icon"
-            />
-          </button>
-        </div>
-        <div class="ticket-footer-divider"></div>
-        <div class="ticket-footer-section ticket-footer-section-icon">
-          <button type="button" class="ticket-action-btn" title="Destacar">
-            <img
-              src="/assets/svg/star.svg"
-              alt="Favorito"
-              class="ticket-action-icon"
-            />
-          </button>
-        </div>
-        <div class="ticket-footer-divider"></div>
-        <div class="ticket-footer-section ticket-footer-section-icon">
-          <button type="button" class="ticket-action-btn" title="Adjuntar">
-            <img
-              src="/assets/svg/attach.svg"
-              alt="Adjuntar"
-              class="ticket-action-icon"
-            />
-          </button>
-        </div>
-        <div class="ticket-footer-divider"></div>
-
-        <!-- Asignado a -->
-        <div
-          class="ticket-footer-section ticket-footer-section-user"
-          *ngIf="ticket.tecnicos?.length"
-        >
-          <span class="ticket-tecnico-avatar">{{
-            ticket.tecnicos[0].charAt(0) || "T"
-          }}</span>
-          <div class="ticket-footer-user-info">
-            <span class="ticket-footer-label">Asignado a</span>
-            <span class="ticket-footer-value">{{ ticket.tecnicos[0] }}</span>
-          </div>
-        </div>
-        <div
-          class="ticket-footer-divider"
-          *ngIf="ticket.tecnicos?.length"
-        ></div>
-
-        <!-- Creado por -->
-        <div class="ticket-footer-section ticket-footer-section-user">
-          <span class="ticket-cliente-avatar">{{
-            (ticket.casaMatriz?.razonSocial || "N")[0]
-          }}</span>
-          <div class="ticket-footer-user-info">
-            <span class="ticket-footer-label">Creado por</span>
-            <span class="ticket-footer-value">{{
-              ticket.casaMatriz?.razonSocial || "N/A"
-            }}</span>
-          </div>
-        </div>
-        <div class="ticket-footer-divider"></div>
-
-        <!-- Prioridad -->
-        <div class="ticket-footer-section">
-          <span class="ticket-footer-label">Prioridad</span>
-          <span
-            class="ticket-prioridad-chip"
-            [ngClass]="
-              'prioridad-' + (ticket.prioridad || 'Media').toLowerCase()
-            "
-          >
-            {{ ticket.prioridad || "Media" }}
-          </span>
-        </div>
-        <div class="ticket-footer-divider"></div>
-
-        <!-- Tags - siempre visible -->
-        <div class="ticket-footer-section ticket-footer-section-tags">
-          <span class="ticket-footer-label">Tags</span>
-          <div class="ticket-tags-list">
-            <ng-container *ngIf="(ticket.tags?.length ?? 0) > 0; else noTags">
-              <span
-                *ngFor="let tag of ticket.tags"
-                class="ticket-tag-chip"
-                [style.background-color]="tag.color + '22'"
-                [style.color]="tag.color"
-                [style.border-color]="tag.color + '55'"
-              >
-                {{ tag.nombre }}
-              </span>
-            </ng-container>
-            <ng-template #noTags>
-              <span class="ticket-tag-chip ticket-tag-default"
-                >Sin asignar</span
-              >
-            </ng-template>
-          </div>
-        </div>
-        <div class="ticket-footer-divider"></div>
-
-        <!-- Fecha de creación -->
-        <div class="ticket-footer-section">
-          <span class="ticket-footer-label">Fecha de creación</span>
-          <span class="ticket-footer-value">
-            {{ ticket.fechaVisita | formatoFecha : "dd MMMM yyyy" }}
-          </span>
-        </div>
-      </div>
-    </article>
+      [ticket]="ticket"
+      [isSelected]="ticketSeleccionado?.id === ticket.id"
+      [mensajesNoLeidos]="getMensajesNoLeidos(ticket.id)"
+      (onSelect)="seleccionarTicket($event)"
+      (onVerDetalle)="seleccionarTicket($event)"
+    ></app-ticket-card>
   </div>
 
   <div class="pagination" *ngIf="tieneAccesoTickets && paginasTotales > 1">
