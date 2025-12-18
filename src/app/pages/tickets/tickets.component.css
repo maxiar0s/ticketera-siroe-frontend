@@ -612,6 +612,23 @@ textarea {
   line-height: 1.5;
   white-space: pre-wrap;
 }
+/* Estilos para contenido de texto enriquecido en detalles */
+.ticket-content {
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  word-break: break-word;
+  white-space: normal;
+  max-width: 100%;
+  overflow-x: hidden;
+}
+.ticket-content p {
+  margin: 0 0 0.5rem;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+.ticket-content p:last-child {
+  margin-bottom: 0;
+}
 .bitacora-modal-backdrop {
   position: fixed;
   inset: 0;
