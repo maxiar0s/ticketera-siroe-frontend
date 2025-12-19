@@ -3,18 +3,33 @@
   <div class="modal-content responsive-modal">
     <div class="modal-header">
       <h2 class="header-form">Modificar Usuario</h2>
-      <img src="/assets/svg/exit-button.svg" (click)="cerrar()" alt="exit_button" class="close-button">
+      <img
+        src="/assets/svg/exit-button.svg"
+        (click)="cerrar()"
+        alt="exit_button"
+        class="close-button"
+      />
     </div>
     <div class="modal-body">
-      <p class="description-form">Cambia la información del colaborador con los campos correspondientes.</p>
-      <form [formGroup]="usuarioForm" (ngSubmit)="onSubmit()" class="responsive-form">
-        <input type="hidden" formControlName="id">
+      <p class="description-form">
+        Cambia la información del colaborador con los campos correspondientes.
+      </p>
+      <form
+        [formGroup]="usuarioForm"
+        (ngSubmit)="onSubmit()"
+        class="responsive-form"
+      >
+        <input type="hidden" formControlName="id" />
 
         <div class="two-inputs">
           <!-- Campo rol -->
           <div class="form-group width-50">
             <label for="tipoCuentaId">Rol de la cuenta</label>
-            <select class="width-50" id="tipoCuentaId" formControlName="tipoCuentaId">
+            <select
+              class="width-50"
+              id="tipoCuentaId"
+              formControlName="tipoCuentaId"
+            >
               <option value="1">Administrador</option>
               <option value="2">Técnico</option>
               <option value="3">Mesa de ayuda</option>
@@ -26,8 +41,21 @@
           <!-- Campo nombre -->
           <div class="form-group width-50">
             <label for="name">Nombre completo</label>
-            <input class="width-50" id="name" formControlName="name" type="text" autocomplete="name" placeholder="Ingrese el nombre completo"/>
-            <div *ngIf="usuarioForm.get('name')?.invalid && usuarioForm.get('name')?.touched" class="error">
+            <input
+              class="width-50"
+              id="name"
+              formControlName="name"
+              type="text"
+              autocomplete="name"
+              placeholder="Ingrese el nombre completo"
+            />
+            <div
+              *ngIf="
+                usuarioForm.get('name')?.invalid &&
+                usuarioForm.get('name')?.touched
+              "
+              class="error"
+            >
               Ingrese un nombre válido
             </div>
           </div>
@@ -38,13 +66,39 @@
           <div class="form-group width-50">
             <label for="telefono">Teléfono</label>
             <div class="phone-input-container">
-              <input class="prefijo-telefono" type="text" disabled value="+56">
-              <input class="input-telefono" type="text" id="telefono" formControlName="telefono" autocomplete="tel" placeholder="Ingrese el teléfono" formatInputNumber>
+              <input
+                class="prefijo-telefono"
+                type="text"
+                disabled
+                value="+56"
+              />
+              <input
+                class="input-telefono"
+                type="text"
+                id="telefono"
+                formControlName="telefono"
+                autocomplete="tel"
+                placeholder="Ingrese el teléfono"
+                formatInputNumber
+              />
             </div>
-            <div *ngIf="usuarioForm.get('telefono')?.hasError('required') && usuarioForm.get('telefono')?.touched" class="error">
+            <div
+              *ngIf="
+                usuarioForm.get('telefono')?.hasError('required') &&
+                usuarioForm.get('telefono')?.touched
+              "
+              class="error"
+            >
               Ingrese un teléfono válido
             </div>
-            <div *ngIf="usuarioForm.get('telefono')?.hasError('pattern') && usuarioForm.get('telefono')?.touched && usuarioForm.get('telefono')?.invalid" class="error">
+            <div
+              *ngIf="
+                usuarioForm.get('telefono')?.hasError('pattern') &&
+                usuarioForm.get('telefono')?.touched &&
+                usuarioForm.get('telefono')?.invalid
+              "
+              class="error"
+            >
               El teléfono debe contener 9 números
             </div>
           </div>
@@ -52,14 +106,21 @@
           <!-- Campo email -->
           <div class="form-group width-50">
             <label for="email">Correo electrónico</label>
-            <input class="disabled" type="email" id="email" placeholder="Ingrese el correo electrónico" disabled [value]="usuario?.email">
+            <input
+              class="disabled"
+              type="email"
+              id="email"
+              placeholder="Ingrese el correo electrónico"
+              disabled
+              [value]="usuario?.email"
+            />
           </div>
         </div>
 
         <div class="form-group full-width" *ngIf="esRolClienteSeleccionado">
           <label class="checkbox-label">
             <span>Este cliente tiene acceso a Tickets.</span>
-            <input type="checkbox" formControlName="haveTickets"/>
+            <input type="checkbox" formControlName="haveTickets" />
           </label>
           <p class="helper-text">
             Habilita al cliente para usar el modulo de Tickets.
@@ -67,13 +128,29 @@
         </div>
 
         <div class="form-group full-width" *ngIf="esRolClienteSeleccionado">
-          <label for="clientesAutorizados">Clientes autorizados</label>
+          <label for="clientesAutorizados">Cliente autorizado</label>
           <div class="clientes-dropdown" (click)="$event.stopPropagation()">
-            <button type="button" class="dropdown-button" (click)="toggleClientesDropdown($event)" [disabled]="clientesDisponibles.length === 0">
-              <ng-container *ngIf="clientesSeleccionados.length === 0">Selecciona clientes</ng-container>
-              <ng-container *ngIf="clientesSeleccionados.length === 1">{{ clientesSeleccionados[0].razonSocial }}</ng-container>
-              <ng-container *ngIf="clientesSeleccionados.length > 1">{{ clientesSeleccionados.length }} clientes seleccionados</ng-container>
-              <img src="/assets/svg/side-menu-arrow-down.svg" alt="toggle" class="dropdown-arrow" />
+            <button
+              type="button"
+              class="dropdown-button"
+              (click)="toggleClientesDropdown($event)"
+              [disabled]="clientesDisponibles.length === 0"
+            >
+              <ng-container *ngIf="clientesSeleccionados.length === 0"
+                >Selecciona un cliente</ng-container
+              >
+              <ng-container *ngIf="clientesSeleccionados.length === 1">{{
+                clientesSeleccionados[0].razonSocial
+              }}</ng-container>
+              <ng-container *ngIf="clientesSeleccionados.length > 1"
+                >{{ clientesSeleccionados.length }} clientes
+                seleccionados</ng-container
+              >
+              <img
+                src="/assets/svg/side-menu-arrow-down.svg"
+                alt="toggle"
+                class="dropdown-arrow"
+              />
             </button>
             <div class="dropdown-panel" *ngIf="clientesDropdownAbierto">
               <button
@@ -81,14 +158,20 @@
                 class="dropdown-option"
                 *ngFor="let cliente of clientesDisponibles"
                 (click)="onToggleCliente(cliente, $event)"
-                [class.selected]="estaClienteSeleccionado(cliente.id)">
-                <span class="checkbox" [class.checked]="estaClienteSeleccionado(cliente.id)"></span>
+                [class.selected]="estaClienteSeleccionado(cliente.id)"
+              >
+                <span
+                  class="checkbox"
+                  [class.checked]="estaClienteSeleccionado(cliente.id)"
+                ></span>
                 <span>{{ cliente.razonSocial }}</span>
               </button>
             </div>
           </div>
           <div class="selected-chips" *ngIf="clientesSeleccionados.length > 0">
-            <span class="chip" *ngFor="let cliente of clientesSeleccionados">{{ cliente.razonSocial }}</span>
+            <span class="chip" *ngFor="let cliente of clientesSeleccionados">{{
+              cliente.razonSocial
+            }}</span>
           </div>
           <div class="helper-text" *ngIf="clientesDisponibles.length === 0">
             No hay clientes disponibles para asignar.
@@ -98,7 +181,7 @@
         <div class="form-group full-width" *ngIf="esRolAdminSeleccionado">
           <label class="checkbox-label">
             <span>Este administrador tambien realiza visitas tecnicas.</span>
-            <input type="checkbox" formControlName="esTecnico"/>
+            <input type="checkbox" formControlName="esTecnico" />
           </label>
           <p class="helper-text">
             Habilita al administrador para aparecer como tecnico disponible.
@@ -109,7 +192,11 @@
           <!-- Campo Estado -->
           <div class="form-group width-50">
             <label for="estadoCuentaId">Estado de la cuenta</label>
-            <select class="width-50" id="estadoCuentaId" formControlName="estadoCuentaId">
+            <select
+              class="width-50"
+              id="estadoCuentaId"
+              formControlName="estadoCuentaId"
+            >
               <option value="1">Activo</option>
               <option value="2">Inactiva</option>
               <option value="3">Suspendida</option>
@@ -119,7 +206,13 @@
           <!-- Campo password -->
           <div class="form-group width-50 password-group">
             <label for="password">Cambiar contraseña</label>
-            <input type="password" id="password" formControlName="password" placeholder="Ingrese la contraseña" autocomplete="current-password">
+            <input
+              type="password"
+              id="password"
+              formControlName="password"
+              placeholder="Ingrese la contraseña"
+              autocomplete="current-password"
+            />
           </div>
         </div>
 
@@ -129,11 +222,14 @@
         </div>
 
         <div class="form-actions">
-          <button class="equiptment-button" type="submit" [disabled]="usuarioForm.invalid">
+          <button
+            class="equiptment-button"
+            type="submit"
+            [disabled]="usuarioForm.invalid"
+          >
             Modificar usuario
           </button>
         </div>
-
       </form>
     </div>
   </div>

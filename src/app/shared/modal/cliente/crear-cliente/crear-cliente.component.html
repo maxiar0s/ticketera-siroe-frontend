@@ -147,6 +147,45 @@
             </div>
           </div>
 
+          <!-- Campo Logo de Perfil -->
+          <div class="form-group width-50">
+            <label for="logoPerfil">Logo de Perfil</label>
+            <div class="custom-file-input">
+              <div class="imagen-container">
+                <p
+                  *ngIf="
+                    !selectedLogoPerfil &&
+                    (!modoEdicion || !cliente?.logoPerfil)
+                  "
+                  class="imagen-placeholder"
+                >
+                  Logo para perfil del usuario cliente
+                </p>
+                <p *ngIf="selectedLogoPerfil" class="imagen-text">
+                  Logo seleccionado
+                </p>
+                <p
+                  *ngIf="
+                    modoEdicion && cliente?.logoPerfil && !selectedLogoPerfil
+                  "
+                  class="imagen-text"
+                >
+                  Logo actual (click para cambiar)
+                </p>
+                <img src="/assets/svg/camera.svg" alt="logo_svg" class="svg" />
+              </div>
+              <input
+                class="inputs"
+                (change)="onLogoPerfilSelected($event)"
+                type="file"
+                accept="image/*"
+                id="logoPerfil"
+              />
+            </div>
+          </div>
+        </div>
+
+        <div class="two-inputs">
           <!-- Campo Encargado General -->
           <div class="form-group width-50">
             <label for="encargadoGeneral">Encargado General</label>

@@ -159,6 +159,20 @@ export class CrearUsuarioComponent {
 
   onToggleCliente(cliente: ClienteResumen, event?: MouseEvent): void {
     event?.stopPropagation();
+
+    // Para rol Cliente, solo permitir 1 cliente (selección única)
+    if (this.esRolClienteSeleccionado) {
+      if (this.estaClienteSeleccionado(cliente.id)) {
+        this.clientesSeleccionados = [];
+      } else {
+        this.clientesSeleccionados = [cliente];
+      }
+      this.clientesDropdownAbierto = false;
+      this.actualizarControlClientes();
+      return;
+    }
+
+    // Para otros roles, mantener comportamiento multiselect
     const index = this.clientesSeleccionados.findIndex(
       (item) => item.id === cliente.id
     );

@@ -3,6 +3,7 @@ import { DatosBancarios } from './datos-bancarios.interface';
 export interface Cliente {
   id: string;
   imagen?: string | null;
+  logoPerfil?: string | null;
   rut?: string | null;
   razonSocial?: string | null;
   encargadoGeneral?: string | null;

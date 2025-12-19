@@ -93,6 +93,7 @@ export class CrearClienteComponent implements OnInit, OnChanges {
 
   public creating!: boolean;
   public selectedFile: File | null = null;
+  public selectedLogoPerfil: File | null = null;
   private readonly initialFormValues = {
     esLead: false,
     tipoDocumento: 'Rut',
@@ -302,6 +303,7 @@ export class CrearClienteComponent implements OnInit, OnChanges {
     this.aplicarModoLead(this.initialFormValues.esLead);
     this.clientForm.markAsPristine();
     this.selectedFile = null;
+    this.selectedLogoPerfil = null;
     this.errorMessage = '';
     this.cerrarModal.emit();
   }
@@ -310,6 +312,13 @@ export class CrearClienteComponent implements OnInit, OnChanges {
     const input = event.target as HTMLInputElement;
     this.selectedFile = input!.files![0];
     // Marcar el formulario como dirty si se selecciona una imagen
+    this.clientForm.markAsDirty();
+  }
+
+  onLogoPerfilSelected(event: Event) {
+    const input = event.target as HTMLInputElement;
+    this.selectedLogoPerfil = input!.files![0];
+    // Marcar el formulario como dirty si se selecciona un logo
     this.clientForm.markAsDirty();
   }
 
@@ -376,6 +385,11 @@ export class CrearClienteComponent implements OnInit, OnChanges {
       // no enviamos el campo imagen para mantener la imagen actual
       if (this.modoEdicion && !this.selectedFile) {
         formData.delete('imagen');
+      }
+
+      // Manejar el archivo de logo de perfil
+      if (this.selectedLogoPerfil) {
+        formData.set('logoPerfil', this.selectedLogoPerfil);
       }
 
       // Imprimir los datos que se van a enviar para depuración

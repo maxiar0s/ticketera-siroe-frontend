@@ -180,7 +180,7 @@
         </div>
 
         <div class="form-group full-width" *ngIf="esRolClienteSeleccionado">
-          <label for="clientesAutorizados">Clientes autorizados</label>
+          <label for="clientesAutorizados">Cliente autorizado</label>
           <div class="clientes-dropdown" (click)="$event.stopPropagation()">
             <button
               type="button"
@@ -189,7 +189,7 @@
               [disabled]="clientesDisponibles.length === 0"
             >
               <ng-container *ngIf="clientesSeleccionados.length === 0"
-                >Selecciona clientes</ng-container
+                >Selecciona un cliente</ng-container
               >
               <ng-container *ngIf="clientesSeleccionados.length === 1">{{
                 clientesSeleccionados[0].razonSocial

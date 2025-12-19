@@ -1,5 +1,16 @@
-import { Component, EventEmitter, HostListener, Input, Output } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  Component,
+  EventEmitter,
+  HostListener,
+  Input,
+  Output,
+} from '@angular/core';
+import {
+  FormBuilder,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { Cuenta } from '../../../../interfaces/Cuenta.interface';
 import { ClienteResumen } from '../../../../interfaces/cliente-resumen.interface';
@@ -12,7 +23,7 @@ import { FormatInputSoloNumerosDirective } from '../../../../directives/solo-num
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, FormatInputSoloNumerosDirective],
   templateUrl: './modificar-usuario.component.html',
-  styleUrl: './modificar-usuario.component.css'
+  styleUrl: './modificar-usuario.component.css',
 })
 export class ModificarUsuarioComponent {
   @Input() usuario?: Cuenta;
@@ -117,7 +128,8 @@ export class ModificarUsuarioComponent {
 
   onSubmit(): void {
     if (!this.usuarioForm.valid) {
-      this.errorMessage = 'Por favor, completa todos los campos requeridos correctamente.';
+      this.errorMessage =
+        'Por favor, completa todos los campos requeridos correctamente.';
       return;
     }
 
@@ -132,7 +144,10 @@ export class ModificarUsuarioComponent {
 
   toggleClientesDropdown(event: MouseEvent): void {
     event.stopPropagation();
-    if (!this.esRolClienteSeleccionado || this.clientesDisponibles.length === 0) {
+    if (
+      !this.esRolClienteSeleccionado ||
+      this.clientesDisponibles.length === 0
+    ) {
       return;
     }
 
@@ -141,7 +156,23 @@ export class ModificarUsuarioComponent {
 
   onToggleCliente(cliente: ClienteResumen, event?: MouseEvent): void {
     event?.stopPropagation();
-    const index = this.clientesSeleccionados.findIndex((item) => item.id === cliente.id);
+
+    // Para rol Cliente, solo permitir 1 cliente (selección única)
+    if (this.esRolClienteSeleccionado) {
+      if (this.estaClienteSeleccionado(cliente.id)) {
+        this.clientesSeleccionados = [];
+      } else {
+        this.clientesSeleccionados = [cliente];
+      }
+      this.clientesDropdownAbierto = false;
+      this.actualizarControlClientes();
+      return;
+    }
+
+    // Para otros roles, mantener comportamiento multiselect
+    const index = this.clientesSeleccionados.findIndex(
+      (item) => item.id === cliente.id
+    );
 
     if (index >= 0) {
       this.clientesSeleccionados.splice(index, 1);
