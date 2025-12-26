@@ -76,16 +76,6 @@
       </button>
     </div>
     <div class="ticket-footer-divider"></div>
-    <div class="ticket-footer-section ticket-footer-section-icon">
-      <button type="button" class="ticket-action-btn" title="Adjuntar">
-        <img
-          src="/assets/svg/attach.svg"
-          alt="Adjuntar"
-          class="ticket-action-icon"
-        />
-      </button>
-    </div>
-    <div class="ticket-footer-divider"></div>
 
     <!-- Asignado a -->
     <div
@@ -147,6 +137,15 @@
           <span class="ticket-tag-chip ticket-tag-default">Sin asignar</span>
         </ng-template>
       </div>
+    </div>
+    <div class="ticket-footer-divider"></div>
+
+    <!-- Estimación -->
+    <div class="ticket-footer-section">
+      <span class="ticket-footer-label">Estimación</span>
+      <span class="ticket-footer-value">
+        {{ ticket.estimacion ? ticket.estimacion + "h" : "-" }}
+      </span>
     </div>
     <div class="ticket-footer-divider"></div>
 

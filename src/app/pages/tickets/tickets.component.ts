@@ -139,7 +139,6 @@ export class TicketsComponent implements OnInit {
       buscar: [''],
       estado: ['todos'],
       proyectoId: [''],
-      tipo: [''],
       prioridad: [''],
       tecnicoId: [''],
       fecha: [''],
@@ -157,7 +156,7 @@ export class TicketsComponent implements OnInit {
       tecnicos: [[], Validators.required],
       ticketEstado: ['Nuevo', Validators.required],
       prioridad: ['Media', Validators.required],
-      tipo: ['Incidente', Validators.required],
+      estimacion: [null],
       ticketFechaTermino: [''],
       ticketDetalleTermino: [''],
       descripcion: ['', [Validators.required, Validators.minLength(5)]],
@@ -173,13 +172,6 @@ export class TicketsComponent implements OnInit {
     { value: 'Baja', label: 'Baja' },
     { value: 'Media', label: 'Media' },
     { value: 'Alta', label: 'Alta' },
-  ];
-
-  readonly tiposTicket = [
-    { value: 'Incidente', label: 'Incidente' },
-    { value: 'Problema', label: 'Problema' },
-    { value: 'Pregunta', label: 'Pregunta' },
-    { value: 'Peticion', label: 'Petición' },
   ];
 
   ngOnInit(): void {
@@ -404,7 +396,6 @@ export class TicketsComponent implements OnInit {
       buscar: '',
       estado: 'todos',
       proyectoId: '',
-      tipo: '',
       prioridad: '',
       tecnicoId: tecnicoIdDefault,
       fecha: '',
@@ -616,7 +607,7 @@ export class TicketsComponent implements OnInit {
       tecnicos: [], // En Nuevo no se asigna tecnico
       ticketEstado: 'Nuevo',
       prioridad: 'Media',
-      tipo: 'Incidente',
+      estimacion: null,
       ticketFechaTermino: '',
       ticketDetalleTermino: '',
       descripcion: '',
@@ -663,7 +654,7 @@ export class TicketsComponent implements OnInit {
       tecnicos: Array.isArray(ticket.tecnicos) ? [...ticket.tecnicos] : [],
       ticketEstado: ticket.estadoTicket ?? 'Nuevo',
       prioridad: ticket.prioridad ?? 'Media',
-      tipo: ticket.tipo ?? 'Incidente',
+      estimacion: ticket.estimacion ?? null,
       ticketFechaTermino: this.formatearParaInputSoloFecha(ticket.fechaTermino),
       ticketDetalleTermino: ticket.detalleTermino ?? '',
       descripcion: ticket.descripcion,
@@ -1122,7 +1113,7 @@ export class TicketsComponent implements OnInit {
       isEmergencia: false,
       estadoTicket,
       prioridad: formValue.prioridad,
-      tipo: formValue.tipo,
+      estimacion: formValue.estimacion ?? null,
       proyectoId,
       fechaTermino: null,
       detalleTermino: null,

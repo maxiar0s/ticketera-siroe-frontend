@@ -9,10 +9,10 @@ import { Ticket } from '../../../../interfaces/ticket.interface';
   imports: [CommonModule, SimpleDonutChartComponent],
   template: `
     <div class="card">
-      <h3>Tickets por Tipo</h3>
+      <h3>Tickets por Prioridad</h3>
       <simple-donut-chart
         [data]="chartData"
-        [colors]="['#3b82f6', '#a855f7', '#f97316', '#22c55e']"
+        [colors]="['#22c55e', '#f97316', '#ef4444']"
       ></simple-donut-chart>
     </div>
   `,
@@ -43,16 +43,15 @@ export class TicketByTypeComponent implements OnChanges {
 
   private processData(): void {
     const counts: { [key: string]: number } = {
-      Incidente: 0,
-      Problema: 0,
-      Pregunta: 0,
-      Peticion: 0,
+      Baja: 0,
+      Media: 0,
+      Alta: 0,
     };
 
     this.tickets.forEach((ticket) => {
-      const type = ticket.tipo || 'Incidente';
-      if (counts.hasOwnProperty(type)) {
-        counts[type]++;
+      const priority = ticket.prioridad || 'Media';
+      if (counts.hasOwnProperty(priority)) {
+        counts[priority]++;
       }
     });
 

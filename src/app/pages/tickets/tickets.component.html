@@ -132,9 +132,6 @@
           >
             {{ ticketSeleccionado.prioridad || "Media" }}
           </span>
-          <span class="tipo-chip tipo-ticket">
-            {{ ticketSeleccionado.tipo || "Incidente" }}
-          </span>
           <span
             *ngIf="esTicketLead(ticketSeleccionado)"
             class="lead-detail-chip"
@@ -240,6 +237,10 @@
           <span class="value">
             {{ ticketSeleccionado.estadoTicket }}
           </span>
+        </div>
+        <div *ngIf="ticketSeleccionado.estimacion">
+          <span class="label">Estimación</span>
+          <span class="value"> {{ ticketSeleccionado.estimacion }} horas </span>
         </div>
         <div
           *ngIf="
@@ -425,12 +426,14 @@
           </label>
 
           <label>
-            <span class="label">Tipo</span>
-            <select formControlName="tipo">
-              <option *ngFor="let tipo of tiposTicket" [value]="tipo.value">
-                {{ tipo.label }}
-              </option>
-            </select>
+            <span class="label">Estimación (horas, opcional)</span>
+            <input
+              type="number"
+              formControlName="estimacion"
+              placeholder="Ej. 2.5"
+              min="0"
+              step="0.5"
+            />
           </label>
 
           <label *ngIf="modules.proyectos">
