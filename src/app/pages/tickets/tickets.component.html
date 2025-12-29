@@ -438,19 +438,9 @@
             </select>
           </label>
 
-          <label
-            [class.invalid]="
-              ticketForm.get('fechaVisita')?.invalid &&
-              (ticketForm.get('fechaVisita')?.dirty ||
-                ticketForm.get('fechaVisita')?.touched)
-            "
-          >
+          <label>
             <span class="label">Fecha de ingreso</span>
-            <input
-              type="date"
-              formControlName="fechaVisita"
-              [attr.disabled]="modoEdicion ? '' : null"
-            />
+            <input type="date" formControlName="fechaVisita" />
           </label>
 
           <ng-container *ngIf="mostrarCamposHorarios">
@@ -466,13 +456,7 @@
           </ng-container>
 
           <div class="termino-ticket-fields" *ngIf="mostrarCamposTerminoTicket">
-            <label
-              [class.invalid]="
-                ticketForm.get('ticketFechaTermino')?.invalid &&
-                (ticketForm.get('ticketFechaTermino')?.dirty ||
-                  ticketForm.get('ticketFechaTermino')?.touched)
-              "
-            >
+            <label>
               <span class="label">Fecha de termino</span>
               <input type="date" formControlName="ticketFechaTermino" />
             </label>

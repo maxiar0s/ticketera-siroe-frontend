@@ -626,6 +626,8 @@ export class TicketsComponent implements OnInit {
     }
     // Habilitar técnicos al crear (opcional) - el usuario puede asignar un técnico si lo desea
     this.ticketForm.get('tecnicos')?.enable({ emitEvent: false });
+    // Deshabilitar fechaVisita - se asigna automáticamente la fecha actual
+    this.ticketForm.get('fechaVisita')?.disable({ emitEvent: false });
     // Solo mostrar estado Nuevo al crear (no se puede cambiar)
     this.estadosTicketFormulario = this.estadosTicket.filter(
       (e) => e.value === 'Nuevo'
@@ -689,7 +691,16 @@ export class TicketsComponent implements OnInit {
       : [];
 
     const estado = ticket.estadoTicket ?? 'Nuevo';
-    if (estado === 'Nuevo') {
+
+    // Si el ticket ya está cerrado o resuelto, no permitir cambiar el estado
+    if (estado === 'Cerrado' || estado === 'Resuelto') {
+      // Mostrar solo el estado actual (bloqueado)
+      this.estadosTicketFormulario = this.estadosTicket.filter(
+        (e) => e.value === estado
+      );
+      this.ticketForm.get('ticketEstado')?.disable({ emitEvent: false });
+      this.ticketForm.get('tecnicos')?.enable({ emitEvent: false });
+    } else if (estado === 'Nuevo') {
       // Si es Nuevo, cambiar automáticamente a Abierto al editar
       this.ticketForm.patchValue(
         { ticketEstado: 'Abierto' },
@@ -697,16 +708,22 @@ export class TicketsComponent implements OnInit {
       );
       this.tecnicoActual = []; // Limpiar para mostrar dropdown de selección
       this.ticketForm.get('tecnicos')?.enable({ emitEvent: false });
+      // Filtrar estados: Nunca mostrar 'Nuevo' en modo edición
+      this.estadosTicketFormulario = this.estadosTicket.filter(
+        (e) => e.value !== 'Nuevo'
+      );
     } else {
-      // Si no es Nuevo (Abierto, etc), DEBE haber un tecnico asignado.
-      // Permitimos editar (Transferir) directamente mediante el segundo dropdown.
+      // Si no es Nuevo ni Cerrado/Resuelto (Abierto, Pendiente, En espera)
       this.ticketForm.get('tecnicos')?.enable({ emitEvent: false });
+      // Filtrar estados: Nunca mostrar 'Nuevo' en modo edición
+      this.estadosTicketFormulario = this.estadosTicket.filter(
+        (e) => e.value !== 'Nuevo'
+      );
     }
 
-    // Filtrar estados: Nunca mostrar 'Nuevo' en modo edición
-    this.estadosTicketFormulario = this.estadosTicket.filter(
-      (e) => e.value !== 'Nuevo'
-    );
+    // Deshabilitar campos de fecha - se asignan automáticamente
+    this.ticketForm.get('fechaVisita')?.disable({ emitEvent: false });
+    this.ticketForm.get('ticketFechaTermino')?.disable({ emitEvent: false });
 
     // Validar permisos de edicion para tecnico asignado
     if (!this.esAdmin && this.esTecnico) {
