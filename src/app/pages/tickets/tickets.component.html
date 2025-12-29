@@ -238,10 +238,7 @@
             {{ ticketSeleccionado.estadoTicket }}
           </span>
         </div>
-        <div *ngIf="ticketSeleccionado.estimacion">
-          <span class="label">Estimación</span>
-          <span class="value"> {{ ticketSeleccionado.estimacion }} horas </span>
-        </div>
+
         <div
           *ngIf="
             ticketSeleccionado.estadoTicket === 'Resuelto' ||
@@ -406,7 +403,10 @@
 
           <label>
             <span class="label">Estado del ticket</span>
-            <select formControlName="ticketEstado">
+            <select
+              formControlName="ticketEstado"
+              [attr.disabled]="!modoEdicion ? '' : null"
+            >
               <option
                 *ngFor="let estado of estadosTicketFormulario"
                 [value]="estado.value"
@@ -423,17 +423,6 @@
                 {{ pri.label }}
               </option>
             </select>
-          </label>
-
-          <label>
-            <span class="label">Estimación (horas, opcional)</span>
-            <input
-              type="number"
-              formControlName="estimacion"
-              placeholder="Ej. 2.5"
-              min="0"
-              step="0.5"
-            />
           </label>
 
           <label *ngIf="modules.proyectos">
@@ -457,7 +446,11 @@
             "
           >
             <span class="label">Fecha de ingreso</span>
-            <input type="date" formControlName="fechaVisita" />
+            <input
+              type="date"
+              formControlName="fechaVisita"
+              [attr.disabled]="modoEdicion ? '' : null"
+            />
           </label>
 
           <ng-container *ngIf="mostrarCamposHorarios">

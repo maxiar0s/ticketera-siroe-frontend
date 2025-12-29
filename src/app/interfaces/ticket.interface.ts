@@ -42,7 +42,7 @@ export interface Ticket {
     fotoPortada?: string | null;
   } | null;
   prioridad: 'Baja' | 'Media' | 'Alta';
-  estimacion?: number | null;
+
   fuente: 'Web' | 'Email';
   fechaRespuesta?: string | null;
   historialEstados?: string[];

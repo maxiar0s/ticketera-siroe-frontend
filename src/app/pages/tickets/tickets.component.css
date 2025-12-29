@@ -582,7 +582,7 @@ textarea {
   gap: 1rem;
 }
 .detail-grid .label {
-  font-size: var(--font-size-xs);
+  font-size: var(--font-size-sm);
   font-weight: 600;
   color: var(--color-text-alt);
   text-transform: uppercase;
@@ -592,7 +592,7 @@ textarea {
   display: block;
   color: #333;
   font-weight: 600;
-  font-size: var(--font-size-sm);
+  font-size: var(--font-size-md);
   margin-top: 0.3rem;
 }
 .detail-note {
@@ -615,7 +615,8 @@ textarea {
 .detail-note p {
   margin: 0;
   color: #454545;
-  line-height: 1.5;
+  line-height: 1.6;
+  font-size: var(--font-size-base);
   white-space: pre-wrap;
 }
 /* Estilos para contenido de texto enriquecido en detalles */
@@ -626,6 +627,8 @@ textarea {
   white-space: normal;
   max-width: 100%;
   overflow-x: hidden;
+  font-size: var(--font-size-base);
+  line-height: 1.6;
 }
 .ticket-content p {
   margin: 0 0 0.5rem;

@@ -153,10 +153,9 @@ export class TicketsComponent implements OnInit {
       fechaVisita: ['', Validators.required],
       horaLlegada: [''],
       horaSalida: [''],
-      tecnicos: [[], Validators.required],
+      tecnicos: [[]],
       ticketEstado: ['Nuevo', Validators.required],
       prioridad: ['Media', Validators.required],
-      estimacion: [null],
       ticketFechaTermino: [''],
       ticketDetalleTermino: [''],
       descripcion: ['', [Validators.required, Validators.minLength(5)]],
@@ -267,14 +266,13 @@ export class TicketsComponent implements OnInit {
     const aplicarValidaciones = () => {
       const estado = (estadoCtrl.value ?? 'Nuevo') as string;
 
-      // Lógica para técnicos: Si el estado NO es "Nuevo", habilitar y requerir técnico
+      // Lógica para técnicos: Si el estado NO es "Nuevo", requerir técnico
+      // Si es Nuevo, técnico es opcional
       if (estado === 'Nuevo') {
-        // Si es Nuevo, deshabilitar el control de técnicos (no se puede asignar aún)
-        tecnicosCtrl.disable({ emitEvent: false });
+        // En estado Nuevo, técnico es opcional
         tecnicosCtrl.clearValidators();
       } else {
-        // Si no es Nuevo, habilitar y requerir selección de técnico
-        tecnicosCtrl.enable({ emitEvent: false });
+        // Si no es Nuevo, requerir selección de técnico
         tecnicosCtrl.setValidators([Validators.required]);
       }
       tecnicosCtrl.updateValueAndValidity({ emitEvent: false });
@@ -604,10 +602,9 @@ export class TicketsComponent implements OnInit {
       fechaVisita: this.obtenerFechaActual(),
       horaLlegada: '',
       horaSalida: '',
-      tecnicos: [], // En Nuevo no se asigna tecnico
+      tecnicos: [], // En Nuevo el técnico es opcional
       ticketEstado: 'Nuevo',
       prioridad: 'Media',
-      estimacion: null,
       ticketFechaTermino: '',
       ticketDetalleTermino: '',
       descripcion: '',
@@ -627,9 +624,12 @@ export class TicketsComponent implements OnInit {
     } else {
       this.sucursalesFormulario = [];
     }
-    // Deshabilitar tecnicos al crear, ya que estado es Nuevo
-    this.ticketForm.get('tecnicos')?.disable({ emitEvent: false });
-    this.estadosTicketFormulario = [...this.estadosTicket];
+    // Habilitar técnicos al crear (opcional) - el usuario puede asignar un técnico si lo desea
+    this.ticketForm.get('tecnicos')?.enable({ emitEvent: false });
+    // Solo mostrar estado Nuevo al crear (no se puede cambiar)
+    this.estadosTicketFormulario = this.estadosTicket.filter(
+      (e) => e.value === 'Nuevo'
+    );
   }
 
   abrirFormularioEditar(ticket: Ticket, event?: Event): void {
@@ -654,7 +654,6 @@ export class TicketsComponent implements OnInit {
       tecnicos: Array.isArray(ticket.tecnicos) ? [...ticket.tecnicos] : [],
       ticketEstado: ticket.estadoTicket ?? 'Nuevo',
       prioridad: ticket.prioridad ?? 'Media',
-      estimacion: ticket.estimacion ?? null,
       ticketFechaTermino: this.formatearParaInputSoloFecha(ticket.fechaTermino),
       ticketDetalleTermino: ticket.detalleTermino ?? '',
       descripcion: ticket.descripcion,
@@ -691,22 +690,23 @@ export class TicketsComponent implements OnInit {
 
     const estado = ticket.estadoTicket ?? 'Nuevo';
     if (estado === 'Nuevo') {
-      // Si es Nuevo, permitir asignar técnico (primera asignación)
-      // El técnico se puede asignar junto con el cambio de estado
+      // Si es Nuevo, cambiar automáticamente a Abierto al editar
+      this.ticketForm.patchValue(
+        { ticketEstado: 'Abierto' },
+        { emitEvent: true }
+      );
       this.tecnicoActual = []; // Limpiar para mostrar dropdown de selección
       this.ticketForm.get('tecnicos')?.enable({ emitEvent: false });
-      // Mantener todos los estados disponibles para tickets nuevos
-      this.estadosTicketFormulario = [...this.estadosTicket];
     } else {
       // Si no es Nuevo (Abierto, etc), DEBE haber un tecnico asignado.
       // Permitimos editar (Transferir) directamente mediante el segundo dropdown.
       this.ticketForm.get('tecnicos')?.enable({ emitEvent: false });
-
-      // Filtrar estados: Si ya no es Nuevo, no puede volver a ser Nuevo.
-      this.estadosTicketFormulario = this.estadosTicket.filter(
-        (e) => e.value !== 'Nuevo'
-      );
     }
+
+    // Filtrar estados: Nunca mostrar 'Nuevo' en modo edición
+    this.estadosTicketFormulario = this.estadosTicket.filter(
+      (e) => e.value !== 'Nuevo'
+    );
 
     // Validar permisos de edicion para tecnico asignado
     if (!this.esAdmin && this.esTecnico) {
@@ -1113,7 +1113,6 @@ export class TicketsComponent implements OnInit {
       isEmergencia: false,
       estadoTicket,
       prioridad: formValue.prioridad,
-      estimacion: formValue.estimacion ?? null,
       proyectoId,
       fechaTermino: null,
       detalleTermino: null,
