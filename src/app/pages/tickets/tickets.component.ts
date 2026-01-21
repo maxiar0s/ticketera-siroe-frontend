@@ -119,7 +119,7 @@ export class TicketsComponent implements OnInit {
     private authService: AuthService,
     private signalService: SignalService,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
   ) {
     this.esAdmin = this.authService.esAdministrador();
     this.esTecnico = this.authService.esTecnico();
@@ -234,7 +234,7 @@ export class TicketsComponent implements OnInit {
       // Para técnicos: filtrar por su ID por defecto
       this.filtroForm.patchValue(
         { tecnicoId: this.usuarioActualId.toString() },
-        { emitEvent: false }
+        { emitEvent: false },
       );
     }
     // Para admin: dejar vacío (todos)
@@ -318,7 +318,7 @@ export class TicketsComponent implements OnInit {
           const unico = this.clientes[0];
           this.filtroForm.patchValue(
             { clienteId: unico.id },
-            { emitEvent: false }
+            { emitEvent: false },
           );
           this.cargarSucursalesParaCliente(unico.id, 'filtro');
         } else if (clienteActual) {
@@ -461,7 +461,7 @@ export class TicketsComponent implements OnInit {
           this.paginaActual = respuesta?.pagina ?? 1;
           if (this.ticketSeleccionado) {
             const actualizada = data.find(
-              (item: Ticket) => item.id === this.ticketSeleccionado?.id
+              (item: Ticket) => item.id === this.ticketSeleccionado?.id,
             );
             this.ticketSeleccionado = actualizada;
           }
@@ -495,7 +495,7 @@ export class TicketsComponent implements OnInit {
       return;
     }
     const objetivo = this.tickets.find(
-      (item: Ticket) => item.id === this.ticketDestinoId
+      (item: Ticket) => item.id === this.ticketDestinoId,
     );
     if (objetivo) {
       // Found in current list, show detail
@@ -630,7 +630,7 @@ export class TicketsComponent implements OnInit {
     this.ticketForm.get('fechaVisita')?.disable({ emitEvent: false });
     // Solo mostrar estado Nuevo al crear (no se puede cambiar)
     this.estadosTicketFormulario = this.estadosTicket.filter(
-      (e) => e.value === 'Nuevo'
+      (e) => e.value === 'Nuevo',
     );
   }
 
@@ -666,7 +666,8 @@ export class TicketsComponent implements OnInit {
         : null,
       tiempoResolucionMinutos: ticket.tiempoResolucion
         ? Math.round(
-            (ticket.tiempoResolucion - Math.floor(ticket.tiempoResolucion)) * 60
+            (ticket.tiempoResolucion - Math.floor(ticket.tiempoResolucion)) *
+              60,
           )
         : null,
       tagIds: Array.isArray(ticket.tags) ? ticket.tags.map((t) => t.id) : [],
@@ -696,7 +697,7 @@ export class TicketsComponent implements OnInit {
     if (estado === 'Cerrado' || estado === 'Resuelto') {
       // Mostrar solo el estado actual (bloqueado)
       this.estadosTicketFormulario = this.estadosTicket.filter(
-        (e) => e.value === estado
+        (e) => e.value === estado,
       );
       this.ticketForm.get('ticketEstado')?.disable({ emitEvent: false });
       this.ticketForm.get('tecnicos')?.enable({ emitEvent: false });
@@ -704,20 +705,20 @@ export class TicketsComponent implements OnInit {
       // Si es Nuevo, cambiar automáticamente a Abierto al editar
       this.ticketForm.patchValue(
         { ticketEstado: 'Abierto' },
-        { emitEvent: true }
+        { emitEvent: true },
       );
       this.tecnicoActual = []; // Limpiar para mostrar dropdown de selección
       this.ticketForm.get('tecnicos')?.enable({ emitEvent: false });
       // Filtrar estados: Nunca mostrar 'Nuevo' en modo edición
       this.estadosTicketFormulario = this.estadosTicket.filter(
-        (e) => e.value !== 'Nuevo'
+        (e) => e.value !== 'Nuevo',
       );
     } else {
       // Si no es Nuevo ni Cerrado/Resuelto (Abierto, Pendiente, En espera)
       this.ticketForm.get('tecnicos')?.enable({ emitEvent: false });
       // Filtrar estados: Nunca mostrar 'Nuevo' en modo edición
       this.estadosTicketFormulario = this.estadosTicket.filter(
-        (e) => e.value !== 'Nuevo'
+        (e) => e.value !== 'Nuevo',
       );
     }
 
@@ -726,17 +727,8 @@ export class TicketsComponent implements OnInit {
     this.ticketForm.get('ticketFechaTermino')?.disable({ emitEvent: false });
 
     // Validar permisos de edicion para tecnico asignado
-    if (!this.esAdmin && this.esTecnico) {
-      const usuario = this.authService.decodificarToken();
-      if (
-        ticket.tecnicoAsignadoId &&
-        usuario?.id !== ticket.tecnicoAsignadoId
-      ) {
-        this.ticketForm.disable({ emitEvent: false });
-        this.exitoMensaje =
-          'No tienes permisos para editar este ticket (asignado a otro técnico).';
-      }
-    }
+    // Eliminado: La verificación ya se hace al inicio con puedeEditarTicket(ticket)
+    // y si tiene acceso (por historial o asignación actual) debe poder editar.
   }
 
   /**
@@ -756,7 +748,7 @@ export class TicketsComponent implements OnInit {
     setTimeout(() => {
       this.ticketForm.patchValue(
         { ticketEstado: 'Cerrado' },
-        { emitEvent: true }
+        { emitEvent: true },
       );
     }, 0);
   }
@@ -957,7 +949,7 @@ export class TicketsComponent implements OnInit {
   onClienteFiltroChange(clienteId: string): void {
     this.filtroForm.patchValue(
       { sucursalId: '', tagIds: [] },
-      { emitEvent: false }
+      { emitEvent: false },
     );
     if (!clienteId) {
       this.sucursalesFiltro = [];
@@ -1031,7 +1023,7 @@ export class TicketsComponent implements OnInit {
   private cargarSucursalesParaCliente(
     clienteId: string,
     contexto: 'filtro' | 'form',
-    callback?: () => void
+    callback?: () => void,
   ): void {
     if (!clienteId) {
       if (contexto === 'filtro') {
@@ -1151,8 +1143,8 @@ export class TicketsComponent implements OnInit {
         detalle.length > 0
           ? detalle
           : payload.descripcion && payload.descripcion.length >= 5
-          ? payload.descripcion
-          : 'Ticket cerrado por el técnico.';
+            ? payload.descripcion
+            : 'Ticket cerrado por el técnico.';
     }
 
     // Comentario Interno y Tiempo Resolucion
@@ -1218,7 +1210,7 @@ export class TicketsComponent implements OnInit {
     const ids = nombres
       .map((nombre) => mapa.get(nombre.trim().toLowerCase()))
       .filter(
-        (id): id is number => typeof id === 'number' && Number.isInteger(id)
+        (id): id is number => typeof id === 'number' && Number.isInteger(id),
       );
 
     return Array.from(new Set(ids));
@@ -1249,7 +1241,7 @@ export class TicketsComponent implements OnInit {
   }
 
   private formatearParaInputSoloFecha(
-    value: string | null | undefined
+    value: string | null | undefined,
   ): string {
     if (!value) {
       return '';
@@ -1336,7 +1328,7 @@ export class TicketsComponent implements OnInit {
       return;
     }
     this.tickets = this.tickets.map((item) =>
-      item.id === detalle.id ? { ...item, ...detalle } : item
+      item.id === detalle.id ? { ...item, ...detalle } : item,
     );
   }
 
