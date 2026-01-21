@@ -28,7 +28,7 @@ export const routes: Routes = [
     data: { module: 'dashboard' },
     loadComponent: () =>
       import('./pages/dashboard/dashboard.component').then(
-        (m) => m.DashboardComponent
+        (m) => m.DashboardComponent,
       ),
   },
   {
@@ -37,7 +37,7 @@ export const routes: Routes = [
     data: { module: 'dashboardCliente' },
     loadComponent: () =>
       import('./pages/dashboard-cliente/client-dashboard.component').then(
-        (m) => m.ClientDashboardComponent
+        (m) => m.ClientDashboardComponent,
       ),
   },
 
@@ -48,7 +48,7 @@ export const routes: Routes = [
     data: { module: 'clientes' },
     loadComponent: () =>
       import('./pages/clientes/clientes.component').then(
-        (m) => m.ClientesComponent
+        (m) => m.ClientesComponent,
       ),
   },
   {
@@ -57,7 +57,7 @@ export const routes: Routes = [
     data: { module: 'clientes' },
     loadComponent: () =>
       import('./pages/clientes/cliente/cliente.component').then(
-        (m) => m.ClienteComponent
+        (m) => m.ClienteComponent,
       ),
   },
   {
@@ -66,7 +66,7 @@ export const routes: Routes = [
     data: { module: 'documentacion' },
     loadComponent: () =>
       import('./pages/documentacion/documentacion.component').then(
-        (m) => m.DocumentacionComponent
+        (m) => m.DocumentacionComponent,
       ),
   },
 
@@ -77,7 +77,7 @@ export const routes: Routes = [
     data: { module: 'sucursal' },
     loadComponent: () =>
       import('./pages/sucursal/sucursal.component').then(
-        (m) => m.SucursalComponent
+        (m) => m.SucursalComponent,
       ),
   },
 
@@ -88,7 +88,7 @@ export const routes: Routes = [
     data: { module: 'bitacora' },
     loadComponent: () =>
       import('./pages/bitacora/bitacora.component').then(
-        (m) => m.BitacoraComponent
+        (m) => m.BitacoraComponent,
       ),
   },
   {
@@ -97,7 +97,7 @@ export const routes: Routes = [
     data: { module: 'bitacora' },
     loadComponent: () =>
       import('./pages/bitacora/bitacora.component').then(
-        (m) => m.BitacoraComponent
+        (m) => m.BitacoraComponent,
       ),
   },
   {
@@ -106,7 +106,7 @@ export const routes: Routes = [
     data: { module: 'tickets' },
     loadComponent: () =>
       import('./pages/tickets/tickets.component').then(
-        (m) => m.TicketsComponent
+        (m) => m.TicketsComponent,
       ),
   },
   {
@@ -115,7 +115,16 @@ export const routes: Routes = [
     data: { module: 'proyectos' },
     loadComponent: () =>
       import('./pages/proyectos/proyectos.component').then(
-        (m) => m.ProyectosComponent
+        (m) => m.ProyectosComponent,
+      ),
+  },
+  {
+    path: 'biblioteca',
+    canActivate: [protegerRutaGuard, NoClienteGuard, ModuleGuard],
+    data: { module: 'biblioteca' },
+    loadComponent: () =>
+      import('./pages/biblioteca/biblioteca.component').then(
+        (m) => m.BibliotecaComponent,
       ),
   },
   {
@@ -129,7 +138,7 @@ export const routes: Routes = [
     data: { module: 'vehiculos' },
     loadComponent: () =>
       import('./pages/vehiculos/vehiculos.component').then(
-        (m) => m.VehiculosComponent
+        (m) => m.VehiculosComponent,
       ),
   },
 
@@ -140,7 +149,7 @@ export const routes: Routes = [
     data: { module: 'opciones' },
     loadComponent: () =>
       import('./pages/opciones/opciones.component').then(
-        (m) => m.OpcionesComponent
+        (m) => m.OpcionesComponent,
       ),
   },
   {
@@ -157,7 +166,7 @@ export const routes: Routes = [
     data: { module: 'adminUsuarios' },
     loadComponent: () =>
       import('./pages/admin/usuarios/usuarios.component').then(
-        (m) => m.UsuariosComponent
+        (m) => m.UsuariosComponent,
       ),
   },
   {
@@ -166,7 +175,7 @@ export const routes: Routes = [
     data: { module: 'adminTiposEquipos' },
     loadComponent: () =>
       import('./pages/admin/tipos-equipos/tipos-equipos.component').then(
-        (m) => m.TiposEquiposComponent
+        (m) => m.TiposEquiposComponent,
       ),
   },
   {
@@ -175,7 +184,7 @@ export const routes: Routes = [
     data: { module: 'reportes' },
     loadComponent: () =>
       import('./pages/reportes/reportes.component').then(
-        (m) => m.ReportesComponent
+        (m) => m.ReportesComponent,
       ),
   },
 ];

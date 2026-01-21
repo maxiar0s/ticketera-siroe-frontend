@@ -39,6 +39,10 @@ import {
   DocumentoClienteListado,
 } from '../interfaces/documento-cliente.interface';
 import { EstadoSucursal } from '../interfaces/estado-sucursal.interface';
+import {
+  BibliotecaProyecto,
+  BibliotecaListadoResponse,
+} from '../interfaces/biblioteca.interface';
 import { environment } from '../../environments/environment';
 
 type ClienteEquiposDetalle = { cliente: Cliente | null; equipos: Equipo[] };
@@ -69,7 +73,7 @@ export class ApiService {
       catchError((error) => {
         console.error(error);
         return of(null);
-      })
+      }),
     );
   }
 
@@ -173,11 +177,11 @@ export class ApiService {
     setNumberParam('visitasMensualesMax', filtros.visitasMensualesMax ?? null);
     setNumberParam(
       'visitasEmergenciaMin',
-      filtros.visitasEmergenciaMin ?? null
+      filtros.visitasEmergenciaMin ?? null,
     );
     setNumberParam(
       'visitasEmergenciaMax',
-      filtros.visitasEmergenciaMax ?? null
+      filtros.visitasEmergenciaMax ?? null,
     );
 
     const setBooleanParam = (key: string, value?: boolean | null) => {
@@ -194,7 +198,7 @@ export class ApiService {
       catchError((error: HttpErrorResponse) => {
         console.error('Error al obtener clientes:', error);
         return throwError(() => error);
-      })
+      }),
     );
   }
 
@@ -209,7 +213,7 @@ export class ApiService {
       catchError((error: HttpErrorResponse) => {
         console.error('Error al obtener tÃ©cnicos disponibles:', error);
         return of([] as Tecnico[]);
-      })
+      }),
     );
   }
 
@@ -225,7 +229,7 @@ export class ApiService {
       clienteId?: string;
       tipo?: string;
       buscar?: string;
-    } = {}
+    } = {},
   ): Observable<DocumentoClienteListado> {
     let httpParams = new HttpParams();
 
@@ -253,7 +257,7 @@ export class ApiService {
         catchError((error: HttpErrorResponse) => {
           console.error('Error al obtener documentación de clientes:', error);
           return throwError(() => error);
-        })
+        }),
       );
   }
 
@@ -264,7 +268,7 @@ export class ApiService {
         catchError((error: HttpErrorResponse) => {
           console.error('Error al crear documento de cliente:', error);
           return throwError(() => error);
-        })
+        }),
       );
   }
 
@@ -275,7 +279,7 @@ export class ApiService {
         catchError((error: HttpErrorResponse) => {
           console.error('Error al eliminar documento de cliente:', error);
           return throwError(() => error);
-        })
+        }),
       );
   }
 
@@ -299,7 +303,7 @@ export class ApiService {
       catchError((error: HttpErrorResponse) => {
         console.error('Error en la solicitud GET sin cache:', error);
         return throwError(() => error);
-      })
+      }),
     );
   }
   sucursalesPorCliente(id: string): Observable<any> {
@@ -323,7 +327,7 @@ export class ApiService {
         catchError((error: HttpErrorResponse) => {
           console.error('Error en la solicitud POST:', error);
           return throwError(() => error);
-        })
+        }),
       );
     } else {
       // Si no es FormData, usamos el mÃ©todo postInformation normal
@@ -336,7 +340,7 @@ export class ApiService {
     id: string,
     pagina: number,
     option: string,
-    filtros?: EquipoFiltros
+    filtros?: EquipoFiltros,
   ): Observable<any> {
     let params = new HttpParams()
       .set('pagina', String(pagina))
@@ -394,7 +398,7 @@ export class ApiService {
       if (typeof conRegistroFotografico === 'boolean') {
         params = params.set(
           'conRegistroFotografico',
-          String(conRegistroFotografico)
+          String(conRegistroFotografico),
         );
       }
     }
@@ -403,7 +407,7 @@ export class ApiService {
       catchError((error: HttpErrorResponse) => {
         console.error('Error en la solicitud GET:', error);
         return throwError(() => error);
-      })
+      }),
     );
   }
 
@@ -451,7 +455,7 @@ export class ApiService {
 
   updateEquipmentType(
     id: number,
-    payload: { name?: string; dict?: string; campoIds?: number[] }
+    payload: { name?: string; dict?: string; campoIds?: number[] },
   ): Observable<TipoEquipo> {
     const endpoint = `tipos-equipos/${id}`;
     return this.putInformation(payload, endpoint);
@@ -469,7 +473,7 @@ export class ApiService {
 
   updateEquipmentTypeFields(
     tipoEquipoId: number,
-    campoIds: number[]
+    campoIds: number[],
   ): Observable<Campo[]> {
     const endpoint = `tipos-equipos/${tipoEquipoId}/campos`;
     return this.putInformation({ campoIds }, endpoint);
@@ -503,7 +507,7 @@ export class ApiService {
       required: boolean;
       presetOptions: CampoPresetOption[];
       standards: CampoStandard[];
-    }>
+    }>,
   ): Observable<Campo> {
     const endpoint = `campos/${id}`;
     return this.putInformation(payload, endpoint);
@@ -528,7 +532,7 @@ export class ApiService {
 
   updateDepartamentoEquipo(
     id: number,
-    payload: { name: string }
+    payload: { name: string },
   ): Observable<DepartamentoEquipo> {
     const endpoint = `departamentos-equipos/${id}`;
     return this.putInformation(payload, endpoint);
@@ -560,7 +564,7 @@ export class ApiService {
         }
 
         return [] as Equipo[];
-      })
+      }),
     );
   }
 
@@ -578,14 +582,14 @@ export class ApiService {
       catchError((error) => {
         console.error('Error al obtener detalle del cliente:', error);
         return of(null);
-      })
+      }),
     );
 
     const equipos$ = this.equipmentsByCasaMatriz(id).pipe(
       catchError((error) => {
         console.error('Error al obtener equipos del cliente:', error);
         return of([] as Equipo[]);
-      })
+      }),
     );
 
     return forkJoin({ detalle: detalle$, equipos: equipos$ }).pipe(
@@ -622,9 +626,10 @@ export class ApiService {
                   : undefined;
               return {
                 ...sucursal,
-                equiposCount: existente !== undefined ? existente : conteo ?? 0,
+                equiposCount:
+                  existente !== undefined ? existente : (conteo ?? 0),
               };
-            }
+            },
           );
         }
 
@@ -639,7 +644,7 @@ export class ApiService {
       catchError((error) => {
         console.error('Error al consolidar la informacion de equipos:', error);
         return of({ cliente: null, equipos: [] });
-      })
+      }),
     );
   }
 
@@ -678,8 +683,8 @@ export class ApiService {
     const listadoAlternativo = Array.isArray(cliente?.Equipos)
       ? cliente.Equipos
       : Array.isArray(cliente?.equipos)
-      ? cliente.equipos
-      : [];
+        ? cliente.equipos
+        : [];
 
     listadoAlternativo.forEach((equipo: Equipo) => {
       const key = this.normalizarClaveEquipo(equipo);
@@ -692,7 +697,7 @@ export class ApiService {
   }
 
   private unificarEquiposListas(
-    listados: Array<Equipo[] | null | undefined>
+    listados: Array<Equipo[] | null | undefined>,
   ): Equipo[] {
     const mapa = new Map<string, Equipo>();
 
@@ -732,7 +737,7 @@ export class ApiService {
   }
 
   private normalizarClaveEquipo(
-    equipo: Equipo | null | undefined
+    equipo: Equipo | null | undefined,
   ): string | null {
     if (!equipo) {
       return null;
@@ -847,7 +852,7 @@ export class ApiService {
   }
 
   notificacionesListado(
-    params: { soloNoLeidas?: boolean; limite?: number } = {}
+    params: { soloNoLeidas?: boolean; limite?: number } = {},
   ): Observable<NotificacionListadoRespuesta> {
     let httpParams = new HttpParams();
     if (params.soloNoLeidas) {
@@ -865,24 +870,23 @@ export class ApiService {
         catchError((error: HttpErrorResponse) => {
           console.error('Error al obtener notificaciones:', error);
           return throwError(() => error);
-        })
+        }),
       );
   }
 
   marcarNotificacionesLeidas(
-    ids: number[]
+    ids: number[],
   ): Observable<{ actualizadas: number }> {
     const payload = Array.isArray(ids) && ids.length ? { ids } : { ids: [] };
     return this.http
-      .patch<{ actualizadas: number }>(
-        `${this.url}/notificaciones/leidas`,
-        payload
-      )
+      .patch<{
+        actualizadas: number;
+      }>(`${this.url}/notificaciones/leidas`, payload)
       .pipe(
         catchError((error: HttpErrorResponse) => {
           console.error('Error al marcar notificaciones como leidas:', error);
           return throwError(() => error);
-        })
+        }),
       );
   }
 
@@ -895,15 +899,15 @@ export class ApiService {
         catchError((error: HttpErrorResponse) => {
           console.error(
             'Error al marcar todas las notificaciones como leidas:',
-            error
+            error,
           );
           return throwError(() => error);
-        })
+        }),
       );
   }
 
   getProyectos(
-    params: { pagina?: number; limite?: number; buscar?: string } = {}
+    params: { pagina?: number; limite?: number; buscar?: string } = {},
   ): Observable<any> {
     let httpParams = new HttpParams();
     if (params.pagina) {
@@ -922,7 +926,7 @@ export class ApiService {
         catchError((error: HttpErrorResponse) => {
           console.error('Error al obtener proyectos:', error);
           return throwError(() => error);
-        })
+        }),
       );
   }
 
@@ -931,7 +935,7 @@ export class ApiService {
       catchError((error: HttpErrorResponse) => {
         console.error('Error al obtener el proyecto:', error);
         return throwError(() => error);
-      })
+      }),
     );
   }
 
@@ -972,7 +976,7 @@ export class ApiService {
 
   // Vehículos
   getVehiculos(
-    params: { pagina?: number; limite?: number; buscar?: string } = {}
+    params: { pagina?: number; limite?: number; buscar?: string } = {},
   ): Observable<VehiculoListadoResponse> {
     let httpParams = new HttpParams();
     if (params.pagina) {
@@ -993,7 +997,7 @@ export class ApiService {
         catchError((error: HttpErrorResponse) => {
           console.error('Error al obtener vehículos:', error);
           return throwError(() => error);
-        })
+        }),
       );
   }
 
@@ -1002,7 +1006,7 @@ export class ApiService {
       catchError((error: HttpErrorResponse) => {
         console.error('Error al obtener el vehículo:', error);
         return throwError(() => error);
-      })
+      }),
     );
   }
 
@@ -1011,19 +1015,19 @@ export class ApiService {
       catchError((error: HttpErrorResponse) => {
         console.error('Error al crear vehículo:', error);
         return throwError(() => error);
-      })
+      }),
     );
   }
 
   actualizarVehiculo(
     id: number,
-    payload: FormData | any
+    payload: FormData | any,
   ): Observable<Vehiculo> {
     return this.http.put<Vehiculo>(`${this.url}/vehiculos/${id}`, payload).pipe(
       catchError((error: HttpErrorResponse) => {
         console.error('Error al actualizar vehículo:', error);
         return throwError(() => error);
-      })
+      }),
     );
   }
 
@@ -1032,48 +1036,48 @@ export class ApiService {
       catchError((error: HttpErrorResponse) => {
         console.error('Error al eliminar vehículo:', error);
         return throwError(() => error);
-      })
+      }),
     );
   }
 
   crearVehiculoSalida(
     vehiculoId: number,
-    payload: FormData | any
+    payload: FormData | any,
   ): Observable<VehiculoSalida> {
     return this.http
       .post<VehiculoSalida>(
         `${this.url}/vehiculos/${vehiculoId}/salidas`,
-        payload
+        payload,
       )
       .pipe(
         catchError((error: HttpErrorResponse) => {
           console.error('Error al registrar salida:', error);
           return throwError(() => error);
-        })
+        }),
       );
   }
 
   actualizarVehiculoSalida(
     vehiculoId: number,
     salidaId: number,
-    payload: FormData | any
+    payload: FormData | any,
   ): Observable<VehiculoSalida> {
     return this.http
       .put<VehiculoSalida>(
         `${this.url}/vehiculos/${vehiculoId}/salidas/${salidaId}`,
-        payload
+        payload,
       )
       .pipe(
         catchError((error: HttpErrorResponse) => {
           console.error('Error al actualizar salida:', error);
           return throwError(() => error);
-        })
+        }),
       );
   }
 
   eliminarVehiculoSalida(
     vehiculoId: number,
-    salidaId: number
+    salidaId: number,
   ): Observable<any> {
     return this.http
       .delete<any>(`${this.url}/vehiculos/${vehiculoId}/salidas/${salidaId}`)
@@ -1081,24 +1085,24 @@ export class ApiService {
         catchError((error: HttpErrorResponse) => {
           console.error('Error al eliminar salida:', error);
           return throwError(() => error);
-        })
+        }),
       );
   }
 
   eliminarVehiculoSalidaAdjunto(
     vehiculoId: number,
     salidaId: number,
-    adjuntoId: number
+    adjuntoId: number,
   ): Observable<any> {
     return this.http
       .delete<any>(
-        `${this.url}/vehiculos/${vehiculoId}/salidas/${salidaId}/adjuntos/${adjuntoId}`
+        `${this.url}/vehiculos/${vehiculoId}/salidas/${salidaId}/adjuntos/${adjuntoId}`,
       )
       .pipe(
         catchError((error: HttpErrorResponse) => {
           console.error('Error al eliminar adjunto de salida:', error);
           return throwError(() => error);
-        })
+        }),
       );
   }
 
@@ -1121,7 +1125,7 @@ export class ApiService {
       catchError((error: HttpErrorResponse) => {
         console.error('Error al actualizar estado del equipo:', error);
         return throwError(() => error);
-      })
+      }),
     );
   }
 
@@ -1131,7 +1135,7 @@ export class ApiService {
       const endpoint = 'estados-sucursales';
       this.estadosSucursalCache$ = this.getInformation(endpoint).pipe(
         map((respuesta) => (Array.isArray(respuesta) ? respuesta : [])),
-        shareReplay({ bufferSize: 1, refCount: true })
+        shareReplay({ bufferSize: 1, refCount: true }),
       );
     }
     return this.estadosSucursalCache$;
@@ -1144,7 +1148,7 @@ export class ApiService {
       catchError((error: HttpErrorResponse) => {
         console.error('Error al actualizar estado de la sucursal:', error);
         return throwError(() => error);
-      })
+      }),
     );
   }
 
@@ -1155,7 +1159,7 @@ export class ApiService {
       catchError((error: HttpErrorResponse) => {
         console.error('Error en la solicitud GET:', error);
         return throwError(() => error);
-      })
+      }),
     );
   }
 
@@ -1165,7 +1169,7 @@ export class ApiService {
       catchError((error: HttpErrorResponse) => {
         console.error('Error en la solicitud POST:', error);
         return throwError(() => error);
-      })
+      }),
     );
   }
 
@@ -1175,7 +1179,7 @@ export class ApiService {
       catchError((error: HttpErrorResponse) => {
         console.error('Error en la solicitud PUT:', error);
         return throwError(() => error);
-      })
+      }),
     );
   }
 
@@ -1185,7 +1189,7 @@ export class ApiService {
       catchError((error: HttpErrorResponse) => {
         console.error('Error en la solicitud DELETE:', error);
         return throwError(() => error);
-      })
+      }),
     );
   }
 
@@ -1200,13 +1204,13 @@ export class ApiService {
   // Verificar si correo electronico existe en la cuenta
   verificarCorreoExistente(correo: string): Observable<boolean> {
     return this.http
-      .get<{ isTaken: boolean }>(
-        `${this.url}/verificar-correo?correo=${correo}`
-      )
+      .get<{
+        isTaken: boolean;
+      }>(`${this.url}/verificar-correo?correo=${correo}`)
       .pipe(
         map((response) => {
           return response.isTaken;
-        })
+        }),
       );
   }
 
@@ -1221,7 +1225,7 @@ export class ApiService {
 
   getTicketTimeline(
     ticketId: number,
-    params: { limite?: number } = {}
+    params: { limite?: number } = {},
   ): Observable<any> {
     let httpParams = new HttpParams();
     if (params.limite) {
@@ -1236,13 +1240,13 @@ export class ApiService {
         catchError((error: HttpErrorResponse) => {
           console.error('Error al obtener timeline del ticket:', error);
           return throwError(() => error);
-        })
+        }),
       );
   }
 
   getTicketMensajes(
     ticketId: number,
-    params: { pagina?: number; limite?: number } = {}
+    params: { pagina?: number; limite?: number } = {},
   ): Observable<any> {
     let httpParams = new HttpParams();
     if (params.pagina) {
@@ -1260,14 +1264,14 @@ export class ApiService {
         catchError((error: HttpErrorResponse) => {
           console.error('Error al obtener mensajes del ticket:', error);
           return throwError(() => error);
-        })
+        }),
       );
   }
 
   enviarMensajeTicket(
     ticketId: number,
     mensaje: string,
-    archivos?: File[]
+    archivos?: File[],
   ): Observable<any> {
     const tieneArchivos = archivos && archivos.length > 0;
 
@@ -1283,7 +1287,7 @@ export class ApiService {
           catchError((error: HttpErrorResponse) => {
             console.error('Error al enviar mensaje:', error);
             return throwError(() => error);
-          })
+          }),
         );
     }
 
@@ -1293,7 +1297,7 @@ export class ApiService {
         catchError((error: HttpErrorResponse) => {
           console.error('Error al enviar mensaje:', error);
           return throwError(() => error);
-        })
+        }),
       );
   }
 
@@ -1304,13 +1308,13 @@ export class ApiService {
         catchError((error: HttpErrorResponse) => {
           console.error('Error al marcar mensajes como leídos:', error);
           return throwError(() => error);
-        })
+        }),
       );
   }
 
   getTicketActividad(
     ticketId: number,
-    params: { pagina?: number; limite?: number } = {}
+    params: { pagina?: number; limite?: number } = {},
   ): Observable<any> {
     let httpParams = new HttpParams();
     if (params.pagina) {
@@ -1328,20 +1332,20 @@ export class ApiService {
         catchError((error: HttpErrorResponse) => {
           console.error('Error al obtener actividad del ticket:', error);
           return throwError(() => error);
-        })
+        }),
       );
   }
 
   getMensajesNoLeidosPorTicket(): Observable<{ data: Record<number, number> }> {
     return this.http
-      .get<{ data: Record<number, number> }>(
-        `${this.url}/tickets/mensajes-no-leidos`
-      )
+      .get<{
+        data: Record<number, number>;
+      }>(`${this.url}/tickets/mensajes-no-leidos`)
       .pipe(
         catchError((error: HttpErrorResponse) => {
           console.error('Error al obtener mensajes no leídos:', error);
           return throwError(() => error);
-        })
+        }),
       );
   }
 
@@ -1354,13 +1358,13 @@ export class ApiService {
       catchError((error: HttpErrorResponse) => {
         console.error('Error al obtener tags del cliente:', error);
         return of([]);
-      })
+      }),
     );
   }
 
   crearTag(
     clienteId: string,
-    tag: { nombre: string; color: string }
+    tag: { nombre: string; color: string },
   ): Observable<any> {
     return this.http
       .post<any>(`${this.url}/clientes/${clienteId}/tags`, tag)
@@ -1368,14 +1372,14 @@ export class ApiService {
         catchError((error: HttpErrorResponse) => {
           console.error('Error al crear tag:', error);
           return throwError(() => error);
-        })
+        }),
       );
   }
 
   actualizarTag(
     clienteId: string,
     tagId: number,
-    tag: { nombre?: string; color?: string }
+    tag: { nombre?: string; color?: string },
   ): Observable<any> {
     return this.http
       .put<any>(`${this.url}/clientes/${clienteId}/tags/${tagId}`, tag)
@@ -1383,7 +1387,7 @@ export class ApiService {
         catchError((error: HttpErrorResponse) => {
           console.error('Error al actualizar tag:', error);
           return throwError(() => error);
-        })
+        }),
       );
   }
 
@@ -1394,7 +1398,120 @@ export class ApiService {
         catchError((error: HttpErrorResponse) => {
           console.error('Error al eliminar tag:', error);
           return throwError(() => error);
-        })
+        }),
+      );
+  }
+
+  // =====================================================
+  // Biblioteca (Base de Conocimiento)
+  // =====================================================
+
+  getBibliotecaProyectos(
+    params: {
+      pagina?: number;
+      limite?: number;
+      buscar?: string;
+      casaMatrizId?: string;
+    } = {},
+  ): Observable<BibliotecaListadoResponse> {
+    let httpParams = new HttpParams();
+
+    if (params.pagina) {
+      httpParams = httpParams.set('pagina', params.pagina.toString());
+    }
+    if (params.limite) {
+      httpParams = httpParams.set('limite', params.limite.toString());
+    }
+    if (params.buscar && params.buscar.trim().length) {
+      httpParams = httpParams.set('buscar', params.buscar.trim());
+    }
+    if (params.casaMatrizId && params.casaMatrizId.trim().length) {
+      httpParams = httpParams.set('casaMatrizId', params.casaMatrizId.trim());
+    }
+
+    return this.http
+      .get<BibliotecaListadoResponse>(`${this.url}/biblioteca`, {
+        params: httpParams,
+      })
+      .pipe(
+        catchError((error: HttpErrorResponse) => {
+          console.error('Error al obtener proyectos de biblioteca:', error);
+          return throwError(() => error);
+        }),
+      );
+  }
+
+  getBibliotecaProyecto(id: number): Observable<BibliotecaProyecto> {
+    return this.http
+      .get<BibliotecaProyecto>(`${this.url}/biblioteca/${id}`)
+      .pipe(
+        catchError((error: HttpErrorResponse) => {
+          console.error('Error al obtener proyecto de biblioteca:', error);
+          return throwError(() => error);
+        }),
+      );
+  }
+
+  crearBibliotecaProyecto(payload: FormData): Observable<BibliotecaProyecto> {
+    return this.http
+      .post<BibliotecaProyecto>(`${this.url}/biblioteca`, payload)
+      .pipe(
+        catchError((error: HttpErrorResponse) => {
+          console.error('Error al crear proyecto de biblioteca:', error);
+          return throwError(() => error);
+        }),
+      );
+  }
+
+  actualizarBibliotecaProyecto(
+    id: number,
+    payload: FormData,
+  ): Observable<BibliotecaProyecto> {
+    return this.http
+      .put<BibliotecaProyecto>(`${this.url}/biblioteca/${id}`, payload)
+      .pipe(
+        catchError((error: HttpErrorResponse) => {
+          console.error('Error al actualizar proyecto de biblioteca:', error);
+          return throwError(() => error);
+        }),
+      );
+  }
+
+  eliminarBibliotecaProyecto(id: number): Observable<{ mensaje: string }> {
+    return this.http
+      .delete<{ mensaje: string }>(`${this.url}/biblioteca/${id}`)
+      .pipe(
+        catchError((error: HttpErrorResponse) => {
+          console.error('Error al eliminar proyecto de biblioteca:', error);
+          return throwError(() => error);
+        }),
+      );
+  }
+
+  agregarAdjuntosBiblioteca(id: number, payload: FormData): Observable<any> {
+    return this.http
+      .post<any>(`${this.url}/biblioteca/${id}/adjuntos`, payload)
+      .pipe(
+        catchError((error: HttpErrorResponse) => {
+          console.error('Error al agregar adjuntos de biblioteca:', error);
+          return throwError(() => error);
+        }),
+      );
+  }
+
+  eliminarAdjuntoBiblioteca(
+    proyectoId: number,
+    adjuntoId: number,
+  ): Observable<{ mensaje: string }> {
+    return this.http
+      .delete<{
+        mensaje: string;
+      }>(`${this.url}/biblioteca/${proyectoId}/adjuntos/${adjuntoId}`)
+      .pipe(
+        catchError((error: HttpErrorResponse) => {
+          console.error('Error al eliminar adjunto de biblioteca:', error);
+          return throwError(() => error);
+        }),
       );
   }
 }

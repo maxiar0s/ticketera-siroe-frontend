@@ -1,0 +1,1113 @@
+<div class="biblioteca-layout">
+  <!-- Sidebar con lista de proyectos -->
+  <aside class="biblioteca-sidebar">
+    <div class="sidebar-header">
+      <h2>Biblioteca</h2>
+      <button class="primary-button small" (click)="abrirModalCrear()">
+        Nuevo Proyecto
+      </button>
+    </div>
+
+    <!-- Búsqueda -->
+    <div class="search-container">
+      <input
+        type="text"
+        class="search-input"
+        placeholder="Buscar proyecto..."
+        [(ngModel)]="proyectosBuscar"
+        (keyup.enter)="buscar()"
+      />
+      @if (proyectosBuscar) {
+        <button class="clear-search" (click)="limpiarBusqueda()">×</button>
+      }
+    </div>
+
+    <!-- Lista de proyectos -->
+    <div class="proyectos-lista">
+      @if (proyectosCargando) {
+        <div class="loading-indicator">
+          <div class="spinner-section spinner-size-section"></div>
+        </div>
+      } @else if (proyectos.length === 0) {
+        <div class="empty-state">
+          <p>No hay proyectos en la biblioteca</p>
+        </div>
+      } @else {
+        @for (proyecto of proyectos; track proyecto.id) {
+          <div
+            class="proyecto-card"
+            [class.selected]="selectedProyecto?.id === proyecto.id"
+            (click)="seleccionarProyecto(proyecto)"
+          >
+            <div class="proyecto-card-header">
+              <h3 class="proyecto-nombre">{{ proyecto.nombre }}</h3>
+              @if (proyecto.casaMatriz) {
+                <span class="proyecto-cliente">{{
+                  proyecto.casaMatriz.razonSocial
+                }}</span>
+              }
+            </div>
+            @if (proyecto.tecnologias && proyecto.tecnologias.length > 0) {
+              <div class="tecnologias-chips">
+                @for (tech of proyecto.tecnologias.slice(0, 3); track tech) {
+                  <span class="tech-chip">{{ tech }}</span>
+                }
+                @if (proyecto.tecnologias.length > 3) {
+                  <span class="tech-chip more"
+                    >+{{ proyecto.tecnologias.length - 3 }}</span
+                  >
+                }
+              </div>
+            }
+          </div>
+        }
+      }
+    </div>
+
+    <!-- Paginación -->
+    @if (proyectosPaginasTotales > 1) {
+      <div class="paginacion">
+        <button
+          class="ghost-button small"
+          [disabled]="proyectosPagina === 1"
+          (click)="paginaAnterior()"
+        >
+          ← Anterior
+        </button>
+        <span class="pagina-info"
+          >{{ proyectosPagina }} / {{ proyectosPaginasTotales }}</span
+        >
+        <button
+          class="ghost-button small"
+          [disabled]="proyectosPagina === proyectosPaginasTotales"
+          (click)="paginaSiguiente()"
+        >
+          Siguiente →
+        </button>
+      </div>
+    }
+  </aside>
+
+  <!-- Panel de detalle -->
+  <main class="biblioteca-main">
+    @if (!selectedProyecto) {
+      <div class="no-selection">
+        <div class="no-selection-content">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="64"
+            height="64"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+            <path
+              d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"
+            />
+          </svg>
+          <h3>Base de Conocimiento</h3>
+          <p>Selecciona un proyecto de la lista para ver su documentación</p>
+        </div>
+      </div>
+    } @else {
+      <div class="detalle-container">
+        <!-- Header del detalle -->
+        <div class="detalle-header">
+          <div class="detalle-titulo">
+            <h1>{{ selectedProyecto.nombre }}</h1>
+            @if (selectedProyecto.casaMatriz) {
+              <span class="cliente-badge">{{
+                selectedProyecto.casaMatriz.razonSocial
+              }}</span>
+            }
+          </div>
+          <div class="detalle-acciones">
+            <button
+              class="ghost-button small"
+              (click)="abrirModalEditar(selectedProyecto)"
+            >
+              Editar
+            </button>
+            @if (esAdmin()) {
+              <button
+                class="ghost-button small danger"
+                (click)="eliminarProyecto(selectedProyecto)"
+              >
+                Eliminar
+              </button>
+            }
+            <button class="ghost-button small" (click)="cerrarDetalle()">
+              Cerrar
+            </button>
+          </div>
+        </div>
+
+        <!-- Tabs -->
+        <div class="detalle-tabs">
+          <button
+            class="tab-button"
+            [class.active]="tabActiva === 'general'"
+            (click)="tabActiva = 'general'"
+          >
+            General
+          </button>
+          <button
+            class="tab-button"
+            [class.active]="tabActiva === 'repo'"
+            (click)="tabActiva = 'repo'"
+          >
+            Repositorio
+          </button>
+          <button
+            class="tab-button"
+            [class.active]="tabActiva === 'env'"
+            (click)="tabActiva = 'env'"
+          >
+            .ENV
+          </button>
+          <button
+            class="tab-button"
+            [class.active]="tabActiva === 'instalacion'"
+            (click)="tabActiva = 'instalacion'"
+          >
+            Instalación
+          </button>
+          <button
+            class="tab-button"
+            [class.active]="tabActiva === 'produccion'"
+            (click)="tabActiva = 'produccion'"
+          >
+            Producción
+          </button>
+          <button
+            class="tab-button"
+            [class.active]="tabActiva === 'manual'"
+            (click)="tabActiva = 'manual'"
+          >
+            Manual
+          </button>
+          <button
+            class="tab-button"
+            [class.active]="tabActiva === 'credenciales'"
+            (click)="tabActiva = 'credenciales'"
+          >
+            Credenciales
+          </button>
+          <button
+            class="tab-button"
+            [class.active]="tabActiva === 'notas'"
+            (click)="tabActiva = 'notas'"
+          >
+            Notas
+          </button>
+          <button
+            class="tab-button"
+            [class.active]="tabActiva === 'adjuntos'"
+            (click)="tabActiva = 'adjuntos'"
+          >
+            Adjuntos Generales ({{ getAdjuntosPorSeccion("general").length }})
+          </button>
+        </div>
+
+        <!-- Contenido de tabs -->
+        <div class="detalle-contenido">
+          @switch (tabActiva) {
+            @case ("general") {
+              <div class="tab-panel">
+                <div class="info-section">
+                  <h4>Descripción</h4>
+                  <p class="descripcion-texto">
+                    {{ selectedProyecto.descripcion || "Sin descripción" }}
+                  </p>
+                </div>
+
+                @if (
+                  selectedProyecto.tecnologias &&
+                  selectedProyecto.tecnologias.length > 0
+                ) {
+                  <div class="info-section">
+                    <h4>Tecnologías</h4>
+                    <div class="tecnologias-list">
+                      @for (tech of selectedProyecto.tecnologias; track tech) {
+                        <span class="tech-chip large">{{ tech }}</span>
+                      }
+                    </div>
+                  </div>
+                }
+
+                <div class="info-section meta-info">
+                  <div class="meta-item">
+                    <span class="meta-label">Creado por:</span>
+                    <span class="meta-value">{{
+                      selectedProyecto.creadoPor?.name || "Desconocido"
+                    }}</span>
+                  </div>
+                  <div class="meta-item">
+                    <span class="meta-label">Última actualización:</span>
+                    <span class="meta-value">{{
+                      selectedProyecto.updatedAt | date: "dd/MM/yyyy HH:mm"
+                    }}</span>
+                  </div>
+                </div>
+              </div>
+            }
+
+            @case ("repo") {
+              <div class="tab-panel">
+                <div class="info-section">
+                  <h4>Link al Repositorio</h4>
+                  @if (selectedProyecto.linkRepositorio) {
+                    <div class="link-container">
+                      <a
+                        [href]="selectedProyecto.linkRepositorio"
+                        target="_blank"
+                        class="repo-link"
+                      >
+                        {{ selectedProyecto.linkRepositorio }}
+                      </a>
+                      <button
+                        class="copy-button"
+                        (click)="
+                          copiarAlPortapapeles(selectedProyecto.linkRepositorio)
+                        "
+                        title="Copiar link"
+                      >
+                        📋
+                      </button>
+                    </div>
+                  } @else {
+                    <p class="empty-content">
+                      No hay link de repositorio configurado
+                    </p>
+                  }
+                </div>
+              </div>
+            }
+
+            @case ("env") {
+              <div class="tab-panel">
+                <div class="info-section">
+                  <div class="env-header">
+                    <h4>Variables de Entorno</h4>
+                    <button
+                      class="ghost-button small"
+                      (click)="toggleEnvVariables()"
+                    >
+                      {{ mostrarEnvVariables ? "Ocultar" : "Mostrar" }}
+                    </button>
+                  </div>
+                  @if (selectedProyecto.envVariables) {
+                    <div
+                      class="env-container"
+                      [class.hidden]="!mostrarEnvVariables"
+                    >
+                      <pre class="code-block">{{
+                        selectedProyecto.envVariables
+                      }}</pre>
+                      <button
+                        class="copy-button floating"
+                        (click)="
+                          copiarAlPortapapeles(selectedProyecto.envVariables)
+                        "
+                        title="Copiar .env"
+                      >
+                        📋 Copiar
+                      </button>
+                    </div>
+                    @if (!mostrarEnvVariables) {
+                      <p class="security-notice">
+                        🔒 Contenido oculto por seguridad. Haz clic en "Mostrar"
+                        para ver las variables.
+                      </p>
+                    }
+                  } @else {
+                    <p class="empty-content">
+                      No hay variables de entorno configuradas
+                    </p>
+                  }
+
+                  <!-- Adjuntos Env -->
+                  @if (getAdjuntosPorSeccion("env").length > 0) {
+                    <div
+                      style="
+                        margin-top: 1.5rem;
+                        padding-top: 1.5rem;
+                        border-top: 1px solid var(--color-border);
+                      "
+                    >
+                      <h4>Archivos Adjuntos (.env)</h4>
+                      <div class="adjuntos-grid">
+                        @for (
+                          adjunto of getAdjuntosPorSeccion("env");
+                          track adjunto.id
+                        ) {
+                          <div class="adjunto-card">
+                            <div class="adjunto-info">
+                              <span class="adjunto-nombre">{{
+                                adjunto.nombreArchivo
+                              }}</span>
+                              <span class="adjunto-meta">{{
+                                adjunto.createdAt | date: "dd/MM/yyyy"
+                              }}</span>
+                            </div>
+                            <div class="adjunto-acciones">
+                              <button
+                                class="ghost-button small"
+                                (click)="abrirAdjunto(adjunto)"
+                              >
+                                Abrir
+                              </button>
+                              @if (esAdmin()) {
+                                <button
+                                  class="ghost-button small danger"
+                                  (click)="eliminarAdjunto(adjunto)"
+                                >
+                                  ×
+                                </button>
+                              }
+                            </div>
+                          </div>
+                        }
+                      </div>
+                    </div>
+                  }
+                </div>
+              </div>
+            }
+
+            @case ("instalacion") {
+              <div class="tab-panel">
+                <div class="info-section">
+                  <h4>Instrucciones de Instalación</h4>
+                  @if (selectedProyecto.instruccionesInstalacion) {
+                    <div class="markdown-content">
+                      <pre class="instructions-block">{{
+                        selectedProyecto.instruccionesInstalacion
+                      }}</pre>
+                    </div>
+                  } @else {
+                    <p class="empty-content">
+                      No hay instrucciones de instalación
+                    </p>
+                  }
+
+                  <!-- Adjuntos Instalacion -->
+                  @if (getAdjuntosPorSeccion("instalacion").length > 0) {
+                    <div
+                      style="
+                        margin-top: 1.5rem;
+                        padding-top: 1.5rem;
+                        border-top: 1px solid var(--color-border);
+                      "
+                    >
+                      <h4>Archivos Adjuntos (Instalación)</h4>
+                      <div class="adjuntos-grid">
+                        @for (
+                          adjunto of getAdjuntosPorSeccion("instalacion");
+                          track adjunto.id
+                        ) {
+                          <div class="adjunto-card">
+                            <div class="adjunto-info">
+                              <span class="adjunto-nombre">{{
+                                adjunto.nombreArchivo
+                              }}</span>
+                              <span class="adjunto-meta">{{
+                                adjunto.createdAt | date: "dd/MM/yyyy"
+                              }}</span>
+                            </div>
+                            <div class="adjunto-acciones">
+                              <button
+                                class="ghost-button small"
+                                (click)="abrirAdjunto(adjunto)"
+                              >
+                                Abrir
+                              </button>
+                              @if (esAdmin()) {
+                                <button
+                                  class="ghost-button small danger"
+                                  (click)="eliminarAdjunto(adjunto)"
+                                >
+                                  ×
+                                </button>
+                              }
+                            </div>
+                          </div>
+                        }
+                      </div>
+                    </div>
+                  }
+                </div>
+              </div>
+            }
+
+            @case ("produccion") {
+              <div class="tab-panel">
+                <div class="info-section">
+                  <h4>Instrucciones de Paso a Producción</h4>
+                  @if (selectedProyecto.instruccionesProd) {
+                    <div class="markdown-content">
+                      <pre class="instructions-block">{{
+                        selectedProyecto.instruccionesProd
+                      }}</pre>
+                    </div>
+                  } @else {
+                    <p class="empty-content">
+                      No hay instrucciones de producción
+                    </p>
+                  }
+
+                  <!-- Adjuntos Producción -->
+                  @if (getAdjuntosPorSeccion("produccion").length > 0) {
+                    <div
+                      style="
+                        margin-top: 1.5rem;
+                        padding-top: 1.5rem;
+                        border-top: 1px solid var(--color-border);
+                      "
+                    >
+                      <h4>Archivos Adjuntos (Producción)</h4>
+                      <div class="adjuntos-grid">
+                        @for (
+                          adjunto of getAdjuntosPorSeccion("produccion");
+                          track adjunto.id
+                        ) {
+                          <div class="adjunto-card">
+                            <div class="adjunto-info">
+                              <span class="adjunto-nombre">{{
+                                adjunto.nombreArchivo
+                              }}</span>
+                              <span class="adjunto-meta">{{
+                                adjunto.createdAt | date: "dd/MM/yyyy"
+                              }}</span>
+                            </div>
+                            <div class="adjunto-acciones">
+                              <button
+                                class="ghost-button small"
+                                (click)="abrirAdjunto(adjunto)"
+                              >
+                                Abrir
+                              </button>
+                              @if (esAdmin()) {
+                                <button
+                                  class="ghost-button small danger"
+                                  (click)="eliminarAdjunto(adjunto)"
+                                >
+                                  ×
+                                </button>
+                              }
+                            </div>
+                          </div>
+                        }
+                      </div>
+                    </div>
+                  }
+                </div>
+              </div>
+            }
+
+            @case ("manual") {
+              <div class="tab-panel">
+                <div class="info-section">
+                  <h4>Manual de Usuario</h4>
+                  @if (selectedProyecto.manualUsuario) {
+                    <div class="markdown-content">
+                      <pre class="instructions-block">{{
+                        selectedProyecto.manualUsuario
+                      }}</pre>
+                    </div>
+                  } @else {
+                    <p class="empty-content">No hay manual de usuario</p>
+                  }
+
+                  <!-- Adjuntos Manual -->
+                  @if (getAdjuntosPorSeccion("manual").length > 0) {
+                    <div
+                      style="
+                        margin-top: 1.5rem;
+                        padding-top: 1.5rem;
+                        border-top: 1px solid var(--color-border);
+                      "
+                    >
+                      <h4>Archivos Adjuntos (Manual)</h4>
+                      <div class="adjuntos-grid">
+                        @for (
+                          adjunto of getAdjuntosPorSeccion("manual");
+                          track adjunto.id
+                        ) {
+                          <div class="adjunto-card">
+                            <div class="adjunto-info">
+                              <span class="adjunto-nombre">{{
+                                adjunto.nombreArchivo
+                              }}</span>
+                              <span class="adjunto-meta">{{
+                                adjunto.createdAt | date: "dd/MM/yyyy"
+                              }}</span>
+                            </div>
+                            <div class="adjunto-acciones">
+                              <button
+                                class="ghost-button small"
+                                (click)="abrirAdjunto(adjunto)"
+                              >
+                                Abrir
+                              </button>
+                              @if (esAdmin()) {
+                                <button
+                                  class="ghost-button small danger"
+                                  (click)="eliminarAdjunto(adjunto)"
+                                >
+                                  ×
+                                </button>
+                              }
+                            </div>
+                          </div>
+                        }
+                      </div>
+                    </div>
+                  }
+                </div>
+              </div>
+            }
+
+            @case ("notas") {
+              <div class="tab-panel">
+                <div class="info-section">
+                  <h4>Notas Técnicas</h4>
+                  @if (selectedProyecto.notasTecnicas) {
+                    <div class="markdown-content">
+                      <pre class="instructions-block">{{
+                        selectedProyecto.notasTecnicas
+                      }}</pre>
+                    </div>
+                  } @else {
+                    <p class="empty-content">No hay notas técnicas</p>
+                  }
+                </div>
+              </div>
+            }
+
+            @case ("credenciales") {
+              <div class="tab-panel">
+                <div class="info-section">
+                  <div class="env-header">
+                    <h4>Credenciales y Accesos</h4>
+                    <button
+                      class="ghost-button small"
+                      (click)="toggleEnvVariables()"
+                    >
+                      {{ mostrarEnvVariables ? "Ocultar" : "Mostrar" }}
+                    </button>
+                  </div>
+                  @if (selectedProyecto.credenciales) {
+                    <div
+                      class="env-container"
+                      [class.hidden]="!mostrarEnvVariables"
+                    >
+                      <pre class="code-block">{{
+                        selectedProyecto.credenciales
+                      }}</pre>
+                      <button
+                        class="copy-button floating"
+                        (click)="
+                          copiarAlPortapapeles(selectedProyecto.credenciales)
+                        "
+                        title="Copiar credenciales"
+                      >
+                        📋 Copiar
+                      </button>
+                    </div>
+                    @if (!mostrarEnvVariables) {
+                      <p class="security-notice">
+                        🔒 Contenido oculto por seguridad. Haz clic en "Mostrar"
+                        para ver.
+                      </p>
+                    }
+                  } @else {
+                    <p class="empty-content">No hay credenciales guardadas</p>
+                  }
+
+                  <!-- Adjuntos Credenciales -->
+                  @if (getAdjuntosPorSeccion("credenciales").length > 0) {
+                    <div
+                      style="
+                        margin-top: 1.5rem;
+                        padding-top: 1.5rem;
+                        border-top: 1px solid var(--color-border);
+                      "
+                    >
+                      <h4>Archivos de Credenciales (Keys/Certs)</h4>
+                      <div class="adjuntos-grid">
+                        @for (
+                          adjunto of getAdjuntosPorSeccion("credenciales");
+                          track adjunto.id
+                        ) {
+                          <div class="adjunto-card">
+                            <div class="adjunto-info">
+                              <span class="adjunto-nombre">{{
+                                adjunto.nombreArchivo
+                              }}</span>
+                              <span class="adjunto-meta">{{
+                                adjunto.createdAt | date: "dd/MM/yyyy"
+                              }}</span>
+                            </div>
+                            <div class="adjunto-acciones">
+                              <button
+                                class="ghost-button small"
+                                (click)="abrirAdjunto(adjunto)"
+                              >
+                                Abrir
+                              </button>
+                              @if (esAdmin()) {
+                                <button
+                                  class="ghost-button small danger"
+                                  (click)="eliminarAdjunto(adjunto)"
+                                >
+                                  ×
+                                </button>
+                              }
+                            </div>
+                          </div>
+                        }
+                      </div>
+                    </div>
+                  }
+                </div>
+              </div>
+            }
+
+            @case ("adjuntos") {
+              <div class="tab-panel">
+                <div class="info-section">
+                  <h4>Archivos Adjuntos Generales</h4>
+                  @if (getAdjuntosPorSeccion("general").length > 0) {
+                    <div class="adjuntos-grid">
+                      @for (
+                        adjunto of getAdjuntosPorSeccion("general");
+                        track adjunto.id
+                      ) {
+                        <div class="adjunto-card">
+                          <div class="adjunto-info">
+                            <span class="adjunto-nombre">{{
+                              adjunto.nombreArchivo || "Archivo"
+                            }}</span>
+                            <span class="adjunto-meta">{{
+                              adjunto.createdAt | date: "dd/MM/yyyy"
+                            }}</span>
+                          </div>
+                          <div class="adjunto-acciones">
+                            <button
+                              class="ghost-button small"
+                              (click)="abrirAdjunto(adjunto)"
+                            >
+                              Abrir
+                            </button>
+                            @if (esAdmin()) {
+                              <button
+                                class="ghost-button small danger"
+                                (click)="eliminarAdjunto(adjunto)"
+                              >
+                                ×
+                              </button>
+                            }
+                          </div>
+                        </div>
+                      }
+                    </div>
+                  } @else {
+                    <p class="empty-content">
+                      No hay archivos adjuntos generales
+                    </p>
+                  }
+                </div>
+              </div>
+            }
+          }
+        </div>
+      </div>
+    }
+  </main>
+</div>
+
+<!-- Modal de Crear/Editar -->
+@if (modalAbierto) {
+  <div class="modal-overlay" (click)="cerrarModal()">
+    <div class="modal-container" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h2 class="header-form">
+          {{ modoEdicion ? "Editar Proyecto" : "Nuevo Proyecto" }}
+        </h2>
+        <img
+          class="close-button"
+          src="assets/icons/close_w.svg"
+          alt="Cerrar"
+          (click)="cerrarModal()"
+        />
+      </div>
+
+      <div class="modal-body">
+        <form [formGroup]="bibliotecaForm" (ngSubmit)="guardarProyecto()">
+          <div class="form-grid">
+            <!-- Nombre -->
+            <div class="form-group full-width">
+              <label for="nombre">Nombre del Proyecto *</label>
+              <input
+                type="text"
+                id="nombre"
+                formControlName="nombre"
+                placeholder="Ej: Sistema de Tickets"
+              />
+            </div>
+
+            <!-- Cliente -->
+            <div class="form-group">
+              <label for="casaMatrizId">Cliente *</label>
+              <select id="casaMatrizId" formControlName="casaMatrizId">
+                <option value="">Seleccionar cliente...</option>
+                @for (cliente of clientes; track cliente.id) {
+                  <option [value]="cliente.id">
+                    {{ cliente.razonSocial }}
+                  </option>
+                }
+              </select>
+            </div>
+
+            <!-- Tecnologías -->
+            <div class="form-group">
+              <label for="tecnologias">Tecnologías (separadas por coma)</label>
+              <input
+                type="text"
+                id="tecnologias"
+                formControlName="tecnologias"
+                placeholder="Angular, Node.js, PostgreSQL"
+              />
+            </div>
+
+            <!-- Descripción -->
+            <div class="form-group full-width">
+              <label for="descripcion">Descripción</label>
+              <textarea
+                id="descripcion"
+                formControlName="descripcion"
+                rows="3"
+                placeholder="Descripción general del proyecto..."
+              ></textarea>
+            </div>
+
+            <!-- Link Repositorio -->
+            <div class="form-group full-width">
+              <label for="linkRepositorio">Link al Repositorio</label>
+              <input
+                type="url"
+                id="linkRepositorio"
+                formControlName="linkRepositorio"
+                placeholder="https://github.com/usuario/repo"
+              />
+            </div>
+
+            <!-- Variables de Entorno -->
+            <div class="form-group full-width">
+              <label for="envVariables">Variables de Entorno (.env)</label>
+              <textarea
+                id="envVariables"
+                formControlName="envVariables"
+                rows="6"
+                placeholder="DB_HOST=localhost&#10;DB_USER=admin&#10;DB_PASS=secreto"
+                class="code-textarea"
+              ></textarea>
+              <div class="file-upload-field">
+                <div class="file-top-row">
+                  <span class="file-hint">Adjuntar .env o configuración</span>
+                  <label class="file-button">
+                    Adjuntar
+                    <input
+                      type="file"
+                      multiple
+                      (change)="onArchivoSeleccionado($event, 'env')"
+                    />
+                  </label>
+                </div>
+                @if (selectedFilesEnv.length > 0) {
+                  <div class="selected-files-list">
+                    @for (
+                      file of selectedFilesEnv;
+                      track file.name;
+                      let i = $index
+                    ) {
+                      <div class="selected-file-item">
+                        <span class="file-name">{{ file.name }}</span>
+                        <button
+                          type="button"
+                          class="remove-file-btn"
+                          (click)="removerArchivoNuevo(i, 'env')"
+                        >
+                          ×
+                        </button>
+                      </div>
+                    }
+                  </div>
+                }
+              </div>
+            </div>
+
+            <!-- Credenciales -->
+            <div class="form-group full-width">
+              <label for="credenciales">Credenciales y Accesos</label>
+              <textarea
+                id="credenciales"
+                formControlName="credenciales"
+                rows="4"
+                placeholder="Usuario: admin&#10;Pass: 123456&#10;Token: abc-def"
+                class="code-textarea"
+              ></textarea>
+              <div class="file-upload-field">
+                <div class="file-top-row">
+                  <span class="file-hint">Adjuntar llaves o certificados</span>
+                  <label class="file-button">
+                    Adjuntar
+                    <input
+                      type="file"
+                      multiple
+                      (change)="onArchivoSeleccionado($event, 'credenciales')"
+                    />
+                  </label>
+                </div>
+                @if (selectedFilesCredenciales.length > 0) {
+                  <div class="selected-files-list">
+                    @for (
+                      file of selectedFilesCredenciales;
+                      track file.name;
+                      let i = $index
+                    ) {
+                      <div class="selected-file-item">
+                        <span class="file-name">{{ file.name }}</span>
+                        <button
+                          type="button"
+                          class="remove-file-btn"
+                          (click)="removerArchivoNuevo(i, 'credenciales')"
+                        >
+                          ×
+                        </button>
+                      </div>
+                    }
+                  </div>
+                }
+              </div>
+            </div>
+
+            <!-- Instrucciones de Instalación -->
+            <div class="form-group full-width">
+              <label for="instruccionesInstalacion"
+                >Instrucciones de Instalación</label
+              >
+              <textarea
+                id="instruccionesInstalacion"
+                formControlName="instruccionesInstalacion"
+                rows="6"
+                placeholder="1. Clonar repositorio&#10;2. npm install&#10;3. Configurar .env&#10;..."
+              ></textarea>
+              <div class="file-upload-field">
+                <div class="file-top-row">
+                  <span class="file-hint"
+                    >Adjuntar guías o scrips de instalación</span
+                  >
+                  <label class="file-button">
+                    Adjuntar
+                    <input
+                      type="file"
+                      multiple
+                      (change)="onArchivoSeleccionado($event, 'instalacion')"
+                    />
+                  </label>
+                </div>
+                @if (selectedFilesInstalacion.length > 0) {
+                  <div class="selected-files-list">
+                    @for (
+                      file of selectedFilesInstalacion;
+                      track file.name;
+                      let i = $index
+                    ) {
+                      <div class="selected-file-item">
+                        <span class="file-name">{{ file.name }}</span>
+                        <button
+                          type="button"
+                          class="remove-file-btn"
+                          (click)="removerArchivoNuevo(i, 'instalacion')"
+                        >
+                          ×
+                        </button>
+                      </div>
+                    }
+                  </div>
+                }
+              </div>
+            </div>
+
+            <!-- Instrucciones Producción -->
+            <div class="form-group full-width">
+              <label for="instruccionesProd"
+                >Instrucciones de Paso a Producción</label
+              >
+              <textarea
+                id="instruccionesProd"
+                formControlName="instruccionesProd"
+                rows="6"
+                placeholder="1. Hacer build&#10;2. Subir a servidor&#10;..."
+              ></textarea>
+              <div class="file-upload-field">
+                <div class="file-top-row">
+                  <span class="file-hint"
+                    >Adjuntar documentos de despliegue</span
+                  >
+                  <label class="file-button">
+                    Adjuntar
+                    <input
+                      type="file"
+                      multiple
+                      (change)="onArchivoSeleccionado($event, 'produccion')"
+                    />
+                  </label>
+                </div>
+                @if (selectedFilesProduccion.length > 0) {
+                  <div class="selected-files-list">
+                    @for (
+                      file of selectedFilesProduccion;
+                      track file.name;
+                      let i = $index
+                    ) {
+                      <div class="selected-file-item">
+                        <span class="file-name">{{ file.name }}</span>
+                        <button
+                          type="button"
+                          class="remove-file-btn"
+                          (click)="removerArchivoNuevo(i, 'produccion')"
+                        >
+                          ×
+                        </button>
+                      </div>
+                    }
+                  </div>
+                }
+              </div>
+            </div>
+
+            <!-- Manual de Usuario -->
+            <div class="form-group full-width">
+              <label for="manualUsuario">Manual de Usuario</label>
+              <textarea
+                id="manualUsuario"
+                formControlName="manualUsuario"
+                rows="6"
+                placeholder="Cómo usar la aplicación..."
+              ></textarea>
+              <div class="file-upload-field">
+                <div class="file-top-row">
+                  <span class="file-hint">Adjuntar manuales PDF/Doc</span>
+                  <label class="file-button">
+                    Adjuntar
+                    <input
+                      type="file"
+                      multiple
+                      (change)="onArchivoSeleccionado($event, 'manual')"
+                    />
+                  </label>
+                </div>
+                @if (selectedFilesManual.length > 0) {
+                  <div class="selected-files-list">
+                    @for (
+                      file of selectedFilesManual;
+                      track file.name;
+                      let i = $index
+                    ) {
+                      <div class="selected-file-item">
+                        <span class="file-name">{{ file.name }}</span>
+                        <button
+                          type="button"
+                          class="remove-file-btn"
+                          (click)="removerArchivoNuevo(i, 'manual')"
+                        >
+                          ×
+                        </button>
+                      </div>
+                    }
+                  </div>
+                }
+              </div>
+            </div>
+
+            <!-- Notas Técnicas -->
+            <div class="form-group full-width">
+              <label for="notasTecnicas">Notas Técnicas</label>
+              <textarea
+                id="notasTecnicas"
+                formControlName="notasTecnicas"
+                rows="4"
+                placeholder="Notas adicionales, credenciales, accesos..."
+              ></textarea>
+            </div>
+
+            <!-- Archivos Generales -->
+            <div class="form-group full-width">
+              <label>Adjuntos Generales</label>
+              <div class="file-upload-field">
+                <div class="file-top-row">
+                  <span class="file-hint">Archivos varios</span>
+                  <label class="file-button">
+                    Adjuntar
+                    <input
+                      type="file"
+                      multiple
+                      (change)="onArchivoSeleccionado($event, 'general')"
+                    />
+                  </label>
+                </div>
+                @if (selectedFilesGeneral.length > 0) {
+                  <div class="selected-files-list">
+                    @for (
+                      file of selectedFilesGeneral;
+                      track file.name;
+                      let i = $index
+                    ) {
+                      <div class="selected-file-item">
+                        <span class="file-name">{{ file.name }}</span>
+                        <button
+                          type="button"
+                          class="remove-file-btn"
+                          (click)="removerArchivoNuevo(i, 'general')"
+                        >
+                          ×
+                        </button>
+                      </div>
+                    }
+                  </div>
+                }
+              </div>
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <button type="button" class="ghost-button" (click)="cerrarModal()">
+              Cancelar
+            </button>
+            <button
+              type="submit"
+              class="primary-button"
+              [disabled]="bibliotecaForm.invalid || modalCargando"
+            >
+              @if (modalCargando) {
+                <span
+                  class="spinner-buttons spinner-size-buttons spinner-color"
+                ></span>
+                Guardando...
+              } @else {
+                {{ modoEdicion ? "Actualizar" : "Crear" }}
+              }
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+}

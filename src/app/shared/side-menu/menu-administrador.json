@@ -78,5 +78,13 @@
     "svg": "reportes",
     "subItem": [],
     "isOpen": false
+  },
+  {
+    "id": 11,
+    "nombre": "Biblioteca",
+    "route": "/biblioteca",
+    "svg": "openfolder",
+    "subItem": [],
+    "isOpen": false
   }
 ]
