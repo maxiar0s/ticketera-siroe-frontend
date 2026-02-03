@@ -21,22 +21,16 @@ import { AuthService } from '../../services/auth.service';
 import {
   BibliotecaProyecto,
   BibliotecaAdjunto,
+  BibliotecaCategoria,
 } from '../../interfaces/biblioteca.interface';
 import { ClienteResumen } from '../../interfaces/cliente-resumen.interface';
 
 interface BibliotecaFormulario {
   id: FormControl<number | null>;
   casaMatrizId: FormControl<string>;
+  categoriaId: FormControl<string>;
   nombre: FormControl<string>;
   descripcion: FormControl<string>;
-  linkRepositorio: FormControl<string>;
-  envVariables: FormControl<string>;
-  credenciales: FormControl<string>;
-  instruccionesInstalacion: FormControl<string>;
-  instruccionesProd: FormControl<string>;
-  manualUsuario: FormControl<string>;
-  notasTecnicas: FormControl<string>;
-  tecnologias: FormControl<string>;
 }
 
 @Component({
@@ -70,32 +64,39 @@ export class BibliotecaComponent implements OnInit {
   // Clientes para el dropdown
   clientes: ClienteResumen[] = [];
 
+  // Categorías
+  categorias: BibliotecaCategoria[] = [];
+  modalCategoriaAbierto = false;
+  vistaModalCategoria: 'lista' | 'formulario' = 'lista';
+  categoriaEnEdicion: BibliotecaCategoria | null = null;
+  categoriaFormNombre = '';
+  categoriaFormColor = '#6366f1';
+  categoriaFormTabs: Array<{
+    id: string;
+    nombre: string;
+    tipoTexto: 'normal' | 'privado' | null;
+    permiteAdjuntos: boolean;
+  }> = [];
+  categoriaNombreDuplicado = false;
+  categoriaCargando = false;
+
   // Formulario
   bibliotecaForm!: FormGroup<BibliotecaFormulario>;
 
-  // Archivos para subir
-  // Archivos para subir por sección
-  selectedFilesGeneral: File[] = [];
-  selectedFilesEnv: File[] = [];
-  selectedFilesInstalacion: File[] = [];
-  selectedFilesProduccion: File[] = [];
-  selectedFilesManual: File[] = [];
-  selectedFilesCredenciales: File[] = [];
+  // Categoría seleccionada en el formulario
+  categoriaSeleccionada: BibliotecaCategoria | null = null;
+
+  // Contenido dinámico por columna { columnaId: { texto: '' } }
+  contenidoColumnas: Record<string, { texto: string }> = {};
+
+  // Archivos por columna { columnaId: File[] }
+  archivosPorColumna: Record<string, File[]> = {};
 
   // Tabs activa para le detalle
-  tabActiva:
-    | 'general'
-    | 'repo'
-    | 'env'
-    | 'instalacion'
-    | 'produccion'
-    | 'manual'
-    | 'credenciales'
-    | 'notas'
-    | 'adjuntos' = 'general';
+  tabActiva: string = 'general';
 
-  // Visibilidad env
-  mostrarEnvVariables = false;
+  // Visibilidad contenido privado
+  mostrarContenidoPrivado: Record<string, boolean> = {};
 
   constructor(
     private fb: FormBuilder,
@@ -111,6 +112,7 @@ export class BibliotecaComponent implements OnInit {
   ngOnInit(): void {
     this.cargarProyectos();
     this.cargarClientes();
+    this.cargarCategorias();
   }
 
   private inicializarFormulario(): void {
@@ -120,21 +122,15 @@ export class BibliotecaComponent implements OnInit {
         nonNullable: true,
         validators: [Validators.required],
       }),
+      categoriaId: new FormControl<string>('', {
+        nonNullable: true,
+        validators: [Validators.required],
+      }),
       nombre: new FormControl<string>('', {
         nonNullable: true,
         validators: [Validators.required, Validators.minLength(2)],
       }),
       descripcion: new FormControl<string>('', { nonNullable: true }),
-      linkRepositorio: new FormControl<string>('', { nonNullable: true }),
-      envVariables: new FormControl<string>('', { nonNullable: true }),
-      credenciales: new FormControl<string>('', { nonNullable: true }),
-      instruccionesInstalacion: new FormControl<string>('', {
-        nonNullable: true,
-      }),
-      instruccionesProd: new FormControl<string>('', { nonNullable: true }),
-      manualUsuario: new FormControl<string>('', { nonNullable: true }),
-      notasTecnicas: new FormControl<string>('', { nonNullable: true }),
-      tecnologias: new FormControl<string>('', { nonNullable: true }),
     });
   }
 
@@ -205,8 +201,13 @@ export class BibliotecaComponent implements OnInit {
       .subscribe({
         next: (detalle) => {
           this.selectedProyecto = detalle;
-          this.tabActiva = 'general';
-          this.mostrarEnvVariables = false;
+          // Establecer tab activa según primera columna de la categoría
+          if (detalle.categoria?.columnas?.length) {
+            this.tabActiva = detalle.categoria.columnas[0].id;
+          } else {
+            this.tabActiva = 'general';
+          }
+          this.mostrarContenidoPrivado = {};
           this.detallesCargando = false;
           this.cdr.markForCheck();
         },
@@ -219,6 +220,176 @@ export class BibliotecaComponent implements OnInit {
       });
   }
 
+  // Load categories
+  cargarCategorias(): void {
+    this.apiService
+      .getBibliotecaCategorias()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (categorias) => {
+          this.categorias = categorias || [];
+          this.cdr.markForCheck();
+        },
+        error: (error) => {
+          console.error('Error al cargar categorías:', error);
+        },
+      });
+  }
+
+  // =====================================================
+  // GESTIÓN DE CATEGORÍAS
+  // =====================================================
+
+  abrirModalCategoria(): void {
+    this.modalCategoriaAbierto = true;
+    this.vistaModalCategoria = 'lista';
+    this.resetFormCategoria();
+  }
+
+  cerrarModalCategoria(): void {
+    this.modalCategoriaAbierto = false;
+    this.vistaModalCategoria = 'lista';
+    this.resetFormCategoria();
+  }
+
+  resetFormCategoria(): void {
+    this.categoriaEnEdicion = null;
+    this.categoriaFormNombre = '';
+    this.categoriaFormColor = '#6366f1';
+    this.categoriaFormTabs = [];
+    this.categoriaNombreDuplicado = false;
+  }
+
+  nuevaCategoria(): void {
+    this.vistaModalCategoria = 'formulario';
+    this.categoriaEnEdicion = null;
+    this.categoriaFormNombre = '';
+    this.categoriaFormColor = '#6366f1';
+    this.categoriaFormTabs = [
+      {
+        id: 'general',
+        nombre: 'General',
+        tipoTexto: 'normal',
+        permiteAdjuntos: false,
+      },
+      {
+        id: 'adjuntos',
+        nombre: 'Adjuntos',
+        tipoTexto: null,
+        permiteAdjuntos: true,
+      },
+    ];
+    this.categoriaNombreDuplicado = false;
+  }
+
+  editarCategoria(categoria: BibliotecaCategoria): void {
+    this.vistaModalCategoria = 'formulario';
+    this.categoriaEnEdicion = categoria;
+    this.categoriaFormNombre = categoria.nombre;
+    this.categoriaFormColor = categoria.color || '#6366f1';
+    this.categoriaFormTabs = (categoria.columnas || []).map((col) => ({
+      id: col.id,
+      nombre: col.nombre,
+      tipoTexto: col.tipoTexto as 'normal' | 'privado' | null,
+      permiteAdjuntos: col.permiteAdjuntos,
+    }));
+    this.categoriaNombreDuplicado = false;
+  }
+
+  volverListaCategorias(): void {
+    this.vistaModalCategoria = 'lista';
+    this.resetFormCategoria();
+  }
+
+  validarNombreCategoria(): void {
+    if (!this.categoriaFormNombre.trim()) {
+      this.categoriaNombreDuplicado = false;
+      return;
+    }
+    const nombreLower = this.categoriaFormNombre.trim().toLowerCase();
+    this.categoriaNombreDuplicado = this.categorias.some(
+      (cat) =>
+        cat.nombre.toLowerCase() === nombreLower &&
+        cat.id !== this.categoriaEnEdicion?.id,
+    );
+  }
+
+  agregarTab(): void {
+    const nuevoId = `tab_${Date.now()}`;
+    this.categoriaFormTabs.push({
+      id: nuevoId,
+      nombre: '',
+      tipoTexto: 'normal',
+      permiteAdjuntos: false,
+    });
+  }
+
+  eliminarTab(index: number): void {
+    if (this.categoriaFormTabs.length > 1) {
+      this.categoriaFormTabs.splice(index, 1);
+    }
+  }
+
+  guardarCategoria(): void {
+    if (!this.categoriaFormNombre.trim() || this.categoriaNombreDuplicado)
+      return;
+    if (this.categoriaFormTabs.length === 0) return;
+
+    this.categoriaCargando = true;
+
+    const payload = {
+      nombre: this.categoriaFormNombre.trim(),
+      color: this.categoriaFormColor,
+      columnas: this.categoriaFormTabs.map((tab, index) => ({
+        id: tab.id,
+        nombre: tab.nombre || `Tab ${index + 1}`,
+        tipoTexto: tab.tipoTexto,
+        permiteAdjuntos: tab.permiteAdjuntos,
+        orden: index,
+      })),
+    };
+
+    const request$ = this.categoriaEnEdicion
+      ? this.apiService.actualizarBibliotecaCategoria(
+          this.categoriaEnEdicion.id,
+          payload,
+        )
+      : this.apiService.crearBibliotecaCategoria(payload);
+
+    request$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
+      next: () => {
+        this.categoriaCargando = false;
+        this.vistaModalCategoria = 'lista';
+        this.resetFormCategoria();
+        this.cargarCategorias();
+      },
+      error: (error) => {
+        this.categoriaCargando = false;
+        console.error('Error al guardar categoría:', error);
+      },
+    });
+  }
+
+  eliminarCategoria(categoria: BibliotecaCategoria): void {
+    if (
+      !confirm(`¿Estás seguro de eliminar la categoría "${categoria.nombre}"?`)
+    )
+      return;
+
+    this.apiService
+      .eliminarBibliotecaCategoria(categoria.id)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: () => {
+          this.cargarCategorias();
+        },
+        error: (error) => {
+          console.error('Error al eliminar categoría:', error);
+          alert(error.error?.error || 'Error al eliminar categoría');
+        },
+      });
+  }
+
   cerrarDetalle(): void {
     this.selectedProyecto = null;
   }
@@ -226,11 +397,9 @@ export class BibliotecaComponent implements OnInit {
   abrirModalCrear(): void {
     this.modoEdicion = false;
     this.bibliotecaForm.reset();
-    this.selectedFilesGeneral = [];
-    this.selectedFilesEnv = [];
-    this.selectedFilesInstalacion = [];
-    this.selectedFilesProduccion = [];
-    this.selectedFilesManual = [];
+    this.categoriaSeleccionada = null;
+    this.contenidoColumnas = {};
+    this.archivosPorColumna = {};
     this.modalAbierto = true;
   }
 
@@ -238,112 +407,74 @@ export class BibliotecaComponent implements OnInit {
     this.modoEdicion = true;
     this.bibliotecaForm.patchValue({
       id: proyecto.id,
-      casaMatrizId: proyecto.casaMatrizId,
+      casaMatrizId: proyecto.casaMatrizId || '',
+      categoriaId: proyecto.categoriaId ? proyecto.categoriaId.toString() : '',
       nombre: proyecto.nombre,
       descripcion: proyecto.descripcion || '',
-      linkRepositorio: proyecto.linkRepositorio || '',
-      envVariables: proyecto.envVariables || '',
-      instruccionesInstalacion: proyecto.instruccionesInstalacion || '',
-      instruccionesProd: proyecto.instruccionesProd || '',
-      manualUsuario: proyecto.manualUsuario || '',
-      credenciales: proyecto.credenciales || '',
-      notasTecnicas: proyecto.notasTecnicas || '',
-      tecnologias: (proyecto.tecnologias || []).join(', '),
     });
-    this.selectedFilesGeneral = [];
-    this.selectedFilesEnv = [];
-    this.selectedFilesInstalacion = [];
-    this.selectedFilesProduccion = [];
-    this.selectedFilesManual = [];
-    this.selectedFilesCredenciales = [];
+    // Cargar categoría seleccionada y contenido
+    this.categoriaSeleccionada =
+      this.categorias.find((c) => c.id === proyecto.categoriaId) || null;
+    this.contenidoColumnas = {};
+    this.archivosPorColumna = {};
+    // Inicializar contenido desde el proyecto
+    if (this.categoriaSeleccionada) {
+      for (const col of this.categoriaSeleccionada.columnas) {
+        this.contenidoColumnas[col.id] = {
+          texto: proyecto.contenido?.[col.id]?.texto || '',
+        };
+        if (col.permiteAdjuntos) {
+          this.archivosPorColumna[col.id] = [];
+        }
+      }
+    }
     this.modalAbierto = true;
   }
 
   cerrarModal(): void {
     this.modalAbierto = false;
     this.bibliotecaForm.reset();
-    this.selectedFilesGeneral = [];
-    this.selectedFilesEnv = [];
-    this.selectedFilesInstalacion = [];
-    this.selectedFilesProduccion = [];
-    this.selectedFilesManual = [];
-    this.selectedFilesCredenciales = [];
+    this.categoriaSeleccionada = null;
+    this.contenidoColumnas = {};
+    this.archivosPorColumna = {};
   }
 
-  onArchivoSeleccionado(
-    event: Event,
-    seccion:
-      | 'general'
-      | 'env'
-      | 'instalacion'
-      | 'produccion'
-      | 'manual'
-      | 'credenciales',
-  ): void {
+  // Método para cambio de categoría en el formulario
+  onCategoriaChange(): void {
+    const catId = this.bibliotecaForm.get('categoriaId')?.value;
+    this.categoriaSeleccionada =
+      this.categorias.find((c) => c.id.toString() === catId) || null;
+    this.contenidoColumnas = {};
+    this.archivosPorColumna = {};
+    // Inicializar estructura para cada columna
+    if (this.categoriaSeleccionada) {
+      for (const col of this.categoriaSeleccionada.columnas) {
+        this.contenidoColumnas[col.id] = { texto: '' };
+        if (col.permiteAdjuntos) {
+          this.archivosPorColumna[col.id] = [];
+        }
+      }
+    }
+    this.cdr.markForCheck();
+  }
+
+  onArchivoSeleccionadoColumna(event: Event, columnaId: string): void {
     const input = event.target as HTMLInputElement;
     if (input.files) {
       const nuevos = Array.from(input.files);
-      switch (seccion) {
-        case 'general':
-          this.selectedFilesGeneral = [...this.selectedFilesGeneral, ...nuevos];
-          break;
-        case 'env':
-          this.selectedFilesEnv = [...this.selectedFilesEnv, ...nuevos];
-          break;
-        case 'instalacion':
-          this.selectedFilesInstalacion = [
-            ...this.selectedFilesInstalacion,
-            ...nuevos,
-          ];
-          break;
-        case 'produccion':
-          this.selectedFilesProduccion = [
-            ...this.selectedFilesProduccion,
-            ...nuevos,
-          ];
-          break;
-        case 'manual':
-          this.selectedFilesManual = [...this.selectedFilesManual, ...nuevos];
-          break;
-        case 'credenciales':
-          this.selectedFilesCredenciales = [
-            ...this.selectedFilesCredenciales,
-            ...nuevos,
-          ];
-          break;
+      if (!this.archivosPorColumna[columnaId]) {
+        this.archivosPorColumna[columnaId] = [];
       }
+      this.archivosPorColumna[columnaId] = [
+        ...this.archivosPorColumna[columnaId],
+        ...nuevos,
+      ];
     }
   }
 
-  removerArchivoNuevo(
-    index: number,
-    seccion:
-      | 'general'
-      | 'env'
-      | 'instalacion'
-      | 'produccion'
-      | 'manual'
-      | 'credenciales',
-  ): void {
-    switch (seccion) {
-      case 'general':
-        this.selectedFilesGeneral.splice(index, 1);
-        break;
-      case 'env':
-        this.selectedFilesEnv.splice(index, 1);
-        break;
-      case 'instalacion':
-        this.selectedFilesInstalacion.splice(index, 1);
-        break;
-      case 'produccion':
-        this.selectedFilesProduccion.splice(index, 1);
-        break;
-      case 'manual':
-        this.selectedFilesManual.splice(index, 1);
-        break;
-      case 'credenciales':
-        this.selectedFilesCredenciales.splice(index, 1);
-        break;
+  removerArchivoColumna(index: number, columnaId: string): void {
+    if (this.archivosPorColumna[columnaId]) {
+      this.archivosPorColumna[columnaId].splice(index, 1);
     }
   }
 
@@ -357,41 +488,19 @@ export class BibliotecaComponent implements OnInit {
     const valores = this.bibliotecaForm.getRawValue();
 
     formData.append('casaMatrizId', valores.casaMatrizId);
+    formData.append('categoriaId', valores.categoriaId);
     formData.append('nombre', valores.nombre);
     formData.append('descripcion', valores.descripcion);
-    formData.append('linkRepositorio', valores.linkRepositorio);
-    formData.append('envVariables', valores.envVariables);
-    formData.append('credenciales', valores.credenciales);
-    formData.append(
-      'instruccionesInstalacion',
-      valores.instruccionesInstalacion,
-    );
-    formData.append('instruccionesProd', valores.instruccionesProd);
-    formData.append('manualUsuario', valores.manualUsuario);
-    formData.append('notasTecnicas', valores.notasTecnicas);
 
-    // Tecnologías como array JSON
-    const tecnologiasArray = valores.tecnologias
-      .split(',')
-      .map((t) => t.trim())
-      .filter((t) => t.length > 0);
-    formData.append('tecnologias', JSON.stringify(tecnologiasArray));
+    // Enviar contenido dinámico como JSON
+    formData.append('contenido', JSON.stringify(this.contenidoColumnas));
 
-    // Agregar archivos por sección
-    this.selectedFilesGeneral.forEach((f) =>
-      formData.append('files_general', f),
-    );
-    this.selectedFilesEnv.forEach((f) => formData.append('files_env', f));
-    this.selectedFilesInstalacion.forEach((f) =>
-      formData.append('files_instalacion', f),
-    );
-    this.selectedFilesProduccion.forEach((f) =>
-      formData.append('files_produccion', f),
-    );
-    this.selectedFilesManual.forEach((f) => formData.append('files_manual', f));
-    this.selectedFilesCredenciales.forEach((f) =>
-      formData.append('files_credenciales', f),
-    );
+    // Agregar archivos por columna
+    for (const columnaId of Object.keys(this.archivosPorColumna)) {
+      for (const archivo of this.archivosPorColumna[columnaId]) {
+        formData.append(`files_${columnaId}`, archivo);
+      }
+    }
 
     const operacion =
       this.modoEdicion && valores.id
@@ -400,7 +509,7 @@ export class BibliotecaComponent implements OnInit {
 
     operacion.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (resultado) => {
-        console.log('Proyecto guardado correctamente:', resultado);
+        console.log('Documentación guardada correctamente:', resultado);
         this.modalCargando = false;
         this.cerrarModal();
         this.cargarProyectos(this.proyectosPagina);
@@ -410,7 +519,7 @@ export class BibliotecaComponent implements OnInit {
         this.cdr.markForCheck();
       },
       error: (error) => {
-        console.error('Error al guardar proyecto:', error);
+        console.error('Error al guardar documentación:', error);
         this.modalCargando = false;
         this.cdr.markForCheck();
       },
@@ -489,8 +598,9 @@ export class BibliotecaComponent implements OnInit {
     });
   }
 
-  toggleEnvVariables(): void {
-    this.mostrarEnvVariables = !this.mostrarEnvVariables;
+  toggleContenidoPrivado(columnaId: string): void {
+    this.mostrarContenidoPrivado[columnaId] =
+      !this.mostrarContenidoPrivado[columnaId];
   }
 
   obtenerNombreCliente(casaMatrizId: string): string {

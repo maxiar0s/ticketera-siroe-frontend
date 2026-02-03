@@ -42,6 +42,7 @@ import { EstadoSucursal } from '../interfaces/estado-sucursal.interface';
 import {
   BibliotecaProyecto,
   BibliotecaListadoResponse,
+  BibliotecaCategoria,
 } from '../interfaces/biblioteca.interface';
 import { environment } from '../../environments/environment';
 
@@ -1510,6 +1511,68 @@ export class ApiService {
       .pipe(
         catchError((error: HttpErrorResponse) => {
           console.error('Error al eliminar adjunto de biblioteca:', error);
+          return throwError(() => error);
+        }),
+      );
+  }
+
+  // =====================================================
+  // Biblioteca - Categorías
+  // =====================================================
+
+  getBibliotecaCategorias(): Observable<BibliotecaCategoria[]> {
+    return this.http
+      .get<BibliotecaCategoria[]>(`${this.url}/biblioteca/categorias`)
+      .pipe(
+        catchError((error: HttpErrorResponse) => {
+          console.error('Error al obtener categorías de biblioteca:', error);
+          return throwError(() => error);
+        }),
+      );
+  }
+
+  crearBibliotecaCategoria(payload: {
+    nombre: string;
+    color: string;
+    columnas: any[];
+  }): Observable<BibliotecaCategoria> {
+    return this.http
+      .post<BibliotecaCategoria>(`${this.url}/biblioteca/categorias`, payload)
+      .pipe(
+        catchError((error: HttpErrorResponse) => {
+          console.error('Error al crear categoría de biblioteca:', error);
+          return throwError(() => error);
+        }),
+      );
+  }
+
+  actualizarBibliotecaCategoria(
+    id: number,
+    payload: {
+      nombre?: string;
+      color?: string;
+      columnas?: any[];
+    },
+  ): Observable<BibliotecaCategoria> {
+    return this.http
+      .put<BibliotecaCategoria>(
+        `${this.url}/biblioteca/categorias/${id}`,
+        payload,
+      )
+      .pipe(
+        catchError((error: HttpErrorResponse) => {
+          console.error('Error al actualizar categoría de biblioteca:', error);
+          return throwError(() => error);
+        }),
+      );
+  }
+
+  eliminarBibliotecaCategoria(id: number): Observable<{ mensaje: string }> {
+    return this.http
+      .delete<{ mensaje: string }>(`${this.url}/biblioteca/categorias/${id}`)
+      .pipe(
+        catchError((error: HttpErrorResponse) => {
+          console.error('Error al eliminar categoría de biblioteca:', error);
           return throwError(() => error);
         }),
       );

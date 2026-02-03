@@ -39,6 +39,40 @@
   margin: 0;
 }
 
+.sidebar-buttons {
+  display: flex;
+  flex-direction: row;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.ghost-button.small {
+  padding: 0.4rem 0.8rem;
+  font-size: var(--font-size-xs);
+  border: 1px solid var(--color-border);
+  background: transparent;
+  color: var(--color-text-alt);
+  border-radius: var(--btn-primary-radius);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.ghost-button.small:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+  background-color: var(--color-primary-soft);
+}
+
+/* Category chip */
+.categoria-chip {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  border-radius: 1rem;
+  font-size: var(--font-size-xs);
+  font-weight: 500;
+  color: white;
+}
+
 /* Búsqueda */
 .search-container {
   position: relative;
@@ -106,6 +140,14 @@
   display: flex;
   flex-direction: column;
   gap: 0.3rem;
+}
+
+.proyecto-meta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.5rem;
+  flex-wrap: wrap;
 }
 
 .proyecto-nombre {
@@ -242,12 +284,28 @@
   margin: 0 0 0.5rem 0;
 }
 
+.detalle-badges {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
 .cliente-badge {
   display: inline-block;
   padding: 0.3rem 0.8rem;
   border-radius: 1rem;
   background-color: var(--color-primary-soft);
   color: var(--color-primary);
+  font-size: var(--font-size-xs);
+  font-weight: 500;
+}
+
+.categoria-chip {
+  display: inline-block;
+  padding: 0.3rem 0.8rem;
+  border-radius: 1rem;
+  color: white;
   font-size: var(--font-size-xs);
   font-weight: 500;
 }
@@ -542,10 +600,6 @@
   border-color: var(--color-danger);
 }
 
-.link-button.danger {
-  color: var(--color-danger);
-}
-
 /* ==============================================
    NUEVOS ESTILOS PARA ADJUNTOS (Morado)
    ============================================== */
@@ -640,6 +694,183 @@
 
 .remove-file-btn:hover {
   color: #c92a2a;
+}
+
+/* ==============================================
+   MODAL CATEGORÍAS
+   ============================================== */
+
+.categoria-modal {
+  width: 90%;
+  max-width: 550px;
+}
+
+.categoria-modal-wide {
+  width: 90%;
+  max-width: 650px;
+}
+
+.color-picker-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.color-picker-row input[type="color"] {
+  width: 48px !important;
+  height: 48px !important;
+  min-width: 48px !important;
+  max-width: 48px !important;
+  padding: 0 !important;
+  border: 2px solid var(--color-border);
+  border-radius: 0.6rem;
+  cursor: pointer;
+  background: transparent;
+  flex-shrink: 0;
+}
+
+.color-picker-row input[type="color"]::-webkit-color-swatch-wrapper {
+  padding: 3px;
+}
+
+.color-picker-row input[type="color"]::-webkit-color-swatch {
+  border-radius: 0.4rem;
+  border: none;
+}
+
+.color-picker-row input[type="color"]:hover {
+  border-color: var(--color-primary);
+}
+
+.categoria-chip-preview {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.5rem 1rem;
+  border-radius: 1.5rem;
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  color: white;
+  min-width: 80px;
+  justify-content: center;
+  transition: background-color 0.2s ease;
+}
+
+/* Tabla de categorías */
+.categorias-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.categorias-table th,
+.categorias-table td {
+  padding: 0.75rem;
+  text-align: left;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.categorias-table th {
+  font-weight: 600;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+}
+
+.tabs-count {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+}
+
+.acciones-cell {
+  display: flex;
+  gap: 0.5rem;
+}
+
+/* Configuración de tabs */
+.tabs-config-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.tab-config-item {
+  display: grid;
+  grid-template-columns: 1fr 140px auto auto;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  background: var(--color-surface-alt);
+  border-radius: 0.5rem;
+}
+
+.tab-nombre-input {
+  min-width: 0;
+  padding: 0.4rem 0.6rem;
+  font-size: var(--font-size-sm);
+}
+
+.tab-tipo-select {
+  padding: 0.4rem 0.5rem;
+  font-size: var(--font-size-sm);
+  min-width: 0;
+}
+
+.checkbox-inline {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: var(--font-size-sm);
+  white-space: nowrap;
+  cursor: pointer;
+  padding: 0 0.3rem;
+}
+
+.checkbox-inline input[type="checkbox"] {
+  width: 16px !important;
+  height: 16px !important;
+  min-width: 16px;
+  margin: 0;
+  cursor: pointer;
+  accent-color: var(--color-primary);
+}
+
+.icon-button {
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: none;
+  border-radius: 0.4rem;
+  background: transparent;
+  cursor: pointer;
+  font-size: 1.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s;
+}
+
+.icon-button:hover:not(:disabled) {
+  background: var(--color-surface-alt);
+}
+
+.icon-button.danger {
+  color: var(--color-danger);
+}
+
+.icon-button.danger:hover:not(:disabled) {
+  background: rgba(215, 57, 59, 0.1);
+}
+
+.icon-button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.error-text {
+  color: var(--color-danger);
+  font-size: var(--font-size-sm);
+  margin-top: 0.25rem;
+  display: block;
 }
 
 /* Responsive */
