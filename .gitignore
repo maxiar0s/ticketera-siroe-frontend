@@ -48,3 +48,6 @@ ui-debug.log
 # Environment files
 /src/environments/*.ts
 !/src/environments/environment.ts
+
+.deploy.sh
+deploy.sh

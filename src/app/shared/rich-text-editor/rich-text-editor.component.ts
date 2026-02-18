@@ -77,4 +77,32 @@ export class RichTextEditorComponent implements ControlValueAccessor {
   onEditorBlur(): void {
     this.onTouched();
   }
+
+  onSelectionChange(event: any): void {
+    if (!event || event.source !== 'user' || !event.range || event.range.length > 0) {
+      return;
+    }
+
+    const editor = event.editor;
+    if (!editor) {
+      return;
+    }
+
+    const formatos = editor.getFormat(event.range);
+    const formatosInline = ['bold', 'italic', 'underline', 'strike', 'link'];
+
+    formatosInline.forEach((formato) => {
+      if (formatos[formato]) {
+        editor.format(formato, false, 'silent');
+      }
+    });
+
+    if (formatos.list) {
+      editor.format('list', false, 'silent');
+    }
+
+    if (formatos.align) {
+      editor.format('align', false, 'silent');
+    }
+  }
 }
