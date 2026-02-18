@@ -5,6 +5,7 @@
     [modules]="quillModules"
     [readOnly]="disabled"
     (onContentChanged)="onContentChange($event)"
+    (onSelectionChanged)="onSelectionChange($event)"
     (onBlur)="onEditorBlur()"
     theme="snow"
   ></quill-editor>
