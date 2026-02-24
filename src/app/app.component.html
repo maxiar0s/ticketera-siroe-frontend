@@ -1,10 +1,26 @@
 @if (authService.userSigned) {
-<div class="main-container index">
-  <shared-side-menu class="menu-container"></shared-side-menu>
-  <div class="content">
-    <shared-top-bar></shared-top-bar>
+<div
+  class="main-container index"
+  [class.tablet-layout]="isTabletViewport"
+  [class.mobile-menu-open]="isMobileMenuOpen"
+>
+  <shared-side-menu
+    class="menu-container"
+    (menuItemSelected)="closeMobileMenu()"
+  ></shared-side-menu>
+  <div class="content" (click)="handleContentClick($event)">
+    <shared-top-bar
+      [showMenuToggle]="isTabletViewport"
+      [isMenuOpen]="isMobileMenuOpen"
+      (menuToggle)="toggleMobileMenu()"
+    ></shared-top-bar>
     <router-outlet></router-outlet>
   </div>
+  <div
+    class="menu-backdrop"
+    *ngIf="isTabletViewport && isMobileMenuOpen"
+    (click)="closeMobileMenu()"
+  ></div>
 </div>
 } @else {
 <div class="login-container">

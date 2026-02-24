@@ -6,6 +6,9 @@ import {
   HostListener,
   OnInit,
   OnDestroy,
+  Input,
+  Output,
+  EventEmitter,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
@@ -30,6 +33,10 @@ import { takeUntil } from 'rxjs/operators';
   styleUrl: './top-bar.component.css',
 })
 export class TopBarComponent implements AfterViewInit, OnInit, OnDestroy {
+  @Input() showMenuToggle = false;
+  @Input() isMenuOpen = false;
+  @Output() menuToggle = new EventEmitter<void>();
+
   @ViewChild('searchBar') searchBar!: ElementRef<HTMLElement>;
   @ViewChild('searchInput') searchInput!: ElementRef<HTMLInputElement>;
   @ViewChild('searchLabel') searchLabel!: ElementRef<HTMLLabelElement>;
@@ -157,6 +164,10 @@ export class TopBarComponent implements AfterViewInit, OnInit, OnDestroy {
       this.notificationService.refrescar();
     }
     this.notificationService.togglePopup();
+  }
+
+  onMenuToggle(): void {
+    this.menuToggle.emit();
   }
 
   closeNotifications(): void {

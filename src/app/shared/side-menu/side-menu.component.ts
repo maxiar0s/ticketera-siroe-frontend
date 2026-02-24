@@ -1,5 +1,12 @@
 import { CommonModule, Location } from '@angular/common';
-import { Component, Renderer2, OnInit, OnDestroy } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  OnDestroy,
+  OnInit,
+  Output,
+  Renderer2,
+} from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { ApiService } from '../../services/api.service';
@@ -23,6 +30,8 @@ import menu_config from './menu-config.json';
   styleUrl: './side-menu.component.css',
 })
 export class SideMenuComponent implements OnInit, OnDestroy {
+  @Output() menuItemSelected = new EventEmitter<void>();
+
   public currentGroup: string = '';
   public currentSubGroup: string = '';
 
@@ -209,6 +218,7 @@ export class SideMenuComponent implements OnInit, OnDestroy {
 
   cerrarSesion(): void {
     this.authService.eliminarToken();
+    this.menuItemSelected.emit();
   }
 
   routeActive(event: MouseEvent, route: string): void {
@@ -223,6 +233,7 @@ export class SideMenuComponent implements OnInit, OnDestroy {
     }
     this.currentGroup = route;
     this.currentSubGroup = route;
+    this.menuItemSelected.emit();
   }
 
   activeGroup(route: any): boolean {
@@ -233,6 +244,7 @@ export class SideMenuComponent implements OnInit, OnDestroy {
 
   activeSubGroup(route: string): void {
     this.currentSubGroup = route;
+    this.menuItemSelected.emit();
   }
 
   toggleSubItems(item: any): void {
@@ -259,5 +271,9 @@ export class SideMenuComponent implements OnInit, OnDestroy {
 
     this.currentGroup = item.route;
     this.currentSubGroup = item.route;
+
+    if (!hasSubItems) {
+      this.menuItemSelected.emit();
+    }
   }
 }

@@ -24,7 +24,11 @@
               "src/styles.css"
             ],
             "scripts": [],
-            "allowedCommonJsDependencies": ["exceljs", "file-saver"]
+            "allowedCommonJsDependencies": [
+              "exceljs",
+              "file-saver",
+              "quill-delta"
+            ]
           },
           "configurations": {
             "production": {
@@ -109,7 +113,11 @@
               "src/styles.css"
             ],
             "scripts": [],
-            "allowedCommonJsDependencies": ["exceljs", "file-saver"]
+            "allowedCommonJsDependencies": [
+              "exceljs",
+              "file-saver",
+              "quill-delta"
+            ]
           }
         }
       }

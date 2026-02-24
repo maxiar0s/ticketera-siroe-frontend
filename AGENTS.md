@@ -108,6 +108,17 @@ Auto-generated from `./.agents/skills` (repo) and `~/.agents/skills` (global).
 - Keep existing brace/line-break style in the file you edit.
 - Avoid unrelated formatting churn.
 
+## Global Styling Guidelines
+- Global tokens live in `src/styles/theme.css` (`:root` + `[data-theme="dark"]`).
+- Global baseline and shared utility classes live in `src/styles.css`.
+- Prefer extending existing CSS variables over hardcoded colors/shadows/radius.
+- For new global styles, add semantic tokens in `src/styles/theme.css` first and consume them from `src/styles.css` (token-driven, avoid raw hex/rgba when possible).
+- Preserve visual parity between light and dark themes when adding new tokens.
+- For broad UI refreshes, change shared classes first (`.primary-button`, `.ghost-button`, `.div-table`, `.modal-*`) before touching page-level CSS.
+- Keep focus states accessible (`:focus-visible`) and maintain keyboard-visible outlines/shadows.
+- Avoid introducing new font families without a clear visual reason; if added, define usage (display vs body) in global styles.
+- Use component CSS (`src/app/**/**.css`) for local exceptions, not for overriding the whole design system.
+
 ## Naming Conventions
 - Classes/components/services: `PascalCase` (`TicketsComponent`, `ApiService`)
 - Functions/methods/variables/properties: `camelCase`

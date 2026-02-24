@@ -59,3 +59,33 @@
   text-align: left;
   margin-bottom: 1rem;
 }
+
+.recovery-link {
+  width: 27rem;
+  margin-top: 0.9rem;
+  color: var(--color-text);
+  text-decoration: underline;
+  font-size: var(--font-size-xs);
+  text-align: left;
+}
+
+.recovery-form {
+  width: 27rem;
+  border-top: 1px solid #dfeaf2;
+  padding-top: 1rem;
+}
+
+.recovery-title {
+  font-size: var(--font-size-sm);
+  margin-bottom: 0.8rem;
+  color: var(--color-text);
+  font-weight: 600;
+}
+
+.success-message {
+  color: #0f766e;
+  width: 27rem;
+  font-size: var(--font-size-xs);
+  margin: 0 auto 0.75rem;
+  text-align: left;
+}

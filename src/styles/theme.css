@@ -35,6 +35,55 @@
   --color-nuevo-bg: rgba(255, 107, 53, 0.15);
   --color-nuevo-border: rgba(255, 107, 53, 0.4);
 
+  /* Superficies y profundidad */
+  --color-ink: #15213d;
+  --color-ink-soft: #304269;
+  --surface-elevated: #ffffff;
+  --surface-muted: #f2f5fa;
+  --surface-glass: rgba(255, 255, 255, 0.78);
+  --surface-glass-strong: rgba(255, 255, 255, 0.9);
+  --shadow-soft: 0 12px 28px rgba(17, 30, 56, 0.08);
+  --shadow-strong: 0 22px 52px rgba(17, 30, 56, 0.14);
+  --shadow-inset-soft: inset 0 1px 0 rgba(255, 255, 255, 0.72);
+  --ring-focus: 0 0 0 3px rgba(var(--color-primary-rgb), 0.18);
+
+  /* Tokens semanticos de UI global */
+  --gradient-brand: linear-gradient(
+    135deg,
+    var(--color-primary-strong),
+    var(--color-primary)
+  );
+  --gradient-brand-soft: linear-gradient(
+    135deg,
+    rgba(var(--color-primary-rgb), 0.14),
+    rgba(var(--color-primary-bright-rgb), 0.08)
+  );
+  --modal-backdrop: rgba(13, 20, 39, 0.52);
+  --table-row-border: rgba(var(--color-primary-rgb), 0.12);
+  --input-bg: #ffffff;
+  --input-border: rgba(var(--color-primary-rgb), 0.2);
+  --input-border-focus: rgba(var(--color-primary-rgb), 0.42);
+
+  --surface-hover-soft: #f6f0f3;
+  --neutral-outline: #bcbcbc;
+  --chip-bg: #f0d9e2;
+  --chip-text: #6a2a47;
+  --text-muted-weak: #a0a0a0;
+  --text-muted-medium: #5b5b5b;
+  --text-muted-strong: #555555;
+  --field-border-soft: #e5e2e7;
+  --field-border-dashed: #d3c0d5;
+  --danger-accent: #d61f5b;
+  --danger-accent-rgb: 214, 31, 91;
+
+  --panel-shadow-soft: 0 12px 32px rgba(22, 29, 57, 0.09);
+  --panel-border-soft: rgba(226, 230, 241, 0.8);
+  --panel-border-medium: rgba(226, 230, 241, 0.9);
+  --surface-tinted-soft: #fbf7fa;
+  --text-ink-muted: rgba(39, 55, 88, 0.7);
+  --text-ink-faint: rgba(39, 55, 88, 0.42);
+  --text-ink-placeholder: rgba(39, 55, 88, 0.55);
+
   /* ========================================
      TIPOGRAFÍA
      ======================================== */
@@ -85,4 +134,53 @@
   --color-nuevo: #ff7f50;
   --color-nuevo-bg: rgba(255, 127, 80, 0.2);
   --color-nuevo-border: rgba(255, 127, 80, 0.5);
+
+  /* Superficies y profundidad */
+  --color-ink: #f5f7fb;
+  --color-ink-soft: #c3ccdf;
+  --surface-elevated: #232835;
+  --surface-muted: #1e2430;
+  --surface-glass: rgba(29, 35, 47, 0.78);
+  --surface-glass-strong: rgba(32, 39, 54, 0.9);
+  --shadow-soft: 0 12px 28px rgba(0, 0, 0, 0.26);
+  --shadow-strong: 0 22px 52px rgba(0, 0, 0, 0.4);
+  --shadow-inset-soft: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  --ring-focus: 0 0 0 3px rgba(var(--color-primary-rgb), 0.24);
+
+  /* Tokens semanticos de UI global */
+  --gradient-brand: linear-gradient(
+    135deg,
+    var(--color-primary),
+    var(--color-primary-bright)
+  );
+  --gradient-brand-soft: linear-gradient(
+    135deg,
+    rgba(var(--color-primary-rgb), 0.2),
+    rgba(var(--color-primary-bright-rgb), 0.12)
+  );
+  --modal-backdrop: rgba(7, 10, 18, 0.66);
+  --table-row-border: rgba(var(--color-primary-rgb), 0.22);
+  --input-bg: #242a37;
+  --input-border: rgba(var(--color-primary-rgb), 0.28);
+  --input-border-focus: rgba(var(--color-primary-rgb), 0.52);
+
+  --surface-hover-soft: rgba(var(--color-primary-rgb), 0.16);
+  --neutral-outline: #5a6274;
+  --chip-bg: rgba(var(--color-primary-rgb), 0.2);
+  --chip-text: #ffd8e8;
+  --text-muted-weak: #9ea4b0;
+  --text-muted-medium: #bcc3d3;
+  --text-muted-strong: #c5cbda;
+  --field-border-soft: #3a4153;
+  --field-border-dashed: #4a5163;
+  --danger-accent: #ff4d86;
+  --danger-accent-rgb: 255, 77, 134;
+
+  --panel-shadow-soft: 0 12px 32px rgba(0, 0, 0, 0.3);
+  --panel-border-soft: rgba(87, 95, 116, 0.5);
+  --panel-border-medium: rgba(108, 118, 143, 0.55);
+  --surface-tinted-soft: rgba(var(--color-primary-rgb), 0.1);
+  --text-ink-muted: rgba(222, 230, 247, 0.78);
+  --text-ink-faint: rgba(222, 230, 247, 0.56);
+  --text-ink-placeholder: rgba(222, 230, 247, 0.62);
 }

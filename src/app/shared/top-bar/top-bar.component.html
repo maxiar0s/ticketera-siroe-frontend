@@ -1,5 +1,19 @@
 <div class="flex">
-  <h1 class="title">{{ title() }}</h1>
+  <div class="title-group">
+    <button
+      *ngIf="showMenuToggle"
+      type="button"
+      class="menu-toggle-button"
+      [attr.aria-expanded]="isMenuOpen"
+      aria-label="Abrir o cerrar menú"
+      (click)="onMenuToggle()"
+    >
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+    <h1 class="title">{{ title() }}</h1>
+  </div>
   <div class="flex-search">
     <div class="search-bar" #searchBar *ngIf="features.barraBusqueda">
       <label for="search" #searchLabel>

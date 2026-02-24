@@ -1,4 +1,10 @@
-import { Component, Inject, OnInit, Renderer2 } from '@angular/core';
+import {
+  Component,
+  HostListener,
+  Inject,
+  OnInit,
+  Renderer2,
+} from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { SideMenuComponent } from './shared/side-menu/side-menu.component';
 import { TopBarComponent } from './shared/top-bar/top-bar.component';
@@ -18,6 +24,8 @@ import { DOCUMENT } from '@angular/common';
 })
 export class AppComponent implements OnInit {
   title = BRAND.appTitle;
+  isTabletViewport = false;
+  isMobileMenuOpen = false;
 
   constructor(
     public authService: AuthService,
@@ -35,6 +43,46 @@ export class AppComponent implements OnInit {
     const token = this.authService.decodificarToken();
     const userId = token?.id ?? null;
     this.preferenciasService.inicializarTema(userId);
+    this.updateViewportState();
+  }
+
+  @HostListener('window:resize')
+  onResize(): void {
+    this.updateViewportState();
+  }
+
+  toggleMobileMenu(): void {
+    if (!this.isTabletViewport) {
+      return;
+    }
+    this.isMobileMenuOpen = !this.isMobileMenuOpen;
+  }
+
+  closeMobileMenu(): void {
+    if (!this.isTabletViewport) {
+      return;
+    }
+    this.isMobileMenuOpen = false;
+  }
+
+  handleContentClick(event: MouseEvent): void {
+    if (!this.isTabletViewport || !this.isMobileMenuOpen) {
+      return;
+    }
+
+    const target = event.target as HTMLElement | null;
+    if (target?.closest('shared-top-bar')) {
+      return;
+    }
+
+    this.closeMobileMenu();
+  }
+
+  private updateViewportState(): void {
+    this.isTabletViewport = window.innerWidth <= 1024;
+    if (!this.isTabletViewport) {
+      this.isMobileMenuOpen = false;
+    }
   }
 
   private setFavicon(faviconUrl: string): void {
