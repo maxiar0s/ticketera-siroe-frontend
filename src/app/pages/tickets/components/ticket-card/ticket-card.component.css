@@ -1,6 +1,6 @@
 /* Ticket Card Component Styles */
 .ticket-card {
-  background: var(--color-surface);
+  background: var(--surface-elevated);
   border-radius: 1rem;
   border: 1px solid var(--color-border);
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
@@ -31,7 +31,7 @@
   align-items: center;
   gap: 2.5rem;
   padding: 2rem 2.5rem;
-  background: var(--color-surface);
+  background: var(--surface-elevated);
 }
 
 /* Contenedor 1: ID + Estado en columna */
@@ -62,7 +62,7 @@
 .ticket-id {
   font-weight: 700;
   font-size: var(--font-size-sm);
-  color: var(--color-text);
+  color: var(--color-ink-soft);
   font-family: "Roboto Mono", monospace;
   flex-shrink: 0;
 }
@@ -71,7 +71,7 @@
   margin: 0;
   font-size: var(--font-size-base);
   font-weight: 600;
-  color: var(--color-text);
+  color: var(--color-ink);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -188,7 +188,7 @@
   display: flex;
   align-items: stretch;
   padding: 0;
-  background: var(--color-surface-alt);
+  background: var(--surface-muted);
   border-top: 1px solid var(--color-border);
 }
 
@@ -231,7 +231,7 @@
   align-items: center;
   gap: 0.4rem;
   font-size: var(--font-size-sm);
-  color: var(--color-text);
+  color: var(--color-ink-soft);
   font-weight: 500;
   white-space: nowrap;
 }
@@ -253,6 +253,48 @@
   background: rgba(var(--color-primary-rgb), 0.06);
 }
 
+.ticket-action-btn.active-pin {
+  background: rgba(var(--color-primary-rgb), 0.12);
+}
+
+.ticket-action-btn.active-favorite {
+  background: rgba(245, 158, 11, 0.16);
+}
+
+[data-theme='dark'] .ticket-card.ticket-nuevo {
+  background-color: color-mix(in srgb, var(--surface-elevated) 88%, var(--color-nuevo) 12%);
+}
+
+[data-theme='dark'] .ticket-estado-small.ticket-state-nuevo {
+  background-color: color-mix(in srgb, var(--color-info) 28%, transparent);
+  color: #9eceff;
+}
+
+[data-theme='dark'] .ticket-estado-small.ticket-state-abierto {
+  background-color: color-mix(in srgb, #f97316 28%, transparent);
+  color: #ffc89d;
+}
+
+[data-theme='dark'] .ticket-estado-small.ticket-state-pendiente {
+  background-color: color-mix(in srgb, #eab308 30%, transparent);
+  color: #ffe693;
+}
+
+[data-theme='dark'] .ticket-estado-small.ticket-state-en-espera {
+  background-color: color-mix(in srgb, #a855f7 28%, transparent);
+  color: #e1b9ff;
+}
+
+[data-theme='dark'] .ticket-estado-small.ticket-state-resuelto {
+  background-color: color-mix(in srgb, var(--color-success) 30%, transparent);
+  color: #abf2c8;
+}
+
+[data-theme='dark'] .ticket-estado-small.ticket-state-cerrado {
+  background-color: color-mix(in srgb, var(--color-danger) 32%, transparent);
+  color: #ffb7ad;
+}
+
 .ticket-action-icon {
   width: 16px;
   height: 16px;
@@ -264,6 +306,18 @@
   opacity: 1;
   filter: brightness(0) saturate(100%) invert(21%) sepia(85%) saturate(2776%)
     hue-rotate(325deg) brightness(82%) contrast(93%);
+}
+
+.ticket-action-btn.active-pin .ticket-action-icon {
+  opacity: 1;
+  filter: brightness(0) saturate(100%) invert(21%) sepia(85%) saturate(2776%)
+    hue-rotate(325deg) brightness(82%) contrast(93%);
+}
+
+.ticket-action-btn.active-favorite .ticket-action-icon {
+  opacity: 1;
+  filter: brightness(0) saturate(100%) invert(72%) sepia(67%) saturate(1203%)
+    hue-rotate(355deg) brightness(101%) contrast(93%);
 }
 
 /* User section layout */

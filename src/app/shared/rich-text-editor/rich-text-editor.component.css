@@ -1,7 +1,7 @@
 /* Rich Text Editor - Using theme.css variables */
 .rich-text-editor-wrapper {
   width: 100%;
-  font-family: "Inter", serif;
+  font-family: "Sora", "Nunito Sans", sans-serif;
   position: relative;
   display: flex;
   flex-direction: column;
@@ -19,10 +19,10 @@
 
 /* Quill Core Container Styles */
 .rich-text-editor-wrapper .ql-toolbar.ql-snow {
-  border: 1px solid var(--color-border);
-  border-top-left-radius: 6px;
-  border-top-right-radius: 6px;
-  background-color: var(--color-surface-alt);
+  border: 1px solid var(--input-border);
+  border-top-left-radius: var(--app-radius-sm);
+  border-top-right-radius: var(--app-radius-sm);
+  background-color: var(--surface-muted);
   padding: 8px;
   display: flex;
   flex-wrap: wrap;
@@ -31,12 +31,12 @@
 }
 
 .rich-text-editor-wrapper .ql-container.ql-snow {
-  border: 1px solid var(--color-border);
+  border: 1px solid var(--input-border);
   border-top: none;
-  border-bottom-left-radius: 6px;
-  border-bottom-right-radius: 6px;
-  background-color: var(--color-surface);
-  font-family: "Inter", serif;
+  border-bottom-left-radius: var(--app-radius-sm);
+  border-bottom-right-radius: var(--app-radius-sm);
+  background-color: var(--input-bg);
+  font-family: "Sora", "Nunito Sans", sans-serif;
   font-size: var(--font-size-base);
   color: var(--color-text);
   min-height: 120px;
@@ -46,8 +46,12 @@
 
 .rich-text-editor-wrapper .ql-editor {
   min-height: 120px;
-  padding: 12px;
-  line-height: 1.5;
+  padding: 12px 14px;
+  line-height: 1.55;
+  font-size: var(--font-size-base);
+  font-family: "Sora", "Nunito Sans", sans-serif;
+  font-weight: 400;
+  letter-spacing: 0;
   color: var(--color-text);
 }
 
@@ -56,6 +60,7 @@
   color: var(--color-text-alt);
   font-style: normal;
   font-size: var(--font-size-base);
+  font-family: "Sora", "Nunito Sans", sans-serif;
 }
 
 /* Toolbar Buttons - Uniform size and spacing */
@@ -101,7 +106,7 @@
 }
 
 .rich-text-editor-wrapper .ql-toolbar.ql-snow button:hover {
-  background-color: var(--color-border);
+  background-color: var(--surface-hover-soft);
 }
 
 .rich-text-editor-wrapper .ql-toolbar.ql-snow button.ql-active {
@@ -134,10 +139,10 @@
 }
 
 .rich-text-editor-wrapper .ql-toolbar.ql-snow .ql-picker-label {
-  border: 1px solid var(--color-border);
+  border: 1px solid var(--input-border);
   border-radius: 4px;
   padding: 4px 8px;
-  background-color: var(--color-surface);
+  background-color: var(--input-bg);
 }
 
 .rich-text-editor-wrapper .ql-toolbar.ql-snow .ql-picker-label:hover {
@@ -208,8 +213,8 @@
 }
 
 .rich-text-editor-wrapper .ql-toolbar.ql-snow .ql-picker-options {
-  background-color: var(--color-surface);
-  border: 1px solid var(--color-border);
+  background-color: var(--input-bg);
+  border: 1px solid var(--input-border);
   border-radius: 4px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
@@ -301,8 +306,8 @@
 
 /* Focus styles */
 .rich-text-editor-wrapper .ql-container.ql-snow:focus-within {
-  border-color: var(--color-primary);
-  box-shadow: 0 0 0 3px var(--color-primary-soft);
+  border-color: var(--input-border-focus);
+  box-shadow: var(--ring-focus);
 }
 
 /* Link and text formatting inside editor */

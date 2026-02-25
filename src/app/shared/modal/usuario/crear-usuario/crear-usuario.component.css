@@ -1,9 +1,10 @@
 .modal-content {
-  background-color: var(--color-surface-alt);
-  border-radius: 2rem;
+  background-color: var(--modal-surface);
+  border: var(--modal-border);
+  border-radius: var(--modal-radius);
   width: 90%;
   max-width: 55rem;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  box-shadow: var(--modal-shadow);
   position: relative;
   margin: 0 10px;
 }

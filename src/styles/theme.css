@@ -35,6 +35,71 @@
   --color-nuevo-bg: rgba(255, 107, 53, 0.15);
   --color-nuevo-border: rgba(255, 107, 53, 0.4);
 
+  /* Superficies y profundidad */
+  --color-ink: #15213d;
+  --color-ink-soft: #304269;
+  --surface-elevated: #ffffff;
+  --surface-muted: #f2f5fa;
+  --surface-glass: rgba(255, 255, 255, 0.78);
+  --surface-glass-strong: rgba(255, 255, 255, 0.9);
+  --shadow-soft: 0 12px 28px rgba(17, 30, 56, 0.08);
+  --shadow-strong: 0 22px 52px rgba(17, 30, 56, 0.14);
+  --shadow-inset-soft: inset 0 1px 0 rgba(255, 255, 255, 0.72);
+  --ring-focus: 0 0 0 3px rgba(var(--color-primary-rgb), 0.18);
+
+  /* Tokens semanticos de UI global */
+  --gradient-brand: linear-gradient(
+    135deg,
+    var(--color-primary-strong),
+    var(--color-primary)
+  );
+  --gradient-brand-soft: linear-gradient(
+    135deg,
+    rgba(var(--color-primary-rgb), 0.14),
+    rgba(var(--color-primary-bright-rgb), 0.08)
+  );
+  --modal-backdrop: rgba(13, 20, 39, 0.52);
+  --modal-surface: var(--surface-elevated);
+  --modal-border: 1px solid rgba(18, 29, 54, 0.1);
+  --modal-shadow: 0 28px 60px rgba(16, 26, 48, 0.22);
+  --modal-radius: 1.8rem;
+  --modal-header-bg: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--surface-elevated) 90%, var(--color-primary) 10%),
+    color-mix(in srgb, var(--surface-elevated) 84%, var(--color-primary-bright) 16%)
+  );
+  --modal-header-color: var(--color-ink);
+  --modal-header-border: 1px solid rgba(var(--color-primary-rgb), 0.18);
+  --modal-header-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.68);
+  --modal-close-bg: rgba(var(--color-primary-rgb), 0.08);
+  --modal-close-border: rgba(var(--color-primary-rgb), 0.24);
+  --modal-close-hover-bg: rgba(var(--color-primary-rgb), 0.16);
+  --modal-close-color: var(--color-primary-strong);
+  --table-row-border: rgba(var(--color-primary-rgb), 0.12);
+  --input-bg: #ffffff;
+  --input-border: rgba(var(--color-primary-rgb), 0.2);
+  --input-border-focus: rgba(var(--color-primary-rgb), 0.42);
+
+  --surface-hover-soft: #f6f0f3;
+  --neutral-outline: #bcbcbc;
+  --chip-bg: #f0d9e2;
+  --chip-text: #6a2a47;
+  --text-muted-weak: #a0a0a0;
+  --text-muted-medium: #5b5b5b;
+  --text-muted-strong: #555555;
+  --field-border-soft: #e5e2e7;
+  --field-border-dashed: #d3c0d5;
+  --danger-accent: #d61f5b;
+  --danger-accent-rgb: 214, 31, 91;
+
+  --panel-shadow-soft: 0 12px 32px rgba(22, 29, 57, 0.09);
+  --panel-border-soft: rgba(226, 230, 241, 0.8);
+  --panel-border-medium: rgba(226, 230, 241, 0.9);
+  --surface-tinted-soft: #fbf7fa;
+  --text-ink-muted: rgba(39, 55, 88, 0.7);
+  --text-ink-faint: rgba(39, 55, 88, 0.42);
+  --text-ink-placeholder: rgba(39, 55, 88, 0.55);
+
   /* ========================================
      TIPOGRAFÍA
      ======================================== */
@@ -64,14 +129,14 @@
   --color-secondary-rgb: 26, 35, 64;
 
   /* Neutros y apoyo (invertidos para dark mode) */
-  --color-surface: #1a1d24;
-  --color-surface-alt: #22262f;
-  --color-surface-soft: #282c36;
+  --color-surface: #171d29;
+  --color-surface-alt: #1e2534;
+  --color-surface-soft: #242c3d;
   --color-primary-soft: rgba(209, 40, 109, 0.15);
-  --color-border: #2e333d;
-  --color-border-strong: #3d424f;
+  --color-border: #313a4c;
+  --color-border-strong: #46516a;
   --color-text: #e8eaed;
-  --color-text-alt: #9aa0ab;
+  --color-text-alt: #b2bdd2;
   --color-disabled: #3d424f;
   --color-disabled-border: #2e333d;
 
@@ -85,4 +150,69 @@
   --color-nuevo: #ff7f50;
   --color-nuevo-bg: rgba(255, 127, 80, 0.2);
   --color-nuevo-border: rgba(255, 127, 80, 0.5);
+
+  /* Superficies y profundidad */
+  --color-ink: #f5f7fb;
+  --color-ink-soft: #c3ccdf;
+  --surface-elevated: #20293a;
+  --surface-muted: #1a2232;
+  --surface-glass: rgba(27, 33, 47, 0.82);
+  --surface-glass-strong: rgba(31, 39, 56, 0.92);
+  --shadow-soft: 0 12px 28px rgba(0, 0, 0, 0.26);
+  --shadow-strong: 0 22px 52px rgba(0, 0, 0, 0.4);
+  --shadow-inset-soft: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  --ring-focus: 0 0 0 3px rgba(var(--color-primary-rgb), 0.24);
+
+  /* Tokens semanticos de UI global */
+  --gradient-brand: linear-gradient(
+    135deg,
+    var(--color-primary),
+    var(--color-primary-bright)
+  );
+  --gradient-brand-soft: linear-gradient(
+    135deg,
+    rgba(var(--color-primary-rgb), 0.2),
+    rgba(var(--color-primary-bright-rgb), 0.12)
+  );
+  --modal-backdrop: rgba(7, 10, 18, 0.66);
+  --modal-surface: #212737;
+  --modal-border: 1px solid rgba(131, 145, 176, 0.32);
+  --modal-shadow: 0 30px 62px rgba(0, 0, 0, 0.52);
+  --modal-radius: 1.8rem;
+  --modal-header-bg: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--surface-elevated) 82%, var(--color-primary) 18%),
+    color-mix(in srgb, var(--surface-elevated) 74%, var(--color-primary-bright) 26%)
+  );
+  --modal-header-color: var(--color-ink);
+  --modal-header-border: 1px solid rgba(var(--color-primary-rgb), 0.34);
+  --modal-header-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  --modal-close-bg: rgba(var(--color-primary-rgb), 0.16);
+  --modal-close-border: rgba(var(--color-primary-rgb), 0.42);
+  --modal-close-hover-bg: rgba(var(--color-primary-rgb), 0.24);
+  --modal-close-color: #ffd8e8;
+  --table-row-border: rgba(var(--color-primary-rgb), 0.22);
+  --input-bg: #212a3b;
+  --input-border: rgba(158, 170, 196, 0.34);
+  --input-border-focus: rgba(var(--color-primary-rgb), 0.58);
+
+  --surface-hover-soft: rgba(var(--color-primary-rgb), 0.2);
+  --neutral-outline: #5a6274;
+  --chip-bg: rgba(var(--color-primary-rgb), 0.2);
+  --chip-text: #ffd8e8;
+  --text-muted-weak: #b1b8c7;
+  --text-muted-medium: #c9d0df;
+  --text-muted-strong: #d6dceb;
+  --field-border-soft: #3a4153;
+  --field-border-dashed: #4a5163;
+  --danger-accent: #ff4d86;
+  --danger-accent-rgb: 255, 77, 134;
+
+  --panel-shadow-soft: 0 12px 32px rgba(0, 0, 0, 0.3);
+  --panel-border-soft: rgba(87, 95, 116, 0.5);
+  --panel-border-medium: rgba(108, 118, 143, 0.55);
+  --surface-tinted-soft: rgba(var(--color-primary-rgb), 0.1);
+  --text-ink-muted: rgba(222, 230, 247, 0.78);
+  --text-ink-faint: rgba(222, 230, 247, 0.56);
+  --text-ink-placeholder: rgba(222, 230, 247, 0.62);
 }

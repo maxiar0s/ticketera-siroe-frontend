@@ -73,6 +73,34 @@ input {
 .title {
   color: var(--color-text);
 }
+
+.title-group {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  min-width: 0;
+}
+
+.menu-toggle-button {
+  width: 3.8rem;
+  height: 3.8rem;
+  border: 1px solid rgba(var(--color-primary-rgb), 0.22);
+  border-radius: 999px;
+  background: var(--surface-elevated);
+  display: inline-flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 0.35rem;
+  flex-shrink: 0;
+}
+
+.menu-toggle-button span {
+  width: 1.6rem;
+  height: 2px;
+  background: var(--color-ink);
+  border-radius: 999px;
+}
 /* @media (max-width: 1400px) {
   .title {
   }
@@ -151,6 +179,15 @@ input {
 
   .title {
     font-size: 2.5rem;
+  }
+
+  .menu-toggle-button {
+    width: 3.4rem;
+    height: 3.4rem;
+  }
+
+  .menu-toggle-button span {
+    width: 1.4rem;
   }
 
   /* Estilo para la searchbar colapsada */
@@ -383,4 +420,62 @@ input {
     right: 1.5rem;
     width: calc(100% - 3rem);
   }
+}
+
+/* Visual refresh */
+.flex {
+  min-height: 7.4rem;
+  max-height: 7.4rem;
+  position: sticky;
+  top: 0;
+  z-index: 8;
+  background:
+    linear-gradient(180deg, rgba(var(--color-primary-rgb), 0.05), transparent 70%),
+    var(--surface-glass);
+  backdrop-filter: blur(14px);
+  border-bottom: 1px solid rgba(var(--color-primary-rgb), 0.18);
+  box-shadow: 0 10px 26px rgba(20, 32, 62, 0.08);
+}
+
+.title {
+  font-family: 'Sora', sans-serif;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  color: var(--color-ink);
+}
+
+.search-bar {
+  border: 1px solid rgba(var(--color-primary-rgb), 0.18);
+  box-shadow: 0 10px 22px rgba(17, 30, 56, 0.08);
+  transition: border-color 0.18s ease, box-shadow 0.18s ease;
+}
+
+.search-bar:focus-within {
+  border-color: rgba(var(--color-primary-rgb), 0.46);
+  box-shadow: var(--ring-focus);
+}
+
+.search-bar input {
+  color: var(--color-ink);
+}
+
+.search-bar input::placeholder {
+  color: #8e97ae;
+}
+
+.notifications-button,
+.user-avatar {
+  border: 1px solid rgba(var(--color-primary-rgb), 0.18);
+  box-shadow: 0 8px 20px rgba(17, 30, 56, 0.12);
+}
+
+.notifications-button:hover,
+.user-avatar:hover {
+  transform: translateY(-2px) scale(1.02);
+}
+
+.notifications-modal {
+  top: 8.2rem;
+  border: 1px solid rgba(var(--color-primary-rgb), 0.2);
+  box-shadow: var(--shadow-strong);
 }

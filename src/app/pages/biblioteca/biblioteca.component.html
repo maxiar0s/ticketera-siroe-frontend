@@ -334,7 +334,8 @@
 
                   <!-- Mostrar descripción y tecnologías en el primer tab -->
                   @if (
-                    selectedProyecto.categoria!.columnas[0]?.id === columna.id
+                    selectedProyecto.categoria!.columnas.length > 0 &&
+                    selectedProyecto.categoria!.columnas[0].id === columna.id
                   ) {
                     @if (selectedProyecto.descripcion) {
                       <div class="info-section">
