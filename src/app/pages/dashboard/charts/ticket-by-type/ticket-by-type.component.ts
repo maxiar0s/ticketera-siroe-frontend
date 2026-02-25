@@ -9,7 +9,7 @@ import { Ticket } from '../../../../interfaces/ticket.interface';
   imports: [CommonModule, SimpleDonutChartComponent],
   template: `
     <div class="card">
-      <h3>Tickets por Prioridad</h3>
+      <h3>Tickets por Tipo</h3>
       <simple-donut-chart
         [data]="chartData"
         [colors]="['#22c55e', '#f97316', '#ef4444']"
@@ -19,16 +19,24 @@ import { Ticket } from '../../../../interfaces/ticket.interface';
   styles: [
     `
       .card {
-        background: white;
-        padding: 1rem;
-        border-radius: 8px;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         height: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: 0.8rem;
+        padding: 0.1rem 0.2rem 0.35rem;
       }
+
       h3 {
-        margin-top: 0;
-        margin-bottom: 1rem;
-        color: #333;
+        margin: 0;
+        font-size: var(--font-size-xl);
+        font-weight: 700;
+        color: var(--color-ink);
+      }
+
+      simple-donut-chart {
+        display: block;
+        flex: 1;
+        min-height: 0;
       }
     `,
   ],
