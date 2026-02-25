@@ -27,6 +27,13 @@ body {
   text-rendering: optimizeLegibility;
 }
 
+[data-theme="dark"] body {
+  background:
+    radial-gradient(circle at 0% 0%, rgba(var(--color-primary-rgb), 0.14), transparent 36%),
+    radial-gradient(circle at 100% 100%, rgba(var(--color-primary-bright-rgb), 0.1), transparent 34%),
+    #121826;
+}
+
 h1,
 h2,
 h3 {
@@ -1133,6 +1140,11 @@ body::before {
   mix-blend-mode: soft-light;
   opacity: 0.26;
   z-index: -1;
+}
+
+[data-theme="dark"] body::before {
+  opacity: 0.14;
+  mix-blend-mode: normal;
 }
 
 a,

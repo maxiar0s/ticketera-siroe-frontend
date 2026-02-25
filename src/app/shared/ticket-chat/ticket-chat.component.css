@@ -419,6 +419,24 @@
   border-radius: 3px;
 }
 
+[data-theme='dark'] .messages-header {
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--surface-elevated) 68%, var(--color-primary) 32%),
+    color-mix(in srgb, var(--surface-elevated) 62%, var(--color-primary-bright) 38%)
+  );
+}
+
+[data-theme='dark'] .refresh-button {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.28);
+}
+
+[data-theme='dark'] .send-btn,
+[data-theme='dark'] .attach-btn {
+  box-shadow: 0 10px 24px rgba(var(--color-primary-rgb), 0.22);
+}
+
 /* Dark theme */
 :host-context(.dark-theme) .ticket-messages-container {
   background: var(--color-surface, #1e1e1e);
