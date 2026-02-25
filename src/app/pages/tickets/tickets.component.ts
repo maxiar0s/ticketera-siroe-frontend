@@ -657,10 +657,14 @@ export class TicketsComponent implements OnInit {
       ticketEstado: ticket.estadoTicket ?? 'Nuevo',
       prioridad: ticket.prioridad ?? 'Media',
       ticketFechaTermino: this.formatearParaInputSoloFecha(ticket.fechaTermino),
-      ticketDetalleTermino: ticket.detalleTermino ?? '',
-      descripcion: ticket.descripcion,
+      ticketDetalleTermino: this.limpiarFormatoTextoEnEditor(
+        ticket.detalleTermino ?? '',
+      ),
+      descripcion: this.limpiarFormatoTextoEnEditor(ticket.descripcion ?? ''),
       proyectoId: ticket.proyectoId ?? null,
-      comentarioInterno: ticket.comentarioInterno ?? '',
+      comentarioInterno: this.limpiarFormatoTextoEnEditor(
+        ticket.comentarioInterno ?? '',
+      ),
       tiempoResolucionHoras: ticket.tiempoResolucion
         ? Math.floor(ticket.tiempoResolucion)
         : null,
@@ -1414,6 +1418,21 @@ export class TicketsComponent implements OnInit {
       return 'Hace 1 mes';
     }
     return `Hace ${diffMeses} meses`;
+  }
+
+  private limpiarFormatoTextoEnEditor(html: string): string {
+    if (!html || typeof document === 'undefined') {
+      return html ?? '';
+    }
+
+    const wrapper = document.createElement('div');
+    wrapper.innerHTML = html;
+
+    const text = (wrapper.innerText || wrapper.textContent || '')
+      .replace(/\u00a0/g, ' ')
+      .trim();
+
+    return text.replace(/\n/g, '<br>');
   }
 
   /**

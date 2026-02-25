@@ -88,21 +88,29 @@ export class RichTextEditorComponent implements ControlValueAccessor {
       return;
     }
 
-    const formatos = editor.getFormat(event.range);
-    const formatosInline = ['bold', 'italic', 'underline', 'strike', 'link'];
+    const formatos = editor.getFormat(event.range.index, 0);
+    const inline = ['bold', 'italic', 'underline', 'strike', 'link'];
+    let actualizado = false;
 
-    formatosInline.forEach((formato) => {
+    inline.forEach((formato) => {
       if (formatos[formato]) {
         editor.format(formato, false, 'silent');
+        actualizado = true;
       }
     });
 
     if (formatos.list) {
       editor.format('list', false, 'silent');
+      actualizado = true;
     }
 
     if (formatos.align) {
       editor.format('align', false, 'silent');
+      actualizado = true;
+    }
+
+    if (actualizado) {
+      editor.setSelection(event.range.index, 0, 'silent');
     }
   }
 }

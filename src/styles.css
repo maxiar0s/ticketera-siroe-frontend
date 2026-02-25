@@ -232,8 +232,8 @@ body {
   backdrop-filter: blur(6px);
   display: flex;
   justify-content: center;
-  align-items: flex-start;
-  padding: clamp(14px, 5vh, 56px) clamp(12px, 3vw, 28px) clamp(12px, 3vh, 24px);
+  align-items: center;
+  padding: clamp(12px, 3vw, 28px);
   overscroll-behavior: contain;
   overflow-y: auto;
   isolation: isolate;
