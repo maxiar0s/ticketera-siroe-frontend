@@ -1,9 +1,10 @@
 .modal-content {
-  background-color: var(--color-surface-alt);
-  border-radius: 2rem;
+  background-color: var(--modal-surface);
+  border: var(--modal-border);
+  border-radius: var(--modal-radius);
   width: 90%;
   max-width: 400px;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+  box-shadow: var(--modal-shadow);
   position: relative;
 }
 
@@ -28,14 +29,14 @@
   align-items: center;
   justify-content: center;
   color: var(--color-text);
-  background-color: #EBEBEB;
+  background-color: var(--surface-muted);
   height: 30px;
   width: 150px;
   border-radius: 50px;
   transition: 300ms;
 }
 .modify-or-delete-button:hover {
-  color: var(--color-surface-alt);
+  color: var(--color-surface);
   cursor: pointer;
   background-color: var(--color-primary);
 }

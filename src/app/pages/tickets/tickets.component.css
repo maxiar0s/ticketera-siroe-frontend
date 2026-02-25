@@ -120,10 +120,10 @@
 
 .bitacora-detail,
 .bitacora-modal {
-  background-color: var(--surface-elevated);
-  border: var(--app-surface-border);
-  border-radius: var(--app-radius-lg);
-  box-shadow: var(--shadow-strong);
+  background-color: var(--modal-surface);
+  border: var(--modal-border);
+  border-radius: var(--modal-radius);
+  box-shadow: var(--modal-shadow);
 }
 
 .bitacora-detail {
@@ -135,10 +135,11 @@
   max-height: 90vh;
   position: relative;
   overflow-y: auto;
+  scrollbar-gutter: stable;
 }
 
 .bitacora-detail.ticket {
-  border-left: 6px solid var(--color-info);
+  border-left: 4px solid color-mix(in srgb, var(--color-info) 70%, transparent);
 }
 
 .bitacora-detail.ticket.ticket-state-cerrado {
@@ -152,9 +153,9 @@
   width: 2.25rem;
   height: 2.25rem;
   border-radius: 50%;
-  border: 1px solid var(--input-border);
-  background-color: var(--surface-muted);
-  color: var(--color-text);
+  border: 1px solid var(--modal-close-border);
+  background-color: var(--modal-close-bg);
+  color: var(--modal-close-color);
   font-size: 1.35rem;
   line-height: 1;
   display: inline-flex;
@@ -166,6 +167,7 @@
 .detail-close-button:hover,
 .detail-close-button:focus-visible {
   transform: rotate(90deg);
+  background: var(--modal-close-hover-bg);
 }
 
 .bitacora-detail header {
@@ -461,6 +463,7 @@
   overflow: hidden;
   display: flex;
   flex-direction: column;
+  scrollbar-gutter: stable;
 }
 
 .bitacora-modal form {

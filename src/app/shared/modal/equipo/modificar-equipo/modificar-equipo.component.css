@@ -1,35 +1,26 @@
 .modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-  overflow: hidden; /* Evita scroll en el overlay */
+  backdrop-filter: blur(6px);
 }
 
 .modal-content {
-  background-color: var(--color-surface-alt);
-  border-radius: 2rem;
+  background-color: var(--modal-surface);
+  border: var(--modal-border);
+  border-radius: var(--modal-radius);
   width: 90%;
-  max-height: 90vh; /* Altura máxima del 90% de la ventana */
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  max-height: 90vh;
+  box-shadow: var(--modal-shadow);
   position: relative;
   display: flex;
   flex-direction: column;
-  overflow: hidden; /* Oculta el desbordamiento */
+  overflow: hidden;
 }
 
 .modal-body {
-  overflow-y: auto; /* Permite scroll vertical */
+  overflow-y: auto;
   padding: 1rem;
   flex: 1;
-  max-height: calc(90vh - 70px); /* Ajustar según la altura del header */
-  position: relative; /* Mantener el comportamiento del estilo inline */
+  max-height: calc(90vh - 70px);
+  position: relative;
 }
 
 .header-span {

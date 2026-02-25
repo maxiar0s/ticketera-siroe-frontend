@@ -59,6 +59,22 @@
     rgba(var(--color-primary-bright-rgb), 0.08)
   );
   --modal-backdrop: rgba(13, 20, 39, 0.52);
+  --modal-surface: var(--surface-elevated);
+  --modal-border: 1px solid rgba(18, 29, 54, 0.1);
+  --modal-shadow: 0 28px 60px rgba(16, 26, 48, 0.22);
+  --modal-radius: 1.8rem;
+  --modal-header-bg: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--surface-elevated) 90%, var(--color-primary) 10%),
+    color-mix(in srgb, var(--surface-elevated) 84%, var(--color-primary-bright) 16%)
+  );
+  --modal-header-color: var(--color-ink);
+  --modal-header-border: 1px solid rgba(var(--color-primary-rgb), 0.18);
+  --modal-header-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.68);
+  --modal-close-bg: rgba(var(--color-primary-rgb), 0.08);
+  --modal-close-border: rgba(var(--color-primary-rgb), 0.24);
+  --modal-close-hover-bg: rgba(var(--color-primary-rgb), 0.16);
+  --modal-close-color: var(--color-primary-strong);
   --table-row-border: rgba(var(--color-primary-rgb), 0.12);
   --input-bg: #ffffff;
   --input-border: rgba(var(--color-primary-rgb), 0.2);
@@ -159,6 +175,22 @@
     rgba(var(--color-primary-bright-rgb), 0.12)
   );
   --modal-backdrop: rgba(7, 10, 18, 0.66);
+  --modal-surface: #212737;
+  --modal-border: 1px solid rgba(131, 145, 176, 0.32);
+  --modal-shadow: 0 30px 62px rgba(0, 0, 0, 0.52);
+  --modal-radius: 1.8rem;
+  --modal-header-bg: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--surface-elevated) 82%, var(--color-primary) 18%),
+    color-mix(in srgb, var(--surface-elevated) 74%, var(--color-primary-bright) 26%)
+  );
+  --modal-header-color: var(--color-ink);
+  --modal-header-border: 1px solid rgba(var(--color-primary-rgb), 0.34);
+  --modal-header-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  --modal-close-bg: rgba(var(--color-primary-rgb), 0.16);
+  --modal-close-border: rgba(var(--color-primary-rgb), 0.42);
+  --modal-close-hover-bg: rgba(var(--color-primary-rgb), 0.24);
+  --modal-close-color: #ffd8e8;
   --table-row-border: rgba(var(--color-primary-rgb), 0.22);
   --input-bg: #242a37;
   --input-border: rgba(var(--color-primary-rgb), 0.28);
