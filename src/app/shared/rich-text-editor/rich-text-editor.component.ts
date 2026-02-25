@@ -30,6 +30,10 @@ import { QuillModule } from 'ngx-quill';
   ],
 })
 export class RichTextEditorComponent implements ControlValueAccessor {
+  private readonly debugRichText = false;
+  private quillEditorInstance: any = null;
+  private toolbarInteracting = false;
+
   @Input() placeholder: string = 'Escribe aquí...';
   @Input() minHeight: string = '120px';
   @Input() disabled: boolean = false;
@@ -54,6 +58,50 @@ export class RichTextEditorComponent implements ControlValueAccessor {
 
   writeValue(value: string): void {
     this.content = value || '';
+
+    if (this.debugRichText) {
+      console.warn('[RTE] writeValue', {
+        length: this.content.length,
+        hasStrong: /<\/?(strong|b)\b/i.test(this.content),
+        preview: this.content.slice(0, 180),
+      });
+    }
+  }
+
+  onEditorCreated(editor: any): void {
+    this.quillEditorInstance = editor;
+
+    const toolbarContainer = editor?.getModule?.('toolbar')?.container;
+    if (toolbarContainer?.addEventListener) {
+      toolbarContainer.addEventListener('mousedown', () => {
+        this.toolbarInteracting = true;
+        setTimeout(() => {
+          this.toolbarInteracting = false;
+        }, 0);
+      });
+    }
+
+    if (!this.debugRichText) {
+      return;
+    }
+
+    console.warn('[RTE] editorCreated', {
+      hasEditor: !!editor,
+      toolbar: this.quillModules?.toolbar,
+    });
+
+    const root = editor?.root;
+    if (root?.addEventListener) {
+      root.addEventListener('click', () => {
+        try {
+          const range = editor.getSelection();
+          const formats = range ? editor.getFormat(range.index, range.length || 0) : {};
+          console.warn('[RTE] root click', { range, formats });
+        } catch {
+          console.warn('[RTE] root click without range');
+        }
+      });
+    }
   }
 
   registerOnChange(fn: (value: string) => void): void {
@@ -79,7 +127,29 @@ export class RichTextEditorComponent implements ControlValueAccessor {
   }
 
   onSelectionChange(event: any): void {
+    if (this.debugRichText) {
+      let formats: Record<string, unknown> = {};
+      if (event?.editor && event?.range) {
+        try {
+          formats = event.editor.getFormat(event.range.index, event.range.length || 0) || {};
+        } catch {
+          formats = {};
+        }
+      }
+
+      console.warn('[RTE] selectionChanged', {
+        source: event?.source,
+        range: event?.range,
+        oldRange: event?.oldRange,
+        formats,
+      });
+    }
+
     if (!event || event.source !== 'user' || !event.range || event.range.length > 0) {
+      return;
+    }
+
+    if (this.toolbarInteracting) {
       return;
     }
 
@@ -89,6 +159,21 @@ export class RichTextEditorComponent implements ControlValueAccessor {
     }
 
     const formatos = editor.getFormat(event.range.index, 0);
+    const tieneFormatoActivo = !!(
+      formatos.bold ||
+      formatos.italic ||
+      formatos.underline ||
+      formatos.strike ||
+      formatos.link ||
+      formatos.list ||
+      formatos.align
+    );
+
+    if (!tieneFormatoActivo) {
+      this.resetToolbarActiveState();
+      return;
+    }
+
     const inline = ['bold', 'italic', 'underline', 'strike', 'link'];
     let actualizado = false;
 
@@ -111,6 +196,27 @@ export class RichTextEditorComponent implements ControlValueAccessor {
 
     if (actualizado) {
       editor.setSelection(event.range.index, 0, 'silent');
+      this.resetToolbarActiveState();
     }
+  }
+
+  private resetToolbarActiveState(): void {
+    const toolbarContainer =
+      this.quillEditorInstance?.getModule?.('toolbar')?.container;
+
+    if (!toolbarContainer) {
+      return;
+    }
+
+    const activeButtons = toolbarContainer.querySelectorAll('button.ql-active');
+    activeButtons.forEach((button: HTMLElement) => {
+      button.classList.remove('ql-active');
+      button.setAttribute('aria-pressed', 'false');
+    });
+
+    const expandedPickers = toolbarContainer.querySelectorAll('.ql-picker.ql-expanded');
+    expandedPickers.forEach((picker: HTMLElement) => {
+      picker.classList.remove('ql-expanded');
+    });
   }
 }

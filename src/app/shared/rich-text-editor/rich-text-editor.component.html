@@ -4,6 +4,7 @@
     [placeholder]="placeholder"
     [modules]="quillModules"
     [readOnly]="disabled"
+    (onEditorCreated)="onEditorCreated($event)"
     (onContentChanged)="onContentChange($event)"
     (onSelectionChanged)="onSelectionChange($event)"
     (onBlur)="onEditorBlur()"

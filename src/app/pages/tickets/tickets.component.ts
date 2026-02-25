@@ -1431,8 +1431,16 @@ export class TicketsComponent implements OnInit {
     const text = (wrapper.innerText || wrapper.textContent || '')
       .replace(/\u00a0/g, ' ')
       .trim();
+    const limpio = text.replace(/\n/g, '<br>');
 
-    return text.replace(/\n/g, '<br>');
+    console.debug('[Tickets] limpiarFormatoTextoEnEditor', {
+      inputLength: html.length,
+      outputLength: limpio.length,
+      hasStrongInput: /<\/?(strong|b)\b/i.test(html),
+      hasStrongOutput: /<\/?(strong|b)\b/i.test(limpio),
+    });
+
+    return limpio;
   }
 
   /**

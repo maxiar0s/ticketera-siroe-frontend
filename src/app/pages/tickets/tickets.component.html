@@ -476,8 +476,8 @@
               <input type="date" formControlName="ticketFechaTermino" />
             </label>
 
-            <label
-              class="full"
+            <div
+              class="field-group full"
               [class.invalid]="
                 ticketForm.get('ticketDetalleTermino')?.invalid &&
                 (ticketForm.get('ticketDetalleTermino')?.dirty ||
@@ -489,14 +489,14 @@
                 formControlName="ticketDetalleTermino"
                 placeholder="Describe el trabajo realizado para cerrar el ticket."
               ></app-rich-text-editor>
-            </label>
+            </div>
 
             <!-- Nuevos campos para Cierre: Comentario Interno y Tiempo Resolucion -->
             <div
               class="form-row"
               *ngIf="mostrarCamposTerminoTicket || esAdmin || esTecnico"
             >
-              <label class="full">
+              <div class="field-group full">
                 <span class="label"
                   >Comentario Interno (Visible solo para Staff)</span
                 >
@@ -504,7 +504,7 @@
                   formControlName="comentarioInterno"
                   placeholder="Información relevante para administración o técnicos..."
                 ></app-rich-text-editor>
-              </label>
+              </div>
             </div>
 
             <div
@@ -704,8 +704,8 @@
             </div>
           </label>
 
-          <label
-            class="full"
+          <div
+            class="field-group full"
             [class.invalid]="
               ticketForm.get('descripcion')?.invalid &&
               (ticketForm.get('descripcion')?.dirty ||
@@ -717,7 +717,7 @@
               formControlName="descripcion"
               placeholder="Describe el requerimiento o los hallazgos."
             ></app-rich-text-editor>
-          </label>
+          </div>
 
           <label class="full file-upload-field ticket-ingreso">
             <span class="label">Archivos adjuntos</span>

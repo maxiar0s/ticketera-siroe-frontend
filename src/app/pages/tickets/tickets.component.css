@@ -465,7 +465,6 @@
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  scrollbar-gutter: stable;
   margin: 0 auto;
 }
 
@@ -473,6 +472,7 @@
   padding: 1.5rem 1.75rem 1.75rem;
   overflow-y: auto;
   flex: 1;
+  scrollbar-gutter: auto;
 }
 
 .modal-header {
@@ -503,6 +503,12 @@
 }
 
 .modal-grid label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.modal-grid .field-group {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
@@ -558,6 +564,7 @@
 }
 
 .modal-grid label.full,
+.modal-grid .field-group.full,
 .form-row {
   grid-column: span 2;
 }
@@ -567,6 +574,7 @@
 }
 
 .modal-grid label.invalid .label,
+.modal-grid .field-group.invalid .label,
 .field-error {
   color: var(--color-danger);
 }
@@ -579,6 +587,9 @@
 .modal-grid label.invalid select,
 .modal-grid label.invalid input,
 .modal-grid label.invalid textarea,
+.modal-grid .field-group.invalid select,
+.modal-grid .field-group.invalid input,
+.modal-grid .field-group.invalid textarea,
 .dropdown-button.invalid {
   border-color: var(--color-danger);
   background-color: color-mix(in srgb, var(--color-danger) 7%, var(--surface-elevated));
@@ -828,6 +839,7 @@
   }
 
   .modal-grid label.full,
+  .modal-grid .field-group.full,
   .form-row {
     grid-column: span 1;
   }
