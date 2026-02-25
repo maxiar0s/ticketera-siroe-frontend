@@ -489,7 +489,7 @@
 
 .security-notice {
   padding: 1rem;
-  background-color: rgba(250, 204, 21, 0.1);
+  background-color: color-mix(in srgb, var(--color-warning) 16%, var(--surface-elevated));
   border: 1px solid var(--color-warning);
   border-radius: 0.8rem;
   font-size: var(--font-size-sm);
@@ -592,11 +592,11 @@
 /* Botón danger */
 .ghost-button.danger {
   color: var(--color-danger);
-  border-color: rgba(215, 57, 59, 0.3);
+  border-color: color-mix(in srgb, var(--color-danger) 36%, transparent);
 }
 
 .ghost-button.danger:hover {
-  background-color: rgba(215, 57, 59, 0.08);
+  background-color: color-mix(in srgb, var(--color-danger) 10%, transparent);
   border-color: var(--color-danger);
 }
 
@@ -693,7 +693,7 @@
 }
 
 .remove-file-btn:hover {
-  color: #c92a2a;
+  color: var(--color-danger);
 }
 
 /* ==============================================
@@ -858,7 +858,7 @@
 }
 
 .icon-button.danger:hover:not(:disabled) {
-  background: rgba(215, 57, 59, 0.1);
+  background: color-mix(in srgb, var(--color-danger) 12%, transparent);
 }
 
 .icon-button:disabled {

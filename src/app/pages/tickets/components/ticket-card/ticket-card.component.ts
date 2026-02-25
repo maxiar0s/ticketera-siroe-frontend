@@ -14,10 +14,14 @@ export class TicketCardComponent {
   @Input() ticket!: Ticket;
   @Input() isSelected: boolean = false;
   @Input() mensajesNoLeidos: number = 0;
+  @Input() isPinned: boolean = false;
+  @Input() isFavorite: boolean = false;
 
   @Output() onSelect = new EventEmitter<Ticket>();
   @Output() onVerDetalle = new EventEmitter<Ticket>();
   @Output() onCerrar = new EventEmitter<Ticket>();
+  @Output() onTogglePin = new EventEmitter<Ticket>();
+  @Output() onToggleFavorite = new EventEmitter<Ticket>();
 
   formatTicketId(id: number): string {
     return id.toString().padStart(8, '0');
@@ -56,6 +60,16 @@ export class TicketCardComponent {
   handleCerrar(event: Event): void {
     event.stopPropagation();
     this.onCerrar.emit(this.ticket);
+  }
+
+  handleTogglePin(event: Event): void {
+    event.stopPropagation();
+    this.onTogglePin.emit(this.ticket);
+  }
+
+  handleToggleFavorite(event: Event): void {
+    event.stopPropagation();
+    this.onToggleFavorite.emit(this.ticket);
   }
 
   /**

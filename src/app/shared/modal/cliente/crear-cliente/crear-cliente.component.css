@@ -1,36 +1,36 @@
-﻿.modal-overlay {
+.modal-overlay {
+  --modal-safe-top: clamp(12px, 5vh, 52px);
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-  overflow: hidden; /* Evita scroll en el overlay */
+  inset: 0;
+  display: block;
+  padding: 0;
+  overflow: hidden;
+  backdrop-filter: blur(6px);
+  z-index: 1200;
 }
 
 .modal-content {
-  background-color: var(--color-surface-alt);
-  border-radius: 2rem;
-  width: 90%;
-  max-width: 55rem;
-  max-height: 90vh; /* Altura máxima del 90% de la ventana */
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-  position: relative;
+  background-color: var(--modal-surface);
+  border: var(--modal-border);
+  border-radius: var(--modal-radius);
+  width: min(55rem, calc(100vw - 24px));
+  max-height: calc(100vh - var(--modal-safe-top) - 12px);
+  box-shadow: var(--modal-shadow);
+  position: fixed;
+  top: var(--modal-safe-top);
+  left: 50%;
+  transform: translateX(-50%);
   display: flex;
   flex-direction: column;
-  overflow: hidden; /* Oculta el desbordamiento */
+  overflow: hidden;
 }
 
 .modal-body {
-  overflow-y: auto; /* Permite scroll vertical */
+  overflow-y: auto;
   padding: 1rem 2rem;
   flex: 1;
-  max-height: calc(90vh - 70px); /* Ajustar según la altura del header */
-  position: relative; /* Mantener el comportamiento del estilo inline */
+  max-height: calc(90vh - 70px);
+  position: relative;
 }
 
 .form-group input::placeholder {

@@ -35,13 +35,13 @@ import { CommonModule } from '@angular/common';
         />
 
         <!-- Y Axis Labels -->
-        <text x="40" y="155" text-anchor="end" font-size="10" fill="#6b7280">
+        <text x="40" y="155" text-anchor="end" font-size="12" fill="#6b7280">
           0
         </text>
-        <text x="40" y="105" text-anchor="end" font-size="10" fill="#6b7280">
+        <text x="40" y="105" text-anchor="end" font-size="12" fill="#6b7280">
           {{ maxValue / 2 | number : '1.0-0' }}
         </text>
-        <text x="40" y="55" text-anchor="end" font-size="10" fill="#6b7280">
+        <text x="40" y="55" text-anchor="end" font-size="12" fill="#6b7280">
           {{ maxValue }}
         </text>
 
@@ -68,7 +68,7 @@ import { CommonModule } from '@angular/common';
           [attr.x]="p.x"
           y="170"
           text-anchor="middle"
-          font-size="10"
+          font-size="12"
           fill="#6b7280"
         >
           {{ data[i].label }}
@@ -81,7 +81,7 @@ import { CommonModule } from '@angular/common';
       .chart-container {
         width: 100%;
         height: 100%;
-        min-height: 200px;
+        min-height: 220px;
       }
       .line-chart {
         width: 100%;

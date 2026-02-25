@@ -28,11 +28,12 @@ import { CommonModule } from '@angular/common';
         display: flex;
         align-items: center;
         justify-content: space-around;
-        padding: 1rem;
+        gap: 1.2rem;
+        padding: 0.9rem;
       }
       .donut-chart {
-        width: 150px;
-        height: 150px;
+        width: 160px;
+        height: 160px;
         border-radius: 50%;
         position: relative;
       }
@@ -41,8 +42,8 @@ import { CommonModule } from '@angular/common';
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
-        width: 80px;
-        height: 80px;
+        width: 82px;
+        height: 82px;
         background: white;
         border-radius: 50%;
       }
@@ -55,16 +56,34 @@ import { CommonModule } from '@angular/common';
         display: flex;
         align-items: center;
         gap: 0.5rem;
-        font-size: 0.9rem;
+        font-size: var(--font-size-sm);
+        color: var(--color-text-alt);
       }
       .color-box {
-        width: 12px;
-        height: 12px;
+        width: 13px;
+        height: 13px;
         border-radius: 2px;
       }
       .value {
-        font-weight: bold;
+        font-weight: 700;
+        color: var(--color-ink);
         margin-left: auto;
+      }
+
+      @media (max-width: 1100px) {
+        .donut-container {
+          justify-content: space-between;
+        }
+
+        .donut-chart {
+          width: 148px;
+          height: 148px;
+        }
+
+        .center-hole {
+          width: 76px;
+          height: 76px;
+        }
       }
     `,
   ],

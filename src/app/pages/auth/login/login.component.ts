@@ -16,6 +16,10 @@ import { BRAND } from '../../../config/branding';
 })
 export class LoginComponent {
   public errorMessage: boolean = false;
+  public recoveryErrorMessage = '';
+  public recoverySuccessMessage = '';
+  public sendingRecovery = false;
+  public showRecovery = false;
   public logging!: boolean;
   public brand = BRAND;
   public loginLogo = BRAND.loginLogo ?? BRAND.logoMain;
@@ -23,7 +27,11 @@ export class LoginComponent {
   public loginForm: FormGroup = this.fb.group({
     email: ['', [Validators.required],],
     password: ['', [Validators.required],]
-  })
+  });
+
+  public recoveryForm: FormGroup = this.fb.group({
+    email: ['', [Validators.required, Validators.email]],
+  });
 
   constructor(
     private authService: AuthService,
@@ -33,13 +41,13 @@ export class LoginComponent {
   ) {}
 
   postLogin() {
-    if(this.loginForm.invalid) return;
+    if (this.loginForm.invalid) return;
     this.errorMessage = false;
     this.logging = true;
     this.apiService.login(this.loginForm.value).subscribe({
       next: (respuesta) => {
         const token = respuesta?.token;
-        if(token) {
+        if (token) {
           this.authService.guardarToken(token);
           const destino = this.authService.esCliente() ? '/dashboard-cliente' : '/dashboard';
           this.router.navigate([destino]);
@@ -52,6 +60,44 @@ export class LoginComponent {
         this.errorMessage = true;
         this.logging = false;
       }
-    })
+    });
+  }
+
+  solicitarRecuperacion(): void {
+    if (this.recoveryForm.invalid) {
+      this.recoveryForm.markAllAsTouched();
+      return;
+    }
+
+    this.recoveryErrorMessage = '';
+    this.recoverySuccessMessage = '';
+    this.sendingRecovery = true;
+
+    const email = `${this.recoveryForm.value?.email || ''}`.trim();
+
+    this.apiService.recuperarAcceso(email).subscribe({
+      next: (respuesta) => {
+        if (respuesta?.resp) {
+          this.recoverySuccessMessage = respuesta.resp;
+          this.recoveryForm.reset();
+        } else {
+          this.recoveryErrorMessage =
+            'No fue posible procesar la solicitud, intenta nuevamente.';
+        }
+        this.sendingRecovery = false;
+      },
+      error: () => {
+        this.recoveryErrorMessage =
+          'No fue posible procesar la solicitud, intenta nuevamente.';
+        this.sendingRecovery = false;
+      },
+    });
+  }
+
+  toggleRecovery(event: Event): void {
+    event.preventDefault();
+    this.showRecovery = !this.showRecovery;
+    this.recoveryErrorMessage = '';
+    this.recoverySuccessMessage = '';
   }
 }

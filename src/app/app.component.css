@@ -3,7 +3,10 @@
   flex-direction: row;
   min-height: 100vh;
   overflow: hidden;
-  background-color: var(--color-surface-soft);
+  background:
+    linear-gradient(160deg, rgba(var(--color-primary-rgb), 0.08) 0%, transparent 36%),
+    linear-gradient(345deg, rgba(var(--color-primary-bright-rgb), 0.08) 0%, transparent 42%),
+    var(--color-surface-soft);
 }
 
 .menu-container {
@@ -11,7 +14,6 @@
   flex-shrink: 0;
   min-width: 20rem;
   max-width: 20rem;
-  background-color: var(--color-surface-alt);
 }
 
 /* @media (max-width: 1400) {
@@ -21,21 +23,29 @@
 
 @media (max-width: 1400px) {
   .menu-container {
-    min-width: 14rem;
-    max-width: 14rem;
+    min-width: 16rem;
+    max-width: 16rem;
   }
 }
 
-@media (max-width: 1100px) {
+@media (max-width: 1024px) {
   .menu-container {
-    min-width: 3rem;
-    max-width: 3rem;
+    min-width: 0;
+    max-width: 0;
   }
 }
 
 .content {
   flex-grow: 1;
   overflow-x: auto;
+  backdrop-filter: blur(2px);
+}
+
+.menu-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(10, 14, 27, 0.42);
+  z-index: 1190;
 }
 
 /* Login Page */

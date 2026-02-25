@@ -78,6 +78,31 @@ export class ApiService {
     );
   }
 
+  recuperarAcceso(email: string): Observable<{ resp: string } | null> {
+    const endpoint = 'auth/recuperar-acceso';
+    const url = `${this.url}/${endpoint}`;
+    return this.http.post<{ resp: string }>(url, { email }).pipe(
+      catchError((error) => {
+        console.error(error);
+        return of(null);
+      }),
+    );
+  }
+
+  restablecerContrasena(
+    token: string,
+    password: string,
+  ): Observable<{ resp: string } | null> {
+    const endpoint = 'auth/restablecer-contrasena';
+    const url = `${this.url}/${endpoint}`;
+    return this.http.post<{ resp: string }>(url, { token, password }).pipe(
+      catchError((error) => {
+        console.error(error);
+        return of(null);
+      }),
+    );
+  }
+
   // POST
   createClient(data: any): Observable<any> {
     const endpoint = 'ingresar-cliente';

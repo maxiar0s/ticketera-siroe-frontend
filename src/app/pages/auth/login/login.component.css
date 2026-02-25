@@ -1,24 +1,47 @@
-﻿.login-page {
-  width: 35rem;
-  min-height: 38rem;
-  background-color: var(--color-surface-alt);
-  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+﻿:host {
+  display: block;
+  min-height: 100vh;
 }
 
-.img-logo {
-  width: 100%;
-  padding: 20px;
-  margin: auto;
+.login-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 1rem;
+  background:
+    radial-gradient(circle at 15% 10%, rgba(var(--color-primary-rgb), 0.14), transparent 34%),
+    radial-gradient(circle at 92% 90%, rgba(var(--color-primary-bright-rgb), 0.12), transparent 28%),
+    linear-gradient(145deg, #f8f3f6 0%, #f5f7fb 58%, #f9f2f5 100%);
 }
 
 .form-layout {
+  width: min(32rem, 100%);
+  border-radius: 1.6rem;
+  border: 1px solid rgba(var(--color-primary-rgb), 0.16);
+  background: var(--surface-glass-strong);
+  backdrop-filter: blur(8px);
+  box-shadow: var(--shadow-strong);
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  align-items: center;
-  min-height: 38rem;
-  min-width: 100%;
-  padding: 2rem 0;
+  gap: 1rem;
+  padding: 2rem 2rem 1.8rem;
+}
+
+.img-logo {
+  width: min(18.5rem, 70%);
+  margin: 0.35rem auto 0;
+  filter: drop-shadow(0 10px 20px rgba(17, 30, 56, 0.14));
+}
+
+.login-caption {
+  text-align: center;
+  color: var(--color-ink-soft);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-weight: 700;
+  font-size: 0.76rem;
+  margin: -0.3rem 0 0.2rem;
 }
 
 .form-gap {
@@ -27,35 +50,130 @@
 }
 
 .margin-bottom {
-  margin-bottom: 1.5rem;
+  margin-bottom: 1.2rem;
 }
 
 .flex-input {
   display: flex;
   flex-direction: column;
-  min-width: 100%;
+  width: 100%;
 }
 
 .flex-input label {
-  color: #232323;
+  color: var(--color-ink);
+  font-weight: 700;
+  margin-bottom: 0.45rem;
 }
 
 .flex-input input {
-  padding: 1rem 1rem;
-  border-radius: 15px;
-  width: 27rem;
-  border: 1px solid #dfeaf2;
-  background-color: var(--color-surface);
+  padding: 0.95rem 1rem;
+  border-radius: 0.95rem;
+  width: 100%;
+  box-sizing: border-box;
+  border: 1px solid var(--input-border);
+  background-color: var(--input-bg);
 }
 
 .flex-input input::placeholder {
-  color: var(--color-disabled);
+  color: var(--text-ink-placeholder);
+}
+
+.flex-input input:focus {
+  outline: none;
+  border-color: var(--input-border-focus);
+  box-shadow: var(--ring-focus);
+}
+
+.submit-button {
+  margin-top: 1.5rem;
+  min-height: 2.7rem;
+  border-radius: 999px;
+  font-weight: 700;
+  transition: background-color 0.3s ease, border-color 0.3s ease,
+    color 0.3s ease, box-shadow 0.3s ease, transform 0.22s ease;
+}
+
+.submit-button.valid-form {
+  color: var(--color-surface-alt);
+  border-color: transparent;
+  background-image: linear-gradient(
+    120deg,
+    var(--color-primary-strong),
+    var(--color-primary)
+  );
+  background-size: 160% 100%;
+  background-position: 0% 0%;
+  box-shadow: 0 10px 24px rgba(var(--color-primary-rgb), 0.24);
+}
+
+.submit-button.valid-form:hover,
+.submit-button.valid-form:focus-visible {
+  background-position: 100% 0%;
+  transform: translateY(-1px);
+  box-shadow: 0 14px 28px rgba(var(--color-primary-rgb), 0.3);
+}
+
+.submit-button.invalid-form,
+.submit-button:disabled {
+  transform: none;
+  box-shadow: none;
+}
+
+.recovery-button {
+  margin-top: 0.95rem;
+}
+
+.error-header,
+.success-message,
+.recovery-link,
+.recovery-form {
+  width: 100%;
 }
 
 .error-header {
-  width: 27rem;
   font-size: var(--font-size-xs);
-  margin: 0 auto;
   text-align: left;
-  margin-bottom: 1rem;
+  margin-bottom: 0.4rem;
+}
+
+.recovery-link {
+  margin-top: 0.65rem;
+  color: var(--color-text);
+  text-decoration: underline;
+  font-size: var(--font-size-xs);
+  text-align: left;
+}
+
+.recovery-form {
+  border-top: 1px solid var(--field-border-soft);
+  padding-top: 1rem;
+}
+
+.recovery-title {
+  font-size: var(--font-size-sm);
+  margin-bottom: 0.8rem;
+  color: var(--color-ink);
+  font-weight: 700;
+}
+
+.success-message {
+  color: var(--color-success);
+  font-size: var(--font-size-xs);
+  margin: 0 0 0.75rem;
+  text-align: left;
+}
+
+@media (max-width: 600px) {
+  .login-page {
+    padding: 1rem 0.75rem;
+  }
+
+  .form-layout {
+    padding: 1.5rem 1rem 1.2rem;
+    border-radius: 1.15rem;
+  }
+
+  .img-logo {
+    width: min(16rem, 72%);
+  }
 }

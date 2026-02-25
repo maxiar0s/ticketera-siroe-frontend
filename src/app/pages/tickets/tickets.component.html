@@ -65,9 +65,13 @@
       [ticket]="ticket"
       [isSelected]="ticketSeleccionado?.id === ticket.id"
       [mensajesNoLeidos]="getMensajesNoLeidos(ticket.id)"
+      [isPinned]="isTicketPinned(ticket.id)"
+      [isFavorite]="isTicketFavorite(ticket.id)"
       (onSelect)="seleccionarTicket($event)"
       (onVerDetalle)="seleccionarTicket($event)"
       (onCerrar)="abrirFormularioCerrar($event)"
+      (onTogglePin)="toggleTicketPin($event)"
+      (onToggleFavorite)="toggleTicketFavorite($event)"
     ></app-ticket-card>
   </div>
 
@@ -137,6 +141,12 @@
             class="lead-detail-chip"
           >
             Lead
+          </span>
+          <span
+            *ngIf="isTicketFavorite(ticketSeleccionado.id)"
+            class="favorite-detail-chip"
+          >
+            Favorito
           </span>
           <span
             class="ticket-state-pill"
@@ -348,8 +358,17 @@
 </div>
 
 <ng-container *ngIf="tieneAccesoTickets">
-  <div class="bitacora-modal-backdrop" *ngIf="formularioVisible">
-    <div class="bitacora-modal" role="dialog" aria-modal="true">
+  <div
+    class="bitacora-modal-backdrop"
+    *ngIf="formularioVisible"
+    (click)="cerrarFormulario()"
+  >
+    <div
+      class="bitacora-modal"
+      role="dialog"
+      aria-modal="true"
+      (click)="$event.stopPropagation()"
+    >
       <header class="modal-header">
         <div>
           <h2>{{ modoEdicion ? "Editar" : "Registrar" }}</h2>
@@ -357,6 +376,12 @@
             Completa los datos para dejar registro del ticket.
           </p>
         </div>
+        <img
+          src="/assets/svg/exit-button.svg"
+          (click)="cerrarFormulario()"
+          alt="Cerrar modal"
+          class="close-button"
+        />
       </header>
       <form [formGroup]="ticketForm" (ngSubmit)="guardarTicket()">
         <div class="modal-grid">
@@ -461,8 +486,8 @@
               <input type="date" formControlName="ticketFechaTermino" />
             </label>
 
-            <label
-              class="full"
+            <div
+              class="field-group full"
               [class.invalid]="
                 ticketForm.get('ticketDetalleTermino')?.invalid &&
                 (ticketForm.get('ticketDetalleTermino')?.dirty ||
@@ -474,14 +499,14 @@
                 formControlName="ticketDetalleTermino"
                 placeholder="Describe el trabajo realizado para cerrar el ticket."
               ></app-rich-text-editor>
-            </label>
+            </div>
 
             <!-- Nuevos campos para Cierre: Comentario Interno y Tiempo Resolucion -->
             <div
               class="form-row"
               *ngIf="mostrarCamposTerminoTicket || esAdmin || esTecnico"
             >
-              <label class="full">
+              <div class="field-group full">
                 <span class="label"
                   >Comentario Interno (Visible solo para Staff)</span
                 >
@@ -489,7 +514,7 @@
                   formControlName="comentarioInterno"
                   placeholder="Información relevante para administración o técnicos..."
                 ></app-rich-text-editor>
-              </label>
+              </div>
             </div>
 
             <div
@@ -689,8 +714,8 @@
             </div>
           </label>
 
-          <label
-            class="full"
+          <div
+            class="field-group full"
             [class.invalid]="
               ticketForm.get('descripcion')?.invalid &&
               (ticketForm.get('descripcion')?.dirty ||
@@ -702,7 +727,7 @@
               formControlName="descripcion"
               placeholder="Describe el requerimiento o los hallazgos."
             ></app-rich-text-editor>
-          </label>
+          </div>
 
           <label class="full file-upload-field ticket-ingreso">
             <span class="label">Archivos adjuntos</span>

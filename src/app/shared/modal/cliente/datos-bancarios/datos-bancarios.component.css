@@ -1,20 +1,15 @@
-﻿.modal-overlay {
-  position: fixed;
-  inset: 0;
-  background-color: rgba(22, 28, 45, 0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1100;
-  padding: 1.5rem;
+.modal-overlay {
+  background-color: var(--modal-backdrop);
+  backdrop-filter: blur(6px);
 }
 
 .modal-card {
   width: 100%;
   max-width: 520px;
-  background-color: var(--color-surface);
-  border-radius: 20px;
-  box-shadow: 0 18px 36px rgba(15, 23, 42, 0.2);
+  background-color: var(--modal-surface);
+  border: var(--modal-border);
+  border-radius: var(--modal-radius);
+  box-shadow: var(--modal-shadow);
   padding: 2rem;
   display: flex;
   flex-direction: column;
@@ -50,8 +45,8 @@
 }
 
 .modal-card__close {
-  border: 1px solid var(--color-border);
-  background: rgba(247, 247, 249, 0.9);
+  border: 1px solid var(--input-border);
+  background: var(--surface-muted);
   width: 36px;
   height: 36px;
   padding: 0;
@@ -70,8 +65,8 @@
 }
 
 .modal-card__close:hover {
-  background: #ffe3ef;
-  border-color: #f2b5ce;
+  background: var(--surface-hover-soft);
+  border-color: var(--input-border-focus);
 }
 
 .modal-card__body {
@@ -85,7 +80,7 @@
   gap: 1rem;
   padding: 1.25rem;
   border-radius: 16px;
-  background-color: #f7f7f9;
+  background-color: var(--surface-muted);
   border: 1px solid var(--color-border);
 }
 
@@ -117,7 +112,7 @@
   padding: 1.5rem;
   text-align: center;
   border-radius: 16px;
-  background-color: #fdf2f8;
+  background-color: color-mix(in srgb, var(--color-primary) 12%, var(--surface-elevated));
   color: var(--color-primary);
   font-weight: 600;
 }
