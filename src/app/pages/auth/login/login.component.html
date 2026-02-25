@@ -1,34 +1,72 @@
 <div class="login-page">
   <div class="form-layout">
-    <img [src]="loginLogo" [alt]="brand.appTitle + ' logo login'" class="img-logo">
-    <div></div>
+    <img [src]="loginLogo" [alt]="brand.appTitle + ' logo login'" class="img-logo" />
+    <p class="login-caption">Acceso plataforma de tickets</p>
+
     <div *ngIf="errorMessage" class="error-header error">
       Correo electrónico o contraseña incorrecta, intente nuevamente.
     </div>
+
     <form [formGroup]="loginForm" (submit)="postLogin()" class="form-gap">
       <div class="flex-input margin-bottom">
-        <label for="" class="mb-5">Correo electronico:</label>
-        <input formControlName="email" type="email" name="email" placeholder="correo@siroe.cl">
-        <div *ngIf="loginForm.get('email')?.invalid && loginForm.get('email')?.touched" class="error">
+        <label for="login-email" class="mb-5">Correo electronico:</label>
+        <input
+          id="login-email"
+          formControlName="email"
+          type="email"
+          name="email"
+          placeholder="correo@siroe.cl"
+        />
+        <div
+          *ngIf="loginForm.get('email')?.invalid && loginForm.get('email')?.touched"
+          class="error"
+        >
           Correo electronico invalido.
         </div>
       </div>
+
       <div class="flex-input">
-        <label for="" class="mb-5">Contraseña:</label>
-        <input formControlName="password" type="password" autocomplete="password" name="password" placeholder="contraseña">
-        <div *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched" class="error">
+        <label for="login-password" class="mb-5">Contraseña:</label>
+        <input
+          id="login-password"
+          formControlName="password"
+          type="password"
+          autocomplete="password"
+          name="password"
+          placeholder="contraseña"
+        />
+        <div
+          *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched"
+          class="error"
+        >
           Contraseña invalida.
         </div>
       </div>
-      <button *ngIf="!logging" style="margin-top: 1.8rem;" [disabled]="loginForm.invalid" type="submit" [ngClass]="{'invalid-form': loginForm.invalid, 'valid-form': loginForm.valid}" class="btn">Iniciar sesión</button>
-      <button *ngIf="logging" style="margin-top: 1.8rem;" class="btn"><div class="spinner-buttons spinner-size-buttons spinner-color"></div></button>
+
+      <button
+        *ngIf="!logging"
+        [disabled]="loginForm.invalid"
+        type="submit"
+        [ngClass]="{ 'invalid-form': loginForm.invalid, 'valid-form': loginForm.valid }"
+        class="btn submit-button"
+      >
+        Iniciar sesión
+      </button>
+      <button *ngIf="logging" class="btn submit-button">
+        <div class="spinner-buttons spinner-size-buttons spinner-color"></div>
+      </button>
     </form>
 
     <a href="#" class="recovery-link" (click)="toggleRecovery($event)">
       {{ showRecovery ? 'Ocultar recuperacion' : 'Recuperar contrasena' }}
     </a>
 
-    <form *ngIf="showRecovery" [formGroup]="recoveryForm" (submit)="solicitarRecuperacion()" class="form-gap recovery-form">
+    <form
+      *ngIf="showRecovery"
+      [formGroup]="recoveryForm"
+      (submit)="solicitarRecuperacion()"
+      class="form-gap recovery-form"
+    >
       <div class="recovery-title">Recuperar contrasena por correo</div>
 
       <div *ngIf="recoverySuccessMessage" class="success-header success-message">
@@ -40,16 +78,33 @@
 
       <div class="flex-input">
         <label for="correo-recuperacion" class="mb-5">Correo electronico:</label>
-        <input id="correo-recuperacion" formControlName="email" type="email" name="correo-recuperacion" placeholder="correo@siroe.cl">
-        <div *ngIf="recoveryForm.get('email')?.invalid && recoveryForm.get('email')?.touched" class="error">
+        <input
+          id="correo-recuperacion"
+          formControlName="email"
+          type="email"
+          name="correo-recuperacion"
+          placeholder="correo@siroe.cl"
+        />
+        <div
+          *ngIf="recoveryForm.get('email')?.invalid && recoveryForm.get('email')?.touched"
+          class="error"
+        >
           Debes ingresar un correo electronico valido.
         </div>
       </div>
 
-      <button *ngIf="!sendingRecovery" style="margin-top: 1rem;" [disabled]="recoveryForm.invalid" type="submit" [ngClass]="{'invalid-form': recoveryForm.invalid, 'valid-form': recoveryForm.valid}" class="btn">
+      <button
+        *ngIf="!sendingRecovery"
+        [disabled]="recoveryForm.invalid"
+        type="submit"
+        [ngClass]="{ 'invalid-form': recoveryForm.invalid, 'valid-form': recoveryForm.valid }"
+        class="btn submit-button recovery-button"
+      >
         Enviar enlace de recuperacion
       </button>
-      <button *ngIf="sendingRecovery" style="margin-top: 1rem;" class="btn"><div class="spinner-buttons spinner-size-buttons spinner-color"></div></button>
+      <button *ngIf="sendingRecovery" class="btn submit-button recovery-button">
+        <div class="spinner-buttons spinner-size-buttons spinner-color"></div>
+      </button>
     </form>
   </div>
 </div>
