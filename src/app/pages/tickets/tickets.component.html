@@ -65,9 +65,13 @@
       [ticket]="ticket"
       [isSelected]="ticketSeleccionado?.id === ticket.id"
       [mensajesNoLeidos]="getMensajesNoLeidos(ticket.id)"
+      [isPinned]="isTicketPinned(ticket.id)"
+      [isFavorite]="isTicketFavorite(ticket.id)"
       (onSelect)="seleccionarTicket($event)"
       (onVerDetalle)="seleccionarTicket($event)"
       (onCerrar)="abrirFormularioCerrar($event)"
+      (onTogglePin)="toggleTicketPin($event)"
+      (onToggleFavorite)="toggleTicketFavorite($event)"
     ></app-ticket-card>
   </div>
 
@@ -137,6 +141,12 @@
             class="lead-detail-chip"
           >
             Lead
+          </span>
+          <span
+            *ngIf="isTicketFavorite(ticketSeleccionado.id)"
+            class="favorite-detail-chip"
+          >
+            Favorito
           </span>
           <span
             class="ticket-state-pill"

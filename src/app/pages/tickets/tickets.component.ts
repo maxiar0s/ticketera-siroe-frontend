@@ -7,7 +7,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { finalize } from 'rxjs';
+import { catchError, finalize, forkJoin, map, of, switchMap } from 'rxjs';
 import { Ticket } from '../../interfaces/ticket.interface';
 import { ClienteResumen } from '../../interfaces/cliente-resumen.interface';
 import { Tecnico } from '../../interfaces/tecnico.interface';
@@ -81,6 +81,10 @@ export class TicketsComponent implements OnInit {
   estadosTicketFormulario: { value: string; label: string }[] = [];
   mensajesNoLeidosPorTicket: Record<number, number> = {};
   usuarioActualId: number | null = null;
+  private readonly ticketPrefsStorageKey = 'tickets-ui-preferences';
+  private pinnedTicketIds = new Set<number>();
+  private favoriteTicketIds = new Set<number>();
+  private ticketsBaseCargados: Ticket[] = [];
 
   readonly esAdmin: boolean;
   readonly esTecnico: boolean;
@@ -143,6 +147,7 @@ export class TicketsComponent implements OnInit {
       tecnicoId: [''],
       fecha: [''],
       tagIds: [[]],
+      soloFavoritos: [false],
     });
 
     this.ticketForm = this.fb.group({
@@ -228,6 +233,7 @@ export class TicketsComponent implements OnInit {
     // Obtener ID del usuario actual
     const tokenData = this.authService.decodificarToken();
     this.usuarioActualId = tokenData?.id ?? null;
+    this.cargarPreferenciasTickets();
 
     // Establecer filtro por defecto según el rol
     if (this.esTecnico && this.usuarioActualId) {
@@ -397,6 +403,8 @@ export class TicketsComponent implements OnInit {
       prioridad: '',
       tecnicoId: tecnicoIdDefault,
       fecha: '',
+      tagIds: [],
+      soloFavoritos: false,
     });
     const clienteId = this.filtroForm.value.clienteId;
     if (clienteId) {
@@ -452,15 +460,22 @@ export class TicketsComponent implements OnInit {
 
     this.apiService
       .tickets(params)
-      .pipe(finalize(() => (this.cargando = false)))
+      .pipe(
+        switchMap((respuesta) =>
+          this.combinarConTicketsPineados(respuesta?.data ?? []).pipe(
+            map((ticketsCombinados) => ({ respuesta, ticketsCombinados })),
+          ),
+        ),
+        finalize(() => (this.cargando = false)),
+      )
       .subscribe({
-        next: (respuesta) => {
-          const data = respuesta?.data ?? [];
-          this.tickets = data;
+        next: ({ respuesta, ticketsCombinados }) => {
+          this.ticketsBaseCargados = ticketsCombinados;
+          this.actualizarTicketsVisibles();
           this.paginasTotales = respuesta?.paginasTotales ?? 0;
           this.paginaActual = respuesta?.pagina ?? 1;
           if (this.ticketSeleccionado) {
-            const actualizada = data.find(
+            const actualizada = ticketsCombinados.find(
               (item: Ticket) => item.id === this.ticketSeleccionado?.id,
             );
             this.ticketSeleccionado = actualizada;
@@ -472,6 +487,7 @@ export class TicketsComponent implements OnInit {
           this.errorMensaje =
             error?.error?.error ??
             'Ocurrio un error al intentar obtener los tickets.';
+          this.ticketsBaseCargados = [];
           this.tickets = [];
           this.paginasTotales = 0;
         },
@@ -1331,9 +1347,195 @@ export class TicketsComponent implements OnInit {
     if (!detalle?.id) {
       return;
     }
-    this.tickets = this.tickets.map((item) =>
+    this.ticketsBaseCargados = this.ticketsBaseCargados.map((item) =>
       item.id === detalle.id ? { ...item, ...detalle } : item,
     );
+    this.actualizarTicketsVisibles();
+  }
+
+  isTicketPinned(ticketId: number): boolean {
+    return this.pinnedTicketIds.has(ticketId);
+  }
+
+  isTicketFavorite(ticketId: number): boolean {
+    return this.favoriteTicketIds.has(ticketId);
+  }
+
+  toggleTicketPin(ticket: Ticket): void {
+    if (!ticket?.id) {
+      return;
+    }
+
+    if (this.pinnedTicketIds.has(ticket.id)) {
+      this.pinnedTicketIds.delete(ticket.id);
+    } else {
+      this.pinnedTicketIds.add(ticket.id);
+    }
+
+    this.persistirPreferenciasTickets();
+    this.cargarTickets(false);
+  }
+
+  toggleTicketFavorite(ticket: Ticket): void {
+    if (!ticket?.id) {
+      return;
+    }
+
+    if (this.favoriteTicketIds.has(ticket.id)) {
+      this.favoriteTicketIds.delete(ticket.id);
+    } else {
+      this.favoriteTicketIds.add(ticket.id);
+    }
+
+    this.persistirPreferenciasTickets();
+    this.actualizarTicketsVisibles();
+  }
+
+  private actualizarTicketsVisibles(): void {
+    const ticketsFiltrados = this.aplicarFiltroFavoritos(this.ticketsBaseCargados);
+    this.tickets = this.ordenarTicketsPorPreferencias(ticketsFiltrados);
+  }
+
+  private aplicarFiltroFavoritos(tickets: Ticket[]): Ticket[] {
+    const soloFavoritos = !!this.filtroForm.get('soloFavoritos')?.value;
+    if (!soloFavoritos) {
+      return [...tickets];
+    }
+
+    return tickets.filter(
+      (ticket) =>
+        this.favoriteTicketIds.has(ticket.id) || this.pinnedTicketIds.has(ticket.id),
+    );
+  }
+
+  private combinarConTicketsPineados(ticketsBase: Ticket[]) {
+    const base = Array.isArray(ticketsBase) ? [...ticketsBase] : [];
+
+    if (this.pinnedTicketIds.size === 0) {
+      return of(base);
+    }
+
+    const idsBase = new Set(base.map((ticket) => ticket.id));
+    const faltantes = Array.from(this.pinnedTicketIds).filter(
+      (id) => !idsBase.has(id),
+    );
+
+    if (faltantes.length === 0) {
+      return of(base);
+    }
+
+    const requests = faltantes.map((id) =>
+      this.apiService.ticket(id).pipe(catchError(() => of(null))),
+    );
+
+    return forkJoin(requests).pipe(
+      map((extras) => {
+        const idsRecuperados = new Set<number>();
+        const ticketsExtras: Ticket[] = [];
+
+        extras.forEach((item) => {
+          if (!item?.id || idsBase.has(item.id)) {
+            return;
+          }
+          idsRecuperados.add(item.id);
+          ticketsExtras.push(item);
+        });
+
+        let actualizoPreferencias = false;
+        faltantes.forEach((id) => {
+          if (!idsRecuperados.has(id) && this.pinnedTicketIds.delete(id)) {
+            actualizoPreferencias = true;
+          }
+        });
+
+        if (actualizoPreferencias) {
+          this.persistirPreferenciasTickets();
+        }
+
+        return [...base, ...ticketsExtras];
+      }),
+    );
+  }
+
+  private ordenarTicketsPorPreferencias(tickets: Ticket[]): Ticket[] {
+    if (!Array.isArray(tickets) || tickets.length <= 1) {
+      return Array.isArray(tickets) ? [...tickets] : [];
+    }
+
+    return tickets
+      .map((ticket, index) => ({ ticket, index }))
+      .sort((a, b) => {
+        const pinA = this.pinnedTicketIds.has(a.ticket.id) ? 1 : 0;
+        const pinB = this.pinnedTicketIds.has(b.ticket.id) ? 1 : 0;
+        if (pinA !== pinB) {
+          return pinB - pinA;
+        }
+
+        const favA = this.favoriteTicketIds.has(a.ticket.id) ? 1 : 0;
+        const favB = this.favoriteTicketIds.has(b.ticket.id) ? 1 : 0;
+        if (favA !== favB) {
+          return favB - favA;
+        }
+
+        return a.index - b.index;
+      })
+      .map(({ ticket }) => ticket);
+  }
+
+  private getTicketPrefsKey(): string {
+    return `${this.ticketPrefsStorageKey}-${this.usuarioActualId ?? 'anon'}`;
+  }
+
+  private cargarPreferenciasTickets(): void {
+    if (typeof localStorage === 'undefined') {
+      return;
+    }
+
+    const key = this.getTicketPrefsKey();
+    const raw = localStorage.getItem(key);
+    if (!raw) {
+      this.pinnedTicketIds.clear();
+      this.favoriteTicketIds.clear();
+      return;
+    }
+
+    try {
+      const parsed = JSON.parse(raw) as {
+        pinned?: number[];
+        favorite?: number[];
+      };
+
+      this.pinnedTicketIds = new Set(
+        Array.isArray(parsed?.pinned)
+          ? parsed.pinned.filter(
+              (id): id is number => Number.isInteger(id) && id > 0,
+            )
+          : [],
+      );
+
+      this.favoriteTicketIds = new Set(
+        Array.isArray(parsed?.favorite)
+          ? parsed.favorite.filter(
+              (id): id is number => Number.isInteger(id) && id > 0,
+            )
+          : [],
+      );
+    } catch (_error) {
+      this.pinnedTicketIds.clear();
+      this.favoriteTicketIds.clear();
+    }
+  }
+
+  private persistirPreferenciasTickets(): void {
+    if (typeof localStorage === 'undefined') {
+      return;
+    }
+
+    const payload = {
+      pinned: Array.from(this.pinnedTicketIds),
+      favorite: Array.from(this.favoriteTicketIds),
+    };
+    localStorage.setItem(this.getTicketPrefsKey(), JSON.stringify(payload));
   }
 
   private actualizarMapaClientesLead(clientes: ClienteResumen[]): void {

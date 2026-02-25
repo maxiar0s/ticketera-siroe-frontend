@@ -73,6 +73,14 @@
       </select>
     </label>
 
+    <div class="filter-field favorites-toggle">
+      <span class="label">Favoritos</span>
+      <label class="favorite-checkbox">
+        <input type="checkbox" formControlName="soloFavoritos" />
+        <span>Solo favoritos</span>
+      </label>
+    </div>
+
     <div class="filter-field tags-filter" *ngIf="tagsDisponibles.length > 0">
       <span class="label">Tags</span>
       <div class="tags-chips">

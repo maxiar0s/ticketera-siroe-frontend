@@ -61,13 +61,27 @@
   <div class="ticket-card-footer-full">
     <!-- Actions con separadores -->
     <div class="ticket-footer-section ticket-footer-section-icon">
-      <button type="button" class="ticket-action-btn" title="Fijar">
+      <button
+        type="button"
+        class="ticket-action-btn"
+        [class.active-pin]="isPinned"
+        [attr.aria-pressed]="isPinned ? 'true' : 'false'"
+        [title]="isPinned ? 'Quitar pin' : 'Fijar'"
+        (click)="handleTogglePin($event)"
+      >
         <img src="/assets/svg/pin.svg" alt="Pin" class="ticket-action-icon" />
       </button>
     </div>
     <div class="ticket-footer-divider"></div>
     <div class="ticket-footer-section ticket-footer-section-icon">
-      <button type="button" class="ticket-action-btn" title="Destacar">
+      <button
+        type="button"
+        class="ticket-action-btn"
+        [class.active-favorite]="isFavorite"
+        [attr.aria-pressed]="isFavorite ? 'true' : 'false'"
+        [title]="isFavorite ? 'Quitar favorito' : 'Marcar favorito'"
+        (click)="handleToggleFavorite($event)"
+      >
         <img
           src="/assets/svg/star.svg"
           alt="Favorito"

@@ -212,6 +212,7 @@
 
 .type-badge,
 .lead-detail-chip,
+.favorite-detail-chip,
 .ticket-state-pill,
 .tipo-chip {
   display: inline-flex;
@@ -235,6 +236,13 @@
   background-color: var(--chip-bg);
   color: var(--chip-text);
   border: 1px solid color-mix(in srgb, var(--color-primary) 28%, transparent);
+}
+
+.favorite-detail-chip {
+  padding: 0.3rem 0.8rem;
+  background-color: color-mix(in srgb, #f59e0b 16%, transparent);
+  color: #b45309;
+  border: 1px solid color-mix(in srgb, #f59e0b 45%, transparent);
 }
 
 .ticket-state-pill {

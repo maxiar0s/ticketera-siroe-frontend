@@ -253,6 +253,14 @@
   background: rgba(var(--color-primary-rgb), 0.06);
 }
 
+.ticket-action-btn.active-pin {
+  background: rgba(var(--color-primary-rgb), 0.12);
+}
+
+.ticket-action-btn.active-favorite {
+  background: rgba(245, 158, 11, 0.16);
+}
+
 [data-theme='dark'] .ticket-card.ticket-nuevo {
   background-color: color-mix(in srgb, var(--surface-elevated) 88%, var(--color-nuevo) 12%);
 }
@@ -298,6 +306,18 @@
   opacity: 1;
   filter: brightness(0) saturate(100%) invert(21%) sepia(85%) saturate(2776%)
     hue-rotate(325deg) brightness(82%) contrast(93%);
+}
+
+.ticket-action-btn.active-pin .ticket-action-icon {
+  opacity: 1;
+  filter: brightness(0) saturate(100%) invert(21%) sepia(85%) saturate(2776%)
+    hue-rotate(325deg) brightness(82%) contrast(93%);
+}
+
+.ticket-action-btn.active-favorite .ticket-action-icon {
+  opacity: 1;
+  filter: brightness(0) saturate(100%) invert(72%) sepia(67%) saturate(1203%)
+    hue-rotate(355deg) brightness(101%) contrast(93%);
 }
 
 /* User section layout */
