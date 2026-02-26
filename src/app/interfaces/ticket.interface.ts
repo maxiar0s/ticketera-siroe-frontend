@@ -43,7 +43,7 @@ export interface Ticket {
   } | null;
   prioridad: 'Baja' | 'Media' | 'Alta';
 
-  fuente: 'Web' | 'Email';
+  fuente: 'Web' | 'Email' | 'Telegram IA';
   fechaRespuesta?: string | null;
   historialEstados?: string[];
   tecnicoAsignadoId?: number;

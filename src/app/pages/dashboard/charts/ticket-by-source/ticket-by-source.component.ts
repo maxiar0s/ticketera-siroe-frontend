@@ -12,7 +12,7 @@ import { Ticket } from '../../../../interfaces/ticket.interface';
       <h3>Tickets por Fuente</h3>
       <simple-donut-chart
         [data]="chartData"
-        [colors]="['#3b82f6', '#f97316']"
+        [colors]="['#3b82f6', '#f97316', '#10b981']"
       ></simple-donut-chart>
     </div>
   `,
@@ -45,23 +45,47 @@ export class TicketBySourceComponent implements OnChanges {
   @Input() tickets: Ticket[] = [];
   chartData: { label: string; value: number }[] = [];
 
+  private readonly sourceLabels = ['Web', 'Email', 'Telegram IA'];
+
   ngOnChanges(): void {
     this.processData();
   }
 
   private processData(): void {
-    const counts: { [key: string]: number } = { Web: 0, Email: 0 };
+    const counts: Record<string, number> = {
+      Web: 0,
+      Email: 0,
+      'Telegram IA': 0,
+    };
 
     this.tickets.forEach((ticket) => {
-      const source = ticket.fuente || 'Web'; // Default to Web if undefined
-      if (counts.hasOwnProperty(source)) {
-        counts[source]++;
+      const source = this.normalizeSource(ticket.fuente);
+      if (source) {
+        counts[source] += 1;
       }
     });
 
-    this.chartData = Object.keys(counts).map((key) => ({
+    this.chartData = this.sourceLabels.map((key) => ({
       label: key,
       value: counts[key],
     }));
+  }
+
+  private normalizeSource(source: string | undefined): string | null {
+    if (!source) {
+      return 'Web';
+    }
+
+    const normalized = source.trim().toLowerCase();
+    if (normalized === 'web') {
+      return 'Web';
+    }
+    if (normalized === 'email') {
+      return 'Email';
+    }
+    if (normalized === 'telegram ia' || normalized === 'telegram_ia') {
+      return 'Telegram IA';
+    }
+    return null;
   }
 }

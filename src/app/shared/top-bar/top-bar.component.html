@@ -29,6 +29,16 @@
       />
     </div>
     <button
+      type="button"
+      class="agent-button"
+      [attr.aria-expanded]="agentPopupVisible"
+      aria-label="Abrir chat del agente"
+      (click)="toggleAgentChat()"
+    >
+      <span class="agent-button-icon">IA</span>
+      <span class="agent-button-label">Agente</span>
+    </button>
+    <button
       *ngIf="features.notificaciones"
       type="button"
       class="notifications-button"
@@ -58,8 +68,8 @@
 </div>
 <div
   class="notifications-backdrop"
-  *ngIf="popupVisible"
-  (click)="closeNotifications()"
+  *ngIf="popupVisible || agentPopupVisible"
+  (click)="closeNotifications(); closeAgentChat()"
 ></div>
 <div class="notifications-modal" *ngIf="popupVisible">
   <div class="notifications-header">
@@ -108,4 +118,76 @@
       Marcar todas como leidas
     </button>
   </div>
+</div>
+
+<div class="agent-chat-modal" *ngIf="agentPopupVisible">
+  <div class="agent-chat-header">
+    <div class="agent-chat-title">
+      <span class="agent-badge">IA</span>
+      <div>
+        <h3>Agente</h3>
+        <p>Asistente de soporte</p>
+      </div>
+    </div>
+    <button
+      type="button"
+      class="close-button"
+      aria-label="Cerrar chat"
+      (click)="closeAgentChat()"
+    >
+      ×
+    </button>
+  </div>
+
+  <div class="agent-chat-body">
+    <div
+      class="agent-chat-message"
+      *ngFor="let message of chatMessages"
+      [class.from-user]="message.role === 'user'"
+    >
+      <span>{{ message.text }}</span>
+      <ul
+        *ngIf="message.role === 'agent' && message.sources?.length"
+        class="agent-chat-sources"
+      >
+        <li *ngFor="let source of message.sources">
+          <button type="button" (click)="abrirFuente(source)">
+            {{ source.label }}
+          </button>
+        </li>
+      </ul>
+      <div
+        class="agent-chat-actions"
+        *ngIf="mostrarAccionCrearTicket(message)"
+      >
+        <button
+          type="button"
+          class="primary-button small"
+          (click)="abrirModalCrearTicket()"
+        >
+          Crear ticket
+        </button>
+      </div>
+    </div>
+    <div class="agent-chat-message" *ngIf="isSendingAgentMessage">
+      Escribiendo respuesta...
+    </div>
+  </div>
+
+  <form class="agent-chat-footer" (ngSubmit)="sendAgentMessage()">
+    <input
+      type="text"
+      name="agent-chat"
+      placeholder="Escribe tu consulta..."
+      [(ngModel)]="chatDraft"
+      [disabled]="isSendingAgentMessage"
+    />
+    <button
+      type="submit"
+      class="primary-button small"
+      [disabled]="isSendingAgentMessage || !chatDraft.trim()"
+    >
+      {{ isSendingAgentMessage ? 'Enviando...' : 'Enviar' }}
+    </button>
+  </form>
 </div>

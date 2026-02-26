@@ -9,10 +9,10 @@ import { Ticket } from '../../../../interfaces/ticket.interface';
   imports: [CommonModule, SimpleDonutChartComponent],
   template: `
     <div class="card">
-      <h3>Tickets por Tipo</h3>
+      <h3>Tickets por Cliente</h3>
       <simple-donut-chart
         [data]="chartData"
-        [colors]="['#22c55e', '#f97316', '#ef4444']"
+        [colors]="['#22c55e', '#f97316', '#ef4444', '#3b82f6', '#8b5cf6', '#14b8a6']"
       ></simple-donut-chart>
     </div>
   `,
@@ -50,22 +50,29 @@ export class TicketByTypeComponent implements OnChanges {
   }
 
   private processData(): void {
-    const counts: { [key: string]: number } = {
-      Baja: 0,
-      Media: 0,
-      Alta: 0,
-    };
+    const counts: Record<string, number> = {};
 
     this.tickets.forEach((ticket) => {
-      const priority = ticket.prioridad || 'Media';
-      if (counts.hasOwnProperty(priority)) {
-        counts[priority]++;
-      }
+      const cliente = this.getClienteLabel(ticket);
+      counts[cliente] = (counts[cliente] || 0) + 1;
     });
 
-    this.chartData = Object.keys(counts).map((key) => ({
-      label: key,
-      value: counts[key],
-    }));
+    this.chartData = Object.entries(counts)
+      .map(([label, value]) => ({ label, value }))
+      .sort((a, b) => b.value - a.value);
+  }
+
+  private getClienteLabel(ticket: Ticket): string {
+    const nombre = ticket.casaMatriz?.razonSocial?.trim();
+    if (nombre) {
+      return nombre;
+    }
+
+    const casaMatrizId = String(ticket.casaMatrizId || '').trim();
+    if (casaMatrizId) {
+      return `Cliente ${casaMatrizId}`;
+    }
+
+    return 'Cliente no identificado';
   }
 }
