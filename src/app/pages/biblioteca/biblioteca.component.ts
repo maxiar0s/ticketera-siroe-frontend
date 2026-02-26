@@ -7,6 +7,7 @@ import {
   OnInit,
   inject,
 } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import {
   FormBuilder,
   FormControl,
@@ -102,6 +103,7 @@ export class BibliotecaComponent implements OnInit {
     private fb: FormBuilder,
     private apiService: ApiService,
     private authService: AuthService,
+    private route: ActivatedRoute,
     private cdr: ChangeDetectorRef, // Inyectar CDR
   ) {
     this.inicializarFormulario();
@@ -113,6 +115,51 @@ export class BibliotecaComponent implements OnInit {
     this.cargarProyectos();
     this.cargarClientes();
     this.cargarCategorias();
+
+    this.route.queryParamMap
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((params) => {
+        const rawProyectoId = params.get('proyectoId');
+        if (!rawProyectoId) {
+          return;
+        }
+
+        const proyectoId = Number(rawProyectoId);
+        if (!Number.isInteger(proyectoId) || proyectoId <= 0) {
+          return;
+        }
+
+        if (this.selectedProyecto?.id === proyectoId) {
+          return;
+        }
+
+        this.abrirProyectoDesdeRuta(proyectoId);
+      });
+  }
+
+  private abrirProyectoDesdeRuta(proyectoId: number): void {
+    this.detallesCargando = true;
+    this.apiService
+      .getBibliotecaProyecto(proyectoId)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (detalle) => {
+          this.selectedProyecto = detalle;
+          if (detalle.categoria?.columnas?.length) {
+            this.tabActiva = detalle.categoria.columnas[0].id;
+          } else {
+            this.tabActiva = 'general';
+          }
+          this.mostrarContenidoPrivado = {};
+          this.detallesCargando = false;
+          this.cdr.markForCheck();
+        },
+        error: (error) => {
+          console.error('Error al abrir proyecto desde ruta:', error);
+          this.detallesCargando = false;
+          this.cdr.markForCheck();
+        },
+      });
   }
 
   private inicializarFormulario(): void {

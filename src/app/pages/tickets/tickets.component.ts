@@ -85,6 +85,7 @@ export class TicketsComponent implements OnInit {
   private pinnedTicketIds = new Set<number>();
   private favoriteTicketIds = new Set<number>();
   private ticketsBaseCargados: Ticket[] = [];
+  private abrirCrearDesdeQuery = false;
 
   readonly esAdmin: boolean;
   readonly esTecnico: boolean;
@@ -182,7 +183,13 @@ export class TicketsComponent implements OnInit {
     this.signalService.updateData(this.tituloModulo);
     this.route.queryParamMap.subscribe((params) => {
       const idParam = params.get('ticketId');
+      const openCreateParam = params.get('openCreateTicket');
+
+      this.abrirCrearDesdeQuery =
+        openCreateParam === '1' || openCreateParam === 'true';
+
       if (!idParam) {
+        this.procesarAperturaCrearDesdeQuery();
         return;
       }
       const parsed = Number.parseInt(idParam, 10);
@@ -193,6 +200,8 @@ export class TicketsComponent implements OnInit {
           this.procesarTicketDestino();
         }
       }
+
+      this.procesarAperturaCrearDesdeQuery();
     });
 
     this.apiService.perfilActual().subscribe({
@@ -208,6 +217,7 @@ export class TicketsComponent implements OnInit {
           return;
         }
         this.inicializarDatos();
+        this.procesarAperturaCrearDesdeQuery();
       },
       error: () => {
         const rolTieneTickets =
@@ -221,6 +231,7 @@ export class TicketsComponent implements OnInit {
           return;
         }
         this.inicializarDatos();
+        this.procesarAperturaCrearDesdeQuery();
       },
     });
 
@@ -250,6 +261,26 @@ export class TicketsComponent implements OnInit {
     this.cargarProyectos();
     this.cargarMensajesNoLeidos();
     this.estadosTicketFormulario = [...this.estadosTicket];
+    this.procesarAperturaCrearDesdeQuery();
+  }
+
+  private procesarAperturaCrearDesdeQuery(): void {
+    if (!this.abrirCrearDesdeQuery) {
+      return;
+    }
+
+    if (!this.tieneAccesoTickets || !this.puedeCrear) {
+      return;
+    }
+
+    this.abrirCrearDesdeQuery = false;
+    this.abrirFormularioCrear();
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: { openCreateTicket: null },
+      queryParamsHandling: 'merge',
+      replaceUrl: true,
+    });
   }
 
   private configurarValidacionesDinamicas(): void {

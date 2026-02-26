@@ -1375,6 +1375,26 @@ export class ApiService {
       );
   }
 
+  consultarAgente(payload: {
+    mensaje: string;
+    conversationId?: string;
+  }): Observable<{ respuesta: string; fuentes: any[]; acciones?: string[] }> {
+    return this.http
+      .post<{ respuesta: string; fuentes: any[]; acciones?: string[] }>(
+        `${this.url}/agente/chat`,
+        {
+          mensaje: payload.mensaje,
+          conversationId: payload.conversationId,
+        },
+      )
+      .pipe(
+        catchError((error: HttpErrorResponse) => {
+          console.error('Error al consultar el agente:', error);
+          return throwError(() => error);
+        }),
+      );
+  }
+
   // ===============================================
   // Tags de clientes
   // ===============================================
