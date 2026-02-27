@@ -35,6 +35,10 @@ export interface Ticket {
     sucursal: string;
     estado?: number;
   };
+  creadoPor?: {
+    id: number;
+    name: string;
+  };
   proyectoId?: number | null;
   proyecto?: {
     id: number;
@@ -43,7 +47,7 @@ export interface Ticket {
   } | null;
   prioridad: 'Baja' | 'Media' | 'Alta';
 
-  fuente: 'Web' | 'Email';
+  fuente: 'Web' | 'Email' | 'Telegram IA' | 'Agente IA';
   fechaRespuesta?: string | null;
   historialEstados?: string[];
   tecnicoAsignadoId?: number;

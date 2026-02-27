@@ -106,16 +106,26 @@
     </div>
     <div class="ticket-footer-divider" *ngIf="ticket.tecnicos?.length"></div>
 
-    <!-- Creado por -->
+    <!-- Cliente -->
     <div class="ticket-footer-section ticket-footer-section-user">
       <span class="ticket-cliente-avatar">{{
-        (ticket.casaMatriz?.razonSocial || "N")[0]
+        getClienteInicial()
+      }}</span>
+      <div class="ticket-footer-user-info">
+        <span class="ticket-footer-label">Cliente</span>
+        <span class="ticket-footer-value">{{ getClienteNombre() }}</span>
+      </div>
+    </div>
+    <div class="ticket-footer-divider"></div>
+
+    <!-- Creado por -->
+    <div class="ticket-footer-section ticket-footer-section-user">
+      <span class="ticket-creado-por-avatar">{{
+        getCreadoPorInicial()
       }}</span>
       <div class="ticket-footer-user-info">
         <span class="ticket-footer-label">Creado por</span>
-        <span class="ticket-footer-value">{{
-          ticket.casaMatriz?.razonSocial || "N/A"
-        }}</span>
+        <span class="ticket-footer-value">{{ getCreadoPorNombre() }}</span>
       </div>
     </div>
     <div class="ticket-footer-divider"></div>

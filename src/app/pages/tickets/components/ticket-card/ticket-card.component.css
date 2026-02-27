@@ -364,6 +364,21 @@
   text-transform: uppercase;
 }
 
+.ticket-creado-por-avatar {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #db2777, #be185d);
+  color: #fff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--font-size-xs);
+  font-weight: 700;
+  flex-shrink: 0;
+  text-transform: uppercase;
+}
+
 .ticket-prioridad-chip {
   display: inline-flex;
   align-items: center;
