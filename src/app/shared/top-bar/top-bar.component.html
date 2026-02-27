@@ -126,7 +126,7 @@
       <span class="agent-badge">IA</span>
       <div>
         <h3>Agente</h3>
-        <p>Asistente de soporte</p>
+        <p>Asistente con inteligencia artificial</p>
       </div>
     </div>
     <button
@@ -178,6 +178,7 @@
     <input
       type="text"
       name="agent-chat"
+      #agentChatInput
       placeholder="Escribe tu consulta..."
       [(ngModel)]="chatDraft"
       [disabled]="isSendingAgentMessage"

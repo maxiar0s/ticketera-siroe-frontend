@@ -59,6 +59,7 @@ export class TopBarComponent implements AfterViewInit, OnInit, OnDestroy {
   @ViewChild('searchBar') searchBar!: ElementRef<HTMLElement>;
   @ViewChild('searchInput') searchInput!: ElementRef<HTMLInputElement>;
   @ViewChild('searchLabel') searchLabel!: ElementRef<HTMLLabelElement>;
+  @ViewChild('agentChatInput') agentChatInput?: ElementRef<HTMLInputElement>;
 
   public title = this.signalService.getDataSignal();
   public isExpanded = false;
@@ -215,6 +216,9 @@ export class TopBarComponent implements AfterViewInit, OnInit, OnDestroy {
     }
 
     this.agentPopupVisible = !this.agentPopupVisible;
+    if (this.agentPopupVisible) {
+      this.focusAgentChatInput();
+    }
   }
 
   onMenuToggle(): void {
@@ -247,7 +251,12 @@ export class TopBarComponent implements AfterViewInit, OnInit, OnDestroy {
         mensaje,
         conversationId: this.agentConversationId,
       })
-      .pipe(finalize(() => (this.isSendingAgentMessage = false)))
+      .pipe(
+        finalize(() => {
+          this.isSendingAgentMessage = false;
+          this.focusAgentChatInput();
+        }),
+      )
       .subscribe({
         next: (response) => {
           const respuesta = response?.respuesta?.trim();
@@ -276,6 +285,12 @@ export class TopBarComponent implements AfterViewInit, OnInit, OnDestroy {
           ];
         },
       });
+  }
+
+  private focusAgentChatInput(): void {
+    setTimeout(() => {
+      this.agentChatInput?.nativeElement?.focus();
+    }, 0);
   }
 
   private obtenerMensajeErrorAgente(error: HttpErrorResponse): string {

@@ -12,7 +12,7 @@ import { Ticket } from '../../../../interfaces/ticket.interface';
       <h3>Tickets por Fuente</h3>
       <simple-donut-chart
         [data]="chartData"
-        [colors]="['#3b82f6', '#f97316', '#10b981']"
+        [colors]="['#3b82f6', '#f97316', '#10b981', '#8b5cf6']"
       ></simple-donut-chart>
     </div>
   `,
@@ -45,7 +45,7 @@ export class TicketBySourceComponent implements OnChanges {
   @Input() tickets: Ticket[] = [];
   chartData: { label: string; value: number }[] = [];
 
-  private readonly sourceLabels = ['Web', 'Email', 'Telegram IA'];
+  private readonly sourceLabels = ['Web', 'Email', 'Telegram IA', 'Agente IA'];
 
   ngOnChanges(): void {
     this.processData();
@@ -56,6 +56,7 @@ export class TicketBySourceComponent implements OnChanges {
       Web: 0,
       Email: 0,
       'Telegram IA': 0,
+      'Agente IA': 0,
     };
 
     this.tickets.forEach((ticket) => {
@@ -85,6 +86,9 @@ export class TicketBySourceComponent implements OnChanges {
     }
     if (normalized === 'telegram ia' || normalized === 'telegram_ia') {
       return 'Telegram IA';
+    }
+    if (normalized === 'agente ia' || normalized === 'agente_ia') {
+      return 'Agente IA';
     }
     return null;
   }

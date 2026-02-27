@@ -72,6 +72,53 @@ export class TicketCardComponent {
     this.onToggleFavorite.emit(this.ticket);
   }
 
+  getClienteNombre(): string {
+    const cliente = this.ticket.casaMatriz?.razonSocial?.trim();
+    if (cliente) {
+      return cliente;
+    }
+
+    const id = `${this.ticket.casaMatrizId || ''}`.trim();
+    if (id) {
+      return `Cliente ${id}`;
+    }
+
+    return 'N/A';
+  }
+
+  getClienteInicial(): string {
+    const cliente = this.getClienteNombre();
+    return cliente.charAt(0).toUpperCase() || 'C';
+  }
+
+  getCreadoPorNombre(): string {
+    const fuente = (this.ticket.fuente || '').trim().toLowerCase();
+
+    if (fuente === 'email') {
+      return 'Correo';
+    }
+
+    if (fuente === 'telegram ia' || fuente === 'telegram_ia') {
+      return 'Telegram IA';
+    }
+
+    if (fuente === 'agente ia' || fuente === 'agente_ia') {
+      return 'Agente IA';
+    }
+
+    const creadorManual = this.ticket.creadoPor?.name?.trim();
+    if (creadorManual) {
+      return creadorManual;
+    }
+
+    return 'N/A';
+  }
+
+  getCreadoPorInicial(): string {
+    const creadoPor = this.getCreadoPorNombre();
+    return creadoPor.charAt(0).toUpperCase() || 'U';
+  }
+
   /**
    * Trunca el contenido HTML preservando el formato (bold, italic, etc.)
    * mientras limita la longitud del texto visible.
