@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import {
   FormArray,
   FormBuilder,
@@ -25,6 +25,8 @@ import { NavegationComponent } from '../../../shared/navegation/navegation.compo
   styleUrl: './tipos-equipos.component.css',
 })
 export class TiposEquiposComponent implements OnInit {
+  @Input() embebidoEnConfiguracion = false;
+
   public tipos: TipoEquipo[] = [];
   public campos: Campo[] = [];
   public departamentos: DepartamentoEquipo[] = [];
@@ -306,7 +308,9 @@ export class TiposEquiposComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.signalService.updateData('Tipos de equipos');
+    if (!this.embebidoEnConfiguracion) {
+      this.signalService.updateData('Tipos de equipos');
+    }
     this.cargarDatosIniciales();
   }
 

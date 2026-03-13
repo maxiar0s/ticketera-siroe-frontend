@@ -11,16 +11,16 @@ import { catchError, finalize, forkJoin, map, of, switchMap } from 'rxjs';
 import { Ticket } from '../../interfaces/ticket.interface';
 import { ClienteResumen } from '../../interfaces/cliente-resumen.interface';
 import { Tecnico } from '../../interfaces/tecnico.interface';
-import { Proyecto } from '../../interfaces/proyecto.interface';
 import { ApiService } from '../../services/api.service';
 import { AuthService } from '../../services/auth.service';
 import { SignalService } from '../../services/signal.service';
 import { FormatoFechaPipe } from '../../pipes/formato-fecha.pipe';
-import { MODULES } from '../../config/modules';
+import { MODULES, ModuleAccessMap } from '../../config/modules';
 import { TicketChatComponent } from '../../shared/ticket-chat/ticket-chat.component';
 import { RichTextEditorComponent } from '../../shared/rich-text-editor/rich-text-editor.component';
 import { TicketCardComponent } from './components/ticket-card/ticket-card.component';
 import { TicketFiltersComponent } from './components/ticket-filters/ticket-filters.component';
+import { ModuleAccessService } from '../../services/module-access.service';
 
 interface SucursalOption {
   id: string;
@@ -56,9 +56,7 @@ export class TicketsComponent implements OnInit {
   sucursalesFormulario: SucursalOption[] = [];
   private sucursalesCache = new Map<string, SucursalOption[]>();
   tecnicosDisponibles: Tecnico[] = [];
-  proyectos: Proyecto[] = [];
   tagsDisponibles: { id: number; nombre: string; color: string }[] = [];
-  private clientesLeadMap = new Map<string, boolean>();
 
   paginaActual = 1;
   paginasTotales = 0;
@@ -113,7 +111,7 @@ export class TicketsComponent implements OnInit {
     { value: 'Cerrado', label: 'Cerrados' },
   ];
 
-  readonly modules = MODULES;
+  modules: ModuleAccessMap = { ...MODULES };
 
   tituloModulo = 'Tickets';
   tieneAccesoTickets = true;
@@ -125,7 +123,9 @@ export class TicketsComponent implements OnInit {
     private signalService: SignalService,
     private route: ActivatedRoute,
     private router: Router,
+    private moduleAccessService: ModuleAccessService,
   ) {
+    this.modules = this.moduleAccessService.getSnapshot();
     this.esAdmin = this.authService.esAdministrador();
     this.esTecnico = this.authService.esTecnico();
     this.esMesaAyuda = this.authService.esMesaAyuda();
@@ -143,7 +143,6 @@ export class TicketsComponent implements OnInit {
       sucursalId: [''],
       buscar: [''],
       estado: ['todos'],
-      proyectoId: [''],
       prioridad: [''],
       tecnicoId: [''],
       fecha: [''],
@@ -165,7 +164,6 @@ export class TicketsComponent implements OnInit {
       ticketFechaTermino: [''],
       ticketDetalleTermino: [''],
       descripcion: ['', [Validators.required, Validators.minLength(5)]],
-      proyectoId: [null],
       comentarioInterno: [''],
       tiempoResolucionHoras: [null, [Validators.min(0), Validators.max(24)]],
       tiempoResolucionMinutos: [null, [Validators.min(0), Validators.max(59)]],
@@ -206,6 +204,7 @@ export class TicketsComponent implements OnInit {
 
     this.apiService.perfilActual().subscribe({
       next: (perfil) => {
+        this.modules = this.moduleAccessService.hydrateFromPerfil(perfil);
         const rolTieneTickets =
           this.esAdmin || this.esTecnico || this.esComercial;
         const clienteTieneTickets = !!perfil?.haveTickets;
@@ -220,6 +219,7 @@ export class TicketsComponent implements OnInit {
         this.procesarAperturaCrearDesdeQuery();
       },
       error: () => {
+        this.modules = this.moduleAccessService.getSnapshot();
         const rolTieneTickets =
           this.esAdmin || this.esTecnico || this.esComercial;
         this.tieneAccesoTickets = rolTieneTickets;
@@ -258,7 +258,6 @@ export class TicketsComponent implements OnInit {
 
     this.cargarClientes();
     this.cargarTecnicosDisponibles();
-    this.cargarProyectos();
     this.cargarMensajesNoLeidos();
     this.estadosTicketFormulario = [...this.estadosTicket];
     this.procesarAperturaCrearDesdeQuery();
@@ -348,7 +347,6 @@ export class TicketsComponent implements OnInit {
     this.apiService.clientesBitacora().subscribe({
       next: (clientes) => {
         this.clientes = Array.isArray(clientes) ? clientes : [];
-        this.actualizarMapaClientesLead(this.clientes);
         const clienteActual = this.filtroForm.value.clienteId;
 
         if (!clienteActual && this.clientes.length === 1) {
@@ -369,7 +367,6 @@ export class TicketsComponent implements OnInit {
         this.errorMensaje =
           error?.error?.error ??
           'No fue posible obtener el listado de clientes disponibles.';
-        this.clientesLeadMap.clear();
         this.cargarTickets();
       },
     });
@@ -378,21 +375,12 @@ export class TicketsComponent implements OnInit {
   private cargarTecnicosDisponibles(): void {
     this.apiService.tecnicosDisponibles().subscribe({
       next: (tecnicos) => {
-        this.tecnicosDisponibles = Array.isArray(tecnicos) ? tecnicos : [];
+        this.tecnicosDisponibles = Array.isArray(tecnicos)
+          ? tecnicos.filter((tecnico) => tecnico.tipoCuentaId === 2)
+          : [];
       },
       error: () => {
         this.tecnicosDisponibles = [];
-      },
-    });
-  }
-
-  private cargarProyectos(): void {
-    this.apiService.getProyectos({ pagina: 1, limite: 100 }).subscribe({
-      next: (respuesta) => {
-        this.proyectos = Array.isArray(respuesta?.data) ? respuesta.data : [];
-      },
-      error: () => {
-        this.proyectos = [];
       },
     });
   }
@@ -430,7 +418,6 @@ export class TicketsComponent implements OnInit {
       sucursalId: '',
       buscar: '',
       estado: 'todos',
-      proyectoId: '',
       prioridad: '',
       tecnicoId: tecnicoIdDefault,
       fecha: '',
@@ -467,13 +454,6 @@ export class TicketsComponent implements OnInit {
     };
     if (filtros.estado && filtros.estado !== 'todos') {
       params['estado'] = filtros.estado;
-    }
-    if (filtros.proyectoId) {
-      if (filtros.proyectoId === 'sin-proyecto') {
-        params['sinProyecto'] = 'true';
-      } else {
-        params['proyectoId'] = filtros.proyectoId;
-      }
     }
     if (filtros.tipo) params['tipo'] = filtros.tipo;
     if (filtros.prioridad) params['prioridad'] = filtros.prioridad;
@@ -655,7 +635,6 @@ export class TicketsComponent implements OnInit {
       ticketFechaTermino: '',
       ticketDetalleTermino: '',
       descripcion: '',
-      proyectoId: null,
       comentarioInterno: '',
       tiempoResolucionHoras: null,
       tiempoResolucionMinutos: null,
@@ -708,7 +687,6 @@ export class TicketsComponent implements OnInit {
         ticket.detalleTermino ?? '',
       ),
       descripcion: this.limpiarFormatoTextoEnEditor(ticket.descripcion ?? ''),
-      proyectoId: ticket.proyectoId ?? null,
       comentarioInterno: this.limpiarFormatoTextoEnEditor(
         ticket.comentarioInterno ?? '',
       ),
@@ -813,7 +791,6 @@ export class TicketsComponent implements OnInit {
       ticketEstado: 'Nuevo',
       ticketFechaTermino: '',
       ticketDetalleTermino: '',
-      proyectoId: null,
       comentarioInterno: '',
       tiempoResolucionHoras: null,
       tiempoResolucionMinutos: null,
@@ -1125,16 +1102,6 @@ export class TicketsComponent implements OnInit {
     });
   }
 
-  esTicketLead(ticket?: Ticket | null): boolean {
-    if (!ticket) {
-      return false;
-    }
-    if (ticket.casaMatriz?.esLead !== undefined) {
-      return !!ticket.casaMatriz.esLead;
-    }
-    return !!this.clientesLeadMap.get(ticket.casaMatrizId);
-  }
-
   private construirPayloadCompleto(formValue: any): any | null {
     const tecnicosEntrada = Array.isArray(formValue.tecnicos)
       ? formValue.tecnicos
@@ -1150,17 +1117,6 @@ export class TicketsComponent implements OnInit {
       return null;
     }
 
-    let proyectoId: number | null = null;
-    if (Object.prototype.hasOwnProperty.call(formValue, 'proyectoId')) {
-      const valor = `${formValue.proyectoId ?? ''}`.trim();
-      if (valor && valor.toLowerCase() !== 'null') {
-        const parsed = Number(valor);
-        if (!Number.isNaN(parsed)) {
-          proyectoId = parsed;
-        }
-      }
-    }
-
     const payload: any = {
       casaMatrizId: formValue.clienteId,
       sucursalId: formValue.sucursalId || null,
@@ -1173,7 +1129,6 @@ export class TicketsComponent implements OnInit {
       isEmergencia: false,
       estadoTicket,
       prioridad: formValue.prioridad,
-      proyectoId,
       fechaTermino: null,
       detalleTermino: null,
     };
@@ -1567,16 +1522,6 @@ export class TicketsComponent implements OnInit {
       favorite: Array.from(this.favoriteTicketIds),
     };
     localStorage.setItem(this.getTicketPrefsKey(), JSON.stringify(payload));
-  }
-
-  private actualizarMapaClientesLead(clientes: ClienteResumen[]): void {
-    this.clientesLeadMap.clear();
-    clientes.forEach((cliente) => {
-      if (!cliente?.id) {
-        return;
-      }
-      this.clientesLeadMap.set(cliente.id, !!cliente.esLead);
-    });
   }
 
   downloadAdjunto(fileName: string): void {

@@ -12,6 +12,7 @@ import { AuthService } from '../../services/auth.service';
 import { ApiService } from '../../services/api.service';
 import { BRAND } from '../../config/branding';
 import { MODULES } from '../../config/modules';
+import { ModuleAccessService } from '../../services/module-access.service';
 import { Subject, interval } from 'rxjs';
 import { takeUntil, startWith, switchMap } from 'rxjs/operators';
 
@@ -40,6 +41,7 @@ export class SideMenuComponent implements OnInit, OnDestroy {
   public menuConfig = menu_config;
   public logoRoute: string = '/dashboard';
   public brand = BRAND;
+  private menuBase: any[] = [];
 
   // Unread ticket messages count
   public unreadTicketMessages = 0;
@@ -50,7 +52,8 @@ export class SideMenuComponent implements OnInit, OnDestroy {
     private renderer: Renderer2,
     private location: Location,
     private apiService: ApiService,
-    private router: Router
+    private router: Router,
+    private moduleAccessService: ModuleAccessService,
   ) {}
 
   private normalizeRoute(route: string | undefined | null): string {
@@ -62,16 +65,20 @@ export class SideMenuComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     if (this.authService.esAdministrador()) {
-      this.menu = this.clonarMenu(menu_administrador);
+      this.menuBase = menu_administrador;
+      this.menu = this.clonarMenu(this.menuBase);
       this.logoRoute = '/dashboard';
     } else if (this.authService.esCliente()) {
-      this.menu = this.clonarMenu(menu_cliente);
+      this.menuBase = menu_cliente;
+      this.menu = this.clonarMenu(this.menuBase);
       this.logoRoute = '/dashboard-cliente';
     } else if (this.authService.esComercial()) {
-      this.menu = this.clonarMenu(menu_comercial);
+      this.menuBase = menu_comercial;
+      this.menu = this.clonarMenu(this.menuBase);
       this.logoRoute = '/dashboard';
     } else {
-      this.menu = this.clonarMenu(menu_tecnico);
+      this.menuBase = menu_tecnico;
+      this.menu = this.clonarMenu(this.menuBase);
       this.logoRoute = '/dashboard';
     }
 
@@ -79,6 +86,8 @@ export class SideMenuComponent implements OnInit, OnDestroy {
 
     this.apiService.perfilActual().subscribe({
       next: (perfil) => {
+        this.moduleAccessService.hydrateFromPerfil(perfil);
+        this.menu = this.clonarMenu(this.menuBase);
         const tieneTickets =
           !!perfil?.haveTickets ||
           this.authService.esAdministrador() ||
@@ -87,6 +96,7 @@ export class SideMenuComponent implements OnInit, OnDestroy {
         this.ajustarMenuPorTickets(tieneTickets, this.location.path());
       },
       error: () => {
+        this.menu = this.clonarMenu(this.menuBase);
         const fallbackTickets =
           this.authService.esAdministrador() ||
           this.authService.esTecnico() ||
@@ -121,6 +131,7 @@ export class SideMenuComponent implements OnInit, OnDestroy {
 
   private clonarMenu(base: any[]): any[] {
     const menu = JSON.parse(JSON.stringify(base ?? []));
+    const modules = this.moduleAccessService.getSnapshot();
     return menu.filter((item: any) => {
       // Si el item tiene una propiedad 'module' definida en el JSON (o inferida), filtramos
       // Pero como los JSON de menú no tienen la propiedad 'module', podemos usar la ruta para mapear
@@ -133,13 +144,14 @@ export class SideMenuComponent implements OnInit, OnDestroy {
       // Mapeo simple de rutas a módulos (debe coincidir con app.routes.ts)
       if (route === 'dashboard') moduleKey = 'dashboard';
       else if (route === 'dashboard-cliente') moduleKey = 'dashboardCliente';
+      else if (route === 'calendario') moduleKey = 'calendario';
       else if (route === 'clientes') moduleKey = 'clientes';
-      else if (route === 'documentacion') moduleKey = 'documentacion';
       else if (route === 'bitacora' || route === 'bitacoras')
         moduleKey = 'bitacora';
       else if (route === 'tickets') moduleKey = 'tickets';
-      else if (route === 'proyectos') moduleKey = 'proyectos';
+      else if (route === 'biblioteca') moduleKey = 'biblioteca';
       else if (route === 'vehiculos') moduleKey = 'vehiculos';
+      else if (route === 'inventario') moduleKey = 'inventario';
       else if (route === 'opciones') moduleKey = 'opciones';
       else if (route === 'perfil') moduleKey = 'perfil';
       else if (route === 'admin/usuarios') moduleKey = 'adminUsuarios';
@@ -147,7 +159,7 @@ export class SideMenuComponent implements OnInit, OnDestroy {
       else if (route === 'reportes') moduleKey = 'reportes';
 
       // Si encontramos un key y el módulo está desactivado, lo filtramos
-      if (moduleKey && MODULES[moduleKey] === false) {
+      if (moduleKey && modules[moduleKey] === false) {
         return false;
       }
 

@@ -75,23 +75,6 @@
         </div>
       </div>
 
-      <div class="filter-field" *ngIf="features.clientesLead">
-        <label class="filter-label">Tipo de cliente</label>
-        <select formControlName="esLead" class="filter-select">
-          <option value="todos">Todos</option>
-          <option value="true">Solo leads</option>
-          <option value="false">Solo clientes</option>
-        </select>
-      </div>
-
-      <div class="filter-field" *ngIf="features.datosBancarios">
-        <label class="filter-label">Datos bancarios</label>
-        <select formControlName="tieneDatosBancarios" class="filter-select">
-          <option value="todos">Todos</option>
-          <option value="true">Con datos cargados</option>
-          <option value="false">Sin datos</option>
-        </select>
-      </div>
     </div>
 
     <div class="filters-actions">
@@ -132,13 +115,7 @@
       >
         <div
           class="card-body"
-          [ngClass]="{ 'card-body--lead': casaMatriz.esLead }"
         >
-          <span
-            class="client-badge"
-            *ngIf="casaMatriz.esLead && features.clientesLead"
-            >Lead</span
-          >
           <ng-container *ngIf="casaMatriz.imagen as imagen; else loading">
             <img
               *ngIf="imagen | signedUrl | async as signedUrl"
@@ -192,37 +169,31 @@
                 </p>
                 <p *ngIf="features.visitasMensuales">
                   Visitas mensuales:
-                  <ng-container *ngIf="!casaMatriz.esLead; else leadMensuales">
-                    <span
-                      [ngClass]="
-                        obtenerClaseVisitas(
-                          casaMatriz.visitasMensuales,
-                          casaMatriz.visitasMensualesRealizadas
-                        )
-                      "
-                    >
-                      {{ casaMatriz.visitasMensuales ?? 0 }} /
-                      {{ casaMatriz.visitasMensualesRealizadas ?? 0 }}
-                    </span>
-                  </ng-container>
+                  <span
+                    [ngClass]="
+                      obtenerClaseVisitas(
+                        casaMatriz.visitasMensuales,
+                        casaMatriz.visitasMensualesRealizadas
+                      )
+                    "
+                  >
+                    {{ casaMatriz.visitasMensuales ?? 0 }} /
+                    {{ casaMatriz.visitasMensualesRealizadas ?? 0 }}
+                  </span>
                 </p>
                 <p *ngIf="features.visitasAnuales">
                   Visitas emergencia anuales:
-                  <ng-container
-                    *ngIf="!casaMatriz.esLead; else leadEmergencias"
+                  <span
+                    [ngClass]="
+                      obtenerClaseVisitas(
+                        casaMatriz.visitasEmergenciaAnuales,
+                        casaMatriz.visitasEmergenciaAnualesRealizadas
+                      )
+                    "
                   >
-                    <span
-                      [ngClass]="
-                        obtenerClaseVisitas(
-                          casaMatriz.visitasEmergenciaAnuales,
-                          casaMatriz.visitasEmergenciaAnualesRealizadas
-                        )
-                      "
-                    >
-                      {{ casaMatriz.visitasEmergenciaAnuales ?? 0 }} /
-                      {{ casaMatriz.visitasEmergenciaAnualesRealizadas ?? 0 }}
-                    </span>
-                  </ng-container>
+                    {{ casaMatriz.visitasEmergenciaAnuales ?? 0 }} /
+                    {{ casaMatriz.visitasEmergenciaAnualesRealizadas ?? 0 }}
+                  </span>
                 </p>
                 <p *ngIf="features.servicios">
                   Servicios:
@@ -235,18 +206,13 @@
             <div class="client-button-container">
               <div class="button-container">
                 <a
-                  *ngIf="sucursalEnabled"
+                  *ngIf="sucursalEnabled && clienteTieneSoporteTI(casaMatriz)"
                   [routerLink]="['/clientes', casaMatriz.id]"
                   routerLinkActive="router-link-active"
                   class="client-button"
                   >Seleccionar</a
                 >
-                <ng-container
-                  *ngIf="
-                    sucursalEnabled || features.datosBancarios;
-                    else directActions
-                  "
-                >
+                <ng-container *ngIf="sucursalEnabled; else directActions">
                   <button
                     *ngIf="esAdministrador"
                     class="button-ajustes"
@@ -276,28 +242,12 @@
                   </button>
                 </ng-template>
               </div>
-              <button
-                *ngIf="puedeVerDatosBancarios && features.datosBancarios"
-                type="button"
-                class="client-button client-button--secondary"
-                (click)="abrirModalDatosBancarios(casaMatriz)"
-              >
-                Ver datos bancarios
-              </button>
             </div>
           </div>
         </div>
       </div>
     </div>
   </div>
-
-  <ng-template #leadMensuales>
-    <span class="lead-pill">No aplica para leads</span>
-  </ng-template>
-
-  <ng-template #leadEmergencias>
-    <span class="lead-pill">No aplica para leads</span>
-  </ng-template>
 
   <ng-template #noClientes>
     <p class="no-sucursales">No hay clientes registrados</p>
@@ -333,10 +283,3 @@
   (eliminarCliente)="eliminarCliente($event)"
   (editarCliente)="modificarCliente($event)"
 ></app-opciones-cliente>
-
-<app-datos-bancarios-cliente
-  *ngIf="puedeVerDatosBancarios"
-  [visible]="mostrarModalDatosBancarios"
-  [cliente]="clienteConDatosBancarios"
-  (cerrar)="cerrarModalDatosBancarios()"
-></app-datos-bancarios-cliente>

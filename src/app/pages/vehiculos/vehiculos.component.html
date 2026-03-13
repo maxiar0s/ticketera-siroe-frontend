@@ -1,6 +1,17 @@
-<div class="vehiculos-layout">
-  <aside class="vehiculos-sidebar">
-    <div class="sidebar-header">
+<div class="module-page">
+  <header class="module-page__header">
+    <div class="module-page__title-group">
+      <span class="module-page__eyebrow">Logistica</span>
+      <h1 class="module-page__title">Vehículos</h1>
+      <p class="module-page__subtitle">
+        Administra la flota, controla mantenciones y registra las salidas de cada vehículo.
+      </p>
+    </div>
+  </header>
+
+  <div class="vehiculos-layout module-page__layout">
+    <aside class="vehiculos-sidebar module-page__sidebar">
+      <div class="sidebar-header">
       <h2>Vehículos</h2>
       <button type="button" class="primary-button" (click)="abrirFormularioVehiculo()">
         + Nuevo
@@ -72,7 +83,7 @@
     </div>
   </aside>
 
-  <section class="vehiculos-contenido">
+  <section class="vehiculos-contenido module-page__content">
     <div *ngIf="mostrarVehiculoForm" class="panel formulario-vehiculo">
       <div class="panel-header">
         <h3>{{ vehiculoEnEdicion ? 'Editar vehículo' : 'Nuevo vehículo' }}</h3>
@@ -524,8 +535,9 @@
       </form>
     </div>
 
-    <div *ngIf="!vehiculoSeleccionado && !mostrarVehiculoForm" class="panel vacio">
+    <div *ngIf="!vehiculoSeleccionado && !mostrarVehiculoForm" class="panel vacio module-page__placeholder">
       <p>Selecciona un vehículo para ver los detalles o crea uno nuevo.</p>
     </div>
-  </section>
+    </section>
+  </div>
 </div>

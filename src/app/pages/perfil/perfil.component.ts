@@ -11,20 +11,16 @@ import { ApiService } from '../../services/api.service';
 import { SignalService } from '../../services/signal.service';
 import { Cuenta } from '../../interfaces/Cuenta.interface';
 import { ClienteResumen } from '../../interfaces/cliente-resumen.interface';
-import { FEATURES } from '../../config/features';
 import {
   obtenerIniciales,
   generarColorDesdeTexto,
 } from '../../utils/avatar.util';
-import {
-  normalizarDatosBancarios,
-  tieneDatosBancarios,
-} from '../../utils/datos-bancarios.util';
+import { RutPipe } from '../../pipes/rut.pipe';
 
 @Component({
   selector: 'perfil',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, RutPipe],
   templateUrl: './perfil.component.html',
   styleUrl: './perfil.component.css',
 })
@@ -39,7 +35,6 @@ export class PerfilComponent implements OnInit {
   avatarIniciales = '?';
   avatarColor = 'var(--color-primary)';
   esCliente = false;
-  readonly features = FEATURES;
 
   constructor(
     private fb: FormBuilder,
@@ -168,7 +163,6 @@ export class PerfilComponent implements OnInit {
           (cliente) => ({
             ...cliente,
             servicios: normalizarServicios(cliente.servicios),
-            datosBancarios: normalizarDatosBancarios(cliente.datosBancarios),
           })
         );
         const perfilNormalizado: Cuenta = {
@@ -204,16 +198,6 @@ export class PerfilComponent implements OnInit {
       return 'Sin servicios registrados';
     }
     return servicios.join(', ');
-  }
-
-  clienteTieneDatosBancarios(
-    cliente: ClienteResumen | null | undefined
-  ): boolean {
-    return tieneDatosBancarios(cliente?.datosBancarios);
-  }
-
-  mostrarDatoBancario(valor?: string | null): string {
-    return valor && valor.trim().length ? valor : 'No registrado';
   }
 
   private actualizarAvatar(perfil: Cuenta | null): void {

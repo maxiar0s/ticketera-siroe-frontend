@@ -397,15 +397,6 @@ export class TopBarComponent implements AfterViewInit, OnInit, OnDestroy {
           } as AgentChatSource;
         }
 
-        if (sourceType === 'proyecto') {
-          return {
-            label,
-            type: 'route',
-            route: '/proyectos',
-            queryParams: { proyectoId: sourceId },
-          } as AgentChatSource;
-        }
-
         return null;
       })
       .filter((value): value is AgentChatSource => Boolean(value));

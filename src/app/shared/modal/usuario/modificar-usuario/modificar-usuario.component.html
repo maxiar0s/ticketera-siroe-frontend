@@ -2,7 +2,7 @@
 <div class="modal-overlay" *ngIf="isVisible">
   <div class="modal-content responsive-modal">
     <div class="modal-header">
-      <h2 class="header-form">Modificar Usuario</h2>
+      <h2 class="header-form">{{ soloLectura ? 'Detalle de usuario' : 'Modificar Usuario' }}</h2>
       <img
         src="/assets/svg/exit-button.svg"
         (click)="cerrar()"
@@ -12,7 +12,9 @@
     </div>
     <div class="modal-body">
       <p class="description-form">
-        Cambia la información del colaborador con los campos correspondientes.
+        {{ soloLectura
+          ? 'Revisa la información del colaborador y sus permisos actuales.'
+          : 'Cambia la información del colaborador con los campos correspondientes.' }}
       </p>
       <form
         [formGroup]="usuarioForm"
@@ -117,10 +119,31 @@
           </div>
         </div>
 
+        <div class="two-inputs" *ngIf="puedeSeleccionarOcupacion">
+          <div class="form-group width-50">
+            <label for="ocupacion">Ocupacion</label>
+            <select id="ocupacion" formControlName="ocupacion">
+              <option [ngValue]="null" disabled>Seleccionar</option>
+              <option *ngFor="let occupation of occupationOptions" [value]="occupation">
+                {{ occupation }}
+              </option>
+            </select>
+            <div
+              *ngIf="
+                usuarioForm.get('ocupacion')?.hasError('required') &&
+                usuarioForm.get('ocupacion')?.touched
+              "
+              class="error"
+            >
+              Seleccione una ocupacion
+            </div>
+          </div>
+        </div>
+
         <div class="form-group full-width" *ngIf="esRolClienteSeleccionado">
           <label class="checkbox-label">
             <span>Este cliente tiene acceso a Tickets.</span>
-            <input type="checkbox" formControlName="haveTickets" />
+              <input type="checkbox" formControlName="haveTickets" [disabled]="soloLectura" />
           </label>
           <p class="helper-text">
             Habilita al cliente para usar el modulo de Tickets.
@@ -181,11 +204,131 @@
         <div class="form-group full-width" *ngIf="esRolAdminSeleccionado">
           <label class="checkbox-label">
             <span>Este administrador tambien realiza visitas tecnicas.</span>
-            <input type="checkbox" formControlName="esTecnico" />
+              <input type="checkbox" formControlName="esTecnico" [disabled]="soloLectura" />
           </label>
           <p class="helper-text">
             Habilita al administrador para aparecer como tecnico disponible.
           </p>
+        </div>
+
+        <div class="form-group full-width">
+          <div class="module-access-header">
+            <div>
+              <label>Acceso a modulos</label>
+              <p class="helper-text module-access-helper">
+                Define que modulos podra usar este usuario cuando el modulo global
+                este habilitado.
+              </p>
+            </div>
+            <div class="module-access-actions">
+              <button
+                type="button"
+                class="module-access-button"
+                (click)="aplicarAccesoATodosLosModulos(true)"
+              >
+                Marcar todos
+              </button>
+              <button
+                type="button"
+                class="module-access-button secondary"
+                (click)="aplicarAccesoATodosLosModulos(false)"
+              >
+                Limpiar todos
+              </button>
+            </div>
+          </div>
+          <div class="module-folders">
+            <div
+              class="module-folder"
+              *ngFor="let moduleGroup of moduleGroups"
+              [class.is-selected]="grupoSeleccionado(moduleGroup)"
+              [class.is-partial]="grupoParcialmenteSeleccionado(moduleGroup)"
+              [class.is-expandable]="moduleGroup.children.length > 0"
+            >
+              <button
+                type="button"
+                class="module-folder-header"
+                (click)="moduleGroup.children.length > 0 && toggleModuleGroup(moduleGroup.id)"
+              >
+                <div class="module-folder-title">
+                  <input
+                    type="checkbox"
+                    [checked]="grupoSeleccionado(moduleGroup)"
+                    (click)="$event.stopPropagation()"
+                    (change)="actualizarGrupoModulos(moduleGroup, $event)"
+                    [disabled]="soloLectura"
+                  />
+                  <div class="module-folder-copy">
+                    <span class="module-folder-label">{{ moduleGroup.label }}</span>
+                    <span class="module-folder-meta">
+                      {{ contarModulosSeleccionados(moduleGroup) }}/{{ moduleGroup.moduleKey ? moduleGroup.children.length + 1 : moduleGroup.children.length }} activos
+                    </span>
+                  </div>
+                </div>
+                <div class="module-folder-end">
+                  <span class="module-folder-chip" *ngIf="moduleGroup.children.length > 0">
+                    {{ moduleGroup.children.length }} submodulos
+                  </span>
+                  <img
+                    *ngIf="moduleGroup.children.length > 0"
+                    src="/assets/svg/side-menu-arrow-down.svg"
+                    alt="toggle"
+                    class="module-folder-arrow"
+                    [class.rotated]="expandedModuleGroups[moduleGroup.id]"
+                  />
+                </div>
+              </button>
+
+              <div
+                class="module-folder-content"
+                *ngIf="moduleGroup.children.length > 0 && expandedModuleGroups[moduleGroup.id]"
+              >
+                <label
+                  class="module-access-item"
+                  *ngFor="let childKey of moduleGroup.children"
+                  [class.is-selected]="moduloSeleccionado(childKey)"
+                >
+                  <div class="module-access-copy">
+                    <span class="module-access-name">{{ moduleOptionLabel(childKey) }}</span>
+                    <span class="module-access-caption">Submodulo</span>
+                  </div>
+                  <input
+                    type="checkbox"
+                    [checked]="modulosAccesoSeleccionados[childKey]"
+                    (change)="actualizarAccesoModulo(childKey, $event)"
+                    [disabled]="soloLectura"
+                  />
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <div class="module-standalone" *ngIf="standaloneModuleOptions.length > 0">
+            <div class="module-standalone-header">
+              <label class="module-standalone-title">Modulos individuales</label>
+              <span class="module-standalone-count">
+                {{ contarModulosStandaloneSeleccionados() }}/{{ standaloneModuleOptions.length }} activos
+              </span>
+            </div>
+            <div class="module-access-grid standalone-grid">
+              <label
+                class="module-access-item"
+                *ngFor="let moduleOption of standaloneModuleOptions"
+                [class.is-selected]="moduloSeleccionado(moduleOption.key)"
+              >
+                <div class="module-access-copy">
+                  <span class="module-access-name">{{ moduleOption.label }}</span>
+                  <span class="module-access-caption">Modulo individual</span>
+                </div>
+                <input
+                  type="checkbox"
+                  [checked]="modulosAccesoSeleccionados[moduleOption.key]"
+                  (change)="actualizarAccesoModulo(moduleOption.key, $event)"
+                  [disabled]="soloLectura"
+                />
+              </label>
+            </div>
+          </div>
         </div>
 
         <div class="two-inputs">
@@ -221,13 +364,18 @@
           {{ errorMessage }}
         </div>
 
-        <div class="form-actions">
+        <div class="form-actions" *ngIf="!soloLectura">
           <button
             class="equiptment-button"
             type="submit"
-            [disabled]="usuarioForm.invalid"
           >
             Modificar usuario
+          </button>
+        </div>
+
+        <div class="form-actions" *ngIf="soloLectura">
+          <button class="equiptment-button" type="button" (click)="cerrar()">
+            Cerrar
           </button>
         </div>
       </form>

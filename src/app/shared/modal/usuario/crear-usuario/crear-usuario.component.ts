@@ -11,6 +11,18 @@ import { BehaviorSubject, debounceTime, switchMap } from 'rxjs';
 import { correoConArrobaYpunto } from '../../../../validators/correoValido.validator';
 import { ClienteResumen } from '../../../../interfaces/cliente-resumen.interface';
 import { FormatInputSoloNumerosDirective } from '../../../../directives/solo-numeros.directive';
+import {
+  buildModuleAccessByOccupation,
+  buildDefaultModuleAccess,
+  ModuleGroupConfig,
+  MODULE_GROUPS,
+  MODULE_LABELS,
+  ModuleAccessMap,
+  ModuleKey,
+  normalizeModuleAccess,
+  OCCUPATIONS,
+  STANDALONE_MODULE_KEYS,
+} from '../../../../config/modules';
 
 @Component({
   selector: 'shared-crear-usuario',
@@ -34,6 +46,19 @@ export class CrearUsuarioComponent {
   public clientesDisponibles: ClienteResumen[] = [];
   public clientesSeleccionados: ClienteResumen[] = [];
   public clientesDropdownAbierto: boolean = false;
+  public readonly moduleGroups = MODULE_GROUPS;
+  public readonly standaloneModuleOptions = STANDALONE_MODULE_KEYS.map((key) => ({
+    key,
+    label: MODULE_LABELS[key],
+  }));
+  public readonly occupationOptions = OCCUPATIONS;
+  public expandedModuleGroups = this.moduleGroups.reduce(
+    (accumulator, group) => {
+      accumulator[group.id] = true;
+      return accumulator;
+    },
+    {} as Record<string, boolean>,
+  );
 
   constructor(private fb: FormBuilder, private apiService: ApiService) {
     this.cuentaForm = this.fb.group({
@@ -44,7 +69,9 @@ export class CrearUsuarioComponent {
       password: ['', Validators.required],
       clientesAutorizados: [[]],
       esTecnico: [false],
+      ocupacion: [null],
       haveTickets: [false],
+      modulosAcceso: [buildDefaultModuleAccess(true)],
     });
   }
 
@@ -73,13 +100,32 @@ export class CrearUsuarioComponent {
       }
       const esCliente = valor === '4' || valor === 4;
       if (!esCliente) {
-        this.cuentaForm.get('haveTickets')?.setValue(false);
+      this.cuentaForm.get('haveTickets')?.setValue(false);
       }
       if (esCliente) {
+        this.cuentaForm.get('ocupacion')?.setValue(null);
+        this.actualizarEstadoOcupacion();
         return;
       }
       this.limpiarSelecciones();
+      this.actualizarEstadoOcupacion();
     });
+
+    this.cuentaForm.get('esTecnico')?.valueChanges.subscribe(() => {
+      this.actualizarEstadoOcupacion();
+    });
+
+    this.cuentaForm.get('ocupacion')?.valueChanges.subscribe((ocupacion) => {
+      if (!this.puedeSeleccionarOcupacion || !ocupacion) {
+        return;
+      }
+
+      this.cuentaForm
+        .get('modulosAcceso')
+        ?.setValue(buildModuleAccessByOccupation(ocupacion));
+    });
+
+    this.actualizarEstadoOcupacion();
   }
 
   @HostListener('document:click')
@@ -98,6 +144,20 @@ export class CrearUsuarioComponent {
   get esRolAdminSeleccionado(): boolean {
     const valor = this.cuentaForm.get('tipoCuentaId')?.value;
     return valor === '1' || valor === 1;
+  }
+
+  get esRolTecnicoSeleccionado(): boolean {
+    const valor = this.cuentaForm.get('tipoCuentaId')?.value;
+    return valor === '2' || valor === 2;
+  }
+
+  get puedeSeleccionarOcupacion(): boolean {
+    return this.esRolTecnicoSeleccionado || this.esRolAdminSeleccionado;
+  }
+
+  get requiereOcupacion(): boolean {
+    return this.esRolTecnicoSeleccionado ||
+      (this.esRolAdminSeleccionado && !!this.cuentaForm.get('esTecnico')?.value);
   }
 
   verificarFormulario(): boolean {
@@ -122,7 +182,9 @@ export class CrearUsuarioComponent {
     this.cuentaForm.reset({
       clientesAutorizados: [],
       esTecnico: false,
+      ocupacion: null,
       haveTickets: false,
+      modulosAcceso: buildDefaultModuleAccess(true),
     });
     this.errorMessage = '';
     this.limpiarSelecciones();
@@ -139,6 +201,54 @@ export class CrearUsuarioComponent {
     console.log('Formulario enviado:', this.cuentaForm.value);
     this.enviarFormulario.emit(this.cuentaForm.value);
     this.cerrar();
+  }
+
+  get modulosAccesoSeleccionados(): ModuleAccessMap {
+    return normalizeModuleAccess(this.cuentaForm.get('modulosAcceso')?.value);
+  }
+
+  aplicarAccesoATodosLosModulos(enabled: boolean): void {
+    const modulos = buildDefaultModuleAccess(enabled);
+    modulos.dashboardCliente = modulos.dashboard;
+    this.cuentaForm.get('modulosAcceso')?.setValue(modulos);
+  }
+
+  actualizarAccesoModulo(moduleKey: ModuleKey, event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const actualizados = {
+      ...this.modulosAccesoSeleccionados,
+      [moduleKey]: input.checked,
+    };
+
+    if (moduleKey === 'dashboard') {
+      actualizados.dashboardCliente = input.checked;
+    }
+
+    this.cuentaForm.get('modulosAcceso')?.setValue(actualizados);
+  }
+
+  toggleModuleGroup(groupId: string): void {
+    this.expandedModuleGroups[groupId] = !this.expandedModuleGroups[groupId];
+  }
+
+  grupoSeleccionado(group: ModuleGroupConfig): boolean {
+    const keys = this.obtenerClavesGrupo(group);
+    return keys.every((key) => this.modulosAccesoSeleccionados[key]);
+  }
+
+  actualizarGrupoModulos(group: ModuleGroupConfig, event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const actualizados = { ...this.modulosAccesoSeleccionados };
+
+    this.obtenerClavesGrupo(group).forEach((key) => {
+      actualizados[key] = input.checked;
+    });
+
+    this.cuentaForm.get('modulosAcceso')?.setValue(actualizados);
+  }
+
+  moduleOptionLabel(moduleKey: ModuleKey): string {
+    return MODULE_LABELS[moduleKey];
   }
 
   changeSelectColor(event: Event): void {
@@ -208,5 +318,33 @@ export class CrearUsuarioComponent {
   private actualizarControlClientes(): void {
     const ids = this.clientesSeleccionados.map((cliente) => cliente.id);
     this.cuentaForm.get('clientesAutorizados')?.setValue(ids);
+  }
+
+  private actualizarEstadoOcupacion(): void {
+    const occupationControl = this.cuentaForm.get('ocupacion');
+    if (!occupationControl) {
+      return;
+    }
+
+    if (!this.puedeSeleccionarOcupacion) {
+      occupationControl.clearValidators();
+      occupationControl.setValue(null, { emitEvent: false });
+      occupationControl.updateValueAndValidity({ emitEvent: false });
+      return;
+    }
+
+    if (this.requiereOcupacion) {
+      occupationControl.setValidators([Validators.required]);
+    } else {
+      occupationControl.clearValidators();
+    }
+
+    occupationControl.updateValueAndValidity({ emitEvent: false });
+  }
+
+  private obtenerClavesGrupo(group: ModuleGroupConfig): ModuleKey[] {
+    return group.moduleKey
+      ? [group.moduleKey, ...group.children]
+      : [...group.children];
   }
 }

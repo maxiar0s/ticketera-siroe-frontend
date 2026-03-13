@@ -2,46 +2,74 @@
   <div class="users-table">
     <table class="table">
       <thead>
-          <tr class="thead-properties">
-            <th class="col-1"><input type="checkbox"></th>
-            <th class="col-2">ID</th>
-            <th class="col-3">Nombre</th>
-            <th class="col-4">Correo</th>
-            <th class="col-5">Rol</th>
-            <th class="col-6">Estado</th>
-            <th class="col-7">Acciones</th>
-          </tr>
+        <tr class="thead-properties">
+          <th class="col-check"><input type="checkbox" aria-label="Seleccionar usuarios" /></th>
+          <th class="col-id">ID</th>
+          <th class="col-name">Usuario</th>
+          <th class="col-mail">Correo</th>
+          <th class="col-role">Rol</th>
+          <th class="col-occupation">Ocupacion</th>
+          <th class="col-status">Estado</th>
+          <th class="col-actions">Acciones</th>
+        </tr>
       </thead>
       <tbody *ngIf="cuentas === undefined || cuentas === null">
         <tr class="row-border">
-          <td colspan="9" class="height-spinner"><div class="spinner-section spinner-size-section"></div></td>
+          <td colspan="8" class="height-spinner"><div class="spinner-section spinner-size-section"></div></td>
         </tr>
       </tbody>
       <tbody *ngIf="cuentas && cuentas.length > 0">
-          <tr *ngFor="let cuenta of cuentas; let i = index" class="row-border">
-              <td class="information-checkbox row-table"><input type="checkbox"></td>
-              <td class="row-table">{{ cuenta.id }}</td>
-              <td class="row-table">{{ cuenta.name }}</td>
-              <td class="row-table">{{ cuenta.email }}</td>
-              <td class="row-table">{{ cuenta.tipoCuenta?.name ?? "Sin rol" }}</td>
-              <td class="row-table"><div class="estadoCuenta" [ngClass]="{ 'activo': cuenta.estadoCuentaId === 1, 'inactivo': cuenta.estadoCuentaId === 2, 'suspendido': cuenta.estadoCuentaId === 3 }">{{ cuenta.estadoCuenta?.name ?? "Sin estado" }}</div></td>
-              <td class="information-actions row-table">
-                  <button class="actions pointer">
-                    <img src="/assets/svg/ver-datos.svg" class="svg ver-datos" alt="ver-datos.svg">
-                  </button>
-                  <button [disabled]="idAdministrador === cuenta.id" class="actions pointer" [ngClass]="{'disabled-button': idAdministrador === cuenta.id}">
-                    <img src="/assets/svg/edit-user.svg" (click)="idAdministrador !== cuenta.id && abrirModalModificarUsuario(i)"  [ngClass]="{'disabled-icon': idAdministrador === cuenta.id}" class="svg edit-user" alt="edit-user.svg">
-                  </button>
-                  <button [disabled]="idAdministrador === cuenta.id" class="actions pointer" [ngClass]="{'disabled-button': idAdministrador === cuenta.id}">
-                    <img src="/assets/svg/delete.svg" (click)="idAdministrador !== cuenta.id && abrirModalEliminarUsuario(i)" class="svg delete" [ngClass]="{'disabled-icon': idAdministrador === cuenta.id}" alt="delete.svg">
-                  </button>
-              </td>
-          </tr>
+        <tr *ngFor="let cuenta of cuentas; let i = index" class="row-border">
+          <td class="information-checkbox row-table">
+            <input type="checkbox" [attr.aria-label]="'Seleccionar usuario ' + cuenta.name" />
+          </td>
+          <td class="row-table row-id">
+            <span class="id-badge">#{{ cuenta.id }}</span>
+          </td>
+          <td class="row-table">
+            <div class="user-cell">
+              <span class="user-avatar" [ngStyle]="getAvatarStyle(cuenta)">{{ getInitials(cuenta.name) }}</span>
+              <div class="user-meta">
+                <span class="user-name">{{ cuenta.name }}</span>
+                <span class="user-subtitle">Cuenta interna</span>
+              </div>
+            </div>
+          </td>
+          <td class="row-table">
+            <span class="mail-text">{{ cuenta.email }}</span>
+          </td>
+          <td class="row-table">
+            <span class="role-badge" [ngClass]="getRoleClass(cuenta)">
+              {{ getRoleLabel(cuenta) }}
+            </span>
+          </td>
+          <td class="row-table">
+            <span class="occupation-badge" [ngClass]="getOccupationClass(cuenta)">
+              {{ getOccupationLabel(cuenta) }}
+            </span>
+          </td>
+          <td class="row-table">
+            <div class="estadoCuenta" [ngClass]="{ 'activo': cuenta.estadoCuentaId === 1, 'inactivo': cuenta.estadoCuentaId === 2, 'suspendido': cuenta.estadoCuentaId === 3 }">
+              {{ cuenta.estadoCuenta?.name ?? 'Sin estado' }}
+            </div>
+          </td>
+          <td class="information-actions row-table">
+            <button class="actions pointer" type="button" (click)="abrirModalVerUsuario(i)" aria-label="Ver usuario">
+              <img src="/assets/svg/ver-datos.svg" class="svg ver-datos" alt="Ver usuario" />
+            </button>
+            <button class="actions pointer" type="button" (click)="abrirModalModificarUsuario(i)" aria-label="Editar usuario">
+              <img src="/assets/svg/edit-user.svg" class="svg edit-user" alt="Editar usuario" />
+            </button>
+            <button [disabled]="idAdministrador === cuenta.id" class="actions pointer" type="button" [ngClass]="{'disabled-button': idAdministrador === cuenta.id}" [attr.aria-label]="'Eliminar usuario ' + cuenta.name" (click)="idAdministrador !== cuenta.id && abrirModalEliminarUsuario(i)">
+              <img src="/assets/svg/delete.svg" class="svg delete" [ngClass]="{'disabled-icon': idAdministrador === cuenta.id}" alt="Eliminar usuario" />
+            </button>
+          </td>
+        </tr>
       </tbody>
 
       <tbody *ngIf="cuentas && cuentas.length === 0">
         <tr class="row-border">
-          <td class="height-spinner" colspan="9">No hay usuarios registrados</td>
+          <td class="height-spinner empty-state" colspan="8">No hay usuarios registrados</td>
         </tr>
       </tbody>
     </table>
@@ -53,6 +81,13 @@
 [usuario]="selectedUser"
 (cerrarModal)="cerrarModalModificarUsuario()"
 (enviarFormulario)="modificarUsuario($event)"
+></shared-modificar-usuario>
+
+<shared-modificar-usuario class="size-modal"
+*ngIf="isModalVisibleVerUsuario"
+[usuario]="selectedUser"
+[soloLectura]="true"
+(cerrarModal)="cerrarModalVerUsuario()"
 ></shared-modificar-usuario>
 
 <shared-eliminar-usuario class="size-modal"

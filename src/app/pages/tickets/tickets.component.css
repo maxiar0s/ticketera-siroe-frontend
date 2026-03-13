@@ -145,6 +145,9 @@
 }
 
 .bitacora-detail.ticket.ticket-state-cerrado {
+  background-color: var(--modal-surface);
+  color: inherit;
+  border: var(--modal-border);
   border-left-color: var(--color-danger);
 }
 
@@ -250,37 +253,37 @@
   padding: 0.24rem 0.75rem;
 }
 
-.ticket-state-nuevo {
+.ticket-state-pill.ticket-state-nuevo {
   background-color: color-mix(in srgb, var(--color-info) 18%, transparent);
   color: color-mix(in srgb, var(--color-info) 82%, black);
   border: 1px solid color-mix(in srgb, var(--color-info) 42%, transparent);
 }
 
-.ticket-state-abierto {
+.ticket-state-pill.ticket-state-abierto {
   background-color: color-mix(in srgb, #f97316 18%, transparent);
   color: #c2410c;
   border: 1px solid color-mix(in srgb, #f97316 42%, transparent);
 }
 
-.ticket-state-pendiente {
+.ticket-state-pill.ticket-state-pendiente {
   background-color: color-mix(in srgb, #eab308 18%, transparent);
   color: #a16207;
   border: 1px solid color-mix(in srgb, #eab308 42%, transparent);
 }
 
-.ticket-state-en-espera {
+.ticket-state-pill.ticket-state-en-espera {
   background-color: color-mix(in srgb, #a855f7 18%, transparent);
   color: #6b21a8;
   border: 1px solid color-mix(in srgb, #a855f7 42%, transparent);
 }
 
-.ticket-state-resuelto {
+.ticket-state-pill.ticket-state-resuelto {
   background-color: color-mix(in srgb, var(--color-success) 18%, transparent);
   color: color-mix(in srgb, var(--color-success) 80%, black);
   border: 1px solid color-mix(in srgb, var(--color-success) 42%, transparent);
 }
 
-.ticket-state-cerrado {
+.ticket-state-pill.ticket-state-cerrado {
   background-color: color-mix(in srgb, var(--color-danger) 18%, transparent);
   color: color-mix(in srgb, var(--color-danger) 80%, black);
   border: 1px solid color-mix(in srgb, var(--color-danger) 42%, transparent);

@@ -1,5 +1,13 @@
+:host {
+  position: fixed;
+  inset: 0;
+  z-index: 1200;
+  pointer-events: none;
+}
+
 .modal-overlay {
   backdrop-filter: blur(6px);
+  pointer-events: auto;
 }
 
 .modal-content {

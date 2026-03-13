@@ -1,74 +1,101 @@
-.opciones-contenedor {
+.opciones-shell {
   display: grid;
-  grid-template-columns: 340px 1fr;
-  gap: 2rem;
+  gap: 1.75rem;
   padding: 2.5rem 3rem;
   color: var(--color-text);
 }
 
-.opciones-lista {
-  display: flex;
-  flex-direction: column;
+.opciones-encabezado {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(280px, 0.8fr);
   gap: 1.5rem;
+  align-items: end;
 }
 
-.opcion-card {
+.opciones-etiqueta {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.4rem 0.85rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--color-primary) 12%, var(--surface-elevated));
+  color: var(--color-primary);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.opciones-encabezado h1 {
+  margin: 0.9rem 0 0;
+  font-size: clamp(2.2rem, 2vw, 3.2rem);
+  line-height: 1.05;
+}
+
+.opciones-encabezado p {
+  margin: 0;
+  color: var(--color-text-alt);
+  line-height: 1.6;
+  max-width: 58rem;
+}
+
+.opciones-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.9rem;
+}
+
+.opciones-tab {
   display: grid;
   grid-template-columns: auto 1fr;
-  gap: 1.2rem;
-  padding: 1.4rem 1.3rem;
-  border-radius: 14px;
-  background: var(--surface-elevated);
+  gap: 0.9rem;
+  align-items: start;
+  min-width: min(100%, 24rem);
+  padding: 1rem 1.15rem;
+  border-radius: 18px;
   border: 1px solid color-mix(in srgb, var(--color-primary) 10%, var(--color-border));
+  background: linear-gradient(
+    160deg,
+    color-mix(in srgb, var(--surface-elevated) 88%, var(--color-primary) 12%),
+    var(--surface-elevated)
+  );
   box-shadow: var(--shadow-soft);
   cursor: pointer;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  text-align: left;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
 }
 
-.opcion-card:hover {
-  transform: translateY(-2px);
+.opciones-tab:hover {
+  transform: translateY(-1px);
   box-shadow: var(--shadow-strong);
 }
 
-.opcion-card--activo {
-  border: 2px solid var(--color-primary);
+.opciones-tab--activa {
+  border-color: color-mix(in srgb, var(--color-primary) 65%, var(--color-border));
+  box-shadow: 0 18px 34px rgba(var(--color-primary-rgb), 0.16);
 }
 
-.opcion-icono {
-  width: 3.6rem;
-  height: 3.6rem;
+.opciones-tab__icono {
+  width: 2.8rem;
+  height: 2.8rem;
   border-radius: 999px;
-  background-color: color-mix(in srgb, var(--color-primary) 16%, var(--surface-elevated));
-  display: flex;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
+  background: color-mix(in srgb, var(--color-primary) 14%, var(--surface-elevated));
 }
 
-.opcion-info h2 {
-  margin: 0;
-  font-size: 1.5rem;
+.opciones-tab__contenido {
+  display: grid;
+  gap: 0.25rem;
 }
 
-.opcion-info p {
-  margin: 0.35rem 0 0.7rem;
+.opciones-tab__contenido strong {
+  font-size: 1.4rem;
+  color: var(--color-ink-soft);
+}
+
+.opciones-tab__contenido small {
   color: var(--color-text-alt);
   line-height: 1.4;
-}
-
-.opcion-info button {
-  border: none;
-  background: var(--color-primary);
-  color: var(--color-surface);
-  padding: 0.6rem 1.4rem;
-  border-radius: 999px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background-color 0.2s ease, transform 0.2s ease;
-}
-
-.opcion-info button:hover {
-  background-color: var(--color-primary-strong);
-  transform: translateY(-1px);
 }
 
 .opciones-contenido {
@@ -80,6 +107,26 @@
   display: grid;
   gap: 2rem;
   min-height: 100%;
+}
+
+.modulo-embebido {
+  display: grid;
+  gap: 1.75rem;
+}
+
+.modulo-embebido__encabezado {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.modulo-embebido__encabezado h1 {
+  margin: 0;
+  font-size: 2.2rem;
+}
+
+.modulo-embebido__encabezado p {
+  margin: 0;
+  color: var(--color-text-alt);
 }
 
 .preferencias-formulario header,
@@ -254,15 +301,7 @@
   color: var(--color-text);
 }
 
-[data-theme='dark'] .opcion-card {
-  background: linear-gradient(
-    160deg,
-    color-mix(in srgb, var(--surface-elevated) 92%, var(--color-primary) 8%),
-    var(--surface-elevated)
-  );
-}
-
-[data-theme='dark'] .opcion-card--activo {
+[data-theme='dark'] .opciones-tab--activa {
   box-shadow: 0 18px 36px rgba(var(--color-primary-rgb), 0.24);
 }
 
@@ -273,14 +312,18 @@
 }
 
 @media (max-width: 1024px) {
-  .opciones-contenedor {
+  .opciones-encabezado {
     grid-template-columns: 1fr;
   }
 }
 
 @media (max-width: 640px) {
-  .opciones-contenedor {
+  .opciones-shell {
     padding: 2rem;
+  }
+
+  .opciones-tab {
+    min-width: 100%;
   }
 
   .opciones-contenido {

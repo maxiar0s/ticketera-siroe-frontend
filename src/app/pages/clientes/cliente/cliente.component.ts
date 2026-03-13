@@ -12,7 +12,10 @@ import { Cliente } from '../../../interfaces/cliente.interface';
 import { NavegationComponent } from "../../../shared/navegation/navegation.component";
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../../services/auth.service';
-import { normalizarServicios } from '../../../utils/servicios.util';
+import {
+  clienteTieneSoporteTI,
+  normalizarServicios,
+} from '../../../utils/servicios.util';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { finalize } from 'rxjs';
 
@@ -36,6 +39,7 @@ export class ClienteComponent {
   public indiceTabla!:          number;
   public casaMatrizId!:         string;
   public cliente?:              Cliente;
+  public clienteTieneSoporte:   boolean = false;
   public sucursales:            Sucursal[] | undefined = undefined;
   public obtainedSucursales:    boolean = false;
   public Title:                 boolean = false;
@@ -157,9 +161,9 @@ export class ClienteComponent {
             visitasMensualesRealizadas = 0,
             visitasEmergenciaAnualesRealizadas = 0,
             servicios: serviciosRespuesta = [],
-            esLead = false,
           } = cliente;
           const servicios = normalizarServicios(serviciosRespuesta);
+          this.clienteTieneSoporte = clienteTieneSoporteTI(servicios);
           this.cliente = {
             ...(this.cliente ?? {}),
             id,
@@ -174,11 +178,10 @@ export class ClienteComponent {
             visitasEmergenciaAnuales,
             visitasMensualesRealizadas,
             visitasEmergenciaAnualesRealizadas,
-            esLead,
             servicios,
           };
           this.paginas = paginas;
-          this.sucursales = cliente.sucursales;
+          this.sucursales = this.clienteTieneSoporte ? cliente.sucursales : [];
         },
         error: (error) => {
           console.error('Error al obtener sucursales', error);

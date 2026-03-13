@@ -4,6 +4,4 @@ export interface ClienteFiltros {
   visitasMensualesMax?: number | null;
   visitasEmergenciaMin?: number | null;
   visitasEmergenciaMax?: number | null;
-  esLead?: boolean | null;
-  tieneDatosBancarios?: boolean | null;
 }

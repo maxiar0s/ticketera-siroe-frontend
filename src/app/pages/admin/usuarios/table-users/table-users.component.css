@@ -1,16 +1,80 @@
 .responsive-container {
-  width: 98%;
+  width: 100%;
   margin: 0 auto;
 }
 
 .users-table {
-  border-radius: 20px;
-  border: 1px solid var(--color-border);
-  background-color: var(--color-surface-alt);
-  padding: 5px 35px;
-  box-shadow: 4px 4px 18px -2px #E7E4E8CC;
-  overflow-x: auto; /* Add horizontal scrolling */
   width: 100%;
+  overflow-x: auto;
+  border: 1px solid color-mix(in srgb, var(--color-primary) 10%, var(--color-border));
+  border-radius: 1.5rem;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.8) 0%, rgba(255, 255, 255, 0.96) 100%),
+    var(--color-surface-alt);
+  box-shadow: 0 20px 40px rgba(120, 95, 124, 0.08);
+}
+
+.table {
+  width: 100%;
+  min-width: 980px;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.thead-properties th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  padding: 1.15rem 1rem;
+  background: color-mix(in srgb, var(--color-primary) 5%, var(--color-surface));
+  color: var(--color-ink);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  border-bottom: 1px solid color-mix(in srgb, var(--color-primary) 12%, var(--color-border));
+  white-space: nowrap;
+}
+
+.thead-properties th:first-child {
+  padding-left: 1.5rem;
+}
+
+.thead-properties th:last-child {
+  padding-right: 1.5rem;
+}
+
+.row-border {
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.row-border:hover td {
+  background: color-mix(in srgb, var(--color-primary) 3%, var(--color-surface));
+}
+
+.row-border td {
+  padding: 1rem;
+  border-bottom: 1px solid color-mix(in srgb, var(--color-primary) 8%, var(--color-border));
+  vertical-align: middle;
+  background: transparent;
+}
+
+.row-border td:first-child {
+  padding-left: 1.5rem;
+}
+
+.row-border td:last-child {
+  padding-right: 1.5rem;
+}
+
+.row-border:last-child td {
+  border-bottom: none;
+}
+
+.row-table {
+  max-width: 100%;
+  color: var(--color-text);
+  font-size: var(--font-size-sm);
 }
 
 .pointer {
@@ -18,109 +82,253 @@
 }
 
 .height-spinner {
-  height: 90px;
+  height: 96px;
+  text-align: center;
 }
 
-.estadoCuenta {
-  display: flex;
+.empty-state {
+  color: var(--color-text-alt);
+  font-weight: 500;
+}
+
+.col-check {
+  width: 52px;
+}
+
+.col-id {
+  width: 86px;
+}
+
+.col-name {
+  width: 260px;
+}
+
+.col-mail {
+  width: 260px;
+}
+
+.col-role,
+.col-occupation,
+.col-status {
+  width: 150px;
+}
+
+.col-actions {
+  width: 132px;
+}
+
+.information-checkbox input[type='checkbox'],
+.thead-properties input[type='checkbox'] {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--color-primary);
+}
+
+.id-badge {
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  text-align: center;
-  margin: auto;
-  width: 100px;
-  height: 23px;
-  padding: 4px 10px 4px 10px;
-  border-radius: 10px;
-  white-space: nowrap; /* Prevent text wrapping */
+  min-width: 56px;
+  padding: 0.35rem 0.65rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--color-primary) 8%, var(--color-surface));
+  color: var(--color-primary);
+  font-weight: 700;
+  font-size: 0.8rem;
 }
 
-.activo {
-  background-color: #1EC6B8;
-  color: var(--color-surface);
+.user-cell {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  min-width: 0;
 }
 
-.inactivo {
-  background-color: #FFEA4A;
-  color: #7B7122;
+.user-avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  background: linear-gradient(135deg, color-mix(in srgb, var(--color-primary) 85%, #ffffff), color-mix(in srgb, var(--color-primary-bright) 70%, #ffffff));
+  color: #fff;
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  flex-shrink: 0;
 }
 
-.suspendido {
-  background-color: #B1B1B1;
-  color: var(--color-surface);
+.user-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  min-width: 0;
 }
 
-.row-table {
-  height: 40px;
-  max-width: 100%;
+.user-name {
+  color: var(--color-ink);
+  font-weight: 600;
+  white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.user-subtitle {
+  color: var(--color-text-alt);
+  font-size: 0.78rem;
+}
+
+.mail-text {
+  display: inline-block;
+  max-width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: var(--color-ink-soft);
+}
+
+.role-badge,
+.occupation-badge,
+.estadoCuenta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2rem;
+  padding: 0.35rem 0.85rem;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 700;
   white-space: nowrap;
 }
 
+.role-badge {
+  border: 1px solid transparent;
+}
+
+.role-admin {
+  background: #eef2ff;
+  color: #3730a3;
+  border-color: #c7d2fe;
+}
+
+.role-tech {
+  background: #ecfeff;
+  color: #155e75;
+  border-color: #a5f3fc;
+}
+
+.role-client {
+  background: #fef3c7;
+  color: #92400e;
+  border-color: #fde68a;
+}
+
+.role-support {
+  background: #fce7f3;
+  color: #9d174d;
+  border-color: #f9a8d4;
+}
+
+.role-sales {
+  background: #e0f2fe;
+  color: #075985;
+  border-color: #bae6fd;
+}
+
+.role-default {
+  background: #f3f4f6;
+  color: #4b5563;
+  border-color: #d1d5db;
+}
+
+.occupation-software {
+  background: #eef2ff;
+  color: #4338ca;
+}
+
+.occupation-field {
+  background: #ecfdf5;
+  color: #047857;
+}
+
+.occupation-hybrid {
+  background: linear-gradient(90deg, #eef2ff 0%, #ecfdf5 100%);
+  color: #065f46;
+}
+
+.occupation-empty {
+  background: #f9fafb;
+  color: #6b7280;
+}
+
+.estadoCuenta {
+  min-width: 96px;
+}
+
+.activo {
+  background-color: #d9fbf7;
+  color: #0f766e;
+}
+
+.inactivo {
+  background-color: #fff7cc;
+  color: #8a6d1d;
+}
+
+.suspendido {
+  background-color: #ececf1;
+  color: #5b6070;
+}
+
+.information-actions {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.actions {
+  width: 2.25rem;
+  height: 2.25rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid color-mix(in srgb, var(--color-primary) 8%, var(--color-border));
+  border-radius: 0.85rem;
+  background: var(--color-surface);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.actions:hover {
+  transform: translateY(-1px);
+  border-color: color-mix(in srgb, var(--color-primary) 30%, var(--color-border));
+  box-shadow: 0 8px 16px rgba(120, 95, 124, 0.12);
+  background: color-mix(in srgb, var(--color-primary) 4%, var(--color-surface));
+}
+
 .svg {
+  width: 15px;
   height: 15px;
-  width: 15px; /* Add fixed width */
   transition: opacity 0.3s ease;
 }
 
 .ver-datos:hover {
   content: url('/assets/svg/ver-datos-hover.svg');
 }
+
 .edit-user:hover {
   content: url('/assets/svg/edit-user-hover.svg');
 }
+
 .delete:hover {
   content: url('/assets/svg/delete-hover.svg');
 }
 
-.col-1 {
-  width: 20px; /* Reduced from 25px */
-}
-.col-2 {
-  width: 60px; /* Reduced from 100px */
-}
-.col-3 {
-  width: 150px;
-}
-.col-4 {
-  width: 150px;
-}
-.col-5 {
-  width: 150px;
-}
-.col-6 {
-  width: 105px;
-}
-.col-7 {
-  width: 90px; /* Increased from 80px to accommodate fixed-size icons */
-}
-
-.information-actions {
-  display: flex;
-  gap: 5px;
-  align-items: center;
-  justify-content: center;
-  min-width: 90px; /* Ensure minimum width for action buttons */
-}
-
-.actions {
-  background: none;
-  border: none;
-  padding: 5px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 25px; /* Ensure minimum width for each button */
-}
-
-.table {
-  width: 100%;
-  min-width: 650px; /* Ensure minimum width for readability */
-}
-
 .disabled-button {
   cursor: not-allowed;
-  opacity: 0.5;
+  opacity: 0.45;
+  box-shadow: none;
 }
 
 .disabled-icon {
@@ -128,124 +336,41 @@
   pointer-events: none;
 }
 
-/* Responsive adjustments */
-@media screen and (max-width: 992px) {
-  .users-table {
-    padding: 5px 15px;
-  }
-  
-  .col-3, .col-4, .col-5 {
-    width: 120px;
-  }
-  
-  /* Keep SVG size consistent */
-  .svg {
-    height: 15px;
-    width: 15px;
+img.svg {
+  min-height: 15px;
+  min-width: 15px;
+  object-fit: contain;
+}
+
+@media screen and (max-width: 1200px) {
+  .table {
+    min-width: 920px;
   }
 }
 
 @media screen and (max-width: 768px) {
   .users-table {
-    padding: 5px 10px;
+    border-radius: 1.1rem;
   }
-  
-  .col-1 {
-    width: 15px; /* Further reduced */
-  }
-  
-  .col-2 {
-    width: 50px; /* Further reduced */
-  }
-  
-  .col-3, .col-4, .col-5 {
-    width: 100px;
-  }
-  
-  .estadoCuenta {
-    width: 90px;
-    font-size: 0.9em;
-  }
-  
-  /* Keep SVG size consistent */
-  .svg {
-    height: 15px;
-    width: 15px;
-  }
-}
 
-@media screen and (max-width: 576px) {
-  .users-table {
-    padding: 5px;
+  .thead-properties th,
+  .row-border td {
+    padding-top: 0.85rem;
+    padding-bottom: 0.85rem;
   }
-  
-  .information-actions {
-    flex-direction: row;
-    justify-content: center;
-  }
-  
-  .actions {
-    padding: 3px;
-  }
-  
-  /* Keep SVG size consistent */
-  .svg {
-    height: 15px;
-    width: 15px;
-  }
-}
 
-/* Extra small devices */
-@media screen and (max-width: 480px) {
-  .table {
-    min-width: 500px;
+  .thead-properties th:first-child,
+  .row-border td:first-child {
+    padding-left: 1rem;
   }
-  
-  .col-1 {
-    width: 10px; /* Minimum width */
-  }
-  
-  .col-2 {
-    width: 40px; /* Minimum width */
-  }
-  
-  .col-3, .col-4, .col-5 {
-    width: 80px;
-  }
-  
-  .col-6 {
-    width: 90px;
-  }
-  
-  .col-7 {
-    width: 90px; /* Keep space for fixed-size icons */
-  }
-  
-  .estadoCuenta {
-    width: 80px;
-    font-size: 0.85em;
-    padding: 4px 5px;
-  }
-  
-  .information-actions {
-    gap: 2px;
-  }
-  
-  /* Keep SVG size consistent */
-  .svg {
-    height: 15px;
-    width: 15px;
-  }
-  
-  .actions {
-    padding: 3px;
-    min-width: 22px; /* Slightly reduced for very small screens */
-  }
-}
 
-/* Ensure images don't shrink */
-img.svg {
-  min-height: 15px;
-  min-width: 15px;
-  object-fit: contain;
+  .thead-properties th:last-child,
+  .row-border td:last-child {
+    padding-right: 1rem;
+  }
+
+  .user-avatar {
+    width: 2.2rem;
+    height: 2.2rem;
+  }
 }

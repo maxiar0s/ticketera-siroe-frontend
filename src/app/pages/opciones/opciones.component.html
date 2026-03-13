@@ -1,26 +1,32 @@
-<div class="opciones-contenedor" *ngIf="!cargando; else opcionesCargando">
-  <aside class="opciones-lista">
-    <div
-      class="opcion-card"
-      *ngFor="let tarjeta of obtenerTarjetas()"
-      [class.opcion-card--activo]="seccionSeleccionada === tarjeta.id"
-      (click)="seleccionarSeccion(tarjeta.id)"
-    >
-      <div class="opcion-icono">
-        <img
-          [src]="tarjeta.icono"
-          [alt]="tarjeta.titulo"
-          width="32"
-          height="32"
-        />
-      </div>
-      <div class="opcion-info">
-        <h2>{{ tarjeta.titulo }}</h2>
-        <p>{{ tarjeta.descripcion }}</p>
-        <button type="button">{{ tarjeta.accion }}</button>
-      </div>
+<div class="opciones-shell" *ngIf="!cargando; else opcionesCargando">
+  <header class="opciones-encabezado">
+    <div>
+      <span class="opciones-etiqueta">Centro de configuracion</span>
+      <h1>Personaliza y administra tu plataforma</h1>
     </div>
-  </aside>
+    <p>
+      Cambia preferencias personales y, si corresponde, gestiona usuarios,
+      catalogos y respaldos desde un solo lugar.
+    </p>
+  </header>
+
+  <nav class="opciones-tabs" aria-label="Secciones de configuracion">
+    <button
+      type="button"
+      class="opciones-tab"
+      *ngFor="let tab of obtenerTabs()"
+      [class.opciones-tab--activa]="seccionSeleccionada === tab.id"
+      (click)="seleccionarSeccion(tab.id)"
+    >
+      <span class="opciones-tab__icono">
+        <img [src]="tab.icono" [alt]="tab.titulo" width="20" height="20" />
+      </span>
+      <span class="opciones-tab__contenido">
+        <strong>{{ tab.titulo }}</strong>
+        <small>{{ tab.descripcion }}</small>
+      </span>
+    </button>
+  </nav>
 
   <section class="opciones-contenido">
     <ng-container [ngSwitch]="seccionSeleccionada">
@@ -118,6 +124,24 @@
           </ul>
         </section>
       </div>
+
+      <section *ngSwitchCase="'usuarios'" class="modulo-embebido">
+        <header class="modulo-embebido__encabezado">
+          <h1>Usuarios</h1>
+          <p>Administra cuentas, busqueda y paginacion sin salir de Configuracion.</p>
+        </header>
+
+        <app-usuarios [embebidoEnConfiguracion]="true"></app-usuarios>
+      </section>
+
+      <section *ngSwitchCase="'tiposEquipos'" class="modulo-embebido">
+        <header class="modulo-embebido__encabezado">
+          <h1>Tipos de equipos</h1>
+          <p>Organiza tipos, campos y departamentos desde este panel central.</p>
+        </header>
+
+        <app-tipos-equipos [embebidoEnConfiguracion]="true"></app-tipos-equipos>
+      </section>
     </ng-container>
   </section>
 </div>

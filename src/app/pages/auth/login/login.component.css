@@ -1,9 +1,11 @@
-﻿:host {
+:host {
   display: block;
+  width: 100%;
   min-height: 100vh;
 }
 
 .login-page {
+  width: 100%;
   min-height: 100vh;
   display: flex;
   align-items: center;

@@ -5,7 +5,7 @@ import { Pipe, PipeTransform } from '@angular/core';
   standalone: true
 })
 export class RutPipe implements PipeTransform {
-  transform(value: string): string {
+  transform(value: string | null | undefined): string {
     if (!value) {
       return '';
     }

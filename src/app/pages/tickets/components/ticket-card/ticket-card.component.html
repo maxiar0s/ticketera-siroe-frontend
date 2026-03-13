@@ -2,6 +2,8 @@
   class="ticket-card"
   [class.selected]="isSelected"
   [class.ticket-nuevo]="ticket.estadoTicket === 'Nuevo'"
+  [class.ticket-cerrado]="ticket.estadoTicket === 'Cerrado'"
+  [class.ticket-resuelto]="ticket.estadoTicket === 'Resuelto'"
   (click)="handleClick()"
 >
   <!-- Card Content - 2 Main Containers -->

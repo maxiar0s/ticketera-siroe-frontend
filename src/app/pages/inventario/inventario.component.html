@@ -1,0 +1,214 @@
+<div class="module-page">
+  <header class="module-page__header">
+    <div class="module-page__title-group">
+      <span class="module-page__eyebrow">Logistica</span>
+      <h1 class="module-page__title">Inventario</h1>
+      <p class="module-page__subtitle">
+        Administra equipos inventariados, su identificacion SKU y su estado actual.
+      </p>
+    </div>
+    <button type="button" class="primary-button" (click)="abrirFormularioNuevo()">
+      Registrar
+    </button>
+  </header>
+
+  <section class="inventario-summary">
+    <article class="summary-card module-page__panel">
+      <span class="summary-label">Items visibles</span>
+      <strong>{{ inventarios.length }}</strong>
+      <small>Resultados en la pagina actual</small>
+    </article>
+    <article class="summary-card module-page__panel">
+      <span class="summary-label">Estados</span>
+      <strong>{{ estados.length }}</strong>
+      <small>Catalogo disponible para clasificar</small>
+    </article>
+    <article class="summary-card module-page__panel">
+      <span class="summary-label">Vista</span>
+      <strong>Inventario tecnico</strong>
+      <small>Busqueda, detalle y edicion rapida</small>
+    </article>
+  </section>
+
+  <div class="inventario-layout module-page__layout">
+    <aside class="inventario-sidebar module-page__sidebar">
+      <div class="sidebar-header">
+        <div>
+          <h2>Items</h2>
+          <p>Filtra y selecciona un equipo para revisar su ficha.</p>
+        </div>
+        <button type="button" class="ghost-button small" (click)="abrirFormularioNuevo()">
+          Nuevo
+        </button>
+      </div>
+
+      <div class="filter-shell">
+        <form class="sidebar-search" (ngSubmit)="buscarInventario()">
+          <input
+            type="text"
+            placeholder="Buscar por SKU o nombre"
+            name="buscarInventario"
+            [(ngModel)]="inventariosBuscar"
+          />
+          <select name="estadoFiltro" [(ngModel)]="estadoFiltro">
+            <option value="">Todos los estados</option>
+            <option *ngFor="let estado of estados" [value]="estado.id">
+              {{ estado.name }}
+            </option>
+          </select>
+          <div class="search-actions">
+            <button type="submit" class="primary-button small">Buscar</button>
+            <button type="button" class="ghost-button small" (click)="limpiarFiltros()">
+              Limpiar
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <div class="sidebar-list">
+        <p *ngIf="inventariosCargando" class="estado">Cargando inventario...</p>
+        <p *ngIf="!inventariosCargando && inventarios.length === 0" class="estado">
+          No hay items registrados.
+        </p>
+
+        <ul *ngIf="!inventariosCargando && inventarios.length > 0">
+          <li
+            *ngFor="let item of inventarios; trackBy: trackByInventario"
+            (click)="seleccionarInventario(item)"
+            [class.activo]="inventarioSeleccionado?.id === item.id"
+          >
+            <div class="item-row">
+              <div class="item-main">
+                <strong>{{ item.nombre }}</strong>
+                <span>{{ item.sku }}</span>
+              </div>
+              <div class="item-meta">
+                <small class="status-pill">{{ item.estadoInventario?.name || obtenerNombreEstado(item.estado) }}</small>
+                <small class="item-value">{{ item.valor }}</small>
+              </div>
+            </div>
+          </li>
+        </ul>
+      </div>
+
+      <div class="sidebar-pagination" *ngIf="inventariosPaginasTotales > 1">
+        <button
+          type="button"
+          class="ghost-button small"
+          (click)="cambiarPagina(inventariosPagina - 1)"
+          [disabled]="inventariosPagina <= 1"
+        >
+          Anterior
+        </button>
+        <span>Pagina {{ inventariosPagina }} / {{ inventariosPaginasTotales }}</span>
+        <button
+          type="button"
+          class="ghost-button small"
+          (click)="cambiarPagina(inventariosPagina + 1)"
+          [disabled]="inventariosPagina >= inventariosPaginasTotales"
+        >
+          Siguiente
+        </button>
+      </div>
+    </aside>
+
+    <section class="inventario-content module-page__content">
+      <div *ngIf="mensajeError" class="alert alert-error module-page__panel">
+        {{ mensajeError }}
+      </div>
+      <div *ngIf="mensajeExito" class="alert alert-success module-page__panel">
+        {{ mensajeExito }}
+      </div>
+
+      <section *ngIf="mostrarFormulario" class="inventario-form module-page__panel">
+        <div class="panel-header">
+          <div>
+            <h2>{{ inventarioEnEdicion ? 'Editar item' : 'Nuevo item' }}</h2>
+            <p>Completa los datos principales del equipo inventariado.</p>
+          </div>
+          <button type="button" class="ghost-button small" (click)="cancelarFormulario()">
+            Cerrar
+          </button>
+        </div>
+
+        <form [formGroup]="inventarioForm" (ngSubmit)="guardarInventario()" class="form-grid">
+          <label>
+            SKU
+            <input type="text" formControlName="sku" maxlength="100" placeholder="Ej: NB-001" />
+          </label>
+          <label>
+            Estado
+            <select formControlName="estado">
+              <option [ngValue]="null">Selecciona un estado</option>
+              <option *ngFor="let estado of estados" [ngValue]="estado.id">
+                {{ estado.name }}
+              </option>
+            </select>
+          </label>
+          <label class="full-width">
+            Nombre
+            <input type="text" formControlName="nombre" maxlength="255" placeholder="Nombre del equipo" />
+          </label>
+          <label class="full-width">
+            Descripcion
+            <textarea formControlName="descripcion" rows="4" placeholder="Detalle del item"></textarea>
+          </label>
+          <label>
+            Valor
+            <input type="number" min="0" step="0.01" formControlName="valor" placeholder="0" />
+          </label>
+
+          <div class="form-actions full-width">
+            <button type="submit" class="primary-button" [disabled]="guardandoInventario || estadosCargando">
+              {{ guardandoInventario ? 'Guardando...' : (inventarioEnEdicion ? 'Guardar cambios' : 'Crear item') }}
+            </button>
+          </div>
+        </form>
+      </section>
+
+      <section *ngIf="inventarioSeleccionado && !mostrarFormulario" class="inventario-detail module-page__panel">
+        <div class="panel-header">
+          <div>
+            <h2>{{ inventarioSeleccionado.nombre }}</h2>
+            <p>{{ inventarioSeleccionado.sku }}</p>
+          </div>
+          <div class="detail-actions">
+            <button type="button" class="ghost-button small" (click)="editarInventario(inventarioSeleccionado)">
+              Editar
+            </button>
+            <button
+              type="button"
+              class="delete-button"
+              [disabled]="eliminandoInventarioId === inventarioSeleccionado.id"
+              (click)="eliminarInventario(inventarioSeleccionado)"
+            >
+              {{ eliminandoInventarioId === inventarioSeleccionado.id ? 'Eliminando...' : 'Eliminar' }}
+            </button>
+          </div>
+        </div>
+
+        <div class="detail-grid">
+          <article>
+            <span class="detail-label">Estado</span>
+            <strong>{{ inventarioSeleccionado.estadoInventario?.name || obtenerNombreEstado(inventarioSeleccionado.estado) }}</strong>
+          </article>
+          <article>
+            <span class="detail-label">Valor</span>
+            <strong>{{ inventarioSeleccionado.valor }}</strong>
+          </article>
+          <article class="full-width">
+            <span class="detail-label">Descripcion</span>
+            <p>{{ inventarioSeleccionado.descripcion || 'Sin descripcion registrada.' }}</p>
+          </article>
+        </div>
+      </section>
+
+      <section *ngIf="!inventarioSeleccionado && !mostrarFormulario" class="module-page__panel module-page__placeholder">
+        <div>
+          <h3>Selecciona un item</h3>
+          <p>Desde el panel lateral puedes revisar, crear o editar registros de inventario.</p>
+        </div>
+      </section>
+    </section>
+  </div>
+</div>

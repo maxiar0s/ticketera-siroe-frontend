@@ -13,10 +13,7 @@
     </ng-template>
 
     <div class="flex-column">
-      <h2 class="casa-matriz">
-        {{ detalle.razonSocial || 'Sin razón social' }}
-        <span class="lead-chip" *ngIf="detalle.esLead">Lead</span>
-      </h2>
+      <h2 class="casa-matriz">{{ detalle.razonSocial || 'Sin razón social' }}</h2>
 
       <div class="information info-razon">
         <p>Razon Social: <span>{{ detalle.razonSocial || 'Sin registro' }}</span></p>
@@ -27,7 +24,7 @@
       </div>
 
       <div class="information info-rut">
-        <p>RUT Cliente: <span>{{ detalle.rut || '—' }}</span></p>
+        <p>RUT Cliente: <span>{{ detalle.rut ? (detalle.rut | rut) : '—' }}</span></p>
       </div>
 
       <div class="information info-telefono">
@@ -45,17 +42,12 @@
       <div class="information info-servicios">
         <p>
           Servicios:
-          <ng-container *ngIf="!detalle.esLead; else leadServicios">
-            <span *ngIf="detalle.servicios?.length; else sinServicios">
-              {{ detalle.servicios?.join(', ') }}
-            </span>
-          </ng-container>
+          <span *ngIf="detalle.servicios?.length; else sinServicios">
+            {{ detalle.servicios?.join(', ') }}
+          </span>
         </p>
         <ng-template #sinServicios>
           <span>Sin servicios registrados</span>
-        </ng-template>
-        <ng-template #leadServicios>
-          <span>Lead sin servicios asignados</span>
         </ng-template>
       </div>
 
@@ -70,28 +62,24 @@
       <div class="information info-visitas">
         <p>
           Visitas mensuales:
-          <ng-container *ngIf="!detalle.esLead; else leadMetricas">
-            <span
-              [ngClass]="obtenerClaseVisitas(detalle.visitasMensuales, detalle.visitasMensualesRealizadas)"
-            >
-              {{ detalle.visitasMensuales ?? 0 }} /
-              {{ detalle.visitasMensualesRealizadas ?? 0 }}
-            </span>
-          </ng-container>
+          <span
+            [ngClass]="obtenerClaseVisitas(detalle.visitasMensuales, detalle.visitasMensualesRealizadas)"
+          >
+            {{ detalle.visitasMensuales ?? 0 }} /
+            {{ detalle.visitasMensualesRealizadas ?? 0 }}
+          </span>
         </p>
       </div>
 
       <div class="information info-emergencia">
         <p>
           Visitas emergencia anuales:
-          <ng-container *ngIf="!detalle.esLead; else leadMetricas">
-            <span
-              [ngClass]="obtenerClaseVisitas(detalle.visitasEmergenciaAnuales, detalle.visitasEmergenciaAnualesRealizadas)"
-            >
-              {{ detalle.visitasEmergenciaAnuales ?? 0 }} /
-              {{ detalle.visitasEmergenciaAnualesRealizadas ?? 0 }}
-            </span>
-          </ng-container>
+          <span
+            [ngClass]="obtenerClaseVisitas(detalle.visitasEmergenciaAnuales, detalle.visitasEmergenciaAnualesRealizadas)"
+          >
+            {{ detalle.visitasEmergenciaAnuales ?? 0 }} /
+            {{ detalle.visitasEmergenciaAnualesRealizadas ?? 0 }}
+          </span>
         </p>
       </div>
     </div>
@@ -102,9 +90,5 @@
     <div class="flex-column">
       <h2 class="temp-title casa-matriz">Cargando cliente...</h2>
     </div>
-  </ng-template>
-
-  <ng-template #leadMetricas>
-    <span class="lead-pill">No aplica para leads</span>
   </ng-template>
 </section>

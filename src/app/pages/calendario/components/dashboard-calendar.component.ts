@@ -1,5 +1,5 @@
 ﻿import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, HostListener, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, HostListener, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
@@ -7,15 +7,15 @@ import {
   Validators,
 } from '@angular/forms';
 import { finalize } from 'rxjs';
-import { Bitacora } from '../../../../interfaces/bitacora.interface';
-import { ClienteResumen } from '../../../../interfaces/cliente-resumen.interface';
-import { ApiService } from '../../../../services/api.service';
-import { VisitaProgramada } from '../../../../interfaces/visita-programada.interface';
-import { AuthService } from '../../../../services/auth.service';
-import { Tecnico } from '../../../../interfaces/tecnico.interface';
+import { Bitacora } from '../../../interfaces/bitacora.interface';
+import { ClienteResumen } from '../../../interfaces/cliente-resumen.interface';
+import { ApiService } from '../../../services/api.service';
+import { VisitaProgramada } from '../../../interfaces/visita-programada.interface';
+import { AuthService } from '../../../services/auth.service';
+import { Tecnico } from '../../../interfaces/tecnico.interface';
 import { Router } from '@angular/router';
 
-type TipoEventoDia = 'programada' | 'completada' | 'emergencia' | 'ticket';
+type TipoEventoDia = 'programada' | 'completada' | 'emergencia';
 
 interface CalendarDay {
   date: Date;
@@ -27,7 +27,6 @@ interface CalendarDay {
   regularCompletedCount: number;
   scheduledCount: number;
   emergencyCount: number;
-  ticketCount: number;
   isToday: boolean;
   isSelected: boolean;
   tipos: TipoEventoDia[];
@@ -40,7 +39,7 @@ interface SucursalOption {
 }
 
 type EventoCalendario =
-  | (Bitacora & { tipo: 'completada' | 'ticket' })
+  | (Bitacora & { tipo: 'completada' })
   | (VisitaProgramada & { tipo: 'programada' });
 
 @Component({
@@ -50,9 +49,14 @@ type EventoCalendario =
   templateUrl: './dashboard-calendar.component.html',
   styleUrl: './dashboard-calendar.component.css',
 })
-export class DashboardCalendarComponent implements OnInit {
+export class DashboardCalendarComponent implements OnInit, OnChanges {
   @Input() cargando = false;
   @Input() mensajeError = '';
+  @Input() clienteFiltro = '';
+  @Input() tecnicoFiltro = '';
+  @Input() tipoFiltro = 'todos';
+  @Input() periodoFiltro = '';
+  @Input() buscarFiltro = '';
 
   @Input()
   set bitacoras(value: Bitacora[] | null) {
@@ -87,14 +91,13 @@ export class DashboardCalendarComponent implements OnInit {
   private _bitacoras: Bitacora[] = [];
   esAdmin = false;
   puedeAgendarVisitas = true;
-  puedeEditarTickets = false;
+  puedeEditarVisitas = false;
   eliminandoId: number | null = null;
   tecnicosDropdownAbierto = false;
   private readonly coloresEvento: Record<TipoEventoDia, string> = {
     programada: 'var(--color-success)',
     completada: 'var(--color-primary)',
     emergencia: 'var(--color-danger)',
-    ticket: 'var(--color-info)',
   };
 
   private vista = {
@@ -120,7 +123,7 @@ export class DashboardCalendarComponent implements OnInit {
     });
     this.esAdmin = this.authService.esAdministrador();
     this.puedeAgendarVisitas = !this.authService.esTecnico();
-    this.puedeEditarTickets = this.esAdmin || this.authService.esTecnico();
+    this.puedeEditarVisitas = this.esAdmin || this.authService.esTecnico();
   }
 
   ngOnInit(): void {
@@ -128,6 +131,18 @@ export class DashboardCalendarComponent implements OnInit {
     this.cargarVisitasProgramadas();
     this.cargarTecnicosDisponibles();
     this.construirCalendario();
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (
+      changes['clienteFiltro'] ||
+      changes['tecnicoFiltro'] ||
+      changes['tipoFiltro'] ||
+      changes['periodoFiltro'] ||
+      changes['buscarFiltro']
+    ) {
+      this.regenerarMapaDeEventos();
+    }
   }
 
   prevMonth(): void {
@@ -375,6 +390,10 @@ export class DashboardCalendarComponent implements OnInit {
     };
 
     this._bitacoras.forEach((bitacora) => {
+      if (bitacora.esTicket) {
+        return;
+      }
+
       const origen = bitacora.fechaVisita ?? bitacora.createdAt ?? '';
       if (!origen) {
         return;
@@ -384,11 +403,14 @@ export class DashboardCalendarComponent implements OnInit {
         return;
       }
       const clave = this.formatearClave(fecha);
-      const tipoEvento: 'ticket' | 'completada' = bitacora.esTicket ? 'ticket' : 'completada';
-      agregarEvento(clave, { ...bitacora, tipo: tipoEvento });
+      agregarEvento(clave, { ...bitacora, tipo: 'completada' });
     });
 
     this.visitasProgramadas.forEach((visita) => {
+      if (!this.visitaProgramadaPasaFiltros(visita)) {
+        return;
+      }
+
       const origen = visita.fechaProgramada ?? '';
       if (!origen) {
         return;
@@ -425,18 +447,11 @@ export class DashboardCalendarComponent implements OnInit {
       const eventosDia = this.eventosPorDia.get(clave) ?? [];
       const completadas = eventosDia.filter((evento) => evento.tipo === 'completada').length;
       const programadas = eventosDia.filter((evento) => evento.tipo === 'programada').length;
-      const ticketsEventos = eventosDia.filter((evento) => this.esEventoTicket(evento)) as Array<
-        Bitacora & { tipo: 'ticket' }
-      >;
-      const tickets = ticketsEventos.length;
       const emergencias = eventosDia.filter((evento) => this.esEventoEmergencia(evento)).length;
       const completadasRegulares = Math.max(completadas - emergencias, 0);
       const tipos: TipoEventoDia[] = [];
       if (emergencias > 0) {
         tipos.push('emergencia');
-      }
-      if (tickets > 0) {
-        tipos.push('ticket');
       }
       if (completadasRegulares > 0) {
         tipos.push('completada');
@@ -455,7 +470,6 @@ export class DashboardCalendarComponent implements OnInit {
         regularCompletedCount: completadasRegulares,
         scheduledCount: programadas,
         emergencyCount: emergencias,
-        ticketCount: tickets,
         tipos,
         isToday:
           fecha.getFullYear() === hoy.getFullYear() &&
@@ -585,12 +599,8 @@ export class DashboardCalendarComponent implements OnInit {
 
   private esEventoBitacora(
     evento: EventoCalendario
-  ): evento is Bitacora & { tipo: 'ticket' | 'completada' } {
-    return evento.tipo === 'ticket' || evento.tipo === 'completada';
-  }
-
-  esEventoTicket(evento: EventoCalendario): evento is Bitacora & { tipo: 'ticket' } {
-    return evento.tipo === 'ticket';
+  ): evento is Bitacora & { tipo: 'completada' } {
+    return evento.tipo === 'completada';
   }
 
   esEventoEmergencia(evento: EventoCalendario): evento is Bitacora & { tipo: 'completada' } {
@@ -615,14 +625,6 @@ export class DashboardCalendarComponent implements OnInit {
     estilos['--day-background'] = fondoEmergencia ?? 'var(--color-surface)';
 
     return estilos;
-  }
-
-  obtenerEtiquetaTicket(evento: Bitacora & { tipo: 'ticket' }): string {
-    return this.obtenerEstadoTicket(evento) === 'terminado' ? 'Cerrado' : 'Abierto';
-  }
-
-  obtenerClaseChipTicket(evento: Bitacora & { tipo: 'ticket' }): string {
-    return this.obtenerEstadoTicket(evento) === 'terminado' ? 'cerrado' : 'abierto';
   }
 
   private crearGradiente(
@@ -671,14 +673,70 @@ export class DashboardCalendarComponent implements OnInit {
     return Number(valor.toFixed(2)).toString();
   }
 
-  private obtenerEstadoTicket(evento: Bitacora & { tipo: 'ticket' }): 'ingresado' | 'terminado' {
-    const valor =
-      typeof evento.estadoTicket === 'string' ? evento.estadoTicket.trim().toLowerCase() : '';
-    return valor === 'terminado' ? 'terminado' : 'ingresado';
+  private visitaProgramadaPasaFiltros(visita: VisitaProgramada): boolean {
+    if (this.tipoFiltro === 'visitas' || this.tipoFiltro === 'emergencias') {
+      return false;
+    }
+
+    if (this.tipoFiltro !== 'todos' && this.tipoFiltro !== 'programadas') {
+      return false;
+    }
+
+    if (
+      this.clienteFiltro &&
+      `${visita.casaMatriz?.id ?? visita.casaMatrizId ?? ''}` !== this.clienteFiltro
+    ) {
+      return false;
+    }
+
+    if (
+      this.tecnicoFiltro &&
+      !visita.tecnicos.some((tecnico) => tecnico === this.tecnicoFiltro)
+    ) {
+      return false;
+    }
+
+    if (!this.coincidePeriodoTexto(visita.fechaProgramada, this.periodoFiltro)) {
+      return false;
+    }
+
+    const texto = this.buscarFiltro.trim().toLowerCase();
+    if (!texto) {
+      return true;
+    }
+
+    const campos = [
+      visita.titulo,
+      visita.descripcion,
+      visita.casaMatriz?.razonSocial,
+      visita.sucursal?.sucursal,
+      visita.tecnicos.join(' '),
+    ];
+
+    return campos.some((valor) => `${valor ?? ''}`.toLowerCase().includes(texto));
+  }
+
+  private coincidePeriodoTexto(origen: string | null | undefined, periodo: string): boolean {
+    if (!periodo) {
+      return true;
+    }
+
+    if (!origen) {
+      return false;
+    }
+
+    const fecha = this.parsearClave(origen);
+    if (Number.isNaN(fecha.getTime())) {
+      return false;
+    }
+
+    const year = fecha.getFullYear();
+    const month = `${fecha.getMonth() + 1}`.padStart(2, '0');
+    return `${year}-${month}` === periodo;
   }
 
   puedeEditarEvento(evento: EventoCalendario): boolean {
-    return this.puedeEditarTickets && this.esEventoBitacora(evento);
+    return this.puedeEditarVisitas && this.esEventoBitacora(evento);
   }
 
   editarEvento(evento: EventoCalendario): void {
@@ -694,13 +752,9 @@ export class DashboardCalendarComponent implements OnInit {
       return;
     }
 
-    const esTicket = this.esEventoTicket(evento);
-    const ruta = esTicket ? '/tickets' : '/bitacoras';
-    const queryParams = esTicket ? { ticketId: destinoId } : { bitacoraId: destinoId };
-
-    this.router.navigate([ruta], {
-      queryParams,
-      state: esTicket ? { ticketId: destinoId } : { bitacoraId: destinoId },
+    this.router.navigate(['/bitacoras'], {
+      queryParams: { bitacoraId: destinoId },
+      state: { bitacoraId: destinoId },
     });
   }
 

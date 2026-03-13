@@ -1,8 +1,9 @@
-<div class="bitacora-container">
-  <header class="bitacora-header">
-    <div>
-      <h1>{{ tituloModulo }}</h1>
-      <p class="subtitle">
+<div class="bitacora-container module-page">
+  <header class="bitacora-header module-page__header">
+    <div class="module-page__title-group">
+      <span class="module-page__eyebrow">Operaciones</span>
+      <h1 class="module-page__title">{{ tituloModulo }}</h1>
+      <p class="subtitle module-page__subtitle">
         Revisa y registra el detalle de cada visita realizada a tus clientes.
       </p>
     </div>
@@ -16,11 +17,52 @@
     </button>
   </header>
 
+  <section class="bitacora-overview module-page__panel">
+    <div class="overview-copy">
+      <span class="overview-kicker">Seguimiento tecnico</span>
+      <h2>Historial claro, rapido y facil de revisar</h2>
+      <p>
+        Filtra por cliente, proyecto o sucursal y abre cada registro para ver
+        el detalle completo de la visita.
+      </p>
+    </div>
+
+    <div class="overview-stats">
+      <article class="overview-stat">
+        <span class="overview-stat__label">En esta pagina</span>
+        <strong class="overview-stat__value">{{ bitacoras.length }}</strong>
+        <span class="overview-stat__meta">bitacoras visibles</span>
+      </article>
+
+      <article class="overview-stat">
+        <span class="overview-stat__label">Pagina actual</span>
+        <strong class="overview-stat__value">{{ paginaActual }}</strong>
+        <span class="overview-stat__meta">
+          de {{ paginasTotales || 1 }} disponibles
+        </span>
+      </article>
+
+      <article class="overview-stat accent">
+        <span class="overview-stat__label">Accion rapida</span>
+        <strong class="overview-stat__value">Selecciona</strong>
+        <span class="overview-stat__meta">una fila para abrir el detalle</span>
+      </article>
+    </div>
+  </section>
+
   <form
-    class="bitacora-filters"
+    class="bitacora-filters module-page__panel"
     [formGroup]="filtroForm"
     (ngSubmit)="buscarBitacoras()"
   >
+    <div class="filters-topbar">
+      <div>
+        <span class="panel-kicker">Busqueda avanzada</span>
+        <h2>Encuentra la visita correcta</h2>
+      </div>
+      <p>Refina el listado por cliente, sucursal, proyecto o palabras clave.</p>
+    </div>
+
     <div class="filters-grid">
       <label class="filter-field">
         <span class="label">Cliente</span>
@@ -93,13 +135,28 @@
     {{ exitoMensaje }}
   </div>
 
-  <div *ngIf="cargando" class="bitacora-loading">Cargando bitacoras...</div>
+  <div *ngIf="cargando" class="bitacora-loading module-page__panel">
+    Cargando bitacoras...
+  </div>
 
-  <div *ngIf="!cargando && bitacoras.length === 0" class="bitacora-empty">
+  <div *ngIf="!cargando && bitacoras.length === 0" class="bitacora-empty module-page__panel">
     No hay bitacoras registradas para los filtros seleccionados.
   </div>
 
-  <div *ngIf="!cargando && bitacoras.length > 0" class="bitacora-table-wrapper">
+  <div *ngIf="!cargando && bitacoras.length > 0" class="bitacora-table-wrapper module-page__panel">
+    <div class="table-toolbar">
+      <div>
+        <span class="panel-kicker">Resultados</span>
+        <h2>Bitacoras registradas</h2>
+      </div>
+      <div class="table-toolbar__meta">
+        <span class="results-pill">{{ bitacoras.length }} en pantalla</span>
+        <span class="results-caption">
+          Haz clic en una fila para revisar la visita completa.
+        </span>
+      </div>
+    </div>
+
     <table class="bitacora-table">
       <thead>
         <tr>
@@ -118,26 +175,37 @@
           [class.selected]="bitacoraSeleccionada?.id === bitacora.id"
           [class.emergencia]="bitacora.isEmergencia"
         >
-          <td>{{ bitacora.fechaVisita | formatoFecha : "dd/MM/yyyy" }}</td>
-          <td>
-            {{ bitacora.casaMatriz?.razonSocial || "N/A" }}
-            <span *ngIf="esBitacoraLead(bitacora)" class="tipo-chip lead">
-              Lead
-            </span>
+          <td data-label="Fecha" class="fecha-cell">
+            <div class="fecha-pill">
+              <strong>{{ bitacora.fechaVisita | formatoFecha : "dd/MM" }}</strong>
+              <span>{{ bitacora.fechaVisita | formatoFecha : "yyyy" }}</span>
+            </div>
           </td>
-          <td>{{ bitacora.sucursal?.sucursal || "General" }}</td>
-          <td class="tecnicos">
+          <td data-label="Cliente" class="cliente-cell">
+            <div class="cliente-main">
+              <span class="cliente-name">
+                {{ bitacora.casaMatriz?.razonSocial || "N/A" }}
+              </span>
+            </div>
+          </td>
+          <td data-label="Sucursal">
+            <span class="data-pill subtle">{{ bitacora.sucursal?.sucursal || "General" }}</span>
+          </td>
+          <td data-label="Tecnicos" class="tecnicos">
             <ng-container *ngIf="bitacora.tecnicos?.length; else sinTecnicos">
-              <span *ngFor="let tecnico of bitacora.tecnicos; let last = last">
+              <span
+                class="tecnico-name"
+                *ngFor="let tecnico of bitacora.tecnicos; let last = last"
+              >
                 {{ tecnico }}<span *ngIf="!last">, </span>
               </span>
             </ng-container>
             <ng-template #sinTecnicos>Sin registrar</ng-template>
           </td>
-          <td class="nota">
-            {{ bitacora.descripcion }}
+          <td data-label="Nota" class="nota">
+            <p class="nota-text">{{ bitacora.descripcion }}</p>
           </td>
-          <td *ngIf="esAdmin" class="acciones">
+          <td *ngIf="esAdmin" data-label="Acciones" class="acciones">
             <div class="acciones-wrapper">
               <button
                 type="button"
@@ -216,12 +284,6 @@
             {{ bitacoraSeleccionada.titulo || "Detalle de la visita" }}
           </h2>
           <span class="type-badge bitacora">Bitacora</span>
-          <span
-            *ngIf="esBitacoraLead(bitacoraSeleccionada)"
-            class="lead-detail-chip"
-          >
-            Lead
-          </span>
           <span
             *ngIf="bitacoraSeleccionada.isEmergencia"
             class="emergency-badge"

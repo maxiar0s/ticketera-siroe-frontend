@@ -1,5 +1,5 @@
 <div class="grid-tables">
-  <div class="calendar-card" *ngIf="dashboardConfig.calendar">
+  <div class="calendar-card" *ngIf="dashboardConfig.calendar && modules.calendario">
     <dashboard-calendar
       [bitacoras]="bitacoras"
       [cargando]="loadingBitacoras"

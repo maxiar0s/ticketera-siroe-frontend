@@ -17,32 +17,11 @@
       </select>
     </label>
 
-    <label class="filter-field" *ngIf="modules.sucursal">
-      <span class="label">Sucursal</span>
-      <select formControlName="sucursalId" [disabled]="sucursales.length === 0">
-        <option value="">Todas</option>
-        <option *ngFor="let sucursal of sucursales" [value]="sucursal.id">
-          {{ sucursal.sucursal }}
-        </option>
-      </select>
-    </label>
-
     <label class="filter-field">
       <span class="label">Estado</span>
       <select formControlName="estado">
         <option *ngFor="let opcion of filtrosEstado" [value]="opcion.value">
           {{ opcion.label }}
-        </option>
-      </select>
-    </label>
-
-    <label class="filter-field" *ngIf="modules.proyectos">
-      <span class="label">Proyecto</span>
-      <select formControlName="proyectoId">
-        <option value="">Todos</option>
-        <option value="sin-proyecto">Sin proyecto</option>
-        <option *ngFor="let proyecto of proyectos" [value]="proyecto.id">
-          {{ proyecto.nombre }}
         </option>
       </select>
     </label>

@@ -9,21 +9,27 @@ import {
   PreferenciasUsuario,
 } from '../../services/user-preferences.service';
 import { Cuenta } from '../../interfaces/Cuenta.interface';
+import { UsuariosComponent } from '../admin/usuarios/usuarios.component';
+import { TiposEquiposComponent } from '../admin/tipos-equipos/tipos-equipos.component';
 
-type SeccionOpciones = 'general' | 'backups';
+type SeccionOpciones = 'general' | 'usuarios' | 'tiposEquipos' | 'backups';
 
-interface TarjetaConfiguracion {
+interface TabConfiguracion {
   id: SeccionOpciones;
   icono: string;
   titulo: string;
   descripcion: string;
-  accion: string;
 }
 
 @Component({
   selector: 'opciones',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    UsuariosComponent,
+    TiposEquiposComponent,
+  ],
   templateUrl: './opciones.component.html',
   styleUrl: './opciones.component.css',
 })
@@ -32,26 +38,37 @@ export class OpcionesComponent implements OnInit {
   seccionesDisponibles: SeccionOpciones[] = ['general'];
   seccionSeleccionada: SeccionOpciones = 'general';
   esCliente = false;
+  esAdministrador = false;
   mensajeGeneral = '';
   mensajeRespaldo = '';
   mensajeErrorRespaldo = '';
   usuarioId: number | null = null;
   perfilActual: Cuenta | null = null;
   cargando = true;
-  tarjetas: Record<SeccionOpciones, TarjetaConfiguracion> = {
+  tabs: Record<SeccionOpciones, TabConfiguracion> = {
     general: {
       id: 'general',
       icono: '/assets/svg/settings.svg',
       titulo: 'Preferencias generales',
       descripcion: 'Define idioma, tema y notificaciones de tu cuenta.',
-      accion: 'Editar preferencias',
+    },
+    usuarios: {
+      id: 'usuarios',
+      icono: '/assets/svg/usuarios.svg',
+      titulo: 'Usuarios',
+      descripcion: 'Administra cuentas, roles y accesos del equipo.',
+    },
+    tiposEquipos: {
+      id: 'tiposEquipos',
+      icono: '/assets/svg/tipo-de-equipo.svg',
+      titulo: 'Tipos de equipos',
+      descripcion: 'Configura tipos, campos y departamentos disponibles.',
     },
     backups: {
       id: 'backups',
       icono: '/assets/svg/download.svg',
       titulo: 'Datos y respaldos',
       descripcion: 'Genera copias de seguridad y restaura configuraciones.',
-      accion: 'Gestionar respaldos',
     },
   };
 
@@ -73,8 +90,12 @@ export class OpcionesComponent implements OnInit {
   ngOnInit(): void {
     this.signalService.updateData('Configuracion');
     this.esCliente = this.authService.esCliente();
+    this.esAdministrador = this.authService.esAdministrador();
     if (!this.esCliente) {
       this.seccionesDisponibles = ['general', 'backups'];
+    }
+    if (this.esAdministrador) {
+      this.seccionesDisponibles = ['general', 'usuarios', 'tiposEquipos', 'backups'];
     }
 
     const token = this.authService.decodificarToken();
@@ -107,8 +128,8 @@ export class OpcionesComponent implements OnInit {
     this.mensajeGeneral = '';
   }
 
-  obtenerTarjetas(): TarjetaConfiguracion[] {
-    return this.seccionesDisponibles.map((seccion) => this.tarjetas[seccion]);
+  obtenerTabs(): TabConfiguracion[] {
+    return this.seccionesDisponibles.map((seccion) => this.tabs[seccion]);
   }
 
   guardarPreferencias(): void {

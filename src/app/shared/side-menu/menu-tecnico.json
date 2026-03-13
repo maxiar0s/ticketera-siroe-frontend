@@ -9,6 +9,14 @@
   },
   {
     "id": 2,
+    "nombre": "Calendario",
+    "route": "/calendario",
+    "svg": "calendar",
+    "subItem": [],
+    "isOpen": false
+  },
+  {
+    "id": 3,
     "nombre": "Clientes",
     "route": "/clientes",
     "svg": "clientes",
@@ -16,7 +24,7 @@
     "isOpen": false
   },
   {
-    "id": 3,
+    "id": 4,
     "nombre": "Bitácoras",
     "route": "/bitacoras",
     "svg": "visit",
@@ -24,7 +32,7 @@
     "isOpen": false
   },
   {
-    "id": 6,
+    "id": 7,
     "nombre": "Tickets",
     "route": "/tickets",
     "svg": "ticket",
@@ -32,15 +40,7 @@
     "isOpen": false
   },
   {
-    "id": 4,
-    "nombre": "Proyectos",
-    "route": "/proyectos",
-    "svg": "openfolder",
-    "subItem": [],
-    "isOpen": false
-  },
-  {
-    "id": 5,
+    "id": 6,
     "nombre": "Vehículos",
     "route": "/vehiculos",
     "svg": "vehiculo",
@@ -48,10 +48,18 @@
     "isOpen": false
   },
   {
-    "id": 7,
+    "id": 9,
+    "nombre": "Inventario",
+    "route": "/inventario",
+    "svg": "inventario-box",
+    "subItem": [],
+    "isOpen": false
+  },
+  {
+    "id": 8,
     "nombre": "Biblioteca",
     "route": "/biblioteca",
-    "svg": "openfolder",
+    "svg": "biblioteca-book",
     "subItem": [],
     "isOpen": false
   }
