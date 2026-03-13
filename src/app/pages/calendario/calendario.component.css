@@ -1,0 +1,268 @@
+.calendario-page {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.calendario-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(320px, 1fr);
+  gap: 1.25rem;
+  padding: 1.5rem;
+  border: 1px solid color-mix(in srgb, var(--color-primary) 16%, transparent);
+  background:
+    radial-gradient(circle at top right, rgba(var(--color-primary-rgb), 0.14), transparent 34%),
+    linear-gradient(135deg, color-mix(in srgb, var(--surface-elevated) 96%, white), color-mix(in srgb, var(--color-primary-soft) 68%, var(--surface-elevated)));
+  box-shadow: 0 24px 64px rgba(44, 31, 57, 0.08);
+}
+
+.hero-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.hero-kicker,
+.section-kicker {
+  display: inline-flex;
+  width: fit-content;
+  padding: 0.35rem 0.75rem;
+  border-radius: 999px;
+  background: rgba(var(--color-primary-rgb), 0.1);
+  color: var(--color-primary-strong);
+  font-size: 0.74rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.hero-copy h2,
+.section-heading h2 {
+  margin: 0;
+  color: var(--color-ink);
+  font-size: clamp(1.35rem, 1.15rem + 0.8vw, 2rem);
+  line-height: 1.08;
+}
+
+.hero-copy p,
+.section-heading p,
+.card-copy {
+  margin: 0;
+  color: var(--text-muted-medium);
+  line-height: 1.6;
+}
+
+.hero-stats {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.9rem;
+}
+
+.hero-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  min-height: 124px;
+  padding: 1rem;
+  border-radius: 1rem;
+  border: 1px solid color-mix(in srgb, var(--color-primary) 14%, transparent);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.86), rgba(255, 255, 255, 0.68));
+}
+
+.hero-stat.accent {
+  background: linear-gradient(180deg, rgba(var(--color-primary-rgb), 0.12), rgba(255, 255, 255, 0.82));
+}
+
+.hero-stat__label {
+  color: var(--text-muted-medium);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.hero-stat__value {
+  color: var(--color-ink);
+  font-size: clamp(1.3rem, 1rem + 1vw, 2rem);
+  line-height: 1;
+}
+
+.hero-stat__meta {
+  color: var(--color-text-alt);
+  font-size: var(--font-size-xs);
+}
+
+.calendario-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.6fr) minmax(320px, 0.9fr);
+  gap: 1.25rem;
+  align-items: start;
+}
+
+.calendario-filtros {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1.2rem;
+  border-radius: var(--app-radius-lg);
+  border: 1px solid color-mix(in srgb, var(--color-primary) 12%, var(--color-border));
+  background: linear-gradient(180deg, color-mix(in srgb, var(--surface-elevated) 96%, white), var(--surface-elevated));
+  box-shadow: var(--shadow-soft);
+}
+
+.filters-heading {
+  align-items: center;
+}
+
+.filters-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 0.9rem;
+}
+
+.filter-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  padding: 0.8rem 0.85rem;
+  border-radius: 1rem;
+  background: color-mix(in srgb, var(--surface-elevated) 80%, var(--color-primary-soft));
+  border: 1px solid color-mix(in srgb, var(--color-primary) 10%, transparent);
+}
+
+.filter-field--search {
+  grid-column: span 2;
+}
+
+.filter-field span {
+  color: var(--color-text-alt);
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.filter-field select,
+.filter-field input {
+  width: 100%;
+  border: 1px solid color-mix(in srgb, var(--color-primary) 14%, var(--color-border));
+  border-radius: 0.85rem;
+  padding: 0.7rem 0.85rem;
+  font: inherit;
+  color: var(--color-text);
+  background: color-mix(in srgb, var(--surface-elevated) 88%, white);
+}
+
+.filter-field select:focus,
+.filter-field input:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(var(--color-primary-rgb), 0.12);
+}
+
+.filter-reset {
+  border: 1px solid color-mix(in srgb, var(--color-primary) 22%, transparent);
+  background: var(--surface-elevated);
+  color: var(--color-primary-strong);
+  border-radius: 999px;
+  padding: 0.55rem 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.calendar-card,
+.dashboard-card {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1.2rem;
+  border-radius: var(--app-radius-lg);
+  border: 1px solid color-mix(in srgb, var(--color-primary) 12%, var(--color-border));
+  background-color: var(--surface-elevated);
+  box-shadow: var(--shadow-soft);
+}
+
+.section-heading,
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 1rem;
+}
+
+.section-heading > div {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.insights-grid {
+  display: grid;
+  gap: 1.25rem;
+}
+
+.card-title {
+  margin: 0;
+  font-size: var(--font-size-lg);
+  font-weight: 700;
+  color: var(--color-ink);
+}
+
+.card-status {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.24rem 0.65rem;
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--color-primary) 35%, transparent);
+  background: color-mix(in srgb, var(--color-primary) 14%, transparent);
+  color: var(--color-primary-strong);
+  font-size: var(--font-size-xs);
+  font-weight: 700;
+}
+
+.card-status.subtle {
+  border-color: color-mix(in srgb, var(--color-primary) 18%, transparent);
+  background: color-mix(in srgb, var(--surface-muted) 82%, var(--color-primary-soft));
+}
+
+.card-error {
+  margin: 0;
+  color: var(--color-danger);
+  font-weight: 500;
+}
+
+@media (max-width: 1100px) {
+  .calendario-hero,
+  .calendario-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .filters-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 768px) {
+  .hero-stats {
+    grid-template-columns: 1fr;
+  }
+
+  .section-heading,
+  .card-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .calendar-card,
+  .dashboard-card {
+    padding: 1rem;
+  }
+
+  .filters-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .filter-field--search {
+    grid-column: span 1;
+  }
+}

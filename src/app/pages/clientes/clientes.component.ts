@@ -21,13 +21,15 @@ import { AuthService } from '../../services/auth.service';
 import { TelefonoPipe } from '../../pipes/telefono.pipe';
 import { RutPipe } from '../../pipes/rut.pipe';
 import { OpcionesClienteComponent } from '../../shared/modal/cliente/opciones-cliente/opciones-cliente.component';
-import { normalizarServicios } from '../../utils/servicios.util';
-import { normalizarDatosBancarios } from '../../utils/datos-bancarios.util';
-import { DatosBancariosClienteComponent } from '../../shared/modal/cliente/datos-bancarios/datos-bancarios.component';
+import {
+  clienteTieneSoporteTI,
+  normalizarServicios,
+} from '../../utils/servicios.util';
 import { Subject, catchError, of, switchMap, tap } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MODULES } from '../../config/modules';
 import { FEATURES } from '../../config/features';
+import { ModuleAccessService } from '../../services/module-access.service';
 
 @Component({
   selector: 'clientes',
@@ -42,7 +44,6 @@ import { FEATURES } from '../../config/features';
     TelefonoPipe,
     RutPipe,
     OpcionesClienteComponent,
-    DatosBancariosClienteComponent,
   ],
   templateUrl: './clientes.component.html',
   styleUrls: ['./clientes.component.css'],
@@ -89,24 +90,22 @@ export class ClientesComponent implements OnInit {
   public isModalAjustesClienteVisible: boolean = false;
   public selectedClienteIndex: number = -1;
   public selectedCliente: Cliente | null = null;
-  public mostrarModalDatosBancarios: boolean = false;
-  public clienteConDatosBancarios: Cliente | null = null;
 
   constructor(
     private apiService: ApiService,
     private signalService: SignalService,
     public loaderService: LoaderService,
     private authService: AuthService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private moduleAccessService: ModuleAccessService,
   ) {
+    this.sucursalEnabled = this.moduleAccessService.getSnapshot().sucursal;
     this.filtroForm = this.fb.group({
       servicios: [[]],
       visitasMensualesMin: [''],
       visitasMensualesMax: [''],
       visitasEmergenciaMin: [''],
       visitasEmergenciaMax: [''],
-      esLead: ['todos'],
-      tieneDatosBancarios: ['todos'],
     });
   }
 
@@ -245,15 +244,14 @@ export class ClientesComponent implements OnInit {
 
   serviciosCliente(cliente?: Cliente | null): string {
     const servicios = normalizarServicios(cliente?.servicios);
-    if (cliente?.esLead) {
-      return servicios.length
-        ? servicios.join(', ')
-        : 'Lead sin servicios asignados';
-    }
     if (!servicios.length) {
       return 'Sin servicios registrados';
     }
     return servicios.join(', ');
+  }
+
+  clienteTieneSoporteTI(cliente?: Cliente | null): boolean {
+    return clienteTieneSoporteTI(cliente?.servicios);
   }
 
   obtenerClaseVisitas(
@@ -274,22 +272,8 @@ export class ClientesComponent implements OnInit {
     return '';
   }
 
-  get puedeVerDatosBancarios(): boolean {
-    return this.esAdministrador || this.esComercial;
-  }
-
   get puedeCrearClientes(): boolean {
     return this.esAdministrador || this.esComercial;
-  }
-
-  abrirModalDatosBancarios(cliente: Cliente): void {
-    this.clienteConDatosBancarios = cliente;
-    this.mostrarModalDatosBancarios = true;
-  }
-
-  cerrarModalDatosBancarios(): void {
-    this.mostrarModalDatosBancarios = false;
-    this.clienteConDatosBancarios = null;
   }
 
   aplicarFiltros(): void {
@@ -304,8 +288,6 @@ export class ClientesComponent implements OnInit {
       visitasMensualesMax: '',
       visitasEmergenciaMin: '',
       visitasEmergenciaMax: '',
-      esLead: 'todos',
-      tieneDatosBancarios: 'todos',
     });
     this.aplicarFiltros();
   }
@@ -368,16 +350,6 @@ export class ClientesComponent implements OnInit {
       filtros.visitasEmergenciaMax = visitasEmergenciaMax;
     }
 
-    const esLead = this.parseBooleanSelect(valores.esLead);
-    if (esLead !== null) {
-      filtros.esLead = esLead;
-    }
-
-    const datosBancarios = this.parseBooleanSelect(valores.tieneDatosBancarios);
-    if (datosBancarios !== null) {
-      filtros.tieneDatosBancarios = datosBancarios;
-    }
-
     return filtros;
   }
 
@@ -412,28 +384,14 @@ export class ClientesComponent implements OnInit {
 
         const { paginas, clientes } = respuesta;
         this.casasMatricez = (clientes ?? []).map(
-          (
-            cliente: Cliente & { servicios?: unknown; datosBancarios?: unknown }
-          ) => ({
+          (cliente: Cliente & { servicios?: unknown }) => ({
             ...cliente,
             servicios: normalizarServicios(cliente.servicios),
-            datosBancarios: normalizarDatosBancarios(cliente.datosBancarios),
           })
         );
         this.paginas = paginas ?? 1;
         this.cdr.markForCheck();
       });
-  }
-
-  private parseBooleanSelect(valor: unknown): boolean | null {
-    const texto = typeof valor === 'string' ? valor.trim().toLowerCase() : '';
-    if (texto === 'true') {
-      return true;
-    }
-    if (texto === 'false') {
-      return false;
-    }
-    return null;
   }
 
   private sanitizarNumero(valor: unknown): number | null {

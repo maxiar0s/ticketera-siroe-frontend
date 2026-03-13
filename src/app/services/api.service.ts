@@ -33,6 +33,11 @@ import {
   VehiculoListadoResponse,
 } from '../interfaces/vehiculo.interface';
 import { VehiculoSalida } from '../interfaces/vehiculo-salida.interface';
+import {
+  EstadoInventario,
+  Inventario,
+  InventarioListadoResponse,
+} from '../interfaces/inventario.interface';
 import { NotificacionListadoRespuesta } from '../interfaces/notificacion.interface';
 import {
   DocumentoCliente,
@@ -209,16 +214,6 @@ export class ApiService {
       'visitasEmergenciaMax',
       filtros.visitasEmergenciaMax ?? null,
     );
-
-    const setBooleanParam = (key: string, value?: boolean | null) => {
-      if (value === null || value === undefined) {
-        return;
-      }
-      params = params.set(key, value ? 'true' : 'false');
-    };
-
-    setBooleanParam('esLead', filtros.esLead ?? null);
-    setBooleanParam('tieneDatosBancarios', filtros.tieneDatosBancarios ?? null);
 
     return this.http.get<any>(`${this.url}/clientes`, { params }).pipe(
       catchError((error: HttpErrorResponse) => {
@@ -1173,6 +1168,93 @@ export class ApiService {
     return this.http.post<any>(`${this.url}/${endpoint}`, { estado }).pipe(
       catchError((error: HttpErrorResponse) => {
         console.error('Error al actualizar estado de la sucursal:', error);
+        return throwError(() => error);
+      }),
+    );
+  }
+
+  // Inventario
+  getInventarios(
+    params: {
+      pagina?: number;
+      limite?: number;
+      buscar?: string;
+      estado?: number | string;
+    } = {},
+  ): Observable<InventarioListadoResponse> {
+    let httpParams = new HttpParams();
+    if (params.pagina) {
+      httpParams = httpParams.set('pagina', params.pagina.toString());
+    }
+    if (params.limite) {
+      httpParams = httpParams.set('limite', params.limite.toString());
+    }
+    if (params.buscar && params.buscar.trim().length) {
+      httpParams = httpParams.set('buscar', params.buscar.trim());
+    }
+    if (
+      params.estado !== undefined &&
+      params.estado !== null &&
+      `${params.estado}`.trim() !== ''
+    ) {
+      httpParams = httpParams.set('estado', `${params.estado}`);
+    }
+
+    return this.http
+      .get<InventarioListadoResponse>(`${this.url}/inventario`, {
+        params: httpParams,
+      })
+      .pipe(
+        catchError((error: HttpErrorResponse) => {
+          console.error('Error al obtener inventario:', error);
+          return throwError(() => error);
+        }),
+      );
+  }
+
+  getInventario(id: number): Observable<Inventario> {
+    return this.http.get<Inventario>(`${this.url}/inventario/${id}`).pipe(
+      catchError((error: HttpErrorResponse) => {
+        console.error('Error al obtener item de inventario:', error);
+        return throwError(() => error);
+      }),
+    );
+  }
+
+  crearInventario(payload: Partial<Inventario>): Observable<Inventario> {
+    return this.http.post<Inventario>(`${this.url}/inventario`, payload).pipe(
+      catchError((error: HttpErrorResponse) => {
+        console.error('Error al crear item de inventario:', error);
+        return throwError(() => error);
+      }),
+    );
+  }
+
+  actualizarInventario(
+    id: number,
+    payload: Partial<Inventario>,
+  ): Observable<Inventario> {
+    return this.http.put<Inventario>(`${this.url}/inventario/${id}`, payload).pipe(
+      catchError((error: HttpErrorResponse) => {
+        console.error('Error al actualizar item de inventario:', error);
+        return throwError(() => error);
+      }),
+    );
+  }
+
+  eliminarInventario(id: number): Observable<any> {
+    return this.http.delete<any>(`${this.url}/inventario/${id}`).pipe(
+      catchError((error: HttpErrorResponse) => {
+        console.error('Error al eliminar item de inventario:', error);
+        return throwError(() => error);
+      }),
+    );
+  }
+
+  getEstadosInventario(): Observable<EstadoInventario[]> {
+    return this.http.get<EstadoInventario[]>(`${this.url}/estados-inventario`).pipe(
+      catchError((error: HttpErrorResponse) => {
+        console.error('Error al obtener estados de inventario:', error);
         return throwError(() => error);
       }),
     );

@@ -6,9 +6,11 @@ import { Equipo } from '../../../interfaces/equipo.interface';
 import { Cliente } from '../../../interfaces/cliente.interface';
 import { Bitacora } from '../../../interfaces/bitacora.interface';
 import { forkJoin, map, of, switchMap, catchError, throwError } from 'rxjs';
-import { DashboardCalendarComponent } from './calendar/dashboard-calendar.component';
+import { DashboardCalendarComponent } from '../../calendario/components/dashboard-calendar.component';
 import { TipoEquipo } from '../../../interfaces/TipoEquipo.interface';
 import { DASHBOARD_CONFIG } from '../../../config/dashboard';
+import { ModuleAccessService } from '../../../services/module-access.service';
+import { ModuleAccessMap } from '../../../config/modules';
 
 type ClienteConEquipos = { cliente: Cliente; equipos: Equipo[] };
 
@@ -23,6 +25,7 @@ export class ChartsComponent implements OnInit {
   @Input() option: string = 'Todos los ingresos';
   @Input() modoCliente = false;
   public dashboardConfig = DASHBOARD_CONFIG;
+  public modules: ModuleAccessMap;
 
   equiposPorTipoData: { label: string; value: number }[] = [];
   equiposPorClienteData: { label: string; value: number }[] = [];
@@ -55,7 +58,12 @@ export class ChartsComponent implements OnInit {
   private tiposEquipoMapa = new Map<number, string>();
   private totalVisitasMensualesAsignadas = 0;
 
-  constructor(private api: ApiService) {}
+  constructor(
+    private api: ApiService,
+    private moduleAccessService: ModuleAccessService,
+  ) {
+    this.modules = this.moduleAccessService.getSnapshot();
+  }
 
   ngOnInit(): void {
     this.cargarCatalogoTipos();
@@ -283,28 +291,15 @@ export class ChartsComponent implements OnInit {
 
     if (this.modoCliente) {
       this.totalVisitasMensualesAsignadas = detalles.reduce(
-        (acumulado, { cliente }) => {
-          if ((cliente as Cliente)?.esLead) {
-            return acumulado;
-          }
-          return (
-            acumulado +
-            this.normalizarCantidad((cliente as any)?.visitasMensuales)
-          );
-        },
+        (acumulado, { cliente }) =>
+          acumulado + this.normalizarCantidad((cliente as any)?.visitasMensuales),
         0
       );
 
       this.visitasEmergenciaAsignadasAnuales = detalles.reduce(
-        (acumulado, { cliente }) => {
-          if ((cliente as Cliente)?.esLead) {
-            return acumulado;
-          }
-          return (
-            acumulado +
-            this.normalizarCantidad((cliente as any)?.visitasEmergenciaAnuales)
-          );
-        },
+        (acumulado, { cliente }) =>
+          acumulado +
+          this.normalizarCantidad((cliente as any)?.visitasEmergenciaAnuales),
         0
       );
 

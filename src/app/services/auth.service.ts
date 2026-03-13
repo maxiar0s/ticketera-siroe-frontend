@@ -1,5 +1,6 @@
 import { Injectable, computed, signal } from '@angular/core';
 import { jwtDecode } from 'jwt-decode';
+import { ModuleAccessService } from './module-access.service';
 
 interface Token {
   id:         number;
@@ -33,7 +34,7 @@ export class AuthService {
     }
   };
 
-  constructor() {
+  constructor(private moduleAccessService: ModuleAccessService) {
     if (typeof window !== 'undefined') {
       window.addEventListener('storage', this.storageListener);
     }
@@ -46,6 +47,7 @@ export class AuthService {
   guardarToken(token: string): void {
     localStorage.setItem(this.key, token);
     this.tokenSignal.set(token);
+    this.moduleAccessService.clear();
   }
 
   obtenerToken(): string | null {
@@ -100,6 +102,7 @@ export class AuthService {
   eliminarToken(): void {
     localStorage.removeItem(this.key);
     this.tokenSignal.set(null);
+    this.moduleAccessService.clear();
   }
 
   private obtenerTokenDeStorage(): string | null {

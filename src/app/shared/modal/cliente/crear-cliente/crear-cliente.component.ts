@@ -61,22 +61,11 @@ export class CrearClienteComponent implements OnInit, OnChanges {
   readonly features = FEATURES;
 
   ngOnInit(): void {
-    const esLeadControl = this.clientForm.get('esLead');
-    if (esLeadControl) {
-      esLeadControl.valueChanges
-        .pipe(takeUntilDestroyed(this.destroyRef))
-        .subscribe((valor) => {
-          this.aplicarModoLead(!!valor);
-        });
-    }
-
     this.clientForm.valueChanges
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(() => {
         this.clientForm.markAsDirty();
       });
-
-    this.aplicarModoLead(esLeadControl?.value ?? false);
 
     this.clientForm
       .get('tipoDocumento')
@@ -95,7 +84,6 @@ export class CrearClienteComponent implements OnInit, OnChanges {
   public selectedFile: File | null = null;
   public selectedLogoPerfil: File | null = null;
   private readonly initialFormValues = {
-    esLead: false,
     tipoDocumento: 'Rut',
     rut: '',
     razonSocial: '',
@@ -106,12 +94,6 @@ export class CrearClienteComponent implements OnInit, OnChanges {
     visitasMensuales: 0,
     visitasEmergenciaAnuales: 0,
     servicios: [] as string[],
-    banco: '',
-    tipoCuenta: '',
-    numeroCuenta: '',
-    titular: '',
-    rutTitular: '',
-    correoNotificacion: '',
   };
   private readonly campoValidators: Record<CampoValidador, ValidatorFn[]> = {
     rut: [Validators.required, validarRut('Rut')],
@@ -168,15 +150,8 @@ export class CrearClienteComponent implements OnInit, OnChanges {
     '#6b7280',
   ];
 
-  private leadValoresPrevios = {
-    visitasMensuales: this.initialFormValues.visitasMensuales,
-    visitasEmergenciaAnuales: this.initialFormValues.visitasEmergenciaAnuales,
-    servicios: [...this.initialFormValues.servicios],
-  };
-
   constructor(private fb: FormBuilder, private apiService: ApiService) {
     this.clientForm = this.fb.group({
-      esLead: [this.initialFormValues.esLead],
       tipoDocumento: [
         this.initialFormValues.tipoDocumento,
         this.campoValidators.tipoDocumento,
@@ -208,15 +183,6 @@ export class CrearClienteComponent implements OnInit, OnChanges {
         this.initialFormValues.servicios,
         this.campoValidators.servicios,
       ],
-      banco: [this.initialFormValues.banco],
-      tipoCuenta: [this.initialFormValues.tipoCuenta],
-      numeroCuenta: [this.initialFormValues.numeroCuenta],
-      titular: [this.initialFormValues.titular],
-      rutTitular: [this.initialFormValues.rutTitular],
-      correoNotificacion: [
-        this.initialFormValues.correoNotificacion,
-        Validators.email,
-      ],
     });
   }
 
@@ -247,11 +213,9 @@ export class CrearClienteComponent implements OnInit, OnChanges {
     const telefonoFormateado = this.formatearTelefonoParaEdicion(
       this.cliente.telefonoEncargado
     );
-    const esLead = !!this.cliente.esLead;
 
     this.clientForm.patchValue(
       {
-        esLead,
         rut: this.cliente.rut ?? '',
         razonSocial: this.cliente.razonSocial ?? '',
         encargadoGeneral: this.cliente.encargadoGeneral ?? '',
@@ -260,26 +224,9 @@ export class CrearClienteComponent implements OnInit, OnChanges {
         visitasMensuales: this.cliente.visitasMensuales ?? 0,
         visitasEmergenciaAnuales: this.cliente.visitasEmergenciaAnuales ?? 0,
         servicios: this.cliente.servicios ?? [],
-        banco: this.cliente.datosBancarios?.banco ?? '',
-        tipoCuenta: this.cliente.datosBancarios?.tipoCuenta ?? '',
-        numeroCuenta: this.cliente.datosBancarios?.numeroCuenta ?? '',
-        titular: this.cliente.datosBancarios?.titular ?? '',
-        rutTitular: this.cliente.datosBancarios?.rutTitular ?? '',
-        correoNotificacion:
-          this.cliente.datosBancarios?.correoNotificacion ?? '',
       },
       { emitEvent: false }
     );
-
-    this.leadValoresPrevios = {
-      visitasMensuales: this.cliente.visitasMensuales ?? 0,
-      visitasEmergenciaAnuales: this.cliente.visitasEmergenciaAnuales ?? 0,
-      servicios: Array.isArray(this.cliente.servicios)
-        ? [...this.cliente.servicios]
-        : [],
-    };
-
-    this.aplicarModoLead(esLead);
     this.clientForm.markAsPristine();
 
     // Cargar tags si estamos editando
@@ -295,12 +242,6 @@ export class CrearClienteComponent implements OnInit, OnChanges {
   cerrar() {
     this.isVisible = false;
     this.clientForm.reset(this.initialFormValues);
-    this.leadValoresPrevios = {
-      visitasMensuales: this.initialFormValues.visitasMensuales,
-      visitasEmergenciaAnuales: this.initialFormValues.visitasEmergenciaAnuales,
-      servicios: [...this.initialFormValues.servicios],
-    };
-    this.aplicarModoLead(this.initialFormValues.esLead);
     this.clientForm.markAsPristine();
     this.selectedFile = null;
     this.selectedLogoPerfil = null;
@@ -328,7 +269,6 @@ export class CrearClienteComponent implements OnInit, OnChanges {
 
       const formData = new FormData();
       const formValue = this.clientForm.getRawValue();
-      const esLead = !!formValue['esLead'];
       const serviciosSeleccionados: string[] = Array.isArray(
         formValue['servicios']
       )
@@ -342,16 +282,6 @@ export class CrearClienteComponent implements OnInit, OnChanges {
       Object.keys(formValue).forEach((key) => {
         let value = formValue[key];
         if (key === 'servicios') {
-          return;
-        }
-        if (key === 'esLead') {
-          formData.append(key, value ? 'true' : 'false');
-          return;
-        }
-        if (
-          esLead &&
-          (key === 'visitasMensuales' || key === 'visitasEmergenciaAnuales')
-        ) {
           return;
         }
         if (key === 'telefonoEncargado') {
@@ -369,12 +299,7 @@ export class CrearClienteComponent implements OnInit, OnChanges {
         }
       });
 
-      if (!esLead) {
-        formData.append('servicios', JSON.stringify(serviciosSeleccionados));
-      }
-
-      const datosBancarios = this.obtenerDatosBancariosFormulario();
-      formData.append('datosBancarios', JSON.stringify(datosBancarios));
+      formData.append('servicios', JSON.stringify(serviciosSeleccionados));
 
       // Manejar el archivo de imagen
       if (this.selectedFile) {
@@ -410,109 +335,11 @@ export class CrearClienteComponent implements OnInit, OnChanges {
     }
   }
 
-  private aplicarModoLead(esLead: boolean): void {
-    this.actualizarValidadoresLead(esLead);
-    this.toggleCamposLead(esLead);
-  }
-
-  private actualizarValidadoresLead(esLead: boolean): void {
-    const camposBasicos: CampoBasico[] = [
-      'rut',
-      'tipoDocumento',
-      'razonSocial',
-      'encargadoGeneral',
-      'correo',
-      'telefonoEncargado',
-    ];
-    camposBasicos.forEach((campo) => {
-      const control = this.clientForm.get(campo);
-      if (!control) {
-        return;
-      }
-      if (esLead) {
-        control.clearValidators();
-      } else {
-        if (campo === 'rut') {
-          const tipo = this.clientForm.get('tipoDocumento')?.value;
-          control.setValidators([Validators.required, validarRut(tipo)]);
-        } else {
-          control.setValidators(this.campoValidators[campo]);
-        }
-      }
-      control.updateValueAndValidity({ emitEvent: false });
-    });
-
-    const visitasMensualesCtrl = this.clientForm.get('visitasMensuales');
-    const visitasEmergenciaCtrl = this.clientForm.get(
-      'visitasEmergenciaAnuales'
-    );
-    const serviciosCtrl = this.clientForm.get('servicios');
-
-    if (esLead) {
-      visitasMensualesCtrl?.clearValidators();
-      visitasEmergenciaCtrl?.clearValidators();
-      serviciosCtrl?.clearValidators();
-    } else {
-      visitasMensualesCtrl?.setValidators(
-        this.campoValidators.visitasMensuales
-      );
-      visitasEmergenciaCtrl?.setValidators(
-        this.campoValidators.visitasEmergenciaAnuales
-      );
-      serviciosCtrl?.setValidators(this.campoValidators.servicios);
-    }
-
-    visitasMensualesCtrl?.updateValueAndValidity({ emitEvent: false });
-    visitasEmergenciaCtrl?.updateValueAndValidity({ emitEvent: false });
-    serviciosCtrl?.updateValueAndValidity({ emitEvent: false });
-  }
-
   private actualizarValidadorRut(tipo: 'Rut' | 'Ruc' | 'Dni'): void {
     const rutControl = this.clientForm.get('rut');
     if (rutControl) {
       rutControl.setValidators([Validators.required, validarRut(tipo)]);
       rutControl.updateValueAndValidity();
-    }
-  }
-
-  private toggleCamposLead(esLead: boolean): void {
-    const visitasMensualesCtrl = this.clientForm.get('visitasMensuales');
-    const visitasEmergenciaCtrl = this.clientForm.get(
-      'visitasEmergenciaAnuales'
-    );
-    const serviciosCtrl = this.clientForm.get('servicios');
-
-    if (esLead) {
-      const serviciosActuales = serviciosCtrl?.value;
-      this.leadValoresPrevios = {
-        visitasMensuales: visitasMensualesCtrl?.value ?? 0,
-        visitasEmergenciaAnuales: visitasEmergenciaCtrl?.value ?? 0,
-        servicios: Array.isArray(serviciosActuales)
-          ? [...serviciosActuales]
-          : [],
-      };
-
-      visitasMensualesCtrl?.setValue(0, { emitEvent: false });
-      visitasMensualesCtrl?.disable({ emitEvent: false });
-      visitasEmergenciaCtrl?.setValue(0, { emitEvent: false });
-      visitasEmergenciaCtrl?.disable({ emitEvent: false });
-      serviciosCtrl?.setValue([], { emitEvent: false });
-      serviciosCtrl?.disable({ emitEvent: false });
-    } else {
-      visitasMensualesCtrl?.enable({ emitEvent: false });
-      visitasMensualesCtrl?.setValue(
-        this.leadValoresPrevios.visitasMensuales ?? 0,
-        { emitEvent: false }
-      );
-      visitasEmergenciaCtrl?.enable({ emitEvent: false });
-      visitasEmergenciaCtrl?.setValue(
-        this.leadValoresPrevios.visitasEmergenciaAnuales ?? 0,
-        { emitEvent: false }
-      );
-      serviciosCtrl?.enable({ emitEvent: false });
-      serviciosCtrl?.setValue([...this.leadValoresPrevios.servicios], {
-        emitEvent: false,
-      });
     }
   }
 
@@ -557,27 +384,6 @@ export class CrearClienteComponent implements OnInit, OnChanges {
     const control = this.clientForm.get('servicios');
     const seleccionados = Array.isArray(control?.value) ? control?.value : [];
     return seleccionados.includes(servicio);
-  }
-
-  private obtenerDatosBancariosFormulario() {
-    const limpiar = (valor: unknown): string | null => {
-      if (valor === null || valor === undefined) {
-        return null;
-      }
-      const texto = typeof valor === 'string' ? valor : `${valor}`;
-      const trimmed = texto.trim();
-      return trimmed.length ? trimmed : null;
-    };
-
-    const valores = this.clientForm.getRawValue();
-    return {
-      banco: limpiar(valores['banco']),
-      tipoCuenta: limpiar(valores['tipoCuenta']),
-      numeroCuenta: limpiar(valores['numeroCuenta']),
-      titular: limpiar(valores['titular']),
-      rutTitular: limpiar(valores['rutTitular']),
-      correoNotificacion: limpiar(valores['correoNotificacion']),
-    };
   }
 
   // ===============================================

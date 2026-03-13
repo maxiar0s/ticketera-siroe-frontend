@@ -1,0 +1,164 @@
+<div class="calendario-page module-page">
+  <header class="module-page__header calendario-header">
+    <div class="module-page__title-group">
+      <span class="module-page__eyebrow">Operaciones</span>
+      <h1 class="module-page__title">{{ tituloModulo }}</h1>
+      <p class="module-page__subtitle">
+        Administra la agenda de visitas y revisa tendencias operativas desde un
+        solo lugar.
+      </p>
+    </div>
+  </header>
+
+  <section class="calendario-hero module-page__panel">
+    <div class="hero-copy">
+      <span class="hero-kicker">Agenda operativa</span>
+      <h2>Planea visitas y sigue el pulso de terreno</h2>
+      <p>
+        El calendario ahora vive como modulo independiente, con agenda diaria y
+        graficos de visitas por cliente, mes y categoria.
+      </p>
+    </div>
+
+    <div class="hero-stats">
+      <article class="hero-stat">
+        <span class="hero-stat__label">Visitas totales</span>
+        <strong class="hero-stat__value">{{ resumen.totalVisitas }}</strong>
+        <span class="hero-stat__meta">registradas en bitacora</span>
+      </article>
+      <article class="hero-stat">
+        <span class="hero-stat__label">Este mes</span>
+        <strong class="hero-stat__value">{{ resumen.visitasMesActual }}</strong>
+        <span class="hero-stat__meta">visitas completadas</span>
+      </article>
+      <article class="hero-stat accent">
+        <span class="hero-stat__label">Emergencias</span>
+        <strong class="hero-stat__value">{{ resumen.emergencias }}</strong>
+        <span class="hero-stat__meta">eventos prioritarios</span>
+      </article>
+      <article class="hero-stat">
+        <span class="hero-stat__label">Clientes activos</span>
+        <strong class="hero-stat__value">{{ resumen.clientesActivos }}</strong>
+        <span class="hero-stat__meta">con visitas registradas</span>
+      </article>
+    </div>
+  </section>
+
+  <form class="calendario-filtros module-page__panel" [formGroup]="filtrosForm">
+    <div class="section-heading filters-heading">
+      <div>
+        <span class="section-kicker">Filtros en tiempo real</span>
+        <h2>Refina el calendario y los graficos</h2>
+      </div>
+      <button type="button" class="filter-reset" (click)="limpiarFiltros()">
+        Limpiar
+      </button>
+    </div>
+
+    <div class="filters-grid">
+      <label class="filter-field">
+        <span>Cliente</span>
+        <select formControlName="cliente">
+          <option value="">Todos los clientes</option>
+          <option *ngFor="let cliente of clientesFiltro" [value]="cliente.id">
+            {{ cliente.nombre }}
+          </option>
+        </select>
+      </label>
+
+      <label class="filter-field">
+        <span>Tecnico</span>
+        <select formControlName="tecnico">
+          <option value="">Todos los tecnicos</option>
+          <option *ngFor="let tecnico of tecnicosFiltro" [value]="tecnico">
+            {{ tecnico }}
+          </option>
+        </select>
+      </label>
+
+      <label class="filter-field">
+        <span>Tipo</span>
+        <select formControlName="tipo">
+          <option *ngFor="let opcion of tipoOpciones" [value]="opcion.value">
+            {{ opcion.label }}
+          </option>
+        </select>
+      </label>
+
+      <label class="filter-field">
+        <span>Periodo</span>
+        <input type="month" formControlName="periodo" />
+      </label>
+
+      <label class="filter-field filter-field--search">
+        <span>Buscar</span>
+        <input
+          type="text"
+          formControlName="buscar"
+          placeholder="Cliente, sucursal, nota o tecnico"
+        />
+      </label>
+    </div>
+  </form>
+
+  <section class="calendario-layout">
+    <article class="calendar-card module-page__panel">
+      <div class="section-heading">
+        <div>
+          <span class="section-kicker">Vista mensual</span>
+          <h2>Calendario de visitas</h2>
+        </div>
+        <p>Selecciona un dia para revisar visitas completadas, programadas y emergencias.</p>
+      </div>
+
+      <dashboard-calendar
+        [bitacoras]="bitacoras"
+        [cargando]="cargando"
+        [mensajeError]="errorMensaje"
+        [clienteFiltro]="filtrosActuales.cliente"
+        [tecnicoFiltro]="filtrosActuales.tecnico"
+        [tipoFiltro]="filtrosActuales.tipo"
+        [periodoFiltro]="filtrosActuales.periodo"
+        [buscarFiltro]="filtrosActuales.buscar"
+        (refreshRequested)="onRefreshRequested()"
+      ></dashboard-calendar>
+    </article>
+
+    <div class="insights-grid">
+      <article class="dashboard-card module-page__panel">
+        <div class="card-header">
+          <h3 class="card-title">Visitas por mes</h3>
+          <span class="card-status" *ngIf="cargando">Cargando...</span>
+        </div>
+        <p class="card-error" *ngIf="!cargando && errorMensaje">{{ errorMensaje }}</p>
+        <ng-container *ngIf="!cargando && !errorMensaje">
+          <simple-bar-chart [data]="visitasPorMesData"></simple-bar-chart>
+        </ng-container>
+      </article>
+
+      <article class="dashboard-card module-page__panel">
+        <div class="card-header">
+          <h3 class="card-title">Visitas por cliente</h3>
+          <span class="card-status subtle">Top {{ visitasPorClienteData.length }}</span>
+        </div>
+        <p class="card-copy">Clientes con mayor actividad registrada.</p>
+        <p class="card-error" *ngIf="!cargando && errorMensaje">{{ errorMensaje }}</p>
+        <ng-container *ngIf="!cargando && !errorMensaje">
+          <simple-bar-chart [data]="visitasPorClienteData"></simple-bar-chart>
+        </ng-container>
+      </article>
+
+      <article class="dashboard-card module-page__panel">
+        <div class="card-header">
+          <h3 class="card-title">Actividad por categoria</h3>
+          <span class="card-status subtle">Resumen</span>
+        </div>
+        <p class="card-copy">Balance entre visitas regulares y emergencias.</p>
+        <p class="card-error" *ngIf="!cargando && errorMensaje">{{ errorMensaje }}</p>
+        <ng-container *ngIf="!cargando && !errorMensaje">
+          <simple-bar-chart [data]="actividadPorCategoriaData"></simple-bar-chart>
+        </ng-container>
+      </article>
+    </div>
+  </section>
+</div>

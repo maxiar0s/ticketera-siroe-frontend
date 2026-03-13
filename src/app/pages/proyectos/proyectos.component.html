@@ -1,6 +1,17 @@
-<div class="proyectos-layout">
-  <aside class="proyectos-sidebar">
-    <div class="sidebar-header">
+<div class="module-page">
+  <header class="module-page__header">
+    <div class="module-page__title-group">
+      <span class="module-page__eyebrow">Planificacion</span>
+      <h1 class="module-page__title">Proyectos</h1>
+      <p class="module-page__subtitle">
+        Organiza proyectos, asigna responsables y centraliza bitacoras y tickets relacionados.
+      </p>
+    </div>
+  </header>
+
+  <div class="proyectos-layout module-page__layout">
+    <aside class="proyectos-sidebar module-page__sidebar">
+      <div class="sidebar-header">
       <h2>Proyectos</h2>
       <button
         class="primary-button small nuevo-proyecto-button"
@@ -98,9 +109,9 @@
     </div>
   </aside>
 
-  <section class="proyectos-contenido">
+  <section class="proyectos-contenido module-page__content">
     <form
-      class="proyecto-formulario"
+      class="proyecto-formulario module-page__panel"
       [formGroup]="proyectoForm"
       (ngSubmit)="guardarProyecto()"
     >
@@ -214,7 +225,7 @@
 
     <ng-container *ngIf="selectedProyecto as proyecto; else sinSeleccion">
       <div class="proyecto-vista">
-        <div class="proyecto-detalle">
+        <div class="proyecto-detalle module-page__panel">
           <h3>Detalle del proyecto</h3>
           <div class="detalle-grid">
             <div class="detalle-item">
@@ -372,7 +383,7 @@
           </section>
         </div>
 
-        <section class="bitacoras-disponibles-card" *ngIf="puedeGestionarProyectos">
+        <section class="bitacoras-disponibles-card module-page__panel" *ngIf="puedeGestionarProyectos">
           <h3>Agregar bitacoras / tickets</h3>
           <form
             class="filtros-bitacoras"
@@ -529,12 +540,13 @@
     </ng-container>
 
     <ng-template #sinSeleccion>
-      <div class="proyecto-placeholder">
+      <div class="proyecto-placeholder module-page__panel module-page__placeholder">
         <h3>Selecciona un proyecto</h3>
         <p>
           Elige un proyecto de la lista para ver su detalle o crea uno nuevo usando el formulario.
         </p>
       </div>
     </ng-template>
-  </section>
+    </section>
+  </div>
 </div>

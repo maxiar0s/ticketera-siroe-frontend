@@ -2,7 +2,6 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { ClienteResumen } from '../../../../interfaces/cliente-resumen.interface';
-import { Proyecto } from '../../../../interfaces/proyecto.interface';
 
 interface SucursalOption {
   id: string;
@@ -37,7 +36,6 @@ export class TicketFiltersComponent {
   @Input() filtroForm!: FormGroup;
   @Input() clientes: ClienteResumen[] = [];
   @Input() sucursales: SucursalOption[] = [];
-  @Input() proyectos: Proyecto[] = [];
   @Input() tecnicosDisponibles: TecnicoOption[] = [];
   @Input() tagsDisponibles: TagOption[] = [];
   @Input() filtrosEstado: SelectOption[] = [];

@@ -1,7 +1,8 @@
 <div class="section client">
   <cliente-casa-matriz [cliente]="cliente" class="casa-matriz-container"></cliente-casa-matriz>
-  <cliente-header [cerrarCrear]="cerrarModal" [esAdministrador]="esAdministrador" [casaMatrizId]="casaMatrizId" (enviarFormulario)="crearModificarSucursal($event)"></cliente-header>
-  <shared-options (optionSelected)="selectedOption($event)"></shared-options>
+  <ng-container *ngIf="clienteTieneSoporte; else clienteSinSoporteTi">
+    <cliente-header [cerrarCrear]="cerrarModal" [esAdministrador]="esAdministrador" [casaMatrizId]="casaMatrizId" (enviarFormulario)="crearModificarSucursal($event)"></cliente-header>
+    <shared-options (optionSelected)="selectedOption($event)"></shared-options>
 
   @if(!sucursales){
     <div class="loader">
@@ -16,4 +17,15 @@
       (cambiarPagina)="cambiarPagina($event)"></shared-navegation>
     </div>
   }
+  </ng-container>
+
+  <ng-template #clienteSinSoporteTi>
+    <section class="client-empty-state">
+      <h3>Cliente sin Soporte TI</h3>
+      <p>
+        Este cliente no usa el servicio de Soporte TI, por lo que no maneja
+        sucursales ni equipos en este modulo.
+      </p>
+    </section>
+  </ng-template>
 </div>

@@ -1,5 +1,5 @@
 import { Cuenta } from './../../../interfaces/Cuenta.interface';
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { SignalService } from '../../../services/signal.service';
 import { HeaderComponent } from './header/header.component';
 import { TableUsersComponent } from './table-users/table-users.component';
@@ -24,6 +24,8 @@ import { AuthService } from '../../../services/auth.service';
   styleUrl: './usuarios.component.css',
 })
 export class UsuariosComponent {
+  @Input() embebidoEnConfiguracion = false;
+
   // Search term for filtering users
   public searchTerm: string = '';
 
@@ -50,7 +52,9 @@ export class UsuariosComponent {
   ) {}
 
   ngOnInit(): void {
-    this.signalService.updateData('Gestión de usuarios');
+    if (!this.embebidoEnConfiguracion) {
+      this.signalService.updateData('Gestión de usuarios');
+    }
 
     const decodificado = this.authService.decodificarToken();
     if (decodificado) {

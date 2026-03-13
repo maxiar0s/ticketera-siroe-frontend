@@ -1,0 +1,15 @@
+<div class="chart-shell" *ngIf="data.length; else emptyState">
+  <div class="chart-row" *ngFor="let bar of data">
+    <div class="chart-row__header">
+      <span class="chart-label" [title]="bar.label">{{ bar.label }}</span>
+      <span class="chart-value">{{ bar.value }}</span>
+    </div>
+    <div class="chart-track">
+      <div class="chart-bar" [style.width.%]="(bar.value * 100) / maxValue"></div>
+    </div>
+  </div>
+</div>
+
+<ng-template #emptyState>
+  <p class="chart-empty">No hay datos disponibles.</p>
+</ng-template>

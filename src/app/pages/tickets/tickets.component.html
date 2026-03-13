@@ -26,7 +26,6 @@
     [filtroForm]="filtroForm"
     [clientes]="clientes"
     [sucursales]="sucursalesFiltro"
-    [proyectos]="proyectos"
     [tecnicosDisponibles]="tecnicosDisponibles"
     [tagsDisponibles]="tagsDisponibles"
     [filtrosEstado]="filtrosEstado"
@@ -137,12 +136,6 @@
             {{ ticketSeleccionado.prioridad || "Media" }}
           </span>
           <span
-            *ngIf="esTicketLead(ticketSeleccionado)"
-            class="lead-detail-chip"
-          >
-            Lead
-          </span>
-          <span
             *ngIf="isTicketFavorite(ticketSeleccionado.id)"
             class="favorite-detail-chip"
           >
@@ -185,18 +178,6 @@
           <span class="label">Cliente</span>
           <span class="value">
             {{ ticketSeleccionado.casaMatriz?.razonSocial || "N/A" }}
-          </span>
-        </div>
-        <div *ngIf="modules.sucursal">
-          <span class="label">Sucursal</span>
-          <span class="value">
-            {{ ticketSeleccionado.sucursal?.sucursal || "General" }}
-          </span>
-        </div>
-        <div *ngIf="modules.proyectos">
-          <span class="label">Proyecto</span>
-          <span class="value">
-            {{ ticketSeleccionado.proyecto?.nombre || "Sin proyecto" }}
           </span>
         </div>
         <div>
@@ -413,19 +394,6 @@
             </select>
           </label>
 
-          <label *ngIf="modules.sucursal">
-            <span class="label">Sucursal</span>
-            <select formControlName="sucursalId">
-              <option value="">General</option>
-              <option
-                *ngFor="let sucursal of sucursalesFormulario"
-                [value]="sucursal.id"
-              >
-                {{ sucursal.sucursal }}
-              </option>
-            </select>
-          </label>
-
           <label>
             <span class="label">Estado del ticket</span>
             <select
@@ -446,19 +414,6 @@
             <select formControlName="prioridad">
               <option *ngFor="let pri of prioridades" [value]="pri.value">
                 {{ pri.label }}
-              </option>
-            </select>
-          </label>
-
-          <label *ngIf="modules.proyectos">
-            <span class="label">Proyecto</span>
-            <select formControlName="proyectoId">
-              <option [ngValue]="null">Sin proyecto</option>
-              <option
-                *ngFor="let proyecto of proyectos"
-                [ngValue]="proyecto.id"
-              >
-                {{ proyecto.nombre }}
               </option>
             </select>
           </label>

@@ -1,3 +1,10 @@
+:host {
+  position: fixed;
+  inset: 0;
+  z-index: 1200;
+  pointer-events: none;
+}
+
 .modal-overlay {
   --modal-safe-top: clamp(12px, 5vh, 52px);
   position: fixed;
@@ -7,6 +14,7 @@
   overflow: hidden;
   backdrop-filter: blur(6px);
   z-index: 1200;
+  pointer-events: auto;
 }
 
 .modal-content {
@@ -16,10 +24,6 @@
   width: min(55rem, calc(100vw - 24px));
   max-height: calc(100vh - var(--modal-safe-top) - 12px);
   box-shadow: var(--modal-shadow);
-  position: fixed;
-  top: var(--modal-safe-top);
-  left: 50%;
-  transform: translateX(-50%);
   display: flex;
   flex-direction: column;
   overflow: hidden;

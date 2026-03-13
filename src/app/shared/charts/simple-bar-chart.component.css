@@ -1,0 +1,57 @@
+.chart-shell {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.chart-row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.chart-row__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.chart-label {
+  color: var(--color-text);
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  line-height: 1.35;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.chart-value {
+  flex-shrink: 0;
+  color: var(--color-primary-strong);
+  font-size: var(--font-size-xs);
+  font-weight: 700;
+}
+
+.chart-track {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  height: 0.7rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--surface-elevated) 65%, var(--color-primary-soft));
+}
+
+.chart-bar {
+  height: 100%;
+  min-width: 0.5rem;
+  border-radius: inherit;
+  background: linear-gradient(90deg, rgba(var(--color-primary-rgb), 0.56), var(--color-primary));
+  box-shadow: 0 8px 18px rgba(var(--color-primary-rgb), 0.18);
+}
+
+.chart-empty {
+  margin: 0;
+  color: var(--color-text-alt);
+}

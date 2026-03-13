@@ -9,6 +9,14 @@
   },
   {
     "id": 2,
+    "nombre": "Calendario",
+    "route": "/calendario",
+    "svg": "calendar",
+    "subItem": [],
+    "isOpen": false
+  },
+  {
+    "id": 3,
     "nombre": "Clientes",
     "route": "/clientes",
     "svg": "clientes",
@@ -16,7 +24,7 @@
     "isOpen": false
   },
   {
-    "id": 3,
+    "id": 4,
     "nombre": "Bitácoras",
     "route": "/bitacoras",
     "svg": "visit",
@@ -24,7 +32,7 @@
     "isOpen": false
   },
   {
-    "id": 9,
+    "id": 10,
     "nombre": "Tickets",
     "route": "/tickets",
     "svg": "ticket",
@@ -32,23 +40,7 @@
     "isOpen": false
   },
   {
-    "id": 6,
-    "nombre": "Proyectos",
-    "route": "/proyectos",
-    "svg": "openfolder",
-    "subItem": [],
-    "isOpen": false
-  },
-  {
     "id": 8,
-    "nombre": "Documentación",
-    "route": "/documentacion",
-    "svg": "inventario",
-    "subItem": [],
-    "isOpen": false
-  },
-  {
-    "id": 7,
     "nombre": "Vehículos",
     "route": "/vehiculos",
     "svg": "vehiculo",
@@ -56,23 +48,15 @@
     "isOpen": false
   },
   {
-    "id": 4,
-    "nombre": "Usuarios",
-    "route": "admin/usuarios",
-    "svg": "usuarios",
+    "id": 13,
+    "nombre": "Inventario",
+    "route": "/inventario",
+    "svg": "inventario-box",
     "subItem": [],
     "isOpen": false
   },
   {
-    "id": 5,
-    "nombre": "Tipos de equipos",
-    "route": "admin/tipos-equipos",
-    "svg": "tipo-de-equipo",
-    "subItem": [],
-    "isOpen": false
-  },
-  {
-    "id": 10,
+    "id": 11,
     "nombre": "Reportes",
     "route": "/reportes",
     "svg": "reportes",
@@ -80,10 +64,10 @@
     "isOpen": false
   },
   {
-    "id": 11,
+    "id": 12,
     "nombre": "Biblioteca",
     "route": "/biblioteca",
-    "svg": "openfolder",
+    "svg": "biblioteca-book",
     "subItem": [],
     "isOpen": false
   }

@@ -4,7 +4,6 @@ import { AdminGuard } from './guards/admin-guard.guard';
 import { NoClienteGuard } from './guards/no-cliente.guard';
 import { ClienteGuard } from './guards/cliente.guard';
 import { NoComercialGuard } from './guards/no-comercial.guard';
-import { AdminComercialGuard } from './guards/admin-comercial.guard';
 import { ModuleGuard } from './guards/module.guard';
 
 export const routes: Routes = [
@@ -40,6 +39,15 @@ export const routes: Routes = [
         (m) => m.ClientDashboardComponent,
       ),
   },
+  {
+    path: 'calendario',
+    canActivate: [protegerRutaGuard, NoClienteGuard, ModuleGuard],
+    data: { module: 'calendario' },
+    loadComponent: () =>
+      import('./pages/calendario/calendario.component').then(
+        (m) => m.CalendarioComponent,
+      ),
+  },
 
   // Clientes
   {
@@ -60,16 +68,6 @@ export const routes: Routes = [
         (m) => m.ClienteComponent,
       ),
   },
-  {
-    path: 'documentacion',
-    canActivate: [protegerRutaGuard, AdminComercialGuard, ModuleGuard],
-    data: { module: 'documentacion' },
-    loadComponent: () =>
-      import('./pages/documentacion/documentacion.component').then(
-        (m) => m.DocumentacionComponent,
-      ),
-  },
-
   // Sucursal
   {
     path: 'clientes/:idCliente/sucursal/:id',
@@ -110,15 +108,6 @@ export const routes: Routes = [
       ),
   },
   {
-    path: 'proyectos',
-    canActivate: [protegerRutaGuard, ModuleGuard],
-    data: { module: 'proyectos' },
-    loadComponent: () =>
-      import('./pages/proyectos/proyectos.component').then(
-        (m) => m.ProyectosComponent,
-      ),
-  },
-  {
     path: 'biblioteca',
     canActivate: [protegerRutaGuard, NoClienteGuard, ModuleGuard],
     data: { module: 'biblioteca' },
@@ -139,6 +128,20 @@ export const routes: Routes = [
     loadComponent: () =>
       import('./pages/vehiculos/vehiculos.component').then(
         (m) => m.VehiculosComponent,
+      ),
+  },
+  {
+    path: 'inventario',
+    canActivate: [
+      protegerRutaGuard,
+      NoClienteGuard,
+      NoComercialGuard,
+      ModuleGuard,
+    ],
+    data: { module: 'inventario' },
+    loadComponent: () =>
+      import('./pages/inventario/inventario.component').then(
+        (m) => m.InventarioComponent,
       ),
   },
 

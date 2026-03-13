@@ -38,7 +38,6 @@
 .content {
   flex-grow: 1;
   overflow-x: auto;
-  backdrop-filter: blur(2px);
 }
 
 .menu-backdrop {
@@ -50,10 +49,12 @@
 
 /* Login Page */
 .login-container {
-  display: flex;
   width: 100%;
-  justify-content: center;
-  align-items: center;
   min-height: 100vh;
-  margin: auto;
+}
+
+.login-container > app-login,
+.login-container > *:last-child {
+  display: block;
+  width: 100%;
 }

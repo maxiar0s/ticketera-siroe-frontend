@@ -16,27 +16,6 @@
       </p>
 
       <form [formGroup]="clientForm" (ngSubmit)="onSubmit()">
-        <ng-container *ngIf="features.clientesLead">
-          <div class="lead-toggle">
-            <label class="lead-toggle__control">
-              <input type="checkbox" formControlName="esLead" />
-              <span>Marcar como cliente lead</span>
-            </label>
-            <p class="lead-toggle__hint">
-              Los leads solo requieren datos básicos. Cuando este cliente se
-              convierta en uno real, se solicitará la información restante.
-            </p>
-          </div>
-
-          <div class="lead-alert" *ngIf="clientForm.get('esLead')?.value">
-            <strong>Lead en seguimiento:</strong>
-            <span
-              >no necesita visitas, servicios ni datos de contacto completos
-              todavía.</span
-            >
-          </div>
-        </ng-container>
-
         <div class="two-inputs">
           <!-- Campo Rut -->
           <div class="form-group width-50">
@@ -271,19 +250,12 @@
 
         <div class="form-group servicios-group">
           <label>Servicios</label>
-          <p class="lead-note" *ngIf="clientForm.get('servicios')?.disabled">
-            Los leads no tienen servicios asociados. Activa el cliente para
-            definirlos.
-          </p>
           <div class="servicios-options">
             <label
               class="servicio-option"
               *ngFor="let servicio of serviciosDisponibles"
               [class.servicio-option--selected]="
                 estaServicioSeleccionado(servicio)
-              "
-              [class.servicio-option--disabled]="
-                clientForm.get('servicios')?.disabled
               "
             >
               <input
@@ -340,12 +312,6 @@
             >
               Ingresa un numero mayor o igual a 0.
             </div>
-            <div
-              *ngIf="clientForm.get('visitasMensuales')?.disabled"
-              class="lead-note"
-            >
-              Se habilitará cuando el cliente deje de ser lead.
-            </div>
           </div>
 
           <!-- Campo Visitas de Emergencia Anuales -->
@@ -380,12 +346,6 @@
               class="error"
             >
               Ingresa un numero mayor o igual a 0.
-            </div>
-            <div
-              *ngIf="clientForm.get('visitasEmergenciaAnuales')?.disabled"
-              class="lead-note"
-            >
-              Se habilitará cuando el cliente deje de ser lead.
             </div>
           </div>
         </div>
@@ -506,92 +466,6 @@
               >
                 Agregar Tag
               </button>
-            </div>
-          </div>
-        </fieldset>
-
-        <fieldset class="bank-section" *ngIf="features.datosBancarios">
-          <legend>Datos bancarios para pagos</legend>
-          <p class="bank-section__help">
-            Esta información estará disponible para el equipo comercial y para
-            el cliente asignado.
-          </p>
-
-          <div class="two-inputs">
-            <div class="form-group width-50">
-              <label for="banco">Banco</label>
-              <input
-                id="banco"
-                type="text"
-                formControlName="banco"
-                placeholder="Ej. Banco Estado"
-                (input)="clientForm.markAsDirty()"
-              />
-            </div>
-            <div class="form-group width-50">
-              <label for="tipoCuenta">Tipo de cuenta</label>
-              <input
-                id="tipoCuenta"
-                type="text"
-                formControlName="tipoCuenta"
-                placeholder="Ej. Cuenta corriente"
-                (input)="clientForm.markAsDirty()"
-              />
-            </div>
-          </div>
-
-          <div class="two-inputs">
-            <div class="form-group width-50">
-              <label for="numeroCuenta">Número de cuenta</label>
-              <input
-                id="numeroCuenta"
-                type="text"
-                formControlName="numeroCuenta"
-                placeholder="Ingresa el número de cuenta"
-                (input)="clientForm.markAsDirty()"
-              />
-            </div>
-            <div class="form-group width-50">
-              <label for="titular">Titular</label>
-              <input
-                id="titular"
-                type="text"
-                formControlName="titular"
-                placeholder="Nombre del titular"
-                (input)="clientForm.markAsDirty()"
-              />
-            </div>
-          </div>
-
-          <div class="two-inputs">
-            <div class="form-group width-50">
-              <label for="rutTitular">RUT titular</label>
-              <input
-                id="rutTitular"
-                type="text"
-                formControlName="rutTitular"
-                placeholder="RUT del titular"
-                (input)="clientForm.markAsDirty()"
-              />
-            </div>
-            <div class="form-group width-50">
-              <label for="correoNotificacion">Correo para comprobantes</label>
-              <input
-                id="correoNotificacion"
-                type="email"
-                formControlName="correoNotificacion"
-                placeholder="correo@dominio.cl"
-                (input)="clientForm.markAsDirty()"
-              />
-              <div
-                *ngIf="
-                  clientForm.get('correoNotificacion')?.invalid &&
-                  clientForm.get('correoNotificacion')?.touched
-                "
-                class="error"
-              >
-                Ingresa un correo válido.
-              </div>
             </div>
           </div>
         </fieldset>

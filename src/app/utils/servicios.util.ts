@@ -31,6 +31,26 @@ export function normalizarServicios(valor: unknown): string[] {
   return [];
 }
 
+export function clienteTieneSoporteTI(servicios: unknown): boolean {
+  return normalizarServicios(servicios).some((servicio) => {
+    const normalizado = servicio
+      .trim()
+      .toLowerCase()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '');
+
+    return normalizado === 'soporte ti' || normalizado === 'soportes ti';
+  });
+}
+
+export function esClienteOculto(valor: unknown): boolean {
+  if (typeof valor !== 'string') {
+    return false;
+  }
+
+  return valor.trim().toLowerCase() === 'ticketera';
+}
+
 export function normalizarEsArriendo(valor: unknown): boolean {
   if (typeof valor === 'boolean') {
     return valor;

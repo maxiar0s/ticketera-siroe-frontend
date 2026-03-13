@@ -16,7 +16,6 @@ export interface DocumentoCliente {
     id: string;
     razonSocial: string;
     rut?: string | null;
-    esLead?: boolean | null;
   } | null;
   subidoPor?: {
     id: number;
