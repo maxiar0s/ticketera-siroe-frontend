@@ -210,14 +210,22 @@ export class CrearClienteComponent implements OnInit, OnChanges {
       return;
     }
 
+    const tipoDocumentoActual =
+      (this.clientForm.get('tipoDocumento')?.value as 'Rut' | 'Ruc' | 'Dni') ??
+      'Rut';
     const telefonoFormateado = this.formatearTelefonoParaEdicion(
       this.cliente.telefonoEncargado
+    );
+    const documentoFormateado = this.formatearDocumentoParaEdicion(
+      this.cliente.rut,
+      tipoDocumentoActual
     );
 
     this.clientForm.patchValue(
       {
-        rut: this.cliente.rut ?? '',
+        rut: documentoFormateado,
         razonSocial: this.cliente.razonSocial ?? '',
+        imagen: this.cliente.imagen ?? '',
         encargadoGeneral: this.cliente.encargadoGeneral ?? '',
         correo: this.cliente.correo ?? '',
         telefonoEncargado: telefonoFormateado,
@@ -251,15 +259,15 @@ export class CrearClienteComponent implements OnInit, OnChanges {
 
   onFileSelected(event: Event) {
     const input = event.target as HTMLInputElement;
-    this.selectedFile = input!.files![0];
-    // Marcar el formulario como dirty si se selecciona una imagen
+    this.selectedFile = input.files?.[0] ?? null;
+    this.clientForm.get('imagen')?.setValue(this.selectedFile?.name ?? '');
+    this.clientForm.get('imagen')?.markAsTouched();
     this.clientForm.markAsDirty();
   }
 
   onLogoPerfilSelected(event: Event) {
     const input = event.target as HTMLInputElement;
-    this.selectedLogoPerfil = input!.files![0];
-    // Marcar el formulario como dirty si se selecciona un logo
+    this.selectedLogoPerfil = input.files?.[0] ?? null;
     this.clientForm.markAsDirty();
   }
 
@@ -269,11 +277,16 @@ export class CrearClienteComponent implements OnInit, OnChanges {
 
       const formData = new FormData();
       const formValue = this.clientForm.getRawValue();
+      const tipoDocumento = formValue['tipoDocumento'] as 'Rut' | 'Ruc' | 'Dni';
       const serviciosSeleccionados: string[] = Array.isArray(
         formValue['servicios']
       )
         ? [...formValue['servicios']]
         : [];
+      const documentoNormalizado = this.normalizarDocumento(
+        formValue['rut'],
+        tipoDocumento
+      );
 
       // Limpiar el teléfono antes de enviarlo (solo números, 9 dígitos)
       let telefono = formValue['telefonoEncargado'] || '';
@@ -286,6 +299,9 @@ export class CrearClienteComponent implements OnInit, OnChanges {
         }
         if (key === 'telefonoEncargado') {
           value = telefono;
+        }
+        if (key === 'rut') {
+          value = documentoNormalizado;
         }
         if (key === 'visitasMensuales' || key === 'visitasEmergenciaAnuales') {
           const parsedNumber = Number.parseInt(value, 10);
@@ -316,12 +332,6 @@ export class CrearClienteComponent implements OnInit, OnChanges {
       if (this.selectedLogoPerfil) {
         formData.set('logoPerfil', this.selectedLogoPerfil);
       }
-
-      // Imprimir los datos que se van a enviar para depuración
-      console.log('Datos del formulario a enviar:');
-      Object.keys(formValue).forEach((field) => {
-        console.log(`${field}: ${formData.get(field)}`);
-      });
 
       this.enviarFormulario.emit(formData);
     } else {
@@ -359,6 +369,38 @@ export class CrearClienteComponent implements OnInit, OnChanges {
       1,
       5
     )} ${soloDigitos.slice(5)}`;
+  }
+
+  private normalizarDocumento(
+    documento: string | null | undefined,
+    tipo: 'Rut' | 'Ruc' | 'Dni'
+  ): string {
+    const base = String(documento ?? '').replace(/[^0-9kK]/g, '').toUpperCase();
+
+    if (tipo === 'Rut') {
+      return base.slice(0, 9);
+    }
+
+    if (tipo === 'Ruc') {
+      return base.replace(/[^0-9]/g, '').slice(0, 11);
+    }
+
+    return base.replace(/[^0-9]/g, '').slice(0, 8);
+  }
+
+  private formatearDocumentoParaEdicion(
+    documento: string | null | undefined,
+    tipo: 'Rut' | 'Ruc' | 'Dni'
+  ): string {
+    const normalizado = this.normalizarDocumento(documento, tipo);
+
+    if (tipo !== 'Rut' || normalizado.length <= 1) {
+      return normalizado;
+    }
+
+    const cuerpo = normalizado.slice(0, -1);
+    const dv = normalizado.slice(-1);
+    return `${cuerpo.replace(/\B(?=(\d{3})+(?!\d))/g, '.')}-${dv}`;
   }
 
   toggleServicio(servicio: string): void {
