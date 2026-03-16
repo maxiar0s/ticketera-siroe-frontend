@@ -284,6 +284,7 @@ export class TicketsComponent implements OnInit {
 
   private configurarValidacionesDinamicas(): void {
     const estadoCtrl = this.ticketForm.get('ticketEstado');
+    const clienteCtrl = this.ticketForm.get('clienteId');
     const fechaTerminoCtrl = this.ticketForm.get('ticketFechaTermino');
     const detalleTerminoCtrl = this.ticketForm.get('ticketDetalleTermino');
     const descripcionCtrl = this.ticketForm.get('descripcion');
@@ -291,6 +292,7 @@ export class TicketsComponent implements OnInit {
 
     if (
       !estadoCtrl ||
+      !clienteCtrl ||
       !fechaTerminoCtrl ||
       !detalleTerminoCtrl ||
       !descripcionCtrl ||
@@ -301,6 +303,7 @@ export class TicketsComponent implements OnInit {
 
     const aplicarValidaciones = () => {
       const estado = (estadoCtrl.value ?? 'Nuevo') as string;
+      const clienteIdActual = `${clienteCtrl.value ?? ''}`.trim();
 
       // Lógica para técnicos: Si el estado NO es "Nuevo", requerir técnico
       // Si es Nuevo, técnico es opcional
@@ -314,6 +317,14 @@ export class TicketsComponent implements OnInit {
       tecnicosCtrl.updateValueAndValidity({ emitEvent: false });
 
       if (estado === 'Resuelto' || estado === 'Cerrado') {
+        if (!clienteIdActual) {
+          const clientePorDefecto = this.obtenerClientePorDefectoSinAsignar();
+          if (clientePorDefecto) {
+            clienteCtrl.setValue(clientePorDefecto.id, { emitEvent: false });
+            this.cargarSucursalesParaCliente(clientePorDefecto.id, 'form');
+            this.cargarTagsCliente(clientePorDefecto.id);
+          }
+        }
         if (!this.modules.bitacora) {
           fechaTerminoCtrl.setValue(this.obtenerFechaActual(), {
             emitEvent: false,
@@ -671,10 +682,13 @@ export class TicketsComponent implements OnInit {
     this.selectedIngresoFiles = [];
     this.selectedEvidenceFiles = [];
     this.tecnicosDropdownAbierto = false;
+    const clientePorDefecto = this.obtenerClientePorDefectoSinAsignar();
+    const clienteIdTicket = ticket.casaMatrizId || clientePorDefecto?.id || '';
+
     this.ticketForm.reset({
       id: ticket.id,
       titulo: ticket.titulo ?? '',
-      clienteId: ticket.casaMatrizId,
+      clienteId: clienteIdTicket,
       sucursalId: ticket.sucursalId ?? '',
       fechaVisita: ticket.fechaVisita?.slice(0, 10) ?? '',
       horaLlegada: this.formatearParaInputFecha(ticket.horaLlegada),
@@ -707,7 +721,7 @@ export class TicketsComponent implements OnInit {
     this.exitoMensaje = '';
     this.errorMensaje = '';
 
-    const clienteId = ticket.casaMatrizId;
+    const clienteId = clienteIdTicket;
     this.cargarSucursalesParaCliente(clienteId, 'form', () => {
       this.ticketForm.patchValue({
         sucursalId: ticket.sucursalId ?? '',
@@ -758,6 +772,24 @@ export class TicketsComponent implements OnInit {
     // Validar permisos de edicion para tecnico asignado
     // Eliminado: La verificación ya se hace al inicio con puedeEditarTicket(ticket)
     // y si tiene acceso (por historial o asignación actual) debe poder editar.
+  }
+
+  private obtenerClientePorDefectoSinAsignar(): ClienteResumen | undefined {
+    return this.clientes.find((cliente) => {
+      const razonSocial = this.normalizarTexto(cliente.razonSocial);
+      return (
+        razonSocial.includes('sin asignar') ||
+        razonSocial.includes('ticketera')
+      );
+    });
+  }
+
+  private normalizarTexto(valor: string | null | undefined): string {
+    return `${valor ?? ''}`
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .trim()
+      .toLowerCase();
   }
 
   /**
@@ -822,6 +854,29 @@ export class TicketsComponent implements OnInit {
   get estadoTicketSeleccionado(): string {
     const control = this.ticketForm.get('ticketEstado');
     return control?.value ?? 'Nuevo';
+  }
+
+  get clienteSeleccionadoNoVisible(): boolean {
+    const clienteId = `${this.ticketForm.get('clienteId')?.value ?? ''}`.trim();
+    if (!clienteId) {
+      return false;
+    }
+
+    return !this.clientes.some((cliente) => `${cliente.id}` === clienteId);
+  }
+
+  get etiquetaClienteSeleccionado(): string {
+    if (!this.clienteSeleccionadoNoVisible) {
+      return 'Sin Asignar';
+    }
+
+    const clienteId = `${this.ticketForm.get('clienteId')?.value ?? ''}`.trim();
+    const ticketeraInterna = this.obtenerClientePorDefectoSinAsignar();
+    if (ticketeraInterna && `${ticketeraInterna.id}` === clienteId) {
+      return 'Sin Asignar';
+    }
+
+    return 'Sin Asignar';
   }
 
   get mostrarCamposTerminoTicket(): boolean {

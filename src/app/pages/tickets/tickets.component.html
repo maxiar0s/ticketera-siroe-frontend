@@ -388,6 +388,12 @@
               (change)="onClienteFormChange($any($event.target).value)"
             >
               <option value="" disabled>Selecciona un cliente</option>
+              <option
+                *ngIf="clienteSeleccionadoNoVisible"
+                [value]="ticketForm.get('clienteId')?.value"
+              >
+                {{ etiquetaClienteSeleccionado }}
+              </option>
               <option *ngFor="let cliente of clientes" [value]="cliente.id">
                 {{ cliente.razonSocial }}
               </option>
@@ -423,128 +429,6 @@
             <input type="date" formControlName="fechaVisita" />
           </label>
 
-          <ng-container *ngIf="mostrarCamposHorarios">
-            <label>
-              <span class="label">Hora de llegada</span>
-              <input type="datetime-local" formControlName="horaLlegada" />
-            </label>
-
-            <label>
-              <span class="label">Hora de salida</span>
-              <input type="datetime-local" formControlName="horaSalida" />
-            </label>
-          </ng-container>
-
-          <div class="termino-ticket-fields" *ngIf="mostrarCamposTerminoTicket">
-            <label>
-              <span class="label">Fecha de termino</span>
-              <input type="date" formControlName="ticketFechaTermino" />
-            </label>
-
-            <div
-              class="field-group full"
-              [class.invalid]="
-                ticketForm.get('ticketDetalleTermino')?.invalid &&
-                (ticketForm.get('ticketDetalleTermino')?.dirty ||
-                  ticketForm.get('ticketDetalleTermino')?.touched)
-              "
-            >
-              <span class="label">Detalle de lo realizado</span>
-              <app-rich-text-editor
-                formControlName="ticketDetalleTermino"
-                placeholder="Describe el trabajo realizado para cerrar el ticket."
-              ></app-rich-text-editor>
-            </div>
-
-            <!-- Nuevos campos para Cierre: Comentario Interno y Tiempo Resolucion -->
-            <div
-              class="form-row"
-              *ngIf="mostrarCamposTerminoTicket || esAdmin || esTecnico"
-            >
-              <div class="field-group full">
-                <span class="label"
-                  >Comentario Interno (Visible solo para Staff)</span
-                >
-                <app-rich-text-editor
-                  formControlName="comentarioInterno"
-                  placeholder="Información relevante para administración o técnicos..."
-                ></app-rich-text-editor>
-              </div>
-            </div>
-
-            <div
-              class="form-row"
-              *ngIf="mostrarCamposTerminoTicket || esAdmin || esTecnico"
-            >
-              <label>
-                <span class="label">Tiempo Resolución (Horas)</span>
-                <input
-                  type="number"
-                  formControlName="tiempoResolucionHoras"
-                  placeholder="0 - 24"
-                  min="0"
-                  max="24"
-                />
-                <div
-                  class="field-error"
-                  *ngIf="
-                    ticketForm.get('tiempoResolucionHoras')?.invalid &&
-                    (ticketForm.get('tiempoResolucionHoras')?.dirty ||
-                      ticketForm.get('tiempoResolucionHoras')?.touched)
-                  "
-                >
-                  <span
-                    *ngIf="
-                      ticketForm.get('tiempoResolucionHoras')?.hasError('min')
-                    "
-                  >
-                    Mínimo 0 horas.
-                  </span>
-                  <span
-                    *ngIf="
-                      ticketForm.get('tiempoResolucionHoras')?.hasError('max')
-                    "
-                  >
-                    Máximo 24 horas.
-                  </span>
-                </div>
-              </label>
-              <label>
-                <span class="label">Tiempo Resolución (Minutos)</span>
-                <input
-                  type="number"
-                  formControlName="tiempoResolucionMinutos"
-                  placeholder="0 - 60"
-                  min="0"
-                  max="59"
-                />
-                <div
-                  class="field-error"
-                  *ngIf="
-                    ticketForm.get('tiempoResolucionMinutos')?.invalid &&
-                    (ticketForm.get('tiempoResolucionMinutos')?.dirty ||
-                      ticketForm.get('tiempoResolucionMinutos')?.touched)
-                  "
-                >
-                  <span
-                    *ngIf="
-                      ticketForm.get('tiempoResolucionMinutos')?.hasError('min')
-                    "
-                  >
-                    Mínimo 0 minutos.
-                  </span>
-                  <span
-                    *ngIf="
-                      ticketForm.get('tiempoResolucionMinutos')?.hasError('max')
-                    "
-                  >
-                    Máximo 59 minutos.
-                  </span>
-                </div>
-              </label>
-            </div>
-          </div>
-
           <label
             [class.full]="tecnicoActual.length === 0"
             [class.invalid]="
@@ -555,14 +439,12 @@
           >
             <span class="label">Técnico Asignado</span>
 
-            <!-- CASO 1: TICKET YA ASIGNADO (Solo Visualización) -->
             <div class="clientes-dropdown" *ngIf="tecnicoActual.length > 0">
               <button type="button" class="dropdown-button" disabled>
                 {{ tecnicoActual[0] }}
               </button>
             </div>
 
-            <!-- CASO 2: TICKET SIN ASIGNAR (Dropdown Normal) -->
             <div
               class="clientes-dropdown"
               *ngIf="tecnicoActual.length === 0"
@@ -612,7 +494,6 @@
             </div>
           </label>
 
-          <!-- SECCION TRANSFERIR (Solo Visible si hay tecnico asignado) -->
           <label *ngIf="tecnicoActual.length > 0">
             <span class="label">Transferir ticket</span>
             <div class="clientes-dropdown" (click)="$event.stopPropagation()">
@@ -648,7 +529,70 @@
             </div>
           </label>
 
-          <!-- Selector de Tags -->
+          <div
+            class="form-row"
+            *ngIf="mostrarCamposTerminoTicket || esAdmin || esTecnico"
+          >
+            <label>
+              <span class="label">Tiempo Resolución (Horas)</span>
+              <input
+                type="number"
+                formControlName="tiempoResolucionHoras"
+                placeholder="0 - 24"
+                min="0"
+                max="24"
+              />
+              <div
+                class="field-error"
+                *ngIf="
+                  ticketForm.get('tiempoResolucionHoras')?.invalid &&
+                  (ticketForm.get('tiempoResolucionHoras')?.dirty ||
+                    ticketForm.get('tiempoResolucionHoras')?.touched)
+                "
+              >
+                <span
+                  *ngIf="ticketForm.get('tiempoResolucionHoras')?.hasError('min')"
+                >
+                  Mínimo 0 horas.
+                </span>
+                <span
+                  *ngIf="ticketForm.get('tiempoResolucionHoras')?.hasError('max')"
+                >
+                  Máximo 24 horas.
+                </span>
+              </div>
+            </label>
+            <label>
+              <span class="label">Tiempo Resolución (Minutos)</span>
+              <input
+                type="number"
+                formControlName="tiempoResolucionMinutos"
+                placeholder="0 - 60"
+                min="0"
+                max="59"
+              />
+              <div
+                class="field-error"
+                *ngIf="
+                  ticketForm.get('tiempoResolucionMinutos')?.invalid &&
+                  (ticketForm.get('tiempoResolucionMinutos')?.dirty ||
+                    ticketForm.get('tiempoResolucionMinutos')?.touched)
+                "
+              >
+                <span
+                  *ngIf="ticketForm.get('tiempoResolucionMinutos')?.hasError('min')"
+                >
+                  Mínimo 0 minutos.
+                </span>
+                <span
+                  *ngIf="ticketForm.get('tiempoResolucionMinutos')?.hasError('max')"
+                >
+                  Máximo 59 minutos.
+                </span>
+              </div>
+            </label>
+          </div>
+
           <label class="full" *ngIf="tagsDisponibles.length > 0 && modoEdicion">
             <span class="label">Tags</span>
             <div class="tags-selector">
@@ -669,19 +613,33 @@
             </div>
           </label>
 
-          <div
-            class="field-group full"
-            [class.invalid]="
-              ticketForm.get('descripcion')?.invalid &&
-              (ticketForm.get('descripcion')?.dirty ||
-                ticketForm.get('descripcion')?.touched)
-            "
-          >
-            <span class="label">Detalle</span>
-            <app-rich-text-editor
-              formControlName="descripcion"
-              placeholder="Describe el requerimiento o los hallazgos."
-            ></app-rich-text-editor>
+          <div class="termino-ticket-fields" *ngIf="mostrarCamposTerminoTicket">
+            <div
+              class="field-group full cierre-editor-field"
+              [class.invalid]="
+                ticketForm.get('ticketDetalleTermino')?.invalid &&
+                (ticketForm.get('ticketDetalleTermino')?.dirty ||
+                  ticketForm.get('ticketDetalleTermino')?.touched)
+              "
+            >
+              <span class="label">Detalle de lo realizado</span>
+              <app-rich-text-editor
+                formControlName="ticketDetalleTermino"
+                placeholder="Describe el trabajo realizado para cerrar el ticket."
+              ></app-rich-text-editor>
+            </div>
+
+            <div
+              class="field-group full cierre-editor-field"
+              *ngIf="mostrarCamposTerminoTicket || esAdmin || esTecnico"
+            >
+              <span class="label">Comentario Interno (Visible solo para Staff)</span>
+              <app-rich-text-editor
+                formControlName="comentarioInterno"
+                minHeight="120px"
+                placeholder="Información relevante para administración o técnicos..."
+              ></app-rich-text-editor>
+            </div>
           </div>
 
           <label class="full file-upload-field ticket-ingreso">
@@ -788,6 +746,21 @@
               </ul>
             </div>
           </label>
+
+          <div
+            class="field-group full"
+            [class.invalid]="
+              ticketForm.get('descripcion')?.invalid &&
+              (ticketForm.get('descripcion')?.dirty ||
+                ticketForm.get('descripcion')?.touched)
+            "
+          >
+            <span class="label">Detalle</span>
+            <app-rich-text-editor
+              formControlName="descripcion"
+              placeholder="Describe el requerimiento o los hallazgos."
+            ></app-rich-text-editor>
+          </div>
         </div>
 
         <div class="modal-actions">

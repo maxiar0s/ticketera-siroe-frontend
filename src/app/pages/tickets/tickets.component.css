@@ -584,6 +584,29 @@
   display: contents;
 }
 
+.cierre-editor-field {
+  padding: 0.9rem;
+  border-radius: 1rem;
+  border: 1px solid color-mix(in srgb, #d94f70 22%, transparent);
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, #fff3f6 88%, var(--surface-elevated)) 0%,
+    color-mix(in srgb, #fff8fa 92%, var(--surface-elevated)) 100%
+  );
+}
+
+.cierre-editor-field .label {
+  color: color-mix(in srgb, #8f2f4b 78%, var(--color-text-alt));
+}
+
+.cierre-editor-field app-rich-text-editor .ql-toolbar.ql-snow {
+  background-color: color-mix(in srgb, #ffe5eb 60%, var(--surface-muted));
+}
+
+.cierre-editor-field app-rich-text-editor .ql-container.ql-snow {
+  background-color: color-mix(in srgb, #fffafb 92%, var(--input-bg));
+}
+
 .modal-grid label.invalid .label,
 .modal-grid .field-group.invalid .label,
 .field-error {
