@@ -386,9 +386,7 @@ export class TicketsComponent implements OnInit {
   private cargarTecnicosDisponibles(): void {
     this.apiService.tecnicosDisponibles().subscribe({
       next: (tecnicos) => {
-        this.tecnicosDisponibles = Array.isArray(tecnicos)
-          ? tecnicos.filter((tecnico) => tecnico.tipoCuentaId === 2)
-          : [];
+        this.tecnicosDisponibles = Array.isArray(tecnicos) ? tecnicos : [];
       },
       error: () => {
         this.tecnicosDisponibles = [];
