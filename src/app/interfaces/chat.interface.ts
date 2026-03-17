@@ -3,7 +3,7 @@
  */
 
 export interface MensajeTicket {
-  id: number;
+  id: number | string;
   ticketId: number;
   cuentaId: number;
   remitente?: {
@@ -20,7 +20,7 @@ export interface MensajeTicket {
 }
 
 export interface ActividadTicket {
-  id: number;
+  id: number | string;
   ticketId: number;
   cuentaId: number;
   realizadoPor?: {
@@ -43,9 +43,29 @@ export interface ActividadTicket {
   itemType?: 'actividad';
 }
 
+export interface CorreoTimelineItem {
+  id: string;
+  ticketId: number;
+  sourceTicketId: number;
+  asunto: string;
+  mensaje: string;
+  adjuntos: string[];
+  createdAt: Date | string;
+  estadoTicket?: string | null;
+  esTicketPrincipal?: boolean;
+  remitente?: {
+    id: number | null;
+    name: string;
+    email?: string | null;
+    tipoCuentaId?: number | null;
+  };
+  itemType?: 'correo';
+}
+
 export type ChatItem =
   | (MensajeTicket & { itemType: 'mensaje' })
-  | (ActividadTicket & { itemType: 'actividad' });
+  | (ActividadTicket & { itemType: 'actividad' })
+  | (CorreoTimelineItem & { itemType: 'correo' });
 
 export interface MensajesTicketResponse {
   data: MensajeTicket[];

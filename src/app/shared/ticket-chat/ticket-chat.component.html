@@ -2,10 +2,10 @@
   <!-- Header -->
   <div class="messages-header">
     <div class="header-info">
-      <span class="messages-title">📧 Mensajes del Ticket</span>
+      <span class="messages-title">🧵 Hilo del ticket</span>
       @if (fechaInicioConversacion) {
       <span class="conversation-start">
-        Conversación iniciada el
+        Actividad registrada desde el
         {{ formatearFechaCompleta(fechaInicioConversacion) }}
       </span>
       }
@@ -29,11 +29,11 @@
     } @else if (timeline.length === 0) {
     <div class="empty-state">
       <span class="empty-icon">📭</span>
-      <p>No hay mensajes aún</p>
-      <p class="empty-hint">Envía el primer mensaje de este ticket</p>
+      <p>No hay actividad aún</p>
+      <p class="empty-hint">Cuando lleguen correos o cambios, aparecerán aquí</p>
     </div>
-    } @else { @for (item of timeline; track item.id) { @if (item.itemType ===
-    'mensaje') {
+    } @else { @for (item of timeline; track getTimelineTrackId(item)) { @if
+    (item.itemType === 'mensaje') {
     <!-- Mensaje -->
     <div class="message-card" [class.own-message]="esMensajePropio(item)">
       <div class="message-card-header">
@@ -70,6 +70,49 @@
         }
       </div>
     </div>
+    } @else if (item.itemType === 'correo') {
+    <article class="message-card email-card">
+      <div class="message-card-header email-card-header">
+        <div class="sender-info">
+          <span class="sender-avatar email-avatar">&#64;</span>
+          <div class="sender-details">
+            <span class="sender-name">{{ getNombreRemitente(item) }}</span>
+            @if (getCorreoRemitenteEmail(item)) {
+            <span class="sender-email">{{ getCorreoRemitenteEmail(item) }}</span>
+            }
+          </div>
+        </div>
+        <div class="email-meta">
+          <span class="email-thread-badge">
+            {{ esCorreoPrincipal(item) ? 'Correo inicial' : 'Respuesta por correo' }}
+          </span>
+          <span class="message-date">{{ formatearFechaCompleta(item.createdAt) }}</span>
+        </div>
+      </div>
+      <div class="message-card-body email-card-body">
+        <div class="email-subject-row">
+          <span class="email-subject">{{ getCorreoAsunto(item) }}</span>
+          @if (getCorreoTicketOrigen(item)) {
+          <span class="email-ticket-ref">Ticket #{{ getCorreoTicketOrigen(item) }}</span>
+          }
+        </div>
+        <pre class="email-content">{{ getCorreoContenido(item) }}</pre>
+        @if (getAdjuntos(item).length > 0) {
+        <div class="message-attachments">
+          <span class="attachments-title">📎 Adjuntos del correo</span>
+          <ul class="attachments-list">
+            @for (adjunto of getAdjuntos(item); track adjunto) {
+            <li>
+              <a [href]="adjunto" target="_blank" class="attachment-link">{{
+                adjunto | slice : -30
+              }}</a>
+            </li>
+            }
+          </ul>
+        </div>
+        }
+      </div>
+    </article>
     } @else {
     <!-- Actividad del ticket -->
     <div class="activity-entry">
@@ -87,7 +130,7 @@
   <!-- New Message Form -->
   <div class="new-message-form">
     <div class="form-header">
-      <span>📝 Nuevo mensaje</span>
+      <span>💬 Responder al hilo</span>
     </div>
     <app-rich-text-editor
       [(ngModel)]="nuevoMensaje"
