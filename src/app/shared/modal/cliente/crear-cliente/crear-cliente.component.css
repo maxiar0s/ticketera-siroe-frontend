@@ -9,9 +9,11 @@
   --modal-safe-top: clamp(12px, 5vh, 52px);
   position: fixed;
   inset: 0;
-  display: block;
-  padding: 0;
-  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--app-modal-padding, 1.2rem);
+  overflow-y: auto;
   backdrop-filter: blur(6px);
   z-index: 1200;
   pointer-events: auto;
@@ -23,6 +25,7 @@
   border-radius: var(--modal-radius);
   width: min(55rem, calc(100vw - 24px));
   max-height: calc(100vh - var(--modal-safe-top) - 12px);
+  margin: auto;
   box-shadow: var(--modal-shadow);
   display: flex;
   flex-direction: column;

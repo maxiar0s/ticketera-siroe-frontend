@@ -119,10 +119,17 @@
                 (change)="onFileSelected($event)"
                 type="file"
                 accept="image/*"
-                capture="environment"
                 id="imagen"
-                formControlName="imagen"
               />
+            </div>
+            <div
+              *ngIf="
+                clientForm.get('imagen')?.hasError('required') &&
+                clientForm.get('imagen')?.touched
+              "
+              class="error"
+            >
+              Debes seleccionar una imagen.
             </div>
           </div>
 

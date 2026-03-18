@@ -16,7 +16,9 @@ import { AuthService } from '../../services/auth.service';
 import {
   MensajeTicket,
   ActividadTicket,
+  CorreoTimelineItem,
   ChatItem,
+  TimelineTicketResponse,
 } from '../../interfaces/chat.interface';
 import { RichTextEditorComponent } from '../rich-text-editor/rich-text-editor.component';
 
@@ -73,7 +75,7 @@ export class TicketChatComponent
       .getTicketTimeline(this.ticketId, { limite: 100 })
       .pipe(takeUntil(this.destroy$))
       .subscribe({
-        next: (response) => {
+        next: (response: TimelineTicketResponse) => {
           this.timeline = response.data || [];
           this.loading = false;
           this.shouldScrollToBottom = true;
@@ -183,7 +185,46 @@ export class TicketChatComponent
     if (item.itemType === 'mensaje') {
       return (item as MensajeTicket).remitente?.name || 'Usuario';
     }
+    if (item.itemType === 'correo') {
+      return (item as CorreoTimelineItem).remitente?.name || 'Correo';
+    }
     return (item as ActividadTicket).realizadoPor?.name || 'Sistema';
+  }
+
+  getTimelineTrackId(item: ChatItem): string {
+    return `${item.itemType}-${item.id}`;
+  }
+
+  esCorreo(item: ChatItem): boolean {
+    return item.itemType === 'correo';
+  }
+
+  getCorreoAsunto(item: ChatItem): string {
+    return this.esCorreo(item)
+      ? (item as CorreoTimelineItem).asunto
+      : `Ticket #${item.ticketId}`;
+  }
+
+  getCorreoRemitenteEmail(item: ChatItem): string {
+    return this.esCorreo(item)
+      ? (item as CorreoTimelineItem).remitente?.email || ''
+      : '';
+  }
+
+  getCorreoTicketOrigen(item: ChatItem): number | null {
+    return this.esCorreo(item)
+      ? (item as CorreoTimelineItem).sourceTicketId
+      : null;
+  }
+
+  getCorreoContenido(item: ChatItem): string {
+    return this.esCorreo(item) ? (item as CorreoTimelineItem).mensaje || '' : '';
+  }
+
+  esCorreoPrincipal(item: ChatItem): boolean {
+    return this.esCorreo(item)
+      ? !!(item as CorreoTimelineItem).esTicketPrincipal
+      : false;
   }
 
   getActividadIcono(tipo: string): string {
@@ -212,6 +253,8 @@ export class TicketChatComponent
         return `${nombre} asignó el ticket a "${item.valorNuevo}"`;
       case 'creacion':
         return `${nombre} creó el ticket`;
+      case 'comentario':
+        return `${nombre} agregó un comentario al hilo`;
       default:
         return `${nombre} realizó una acción`;
     }
@@ -231,6 +274,9 @@ export class TicketChatComponent
   getAdjuntos(item: ChatItem): string[] {
     if (item.itemType === 'mensaje') {
       return (item as MensajeTicket).adjuntos || [];
+    }
+    if (item.itemType === 'correo') {
+      return (item as CorreoTimelineItem).adjuntos || [];
     }
     return [];
   }
